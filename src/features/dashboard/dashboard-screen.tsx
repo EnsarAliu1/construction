@@ -11,6 +11,6 @@ export function DashboardScreen() {
       { href: "/app/payments", number: "02", title: "Received payments", description: "Income and future payment allocations in EUR." },
       { href: "/app/expenses", number: "03", title: "Outgoing payments", description: "Expenses, suppliers and payment recipients." },
     ].map(item => <Link className="card workspace-card" key={item.href} href={item.href}><span className="eyebrow">{item.number} <span aria-hidden="true">↗</span></span><h3>{item.title}</h3><p className="muted">{item.description}</p></Link>)}</div>
-    <Card><EmptyState title="Your financial overview will appear here" description="There are no financial records to summarize. No illustrative balances or business values are shown." /></Card>
+    <Card><EmptyState title="Your financial overview will appear here" description="Company financial summaries will be available in a later package." /></Card>
   </>;
 }

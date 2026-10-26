@@ -14,7 +14,7 @@ export function WorkspaceShell({ children, user }: { children: ReactNode; user: 
     </aside>
     <div className="workspace-body"><header className="workspace-topbar"><Link href="/app" className="workspace-name">Construction <span className="muted">/ Workspace</span></Link><div className="workspace-user"><span>{user.displayName}</span><LogoutButton /></div>
       <MobileNavigation items={workspaceNavigation} label="Workspace mobile" openLabel="Menu" closeLabel="Close" /></header>
-      <div className="preview-notice"><strong>Workspace</strong><span>Client management is available. Financial actions are not available yet.</span></div>
+      <div className="preview-notice"><strong>Workspace</strong><span>Clients, projects and contracts are available. Payment and expense entry are not available yet.</span></div>
       <main id="main-content" className="workspace-content">{children}</main>
     </div>
   </div>;

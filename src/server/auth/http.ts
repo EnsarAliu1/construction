@@ -14,7 +14,7 @@ export function clearSessionCookie(response: NextResponse) {
   response.cookies.set(name, "", { ...settings, maxAge: 0, expires: new Date(0) });
 }
 
-export async function limitedJson(request: Request): Promise<Record<string, unknown>> {
+export async function limitedJson(request: Request, maxBytes = 8192): Promise<Record<string, unknown>> {
   const reader = request.body?.getReader();
   if (!reader || !request.headers.get("content-type")?.startsWith("application/json")) throw new Error("Invalid request");
   const chunks: Uint8Array[] = [];
@@ -23,7 +23,7 @@ export async function limitedJson(request: Request): Promise<Record<string, unkn
     const { done, value } = await reader.read();
     if (done) break;
     length += value.length;
-    if (length > 8192) { await reader.cancel(); throw new Error("Request too large"); }
+    if (length > maxBytes) { await reader.cancel(); throw new Error("Request too large"); }
     chunks.push(value);
   }
   const parsed: unknown = JSON.parse(Buffer.concat(chunks).toString("utf8"));

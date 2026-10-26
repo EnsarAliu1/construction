@@ -1,500 +1,725 @@
 # ADORE TECH SOLUTIONS — CODEX IMPLEMENTATION PROMPT
 
-## WP-04: Clients Management — Full CRUD, Validation & Audit
+## WP-05: Construction Projects, Contracts & Financial Phases
 
 **Project:** Fitimi Construction Management System & Corporate Website  
-**Package:** WP-04  
+**Package:** WP-05  
 **Version:** 1.0  
 **Date:** 26.10.2026  
 **Developer:** Codex  
-**Technical Lead:** Adore Tech Solutions
-
-**Authorization:** Real local implementation, required dependencies, additive migrations, disposable MySQL database testing and local verification.
+**Technical Lead:** Adore Tech Solutions  
+**Authorization:** Local implementation, additive migrations, disposable MySQL testing and necessary defect corrections.
 
 ---
 
 ## 1. MISSION
 
-Implement a complete, usable Clients Management module within the existing authenticated Next.js application.
+Implement a fully working Projects, Contracts and Financial Phases module in the existing authenticated Next.js application.
 
-The module must support:
+This package must provide real database-backed workflows for:
 
-- Listing clients.
-- Creating clients.
-- Viewing client details.
-- Editing clients.
-- Searching and filtering.
-- Logical deletion with history preservation.
-- Server-side validation.
-- Authentication and authorization.
-- Audit trail.
-- Responsive desktop/mobile behavior.
-- Automated tests against disposable MySQL 8.4.
+1. Creating construction projects linked to clients.
+2. Listing, filtering and viewing projects.
+3. Editing project information and status.
+4. Managing a project's contract and financial phases.
+5. Creating and changing phase descriptions and values.
+6. Enforcing contract/phase value equality.
+7. Preventing phase values from falling below active allocations.
+8. Logically deleting eligible phases.
+9. Preserving audited version history.
+10. Preventing concurrent writes from corrupting business state.
 
-This is a real coding task.
+Implement real code and automated tests.
 
-Do not return only a plan.
+Do not stop at a plan.
 
-Do not implement construction projects, contracts, payments or expenses in this package.
+Do not implement payment registration, expense recording or receipt generation in this package.
 
-## 2. CURRENT PROJECT BASELINE
+## 2. ESTABLISHED PROJECT BASELINE
 
 Reported completed packages:
 
-- WP-01: Next.js bootstrap and UI foundation.
-- WP-02: MySQL/Drizzle schema foundation.
-- WP-02V: MySQL 8.4 migration verification.
-- WP-03: Authentication, authorization and account administration.
+- WP-01 — Next.js Bootstrap.
+- WP-02 — Database Schema.
+- WP-02V — MySQL Integrity Verification.
+- WP-03 — Authentication & Authorization.
+- WP-04 — Clients Management.
 
-Technology baseline:
+Existing technology:
 
 - Next.js 16.4.3.
 - React 19.3.1.
 - TypeScript 6.0.3.
-- Tailwind CSS 4.3.3.
 - Drizzle ORM 0.45.4.
 - Drizzle Kit 0.31.11.
 - mysql2 3.24.6.
 - MySQL 8.4.13.
-- Argon2id authentication.
-- Opaque server-side sessions.
+- Server-side sessions and authorization.
+- Audit events and entity version snapshots.
 
-WP-03 introduced:
+WP-04 reportedly introduced migration `0003_wp04_clients.sql` and transactional client operations.
 
-- Protected `/app` routes.
-- `requirePageUser`.
-- `requireOperationUser` / `requireSessionUser`.
-- Authentication audit infrastructure.
-- Database-backed sessions and rate limiting.
-- New migration `0002_wp03_authentication.sql`.
+Inspect actual repository files and Git state before changing code.
 
-Inspect the actual repository before coding.
+Preserve AGENTS.md, previous migrations and all existing modifications.
 
-The reported Git state may have changed. Do not assume any specific HEAD.
-
-Preserve existing user changes, including AGENTS.md and other uncommitted files.
+Do not assume the last reported commit is still HEAD.
 
 ## 3. SOURCE OF TRUTH
 
 Follow:
 
-1. Approved business decisions D-01 through D-14.
-2. Codex Master Project Prompt v1.1.
-3. Current Technical Specification.
-4. Approved UX decisions and Wireframes v2.1, when accessible.
-5. Approved Operational Clarity / Visual Foundation / UI Design System, when accessible.
-6. Existing repository conventions.
+- Codex Master Project Prompt v1.1.
+- Approved business decisions D-01 through D-14.
+- Technical Specification and relevant ADRs.
+- Approved UX-01 through UX-05.
+- UX Wireframes v2.1 Corrections.
+- Operational Clarity.
+- Visual Foundation and UI Design System.
+- Existing repository conventions.
 
-Do not falsely claim to have read unavailable design documents.
+Verify which source documents and image assets are actually accessible.
 
-If exact visual references are missing, continue using the established UI foundation and report visual alignment as pending.
+Do not falsely claim to have inspected unavailable documents.
 
-Do not copy financial values or client identities from screenshots.
+If visual references are unavailable, reuse the existing interface components and report the visual-alignment limitation.
 
-## 4. CLIENT DATA MODEL
+Financial rules always take priority over demonstration figures in screenshots.
 
-The system supports two kinds of clients:
+## 4. DATA MODEL
 
-**Individual**
+Reuse the existing tables:
 
-- Personal client.
-- Name.
-- Contact information.
-- Address.
+- `clients`
+- `projects`
+- `contracts`
+- `contract_phases`
+- `payments`
+- `payment_allocations`
+- `audit_events`
+- `entity_versions`
+- `users`
 
-**Business**
+Inspect their real field definitions, constraints and relationships.
 
-- Company/business client.
-- Name.
-- NUI where applicable.
-- Contact information.
-- Address.
+Do not create competing project or contract tables.
 
-Both may own multiple construction projects in future work packages.
+Use additive migrations only where necessary.
 
-Inspect the existing `clients` schema before implementing.
+The current approved MVP workflow assumes one current contract identity per project. Do not expand into multi-contract support without a business decision.
 
-Reuse its fields and relations.
+### Project fields
 
-Do not create a second clients table.
+Support the available approved project information:
 
-Do not introduce a separate company-management or CRM product.
+- Stable project ID.
+- Client relationship.
+- Project/site name.
+- Location/address information.
+- Start date.
+- End date, if applicable.
+- Status.
+- Created/updated timestamps.
+- Version and actor metadata where needed.
 
-### Required business rules
+Approved statuses:
 
-- A client has a stable unique database ID.
-- A client may exist without a construction project.
-- A client may have multiple projects in the future.
-- Business NUI is stored when provided or required by confirmed specifications.
-- Do not invent Kosovo-specific NUI validation rules.
-- Client deletion is logical, not physical.
-- Historical references must survive logical deletion.
-- Client modifications must be auditable.
+- Active.
+- Suspended.
+- Completed.
 
-Use appropriate database uniqueness rules where approved and justified.
+Use the established database enum/string representations.
 
-Do not impose global unique names: two different clients may legitimately have the same name.
+Do not create invented construction-progress percentages.
 
-Do not automatically merge records based on matching names or contact details.
+### Contract fields
 
-## 5. SCOPE — BACKEND
+- Stable contract ID.
+- Project relationship.
+- Contract value in EUR.
+- Version.
+- Relevant timestamps.
+- Historical snapshots.
 
-Implement actual server-side operations for:
+### Financial phase fields
 
-### Create Client
+- Stable phase ID.
+- Contract relationship.
+- Description/name.
+- Financial value in EUR.
+- Display order.
+- Version.
+- Logical deletion metadata.
+- Relevant timestamps and actor references.
 
-- Validate input.
-- Require an authenticated user.
-- Normalize safe text fields.
-- Save using Drizzle.
-- Record the corresponding audit event.
-- Return a safe result.
+Phases represent monetary components of a contract.
 
-### List Clients
+They do not represent physical percentage completion, workforce scheduling or construction progress.
 
-- Require authentication.
-- Return clients with pagination or bounded result sets.
-- Support search by relevant available fields.
-- Support filtering by client type.
-- Exclude logically deleted clients by default.
-- Avoid unbounded database reads.
+## 5. APPROVED BUSINESS INVARIANTS
 
-### Get Client
+### INV-01 — Contract equality
 
-- Require authentication.
-- Retrieve by stable ID.
-- Distinguish not found from unauthorized access appropriately.
-- Do not reveal private data through public endpoints.
+For every valid saved active contract state:
 
-### Update Client
+Contract total equals the sum of all active phase values.
 
-- Require authentication.
-- Validate inputs.
-- Preserve stable client identity.
-- Record old/new values safely.
-- Prevent lost updates using an appropriate optimistic concurrency mechanism.
+`contract_total = SUM(active_phase_values)`
 
-If version fields are not already present, evaluate whether a small additive migration is necessary.
+Logically deleted phases are excluded from this total.
 
-### Logical Delete Client
+The check is mandatory during initial creation and every contract/phase modification.
 
-- Require authentication.
-- Mark the client as logically deleted.
-- Record actor and timestamp.
-- Retain the database identity and history.
-- Prevent or safely handle deletion when active related projects exist.
+### INV-02 — Phase payment capacity
 
-For the final point, use the existing business relationships and conservative behavior. Do not silently cascade deletion to projects.
+For every active phase:
 
-Do not implement client restoration unless already approved or supported by an existing product decision.
+`SUM(active_payment_allocations) <= phase_value`
 
-## 6. AUDIT REQUIREMENTS
+Only allocations from active/non-cancelled payments count toward the active paid total.
 
-Every create, update and logical delete must produce the necessary audit record.
+### INV-03 — Allowed phase reduction
 
-For critical changes, persist the business modification and its audit event in the same database transaction.
+A phase value may be reduced only if:
+
+`new_phase_value >= active_allocated_total`
+
+A reduction exactly to the amount already paid is valid.
+
+### INV-04 — Logical deletion eligibility
+
+A phase may be logically deleted only when it has no active allocations.
+
+Its historical identity and previous references must remain.
+
+Do not physically delete historical phase rows.
+
+### INV-05 — Contract and phases as one business operation
+
+The contract and its phases must be changed together within one atomic transaction.
+
+Do not permit partial saving of a changed contract when the resulting active phase values do not equal the contract total.
+
+### INV-06 — Audited changes
+
+Contract and phase modifications require actor-attributed audit events and historical versions.
+
+Audit data must be committed atomically with business changes.
+
+## 6. PROJECT MANAGEMENT OPERATIONS
+
+Implement authenticated server-side operations for:
+
+### Create Project
+
+- Accept a valid existing active client.
+- Recheck the client's current archive status inside the transaction.
+- Coordinate with the same client locking/version rules used in WP-04.
+- Create project details and an initial contract/phase state in a consistent operation when specified by the form.
+- Produce appropriate audit history.
+- Reject invalid or archived client references.
+
+Do not modify client archive rules to accommodate invalid project creation.
+
+### List Projects
+
+- Authenticated reads.
+- Bounded pagination.
+- Search by relevant project/client information.
+- Status filtering.
+- Client filtering where useful.
+- No unbounded database queries.
+- Clear empty/loading/error states.
+
+### Project Details
+
+Display:
+
+- Project information.
+- Linked client.
+- Current status.
+- Contract value.
+- Active financial phases.
+- Current value for each phase.
+- Available active paid amount and remaining phase capacity, only when calculated from real records.
+- Relevant audited change history.
+
+Since payment registration is not yet implemented, it is acceptable for active paid totals to be zero in a fresh database.
+
+Do not fabricate payments.
+
+### Update Project
+
+Support approved editable project fields and status transitions.
+
+Use version-aware updates to prevent silent overwrite.
+
+Reject updates referring to archived clients or otherwise invalid relationships where relevant.
+
+Audit changes.
+
+### Project Deletion
+
+Do not introduce destructive project deletion.
+
+If an approved and clearly supported project soft-delete workflow already exists, preserve it.
+
+Otherwise leave project deletion outside WP-05 and report the limitation. Do not invent cascade semantics.
+
+## 7. CONTRACT AND PHASE WORKFLOW
+
+Implement a usable combined contract editor.
+
+The user must be able to:
+
+- View current contract value.
+- View all active phases.
+- Add a phase.
+- Edit a phase description.
+- Increase a phase value.
+- Decrease a phase value within approved limits.
+- Reorder phases where the existing data model permits.
+- Request logical deletion of an eligible phase.
+- Adjust the contract value and several phases in one editing session.
+- Save the entire consistent result together.
+
+Do not require saving each intermediate field change separately.
+
+### Combined save contract
+
+The server receives:
+
+- Project/contract identity.
+- Expected contract version.
+- Proposed total contract value.
+- Proposed active phase state.
+- Intended new phases.
+- Intended phase modifications.
+- Intended logical deletions.
+
+Treat this payload as an explicitly validated set of changes, not unrestricted database object assignment.
+
+Validate all identities, ownership and expected versions.
+
+Reject attempts to include phases belonging to another project.
+
+Reject duplicate phase identities in the submitted change set.
+
+Reject unknown, already deleted or otherwise ineligible phase updates.
+
+Calculate totals using exact monetary arithmetic.
+
+Never use JavaScript floating-point comparison as the final financial equality check.
+
+### Phase deletion and contract equality
+
+If a phase without active allocations is logically deleted, its value no longer contributes to the contract total.
+
+The same save operation must adjust the other active phases or the contract value so the equality still holds.
+
+Do not automatically change the contract value behind the user's back.
+
+If the final values do not match, reject the entire save and explain the mismatch.
+
+## 8. ATOMICITY AND CONCURRENCY
+
+This is a critical part of WP-05.
+
+Implement contract/phase changes using an InnoDB transaction.
+
+Use a consistent locking strategy suitable for future payment allocation services.
+
+Recommended approach:
+
+1. Authenticate the current user.
+2. Validate the submitted request shape.
+3. Start the database transaction.
+4. Lock the relevant project/contract aggregate in a deterministic order.
+5. Load and verify the expected version.
+6. Lock relevant phase rows consistently.
+7. Read/recalculate active payment allocations.
+8. Validate phase capacity and deletion eligibility.
+9. Validate the final contract/phase equality.
+10. Persist all changes.
+11. Append audit events and entity versions.
+12. Commit everything together.
+
+On any validation, audit or database failure, roll back the complete transaction.
+
+Be explicit about how this locking strategy will coordinate with the later payments module.
+
+The future payment service must acquire compatible locks before allocating capacity.
+
+Do not rely on a plain SUM query without sufficient serialization to prevent write skew.
+
+### Concurrent scenarios
+
+Verify:
+
+- Two users editing the same contract.
+- Two users changing the same phase.
+- Stale expected version.
+- Simultaneous client archiving and project creation.
+- Concurrent phase changes and relevant allocation writes using synthetic fixtures where appropriate.
+- Rollback after a failed audit insertion.
+
+The result must preserve the approved financial invariants.
+
+## 9. HISTORICAL DATA AND VERSIONING
+
+Use the existing audit/version infrastructure.
+
+Record:
+
+- Acting user.
+- Target entity.
+- Action type.
+- Relevant old and new values.
+- Timestamp.
+- Correlation/operation identifier.
+- Contract/phase version.
+
+Do not overwrite historical snapshots.
+
+Do not physically remove financial phase identities.
+
+When phase values change, previously issued receipt documents must remain unchanged.
+
+Do not implement receipt regeneration or payment correction here.
+
+Avoid storing authentication secrets or unrelated sensitive data in snapshots.
+
+If the existing snapshot allowlist requires additions for contract/phase fields, extend it safely and test against the database's historical-data constraints.
+
+## 10. VALIDATION
+
+Implement server-side validation for:
+
+- Project name.
+- Client reference.
+- Date values and permitted date relationships.
+- Approved status values.
+- Contract monetary amount.
+- Phase monetary values.
+- Required phase descriptions.
+- Phase ownership.
+- Unique submitted phase IDs.
+- Contract/phase equality.
+- Phase capacity.
+- Logical deletion eligibility.
+- Expected versions.
+- Bounded request sizes and field lengths.
+
+Use the actual schema bounds.
+
+For calendar dates, avoid unintended timezone conversion.
+
+Reject malformed IDs and values.
+
+Do not invent additional financial rules, such as automatically allocating contract value, adjusting phase amounts or allocating general expenses.
+
+### Error semantics
+
+Return safe and actionable business errors for:
+
+- Contract total mismatch.
+- Phase capacity exceeded.
+- Phase has active allocations.
+- Stale contract/phase version.
+- Invalid client/project/contract relationship.
+- Archived client.
+- Invalid dates or statuses.
+- Unauthorized access.
+- Database unavailable.
+
+Use established application error-handling conventions.
+
+## 11. USER INTERFACE
+
+Replace the current Projects placeholder with actual functioning screens.
+
+### Projects List
 
 Include:
 
-- Entity type.
-- Entity ID.
-- Action.
-- Acting user.
-- Timestamp.
-- Relevant previous/new values.
-- Correlation identifier where useful.
+- Project name.
+- Client name.
+- Status.
+- Relevant dates.
+- Contract value where available.
+- Search and filters.
+- Create Project action.
+- Responsive layout.
+- Clear empty/error states.
 
-Do not store raw session tokens, credentials or password hashes.
+### Create Project
 
-Avoid logging unnecessary sensitive client details in application logs.
+Include a working form for project details and a consistent initial contract/phase setup.
 
-Use existing audit tables and conventions.
+The user must not accidentally create an inconsistent contract.
 
-Do not create duplicate audit infrastructure.
+### Project Details
 
-## 7. CLIENT USER INTERFACE
+Include:
 
-Replace the existing Clients placeholder page with a functioning interface.
+- Project header and current status.
+- Client information with a working link to the client detail.
+- Start/end date and location.
+- Contract summary.
+- Financial phases table/list.
+- Edit project action.
+- Contract/phase editor access.
+- Relevant history.
 
-Implement:
+### Contract & Phase Editor
 
-### Clients List
+Include:
 
-- Clear page title.
-- Search input.
-- Client type filter.
-- Add Client action.
-- Responsive client list or table.
-- Loading state.
-- Empty state.
-- Error state.
-- Safe pagination or bounded listing.
+- Current contract value.
+- Editable phase descriptions and amounts.
+- Add phase.
+- Remove eligible phase.
+- Active paid amount displayed when backed by real data.
+- Total active phase values.
+- Difference between phase total and contract total.
+- Clear validation feedback.
+- One explicit Save action.
+- Concurrent-edit conflict feedback.
 
-### Create Client
+Do not persist intermediate invalid financial states.
 
-- Individual/business type selection.
-- Appropriate fields for the selected type.
-- Required-field validation.
-- Clear error messages.
-- Submit state.
-- Success feedback and navigation.
+Use only real database-backed information.
 
-### Client Details
+Do not use decorative but nonfunctional save/delete controls.
 
-- Client name and type.
-- Available contact information.
-- Address.
-- NUI where applicable.
-- Edit action.
-- Appropriate representation of related projects if not yet implemented.
+### Mobile UX
 
-Do not display fake project totals as real data.
+Use existing Operational Clarity tokens and UI components.
 
-### Edit Client
+Keep contract/phase editing usable at narrow viewport widths.
 
-- Prefilled current values.
-- Save/cancel behavior.
-- Server-side validation.
-- Safe handling of concurrent changes.
+Avoid horizontal overflow that prevents access to amount fields or Save controls.
 
-### Logical Delete
+Use accessible labels and focus states.
 
-- Deliberate confirmation.
-- Appropriate authorization.
-- Server-side operation.
-- Audit record.
-- Clear success/error feedback.
+Do not redesign unrelated modules.
 
-Do not render nonfunctional buttons as though they perform an operation.
+## 12. AUTHORIZATION AND SECURITY
 
-## 8. UX/UI REQUIREMENTS
+Use WP-03 server-side authentication and authorization helpers.
 
-Maintain the existing Operational Clarity foundation.
+Each page, Server Action and API must enforce the appropriate guard independently.
 
-Use reusable components and tokens already present in the project.
+Do not trust only the authenticated layout.
 
-Do not redesign the website or unrelated app sections.
+Use server-validated input and parameterized Drizzle queries.
 
-Ensure:
+Do not accept actor IDs, deleted timestamps or other protected fields from arbitrary client inputs.
 
-- Desktop usability.
-- Mobile usability.
-- Accessible labels.
-- Visible focus states.
-- Keyboard operation.
-- Clear errors.
-- Useful empty states.
-- Long names and addresses do not break layouts.
-- Search and filters remain usable on narrow screens.
+Preserve existing Origin/Host validation for mutations.
 
-If approved wireframes are accessible, match their established behavior and styling.
+Avoid leaking SQL errors or internal identifiers to unauthorized users.
 
-If not, report the limitation instead of inventing design approvals.
+Maintain equal operating permissions among client users.
 
-## 9. VALIDATION AND SECURITY
+Do not introduce new roles.
 
-All mutations must validate input on the server.
+## 13. DATABASE CHANGES
 
-Client-side validation may improve usability, but is not sufficient for data integrity.
+Inspect the existing schema first.
 
-Use bounded text lengths and appropriate normalization.
+Reuse established tables and relationships.
 
-Prevent:
+If additional fields, indexes or safe snapshot rules are necessary:
 
-- Unauthorized data access.
-- Anonymous client creation.
-- Anonymous updates and deletion.
-- Unsafe mass assignment.
-- Injection vulnerabilities.
-- Invalid client types.
-- Unexpected field overwrites.
-- Lost updates due to concurrent edits.
+- Create an additive migration.
+- Do not rewrite migrations 0000–0003.
+- Preserve existing migration hashes.
+- Use the project's established migration workflow.
+- Execute against disposable MySQL 8.4.
+- Re-run migrations to verify expected repeat behavior.
+- Confirm all 13 original triggers remain intact.
 
-Use parameterized Drizzle queries.
+Pay particular attention to the existing database history guards if contract/phase snapshots are expanded.
 
-Do not accept protected server fields such as record ID, created_by or deleted_at directly from ordinary form input.
+No production database is authorized.
 
-Maintain CSRF/origin protection using the existing project's established safe patterns.
+## 14. AUTOMATED TESTING
 
-Business users have equal approved operational permissions.
+Add unit, database integration and relevant HTTP tests.
 
-Do not add new business roles.
-
-## 10. DATABASE AND MIGRATIONS
-
-Reuse the existing `clients` table.
-
-Only introduce an additive versioned migration when necessary.
-
-Do not rewrite migrations 0000, 0001 or 0002.
-
-Preserve the previously verified migration hashes and trigger behavior.
-
-If an additive migration is required:
-
-- Generate it through the project's established migration workflow.
-- Test it against fresh disposable MySQL 8.4.
-- Verify old migrations remain intact.
-- Confirm the resulting schema matches declarations.
-
-Do not connect to production or real client databases.
-
-Do not use MariaDB 10.4 as the authoritative verification engine.
-
-## 11. TESTING
-
-Implement meaningful automated tests.
-
-### Database / Integration
+### Projects
 
 Test:
 
-- Create individual client.
-- Create business client.
-- Optional NUI.
-- Valid and invalid references where relevant.
-- Successful updates.
-- Failed validation.
-- Optimistic concurrency conflict.
-- Logical deletion.
-- Historical retention.
-- Audit entries.
-- Atomic rollback when audit persistence fails.
-- Active projects or historical-reference protection as applicable.
+- Create a project with an active client.
+- Reject archived client.
+- Correctly link project to client.
+- Update details and status.
+- Reject invalid status.
+- Handle date validation.
+- Search, filter and pagination.
+- Concurrent edits.
+- Client archiving/project creation race.
 
-### Authorization
+### Contracts
+
+Test:
+
+- Create a consistent contract.
+- Reject unequal contract/phase totals.
+- Increase phase value while updating contract coherently.
+- Decrease phase value within allowed capacity.
+- Decrease phase value exactly to active paid amount.
+- Reject decrease below active allocated amount.
+- Reject phase belonging to another contract.
+- Reject stale version.
+- Roll back contract change when phase/audit persistence fails.
+
+### Phases
+
+Test:
+
+- Add phase and preserve equality.
+- Edit phase description.
+- Reorder phase.
+- Logically delete phase without active allocations.
+- Reject deletion with active allocations.
+- Preserve historical references.
+- Exclude logically deleted phases from active contract total.
+- Concurrent writes cannot break the aggregate.
+
+For paid-allocation scenarios, construct synthetic fixture records directly in the disposable test environment without implementing real payment workflow.
+
+Respect foreign keys and existing payment status conventions.
+
+### Security
 
 Test:
 
 - Anonymous access denied.
-- Authenticated access permitted.
-- Anonymous create/update/delete rejected.
-- Disabled user rejected.
-- Existing session rules preserved.
-
-### UI / HTTP
-
-Test:
-
-- Clients route protected.
-- List renders appropriate state.
-- Create form input validation.
-- Edit behavior.
-- Delete confirmation behavior.
-- Search/filter behavior.
-- Relevant loading and error states.
-
-Use browser-based interaction testing when available.
-
-If a browser is unavailable, do not report browser verification as PASS.
-
-HTTP tests are useful but do not substitute for full visual/interaction verification.
+- Active user access permitted.
+- Disabled account rejected.
+- Invalid relationships rejected.
+- Mutations are server-authorized.
+- CSRF/origin checks enforced.
+- Errors do not expose private data.
 
 ### Regression
 
-Verify the following areas remain functional:
+Test:
 
-- Public website SQ/EN.
-- Authentication.
-- Logout.
-- Session protection.
-- Existing database migrations.
-- Existing 13 triggers.
+- WP-03 authentication.
+- WP-04 Clients CRUD.
+- Existing MySQL migration integrity.
+- Existing receipt/audit triggers.
+- Public SQ/EN website.
 - App navigation.
 - TypeScript.
 - ESLint.
-- Build.
+- Production build.
 
-## 12. OUT OF SCOPE
+Do not weaken earlier tests to get a passing result.
+
+Browser-based visual and interaction tests are required when a browser is accessible.
+
+If no browser is available, explicitly mark visual/hydration acceptance NOT VERIFIED.
+
+## 15. OUT OF SCOPE
 
 Do not implement:
 
-- Projects CRUD.
-- Contract/phase management.
-- Expenses.
-- Payments.
-- Payment allocations.
-- Receipt generation.
-- Company financial reports.
-- PDF/Excel exports.
-- Account administration changes unrelated to Clients.
-- New business roles.
+- Actual payment registration.
+- Payment allocation UI or service.
+- Payment confirmation.
+- Expense entry.
+- Receipt/PDF generation.
+- Financial reporting services.
+- Individual project financial report exports.
+- Physical project progress tracking.
+- Inventory.
+- Labor scheduling.
+- Invoicing.
+- Online payments.
+- Real client data.
 - Production deployment.
-- Hosting purchases.
-- Real client data imports.
+- Hosting configuration.
 
-Do not add CRM marketing, messaging, lead tracking or unnecessary features.
+Future payment transactions must use the same locking strategy established for phase capacity, but must not be built in this package.
 
-## 13. VERIFICATION COMMANDS
+## 16. ACCEPTANCE CRITERIA
 
-Inspect the real `package.json` first.
+**WP05-AC01:** Uses existing project, contract and phase schema.
 
-Execute applicable commands including:
+**WP05-AC02:** Authenticated users can create projects linked to active clients.
+
+**WP05-AC03:** Archived clients cannot receive new projects.
+
+**WP05-AC04:** Project listing, search and filtering work.
+
+**WP05-AC05:** Project details display real records.
+
+**WP05-AC06:** Project edits and status changes work with audit history.
+
+**WP05-AC07:** Contract value equals the sum of active phase values after every successful save.
+
+**WP05-AC08:** Contract and phases are persisted atomically.
+
+**WP05-AC09:** Multiple phase edits can be saved together.
+
+**WP05-AC10:** Reducing a phase below active paid allocations is rejected.
+
+**WP05-AC11:** Reducing a phase to exactly its active paid amount is accepted when the contract remains consistent.
+
+**WP05-AC12:** A phase with active allocations cannot be logically deleted.
+
+**WP05-AC13:** An eligible phase can be logically deleted without losing history.
+
+**WP05-AC14:** Stale/concurrent updates do not silently overwrite data or break invariants.
+
+**WP05-AC15:** Contract/phase modifications generate atomic audited history.
+
+**WP05-AC16:** Authentication and server-side authorization are enforced.
+
+**WP05-AC17:** Mobile/desktop interface follows existing UI foundation.
+
+**WP05-AC18:** Real disposable MySQL integration tests pass.
+
+**WP05-AC19:** Previous migrations, triggers and module tests remain valid.
+
+**WP05-AC20:** TypeScript, lint, build and relevant route tests pass.
+
+**WP05-AC21:** No payment/expense/receipt logic outside scope is implemented.
+
+**WP05-AC22:** No real data or production infrastructure is accessed.
+
+Classify every criterion as PASS, FAIL or NOT VERIFIED.
+
+Do not substitute static checks for database-level evidence.
+
+## 17. VERIFICATION COMMANDS
+
+Inspect the actual package scripts before execution.
+
+Execute applicable commands such as:
 
 - `npm.cmd test`
+- `npm.cmd run db:check`
 - `npm.cmd run test:db`
 - `npm.cmd run typecheck`
 - `npm.cmd run lint`
 - `npm.cmd run build`
 - `npm.cmd run check:routes`
 
-Also execute new client-specific tests and any applicable database migration checks.
+Add focused project/contract tests as appropriate.
 
-Verify tests against disposable MySQL 8.4.
+Execute migration and integration tests against disposable MySQL 8.4.
 
-Record exact executed commands and their results.
+Record exact commands, outcomes and test counts.
 
-Do not weaken previous tests to achieve a passing build.
+Do not claim browser interaction was verified without browser execution.
 
-Fix observed WP-04 defects within scope before completing the report.
-
-## 14. ACCEPTANCE CRITERIA
-
-**WP04-AC01:** Clients module uses the existing Drizzle/MySQL schema.
-
-**WP04-AC02:** Authenticated users can create individual clients.
-
-**WP04-AC03:** Authenticated users can create business clients.
-
-**WP04-AC04:** Required fields and client types are validated server-side.
-
-**WP04-AC05:** Clients list loads from the database.
-
-**WP04-AC06:** Search and type filtering work correctly.
-
-**WP04-AC07:** Client details load by stable ID.
-
-**WP04-AC08:** Existing client information can be edited.
-
-**WP04-AC09:** Concurrent updates cannot silently overwrite each other.
-
-**WP04-AC10:** Logical deletion preserves client identity and history.
-
-**WP04-AC11:** Existing related project references are not destroyed.
-
-**WP04-AC12:** Mutations produce appropriate audit records.
-
-**WP04-AC13:** Business changes and audit records are committed atomically.
-
-**WP04-AC14:** Unauthenticated access and mutations are denied.
-
-**WP04-AC15:** Disabled sessions cannot access the module.
-
-**WP04-AC16:** UI uses the existing shared design foundation.
-
-**WP04-AC17:** Desktop/mobile layout and accessibility are verified where tooling permits.
-
-**WP04-AC18:** MySQL integration tests pass.
-
-**WP04-AC19:** TypeScript, lint, build and relevant regressions pass.
-
-**WP04-AC20:** No real client data or production infrastructure is accessed.
-
-Classify every criterion as PASS, FAIL or NOT VERIFIED.
-
-Provide evidence.
-
-## 15. REQUIRED DELIVERY REPORT
+## 18. DELIVERY REPORT
 
 Return:
 
@@ -502,71 +727,74 @@ Return:
 
 - Branch.
 - HEAD.
-- Initial working-tree state.
-- Existing changes preserved.
+- Existing modifications.
+- Source documents actually accessible.
 
-### B. Implemented Functionality
+### B. Implementation Summary
 
-- Actual user-facing features.
-- Server-side operations.
-- Validation rules.
-- Audit behavior.
-- Concurrency handling.
+- Project operations.
+- Contract/phase editor.
+- Validation.
+- Authorization.
+- History.
+- Concurrency.
 
 ### C. Database
 
-- Existing structures reused.
-- New migrations, if any.
-- Migration execution evidence.
+- Reused tables.
+- New migrations.
+- Migration results.
+- Locking strategy.
+- Cross-row invariant handling.
 
-### D. Created/Modified Files
+### D. Files Changed
 
-- Exact paths and purposes.
+- Exact paths and purpose.
 
-### E. Testing
+### E. Tests
 
 - Commands executed.
-- Results.
-- Test counts.
+- Unit/integration/HTTP outcomes.
 - Browser verification status.
 
-### F. Acceptance Checklist
+### F. Acceptance
 
-- WP04-AC01 through WP04-AC20.
+- WP05-AC01 through WP05-AC22.
 
 ### G. Security Review
 
-- Server-side authorization.
-- Input validation.
-- Session checks.
-- Audit integrity.
+- Session and operation guards.
+- Transaction consistency.
+- Audit behavior.
+- Sensitive data/error handling.
 
-### H. Known Issues
+### H. Risks
 
-- Defects.
-- Missing UX resources.
-- Deferred verification.
+- Known defects.
+- Missing visual references.
+- Remaining verification gaps.
+- Dependencies for future payment allocation services.
 
 ### I. Scope Confirmation
 
-- No projects/contracts/payments implemented.
+- No actual payment/expense/receipt implementation.
 - No real client data.
 - No production deployment.
 
-### J. Next Work Package
+### J. Next Package
 
-Assess readiness for WP-05 — Construction Projects, Contracts & Phases.
+Assess readiness for WP-06 — Categories, Persons/Suppliers & Vehicles.
 
-Do not implement WP-05 automatically.
+Do not implement WP-06 automatically.
 
-## 16. EXECUTION
+## 19. EXECUTION
 
-Proceed with real WP-04 implementation in the local project.
+Proceed with real WP-05 local implementation.
 
-Inspect existing files, implement the complete Clients module, verify behavior against disposable MySQL 8.4, run regression checks and return the technical report.
+Inspect the existing code, reuse established patterns, implement projects/contracts/phases, enforce atomic financial invariants, run tests in disposable MySQL, fix confirmed defects and return the full technical report.
 
 Do not stop at a plan.
 
 Do not automatically commit or push unless separately authorized.
 
-**END OF WP-04**
+**END OF WP-05**

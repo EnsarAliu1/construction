@@ -29,6 +29,13 @@
       "when": 1793041048674,
       "tag": "0003_wp04_clients",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1793043502427,
+      "tag": "0004_wp05_project_aggregates",
+      "breakpoints": true
     }
   ]
 }

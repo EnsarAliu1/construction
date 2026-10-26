@@ -52,6 +52,29 @@
 .client-details-grid dt, .client-snapshot dt { font-size: .75rem; color: var(--muted); }
 .client-details-grid dd, .client-snapshot dd { margin: 5px 0 0; overflow-wrap: anywhere; font-size: .88rem; }
 .client-reference { font-family: var(--font-mono, monospace); font-size: .75rem !important; }
+.project-section { margin-block: 24px; }
+.project-section .section-title { flex-wrap: wrap; }
+.project-contract-fields { margin-block: 24px; }
+.project-contract-fields > .form-field { max-width: 380px; margin-top: 24px; }
+.project-total-summary { padding: 18px; margin-block: 20px; background: var(--subtle); border: 1px solid var(--border); overflow-wrap: anywhere; }
+.project-phase-editor, .project-phase-read { padding: 24px; border: 1px solid var(--border); margin-bottom: 20px; min-width: 0; overflow-wrap: anywhere; }
+.project-phase-editor .section-title { flex-wrap: wrap; }
+.project-phase-editor textarea { resize: vertical; }
+.project-phase-editor h3, .project-phase-read h3 { font-size: 1rem; }
+.project-phase-description { margin-top: 12px; white-space: pre-wrap; }
+.project-phase-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.project-phase-cards .client-details-grid { grid-template-columns: minmax(0, 1fr); }
+.project-small-button { min-height: 44px; padding: 8px 12px; font-size: .8rem; margin-top: 8px; }
+.project-client-search { display: flex; flex-wrap: wrap; gap: 12px; }
+.project-client-search .input { flex: 1; min-width: 120px; }
+.project-client-filter { margin-bottom: 20px; }
+.project-client-filter summary { cursor: pointer; min-height: 44px; }
+.projects-table { min-width: 750px; table-layout: fixed; }
+.projects-table th:first-child { width: 30%; }
+.projects-table td { padding: 18px 24px; border-bottom: 1px solid var(--border); vertical-align: top; overflow-wrap: anywhere; }
+.projects-table td > span { display: block; }
+@media (max-width: 1000px) { .project-phase-cards { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px) { .project-phase-editor, .project-phase-read { padding: 16px; } }
 .workspace-content .page-heading h1, .workspace-content .page-heading .description, .client-archive p { overflow-wrap: anywhere; }
 .client-project-list { padding: 0; list-style: none; }
 .client-project-list li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; }

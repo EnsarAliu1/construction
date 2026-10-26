@@ -9,6 +9,7 @@ export const historyFields = [
   "resultId", "resultType",
   "nui", "phone", "addressLine1", "addressLine2", "city", "postalCode", "country",
   "createdAt", "updatedAt", "createdBy", "updatedBy", "deletedBy",
+  "activatedAt",
 ] as const;
 
 type Scalar = string | number | boolean | null;

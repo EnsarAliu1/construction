@@ -1,12 +1,14 @@
 # Construction website & management workspace
 
-WP-01 provides the local Next.js interface foundation; WP-02/WP-02V provide the verified MySQL foundation. WP-03 protects the workspace with email/password authentication, revocable server-side sessions and an Adore operator CLI. WP-04 adds authenticated Clients management. The public website has five pages in Albanian and English; other business-module screens remain previews.
+WP-01 provides the local Next.js interface foundation; WP-02/WP-02V provide the verified MySQL foundation. WP-03 protects the workspace with email/password authentication, revocable server-side sessions and an Adore operator CLI. WP-04 adds Clients management; WP-05 adds Projects, Contracts and Financial Phases. The public website has five pages in Albanian and English; other business modules remain previews.
+
+**Latest implementation — WP-05:** `/app/projects` supports real projects linked to active clients, searching/filtering/pagination, audited project edits and a combined contract/phase editor. Exact cent arithmetic, compatible aggregate locks and version checks enforce consistent totals and allocation capacity. See the [WP-05 technical report](docs/WP-05-report.md). All 124 test results passed locally against MySQL 8.4.13; visual/hydration verification remains open because Browser is unavailable.
 
 **WP-04 implementation:** `/app/clients` now supports individual/business creation, search, filtering, pagination, details, edit and confirmed logical archiving. Mutations use parameterized Drizzle queries, version checks and atomic actor-attributed audit/version history. See the [WP-04 technical report](docs/WP-04-report.md). Browser visual and interactive verification remains outstanding because no browser is connected.
 
 **WP-03 implementation:** `/app` now requires an active authenticated account. There is no public registration or client account-administration API. See the [WP-03 technical report](docs/WP-03-report.md) and the authentication setup below. Production deployment is outside this package; production prerequisites remain documented.
 
-**Latest verification — WP-02V, 26 October 2026:** both migrations and all 13 triggers were executed successfully on an isolated official MySQL 8.4.13 Docker instance. The expanded integration suite passed 25 test results with no skips; 14 static tests and application regression checks also passed. See the [WP-02V evidence report](docs/WP-02V-report.md). Earlier WP-02 records below describe the historical unverified state, superseded by this run. The disposable container and temporary credentials were removed after verification.
+**Historical verification — WP-02V, 26 October 2026:** both initial migrations and all 13 triggers were executed successfully on an isolated official MySQL 8.4.13 Docker instance. That integration suite passed 25 test results with no skips; 14 static tests and application regression checks also passed. See the [WP-02V evidence report](docs/WP-02V-report.md). Current WP-05 evidence supersedes these earlier counts; old records are retained for provenance.
 
 The workspace uses server-side authorization on each private page and operation. A `noindex` directive remains for previews; authorization is enforced independently of indexing or navigation visibility.
 
@@ -47,6 +49,8 @@ This smoke check verifies public HTTP responses, document languages, headings, a
 - `/app/{clients|projects|payments|expenses|receipts|reports|categories|persons|vehicles|accounts}`: workspace sections.
 - `/app/clients/new`, `/app/clients/[id]`, `/app/clients/[id]/edit`: authenticated Clients workflows; archived details remain readable.
 - `/api/clients` (GET/POST), `/api/clients/[id]` (GET/PUT/DELETE): authenticated, uncached Clients operations. DELETE performs logical archiving only.
+- `/app/projects/new`, `/app/projects/[id]`, `/app/projects/[id]/edit`, `/app/projects/[id]/contract`: guarded project/contract workflows.
+- `/api/projects` (GET/POST), `/api/projects/[id]` (GET/PUT), `/api/projects/[id]/contract` (PUT), `/api/projects/clients` (GET): guarded project/aggregate operations and bounded active-client lookup.
 - `/login`: login screen; authenticated users are redirected to a safe private path.
 - `/api/auth/login`, `/api/auth/logout`: origin-validated authentication POST endpoints.
 - `/api/auth/session`: safe, uncached identity information; anonymous requests get 401, database failures get 503.
@@ -56,7 +60,7 @@ App Router route groups separate entry, website, authentication and workspace la
 
 The typed dictionaries in `src/i18n/dictionaries.ts` drive both languages through shared page components. The language switcher preserves the current page. URLs use the same section slugs in both languages.
 
-Routing composes feature screens; shared components do not import feature business logic. The server-only persistence foundation is in `src/server/db`. Its connection is lazy and explicitly closed, so importing or building pages does not access a database. The Clients service is in `src/features/clients/service.ts`; authentication remains in `src/server/auth`. Other business services await their authorized packages.
+Routing composes feature screens; shared components do not import feature business logic. Persistence is in `src/server/db`, with lazy, explicitly closed connections. Importing/building pages does not connect to MySQL. Domain services are in `src/features/clients/service.ts` and `src/features/projects/service.ts`; authentication remains in `src/server/auth`. Other services await their authorized packages.
 
 ## Files
 
@@ -106,9 +110,9 @@ Desktop workspace navigation uses a sidebar. Mobile navigation uses a native but
 
 ## Scope and security
 
-- Authentication, authorization and Clients management access real local persistence. Other business modules remain previews.
+- Authentication, Clients, Projects, Contracts and Financial Phases access real local persistence. Other business modules remain previews.
 - No real client information, financial values or simulated production records.
-- Clients save and logical archive actions are operational. Payment confirmation, receipt and export actions remain unavailable.
+- Clients save/archive, project save and combined contract/phase save/removal actions are operational. Payment confirmation, receipt and export actions remain unavailable.
 - Contact controls are disabled, labeled as unavailable and have no submission service.
 - Company content, project descriptions, contact information and photos await approval.
 - Income refers to received payments; expenses refer to outgoing payments; currency is EUR.
@@ -124,7 +128,7 @@ Setup follows the official [Next.js installation guidance](https://nextjs.org/do
 
 ## Next package
 
-WP-05 — Construction Projects, Contracts & Phases can build on authenticated Clients management after separate authorization. Project mutations must lock/recheck the referenced client, reject archived parents and preserve financial/domain invariants. Browser QA, missing approved UX resources and production prerequisites remain open; no WP-05 implementation or deployment is included.
+WP-06 — Categories, Persons/Suppliers & Vehicles can proceed after separate authorization. Browser QA, missing approved visual references and production prerequisites remain open. No WP-06 implementation or deployment is included.
 
 ## WP-01 verification record — 26 October 2026
 
