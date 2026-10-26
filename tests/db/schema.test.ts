@@ -11,6 +11,7 @@ const guardsSql = readFileSync("drizzle/0001_wp02_history_guards.sql", "utf8");
 const authSql = readFileSync("drizzle/0002_wp03_authentication.sql", "utf8");
 const clientsSql = readFileSync("drizzle/0003_wp04_clients.sql", "utf8");
 const projectsSql = readFileSync("drizzle/0004_wp05_project_aggregates.sql", "utf8");
+const referencesSql = readFileSync("drizzle/0005_wp06_reference_lifecycle.sql", "utf8");
 const required = ["users", "clients", "projects", "contracts", "contract_phases", "payments", "payment_allocations", "expenses", "expense_categories", "persons", "vehicles", "payment_receipts", "receipt_versions", "receipt_counters", "audit_events", "entity_versions", "operation_requests"];
 
 test("all required models are present, keyed and represented in the initial migration", () => {
@@ -35,7 +36,7 @@ test("all foreign keys reference a primary/unique key and restrict update/delete
       assert.equal(columns[i].getSQLType(), foreignColumns[i].getSQLType());
       assert.ok(foreignColumns[i].primary || foreignColumns[i].isUnique);
     }
-    assert.match(initialSql + authSql + clientsSql + projectsSql, new RegExp("CONSTRAINT `" + key.getName() + "` FOREIGN KEY"));
+    assert.match(initialSql + authSql + clientsSql + projectsSql + referencesSql, new RegExp("CONSTRAINT `" + key.getName() + "` FOREIGN KEY"));
   }
   assert.doesNotMatch(initialSql, /ON (?:DELETE|UPDATE) (?:CASCADE|SET NULL)/i);
 });
@@ -85,9 +86,9 @@ test("transaction dates and UTC event timestamps use distinct calendar/time type
 
 test("migrations are loadable, ordered, named and include non-destructive history guards", () => {
   const migrations = readMigrationFiles({ migrationsFolder: "drizzle" });
-  assert.equal(migrations.length, 5);
+  assert.equal(migrations.length, 6);
   assert.ok(migrations.every((migration, index) => index === 0 || migration.folderMillis > migrations[index - 1].folderMillis));
-  assert.deepEqual(migrations.slice(0, 4).map(migration => migration.hash), ["5f972707b506644f976f71bd139f74c72f9e269bfeaba63ff3ca7165572ef16c", "21a7d78e4846ea6b53224593eca961dc92edd7bc7d48a42db8b14ed1c1ce9205", "023ff3b046a78f33ad4c7fa799804be11254f86a46f31847279d952cceb8eb9a", "a2c5cdad7751945aa77a8eef88b94efec28eab9857c63763e0e40dc677d15797"]);
+  assert.deepEqual(migrations.slice(0, 5).map(migration => migration.hash), ["5f972707b506644f976f71bd139f74c72f9e269bfeaba63ff3ca7165572ef16c", "21a7d78e4846ea6b53224593eca961dc92edd7bc7d48a42db8b14ed1c1ce9205", "023ff3b046a78f33ad4c7fa799804be11254f86a46f31847279d952cceb8eb9a", "a2c5cdad7751945aa77a8eef88b94efec28eab9857c63763e0e40dc677d15797", "ad18f5a53f4e45790395d2e6db18972658d53f9fee92a33efac2f60bbccef8dc"]);
   assert.ok(migrations.every(migration => migration.sql.length && migration.hash.length === 64));
   assert.equal((guardsSql.match(/CREATE TRIGGER/g) ?? []).length, 13);
   assert.match(guardsSql, /receipt_versions_no_update/);

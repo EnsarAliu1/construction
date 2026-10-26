@@ -1,8 +1,10 @@
 # Construction website & management workspace
 
-WP-01 provides the local Next.js interface foundation; WP-02/WP-02V provide the verified MySQL foundation. WP-03 protects the workspace with email/password authentication, revocable server-side sessions and an Adore operator CLI. WP-04 adds Clients management; WP-05 adds Projects, Contracts and Financial Phases. The public website has five pages in Albanian and English; other business modules remain previews.
+WP-01 provides the local Next.js interface foundation; WP-02/WP-02V provide the verified MySQL foundation. WP-03 protects the workspace with email/password authentication, revocable sessions and an Adore operator CLI. WP-04 adds Clients; WP-05 adds Projects, Contracts and Financial Phases; WP-06 adds Expense Categories, Persons/Suppliers and Vehicles. The public website has five pages in Albanian and English; expense/payment entry and other later modules remain previews.
 
-**Latest implementation — WP-05:** `/app/projects` supports real projects linked to active clients, searching/filtering/pagination, audited project edits and a combined contract/phase editor. Exact cent arithmetic, compatible aggregate locks and version checks enforce consistent totals and allocation capacity. See the [WP-05 technical report](docs/WP-05-report.md). All 124 test results passed locally against MySQL 8.4.13; visual/hydration verification remains open because Browser is unavailable.
+**Latest implementation — WP-06:** `/app/categories`, `/app/persons` and `/app/vehicles` now provide real authenticated reference-data workflows, bounded active selectors, explicit deactivation/reactivation and atomic versioned audit history. See the [WP-06 report](docs/WP-06-report.md). Browser appearance and interaction remain unverified because no browser is connected. Expense transactions are not implemented.
+
+**WP-05 implementation:** `/app/projects` supports real projects linked to active clients, searching/filtering/pagination, audited project edits and a combined contract/phase editor. Exact cent arithmetic, compatible aggregate locks and version checks enforce consistent totals and allocation capacity. See the [WP-05 technical report](docs/WP-05-report.md). Its 124 test results passed locally against MySQL 8.4.13; visual/hydration verification remains open because Browser is unavailable.
 
 **WP-04 implementation:** `/app/clients` now supports individual/business creation, search, filtering, pagination, details, edit and confirmed logical archiving. Mutations use parameterized Drizzle queries, version checks and atomic actor-attributed audit/version history. See the [WP-04 technical report](docs/WP-04-report.md). Browser visual and interactive verification remains outstanding because no browser is connected.
 
@@ -51,6 +53,8 @@ This smoke check verifies public HTTP responses, document languages, headings, a
 - `/api/clients` (GET/POST), `/api/clients/[id]` (GET/PUT/DELETE): authenticated, uncached Clients operations. DELETE performs logical archiving only.
 - `/app/projects/new`, `/app/projects/[id]`, `/app/projects/[id]/edit`, `/app/projects/[id]/contract`: guarded project/contract workflows.
 - `/api/projects` (GET/POST), `/api/projects/[id]` (GET/PUT), `/api/projects/[id]/contract` (PUT), `/api/projects/clients` (GET): guarded project/aggregate operations and bounded active-client lookup.
+- `/app/{categories|persons|vehicles}` and their `/new`, `/[id]`, `/[id]/edit` routes: authenticated reference-data workflows using the guarded section routes.
+- `/api/references/{categories|persons|vehicles}` (GET/POST), `/[id]` (GET/PUT), `/[id]/lifecycle` (POST), `/active` (GET): reference-data operations; no physical delete endpoint.
 - `/login`: login screen; authenticated users are redirected to a safe private path.
 - `/api/auth/login`, `/api/auth/logout`: origin-validated authentication POST endpoints.
 - `/api/auth/session`: safe, uncached identity information; anonymous requests get 401, database failures get 503.
@@ -60,7 +64,7 @@ App Router route groups separate entry, website, authentication and workspace la
 
 The typed dictionaries in `src/i18n/dictionaries.ts` drive both languages through shared page components. The language switcher preserves the current page. URLs use the same section slugs in both languages.
 
-Routing composes feature screens; shared components do not import feature business logic. Persistence is in `src/server/db`, with lazy, explicitly closed connections. Importing/building pages does not connect to MySQL. Domain services are in `src/features/clients/service.ts` and `src/features/projects/service.ts`; authentication remains in `src/server/auth`. Other services await their authorized packages.
+Routing composes feature screens; shared components do not import feature business logic. Persistence is in `src/server/db`, with lazy, explicitly closed connections. Importing/building pages does not connect to MySQL. Domain services are in `src/features/clients/service.ts`, `src/features/projects/service.ts` and `src/features/references/service.ts`; authentication remains in `src/server/auth`. Other services await their authorized packages.
 
 ## Files
 
@@ -110,7 +114,7 @@ Desktop workspace navigation uses a sidebar. Mobile navigation uses a native but
 
 ## Scope and security
 
-- Authentication, Clients, Projects, Contracts and Financial Phases access real local persistence. Other business modules remain previews.
+- Authentication, Clients, Projects, Contracts, Financial Phases and the three reference-data modules access real local persistence. Expense/payment entry remains unavailable.
 - No real client information, financial values or simulated production records.
 - Clients save/archive, project save and combined contract/phase save/removal actions are operational. Payment confirmation, receipt and export actions remain unavailable.
 - Contact controls are disabled, labeled as unavailable and have no submission service.
@@ -128,7 +132,7 @@ Setup follows the official [Next.js installation guidance](https://nextjs.org/do
 
 ## Next package
 
-WP-06 — Categories, Persons/Suppliers & Vehicles can proceed after separate authorization. Browser QA, missing approved visual references and production prerequisites remain open. No WP-06 implementation or deployment is included.
+WP-07 — Expense Transactions can proceed after separate authorization and must use the reference locking protocol below. Browser QA, missing approved visual references and production prerequisites remain open. No WP-07 implementation or deployment is included.
 
 ## WP-01 verification record — 26 October 2026
 

@@ -36,6 +36,13 @@
       "when": 1793043502427,
       "tag": "0004_wp05_project_aggregates",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1793047313547,
+      "tag": "0005_wp06_reference_lifecycle",
+      "breakpoints": true
     }
   ]
 }
