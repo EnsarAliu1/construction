@@ -1,0 +1,21 @@
+/* Provisional neutral foundation. Approved brand/design sources were unavailable. */
+@theme {
+  --font-sans: Arial, Helvetica, sans-serif;
+  --color-canvas: #f6f7f5;
+}
+
+:root {
+  --canvas: #f6f7f5;
+  --surface: #ffffff;
+  --ink: #202a2d;
+  --ink-hover: #374447;
+  --muted: #596568;
+  --border: #dce1df;
+  --subtle: #f2f4f2;
+  --selected: #e9eeeb;
+  --focus: #175c88;
+  --notice: #fbf6e9;
+  --notice-border: #e6dcc0;
+  --notice-ink: #68531e;
+  --radius: 6px;
+}

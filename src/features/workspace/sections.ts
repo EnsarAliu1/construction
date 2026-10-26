@@ -1,0 +1,19 @@
+export const sections = {
+  clients: { title: "Clients", description: "A central place for client profiles and their construction projects.", columns: ["Client", "Contact", "Projects"], empty: "No clients yet" },
+  projects: { title: "Projects", description: "Project records will bring together contracts, financial phases and payments. Project statuses: Active, Suspended and Completed.", columns: ["Project", "Client", "Status"], empty: "No projects yet" },
+  payments: { title: "Income / Payments", description: "Received payments in EUR. Payment entry, confirmation and allocation will be available in a later package.", columns: ["Payment", "Project", "Date", "Amount (EUR)"], empty: "No received payments" },
+  expenses: { title: "Expenses", description: "Outgoing payments in EUR, associated with a project and a supplier or payment recipient.", columns: ["Expense", "Supplier / Recipient", "Project", "Amount (EUR)"], empty: "No outgoing payments" },
+  receipts: { title: "Receipts", description: "Receipt records and document generation will be introduced in a later package.", columns: ["Receipt", "Payment", "Date"], empty: "No receipts yet" },
+  reports: { title: "Reports", description: "Company financial reports will support PDF and Excel exports later. Project financial summaries will be available on screen.", columns: ["Report", "Period", "Availability"], empty: "Reports are not available yet" },
+  categories: { title: "Categories", description: "Organize outgoing payments using consistent expense categories.", columns: ["Category", "Description"], empty: "No categories yet" },
+  persons: { title: "Persons / Suppliers", description: "Manage the suppliers and payment recipients associated with expenses.", columns: ["Name", "Contact", "Type"], empty: "No suppliers or recipients yet" },
+  vehicles: { title: "Vehicles", description: "A place for company vehicle records and their related expenses.", columns: ["Vehicle", "Registration", "Notes"], empty: "No vehicles yet" },
+  accounts: { title: "User Accounts", description: "User access and roles will be introduced with server-side authentication and authorization.", columns: ["User", "Role", "Status"], empty: "Account management is not available yet" },
+} as const;
+
+export type SectionKey = keyof typeof sections;
+export function isSection(value: string): value is SectionKey { return Object.hasOwn(sections, value); }
+export const workspaceNavigation = [
+  { href: "/app", label: "Dashboard" },
+  ...Object.entries(sections).map(([key, value]) => ({ href: `/app/${key}`, label: value.title })),
+];
