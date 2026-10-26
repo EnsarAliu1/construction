@@ -1,12 +1,16 @@
 # Construction website & management workspace
 
-WP-01 provides the local Next.js interface foundation. WP-02 adds a MySQL schema, migrations and database safety tests. The public website has five pages in Albanian and English; the management workspace has a dashboard and ten section screens. All business screens remain empty previews.
+WP-01 provides the local Next.js interface foundation; WP-02/WP-02V provide the verified MySQL foundation. WP-03 protects the workspace with email/password authentication, revocable server-side sessions and an Adore operator CLI. The public website has five pages in Albanian and English; business-module screens remain empty previews.
 
-**The `/app` area has no server-side authentication or authorization. Do not deploy this application publicly before access control is implemented.** A `noindex` directive is included for previews; it is not access control.
+**WP-03 implementation:** `/app` now requires an active authenticated account. There is no public registration or client account-administration API. See the [WP-03 technical report](docs/WP-03-report.md) and the authentication setup below. Production deployment is outside this package; production prerequisites remain documented.
+
+**Latest verification — WP-02V, 26 October 2026:** both migrations and all 13 triggers were executed successfully on an isolated official MySQL 8.4.13 Docker instance. The expanded integration suite passed 25 test results with no skips; 14 static tests and application regression checks also passed. See the [WP-02V evidence report](docs/WP-02V-report.md). Earlier WP-02 records below describe the historical unverified state, superseded by this run. The disposable container and temporary credentials were removed after verification.
+
+The workspace uses server-side authorization on each private page and operation. A `noindex` directive remains for previews; authorization is enforced independently of indexing or navigation visibility.
 
 ## Local setup
 
-Use Node.js 24 LTS and npm (verified with Node 24.18.0 and npm 11.6.1). The project requires Node >=22 for the database scripts' native environment-file loading. The UI and production build require no environment variables, credentials, database or external services. Database commands are opt-in and described below.
+Use Node.js 24 LTS and npm (verified with Node 24.18.0 and npm 11.6.1). The project requires Node >=22 for native environment-file loading. Public pages and builds require no live database or credentials. Workspace sign-in requires the local MySQL setup and operator-created accounts described below; database failures deny protected access.
 
 ```sh
 npm ci
@@ -30,7 +34,7 @@ npm run check:routes
 npm run check:routes -- http://127.0.0.1:3001
 ```
 
-This smoke check verifies HTTP responses, document languages, headings, active navigation, the default locale redirect, invalid-route responses and disabled contact forms. Browser checks are still needed for responsive appearance, keyboard interaction and hydration.
+This smoke check verifies public HTTP responses, document languages, headings, active navigation, root/default-locale behavior, login fields, anonymous private-route login redirects, invalid routes and disabled contact forms. With `AUTH_SMOKE_COOKIE` supplied privately by the HTTP integration suite, it additionally verifies all authenticated workspace pages and their active navigation. Never put cookies in command arguments or logs. Browser checks are still needed for visual appearance, keyboard interaction and hydration.
 
 ## Routes and architecture
 
@@ -39,9 +43,12 @@ This smoke check verifies HTTP responses, document languages, headings, active n
 - `/{sq|en}/{about|services|projects|contact}`: the other four public pages.
 - `/app`: dashboard.
 - `/app/{clients|projects|payments|expenses|receipts|reports|categories|persons|vehicles|accounts}`: workspace sections.
-- Unsupported locales and section slugs return 404.
+- `/login`: login screen; authenticated users are redirected to a safe private path.
+- `/api/auth/login`, `/api/auth/logout`: origin-validated authentication POST endpoints.
+- `/api/auth/session`: safe, uncached identity information; anonymous requests get 401, database failures get 503.
+- Unsupported public locales/pages return 404. Private routes redirect anonymous requests to login; authenticated invalid section slugs return 404.
 
-App Router route groups separate entry, website and workspace layouts. Separate root layouts provide the correct server-rendered HTML language (`sq`/`en` on the website, `en` in the workspace). Transitions between these root layouts can perform a full document navigation, as intended by Next.js. Pages and layouts are server components. Only navigation and language switching use client components.
+App Router route groups separate entry, website, authentication and workspace layouts. Root layouts provide the correct HTML language (`sq`/`en` on the website, `en` in the workspace). Transitions between root layouts can perform a full document navigation. Pages/layouts default to server components; navigation, language switching and interactive authentication forms are client components. Private routes explicitly render dynamically; no authenticated page is statically generated or cached as public content.
 
 The typed dictionaries in `src/i18n/dictionaries.ts` drive both languages through shared page components. The language switcher preserves the current page. URLs use the same section slugs in both languages.
 
@@ -53,7 +60,7 @@ Routing composes feature screens; shared components do not import feature busine
 | --- | --- |
 | `package.json`, `package-lock.json` | Scripts, exact direct dependency versions and reproducible npm resolution |
 | `.gitignore` | Exclude builds, dependencies, local artifacts and secrets |
-| `AGENTS.md` | Next.js-generated instructions pointing future agents to the installed framework documentation |
+| `AGENTS.md` | Owner-provided current work-package instructions |
 | `tsconfig.json` | Strict TypeScript and `@/*` alias |
 | `next.config.ts` | Framework configuration and explicit workspace build root |
 | `eslint.config.mjs` | Next.js Core Web Vitals and TypeScript lint rules |
@@ -95,7 +102,7 @@ Desktop workspace navigation uses a sidebar. Mobile navigation uses a native but
 
 ## Scope and security
 
-- No authentication, authorization or business CRUD. The WP-02 schema and migration infrastructure is present, but no database is connected to the UI.
+- Authentication and authorization are implemented; business CRUD is not. Only the authentication workflow accesses persistence from the UI.
 - No real client information, financial values or simulated production records.
 - No working save, payment confirmation, delete, receipt or export actions.
 - Contact controls are disabled, labeled as unavailable and have no submission service.
@@ -113,7 +120,7 @@ Setup follows the official [Next.js installation guidance](https://nextjs.org/do
 
 ## Next package
 
-WP-03 Authentication & Authorization is not implemented. The identity table is available for that work. MySQL migration/integrity execution remains an outstanding verification gate, and the Adore administrator/client role model, account lifecycle and five-active-client-user rule still need implementation in WP-03. The UI must remain local until server-side access control is complete.
+WP-04 — Clients can build on the authenticated page/operation guards after separate authorization. Client CRUD was not started. Browser verification of responsive authentication/navigation and production release prerequisites remain outstanding; this implementation was tested locally only.
 
 ## WP-01 verification record — 26 October 2026
 
@@ -149,7 +156,7 @@ Drizzle provides typed, SQL-oriented schema definitions and versioned MySQL migr
 
 ### Local disposable setup
 
-No database service was installed, started or provisioned for WP-02. Discovery found no listener on port 3306 or MySQL service. Docker Desktop exists but its engine is unavailable. `C:\xampp\mysql\bin\mysqld.exe --version` identifies **MariaDB 10.4.32**, which is not the target and was not started or connected to. Database execution therefore remains **NOT VERIFIED**.
+At WP-02 delivery, no database service had been installed, started or provisioned. Discovery found no listener on port 3306 or MySQL service, and the Docker engine was unavailable. XAMPP contained **MariaDB 10.4.32**, which was not the target and was not started or connected to. Database execution was **NOT VERIFIED** then; WP-02V subsequently completed it using the isolated Docker setup below.
 
 When an authorized local MySQL 8.4 instance is available, create **new, dedicated, empty** databases using your local administration tooling:
 
@@ -280,7 +287,7 @@ The five migration/meta paths are listed above. `package.json` and `package-lock
 
 ### Known database verification and toolchain limits
 
-No MySQL URL or disposable opt-in was supplied, so no MySQL connection or migration was executed. Static migration generation/checks are not proof that MySQL accepted the SQL, checks or triggers. Database acceptance remains pending execution against a newly created local MySQL 8.4 test database.
+At WP-02 delivery, no MySQL URL or disposable opt-in had been supplied, so database execution was pending. Static generation/checks did not certify MySQL behavior. The [WP-02V report](docs/WP-02V-report.md) records the subsequent successful execution against empty MySQL 8.4 databases, repeat migrations, actual schema inspection, all 13 triggers and ordinary transactions.
 
 The stable Drizzle Kit dependency tree includes deprecated `@esbuild-kit` packages and an older esbuild development dependency. npm reports four moderate advisories in that development-tool chain ([esbuild advisory](https://github.com/advisories/GHSA-67mh-4wv8-2f99)); no esbuild development server is used here. No forced downgrade or incompatible dependency override was retained. Production dependency audit results and final command evidence are recorded in the delivery report.
 
@@ -327,3 +334,116 @@ The route checks ran against the local production build. The owned local server 
 | WP02-AC16 | PASS | Accurate environment, setup, migration and safe test commands documented |
 
 Schema-related PASS statuses mean the requested definitions and static checks are present; they do **not** certify database runtime enforcement. WP-02 is not fully runtime-verified until AC11 and AC12 are exercised against a new disposable local MySQL 8.4 database. WP-03 was not started.
+
+## Repeating the WP-02V Docker verification
+
+Use the [official MySQL image](https://hub.docker.com/_/mysql) on an already running Docker Engine. Inspect container names and port 3307 before creating anything. The database is called `fitimi_test_wp02v`, rather than the prompt's suggested name, to preserve the existing disposable-database naming guard.
+
+Create an ignored `artifacts/wp02v/mysql.env` locally containing `MYSQL_ROOT_PASSWORD`, `MYSQL_DATABASE=fitimi_test_wp02v`, `MYSQL_USER=fitimi_verifier` and `MYSQL_PASSWORD`. Generate new synthetic passwords privately. Set ignored `.env.local` URLs to this user and `127.0.0.1:3307/fitimi_test_wp02v`, with `DATABASE_DISPOSABLE=1`. Do not reuse production credentials. Neither populated file is tracked.
+
+```powershell
+docker run --detach --name fitimiconstruction-mysql-test --label adore.work-package=WP-02V --label adore.project=fitimiconstruction --publish 127.0.0.1:3307:3306 --env-file artifacts/wp02v/mysql.env --tmpfs /var/lib/mysql:rw,nosuid,noexec,size=1073741824 mysql:8.4 --skip-log-bin
+```
+
+This is a disposable verification server with memory-only database storage. `--skip-log-bin` is deliberate: the first actual run confirmed MySQL error 1419 when the schema-scoped test user attempted trigger creation with default binary logging enabled. Binary logging is unnecessary for this isolated test. A future server with binary logging enabled needs an appropriately privileged migration role or an explicitly approved server configuration; this local setting is not a production infrastructure recommendation. See [MySQL's binary logging documentation](https://dev.mysql.com/doc/refman/8.4/en/replication-options-binary-log.html).
+
+After authenticating and verifying the actual MySQL version, intended database and empty schema:
+
+```powershell
+npm.cmd run test:db
+npm.cmd run db:migrate
+npm.cmd run db:migrate
+npm.cmd test
+npm.cmd run db:check
+npm.cmd run typecheck
+npm.cmd run lint
+npm.cmd run build
+```
+
+Run `npm.cmd run start -- --port 3000` and, separately, `npm.cmd run check:routes` for HTTP regression checks. Stop the owned local server afterward. A fresh `test:db` run executes both migrations, compares all application columns/indexes/FKs/checks and trigger metadata against the schema, verifies unchanged metadata/journal on repeat, tests each trigger by name, checks exact Drizzle/mysql2 decimal mapping, and verifies commit visibility and rollback after an error. It deletes only its own two committed synthetic nonfinancial rows; other fixtures roll back.
+
+Only remove a container after verifying it was created for your verification run and is not used for other data. Remove the task-owned credential files after testing. The completed WP-02V run left no active test container or credentials; a future `test:db` invocation without configuration will correctly skip, rather than reuse an undisclosed service.
+
+Migration SQL is pinned to LF by `.gitattributes`, keeping byte-based Drizzle hashes stable across Windows/Linux Git checkouts. The existing migration content and applied hashes were preserved.
+
+## WP-03 authentication setup and operation
+
+WP-03 reuses `users.password_hash` and adds `auth_sessions`, `auth_account_control`, `auth_login_limits` and `users.auth_version` through **0002_wp03_authentication.sql**. The two verified WP-02 SQL files are unchanged. The mutex row seeded in `auth_account_control` is infrastructure, not a user account. No account or fixed password is seeded.
+
+The only new authentication dependency is **@node-rs/argon2 2.2.2**, using Argon2id with 19 MiB memory, two iterations, one lane and random salts. Session orchestration is application-owned: standard Node CSPRNG creates 256-bit opaque tokens, only SHA-256 digests are stored, and raw tokens travel only in HttpOnly cookies. There is no custom cipher, password hash or JWT implementation. Better Auth was considered; its credential account table would relocate the existing password-hash authority and add adapter structures not otherwise needed for this CLI-administered model. The decision and remaining review responsibility are explicit in the [WP-03 report](docs/WP-03-report.md).
+
+### Configure and create an account
+
+1. Prepare the isolated MySQL 8.4 database using the Docker/local instructions above and copy blank `.env.example` to ignored `.env.local`.
+2. Privately configure `DATABASE_URL`, `TEST_DATABASE_URL` (a separate test target when appropriate) and `DATABASE_DISPOSABLE=1`. Existing loopback/disposable-name safeguards remain in force; production database access is not enabled by this package.
+3. Set `AUTH_ORIGIN` to the exact local origin you open, normally `http://127.0.0.1:3000`. Origin and Host must match; untrusted forwarding headers are not accepted.
+4. Generate and privately store a high-entropy `ADORE_OPERATOR_KEY` of at least 32 characters. Never put it in Git, command arguments, client code or a `NEXT_PUBLIC_*` variable. Limit access to this environment file, operator terminal and database credentials to authorized Adore operators.
+5. Run migrations and the interactive CLI:
+
+```powershell
+npm.cmd run db:migrate
+npm.cmd run accounts -- --help
+npm.cmd run accounts -- --operator create
+npm.cmd run dev
+```
+
+The CLI prompts for the operator key without echo, then account email/display name and whether to activate. New passwords are entered twice without echo. Passwords require at least 12 characters and at most 1024 UTF-8 bytes; no arbitrary composition rule is invented. Use a unique strong password. The create prompt defaults to inactive; activation requires a free slot.
+
+Other explicit operator commands:
+
+```powershell
+npm.cmd run accounts -- --operator activate
+npm.cmd run accounts -- --operator deactivate
+npm.cmd run accounts -- --operator reset-password
+npm.cmd run accounts -- --operator revoke-sessions
+```
+
+Each command requires the private operator key; ordinary client sessions cannot produce the in-process operator capability. There is no public/client-facing account-management endpoint or dashboard. All `users` accounts are client operational users with equal module access; the Adore operator is a separate trusted local process and consumes no client-account slot.
+
+The five-active-client limit is enforced in create/activate transactions through a durable singleton `SELECT ... FOR UPDATE` lock followed by the active-count check and write. Deactivation uses the same lock. Direct privileged database modification is outside the application workflow; do not bypass the CLI/service boundary with ad hoc account writes.
+
+### Recovery and session lifecycle
+
+Adore first verifies the account owner's identity through its approved out-of-band operational process. The operator then uses `reset-password` to set a new, privately communicated password. The transaction replaces the Argon2id hash, increments the authentication version, revokes every session and records a safe audit event. It does not reactivate an inactive account. No reset token or email-delivery service is required or exposed; no stored password can be recovered or printed.
+
+Sessions expire absolutely after eight hours. Login creates a new random token and revokes a supplied previous session for the same user. Logout, explicit revocation, deactivation and password reset invalidate server state; activation does not revive old sessions. Every private page and operation queries current session/user state, checking expiry, revocation, account status and authentication version. React render-pass caching only deduplicates checks within one render; it is not a cross-request session cache.
+
+Cookies are HttpOnly, SameSite=Lax, Path=/ and host-only. Production mode uses Secure cookies with the `__Host-` prefix. Use `npm run dev` for interactive loopback HTTP development. Local production-build HTTP tests deliberately pass the cookie explicitly in their test client to inspect production cookie flags; that is not a browser HTTPS deployment test. Production requires HTTPS and a matching approved `AUTH_ORIGIN`.
+
+Both the explicit logout API and the UI's protected logout Server Action revoke server state before acknowledging success. A database failure yields a generic retry response; it does not falsely acknowledge revocation. Missing/invalid sessions deny protected operations, and database outages fail closed. Failed credentials, unknown emails and disabled accounts share the same generic login response. Login JSON/HTML never exposes tokens or hashes, and no localStorage session is used.
+
+### Abuse protection and audit
+
+Database-backed atomic admission counters enforce five attempts per normalized email per 15 minutes and 60 globally per minute, including successful attempts. They are shared across application instances and do not rely on process memory or spoofable forwarded IP headers. Distinct email buckets use digests, not plaintext addresses. The global ceiling intentionally bounds rotating-email attacks; hosting-specific per-IP/edge throttling and denial-of-service protection remain release prerequisites.
+
+Security events use the existing append-only audit infrastructure: login success/failure, logout, session revocation, account creation/activation/deactivation and password reset. Snapshots include safe status metadata and correlation identifiers, not passwords, password hashes, session tokens or reset secrets. Database exceptions containing SQL parameter values are sanitized at the auth transaction boundary; HTTP/CLI errors disclose no internals.
+
+### Authentication verification
+
+With the isolated migrated test database configured:
+
+```powershell
+npm.cmd test
+npm.cmd run test:auth
+npm.cmd run test:db
+npm.cmd run db:check
+npm.cmd run typecheck
+npm.cmd run lint
+npm.cmd run build
+npm.cmd run start -- --port 3000
+```
+
+`npm test` includes the 14 existing offline tests and six authentication/security tests. `test:db` runs the existing database/13-trigger suite plus real authentication, lifecycle, revocation, audit and concurrent account-limit tests, sequentially against the same dedicated database. All synthetic accounts are deactivated and their sessions revoked afterward; immutable audit actor references are retained until the owned disposable container is removed.
+
+In a second terminal, with the local production-build server running:
+
+```powershell
+npm.cmd run check:routes
+npm.cmd run test:auth:http
+```
+
+The HTTP suite verifies anonymous redirects, authenticated access to every private page, generic errors, production cookie attributes, CSRF denial, absent registration/admin routes, the actual protected logout Server Action, expiry/revocation/recovery and database outages. For the outage test, privately set `AUTH_TEST_CONTAINER_ID` to the exact disposable container ID created for this run; it must carry `adore.work-package=WP-03`. The test verifies ownership before pausing and always resumes in `finally`. It refuses to pause an unspecified or unrelated database. The container and URLs must be exclusively disposable and loopback. The operator CLI help and rejection of an invocation without `--operator` are also verified; a full manual hidden-terminal prompt walkthrough was not performed.
+
+The completed WP-03 run used only synthetic test accounts and cleaned up its owned container, server and credential files. Recreate a disposable target and private configuration before rerunning database tests; an absent URL is explicitly reported as unverified/skipped. Browser connection discovery returned no browser, so actual responsive visual, keyboard/menu interaction and hydration checks remain **NOT VERIFIED**. No approved visual assets beyond the existing neutral foundation were available.
+
+Production prerequisites include approved HTTPS/origin/proxy configuration, least-privilege runtime/migration database roles, protected operator access and secret rotation/handling, external password-recovery identity verification, hosting-specific abuse protection, browser QA and security review of the application-owned session/authorization orchestration. No production deployment or WP-04 business CRUD is included.

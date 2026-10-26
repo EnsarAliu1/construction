@@ -15,6 +15,13 @@
       "when": 1793028084456,
       "tag": "0001_wp02_history_guards",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1793037912753,
+      "tag": "0002_wp03_authentication",
+      "breakpoints": true
     }
   ]
 }

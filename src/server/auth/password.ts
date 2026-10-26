@@ -1,0 +1,20 @@
+import { hash, verify, type Options } from "@node-rs/argon2";
+
+// Algorithm 2 is Argon2id; the package's ambient const enum cannot be imported
+// as a runtime value with Next.js isolatedModules enabled.
+const options: Options = { algorithm: 2, memoryCost: 19456, timeCost: 2, parallelism: 1, outputLen: 32 };
+let dummyHash: Promise<string> | undefined;
+
+export function hashPassword(password: string) {
+  if (password.length < 12 || Buffer.byteLength(password, "utf8") > 1024) throw new Error("Use a password of at least 12 characters and at most 1024 bytes");
+  return hash(password, options);
+}
+
+export async function verifyPassword(password: string, encodedHash: string | undefined) {
+  dummyHash ??= hash("Non-account timing equalizer; never a seeded credential", options);
+  const target = encodedHash?.startsWith("$argon2id$") ? encodedHash : await dummyHash;
+  try {
+    const valid = await verify(target, password, options);
+    return Boolean(encodedHash?.startsWith("$argon2id$") && valid);
+  } catch { return false; }
+}

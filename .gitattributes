@@ -1,0 +1,2 @@
+# Drizzle hashes migration bytes; keep them stable across Windows/Linux checkouts.
+/drizzle/*.sql text eol=lf

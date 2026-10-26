@@ -8,7 +8,7 @@ export const sections = {
   categories: { title: "Categories", description: "Organize outgoing payments using consistent expense categories.", columns: ["Category", "Description"], empty: "No categories yet" },
   persons: { title: "Persons / Suppliers", description: "Manage the suppliers and payment recipients associated with expenses.", columns: ["Name", "Contact", "Type"], empty: "No suppliers or recipients yet" },
   vehicles: { title: "Vehicles", description: "A place for company vehicle records and their related expenses.", columns: ["Vehicle", "Registration", "Notes"], empty: "No vehicles yet" },
-  accounts: { title: "User Accounts", description: "User access and roles will be introduced with server-side authentication and authorization.", columns: ["User", "Role", "Status"], empty: "Account management is not available yet" },
+  accounts: { title: "User Accounts", description: "Client users share operational access. Account creation, activation and recovery are managed by Adore through the authorized operator workflow.", columns: ["Account access", "Administration"], empty: "Contact your authorized Adore operator for account changes" },
 } as const;
 
 export type SectionKey = keyof typeof sections;

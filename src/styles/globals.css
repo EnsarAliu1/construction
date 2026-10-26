@@ -1,6 +1,23 @@
 @import "tailwindcss";
 @import "./tokens.css";
 
+.login-layout { min-height: 100dvh; display: grid; place-items: center; padding: 24px; }
+.login-card { width: min(100%, 440px); padding: 36px; }
+.login-card .wordmark { margin-bottom: 48px; }
+.login-card h1 { font-size: 2.2rem; margin-top: 12px; }
+.login-description { margin: 16px 0 28px; }
+.login-submit { width: 100%; }
+.login-help { font-size: .78rem; margin: 24px 0; }
+.login-error { color: #8c2626; font-size: .85rem; margin-bottom: 20px; }
+.workspace-user { display: flex; align-items: center; gap: 16px; font-size: .8rem; min-width: 0; }
+.workspace-user > span { overflow-wrap: anywhere; max-width: 180px; }
+.logout-control p { max-width: 180px; font-size: .75rem; color: #8c2626; }
+@media (max-width: 480px) {
+  .login-card { padding: 24px; }
+  .workspace-user { gap: 8px; }
+  .workspace-user > span { max-width: 80px; font-size: .72rem; }
+}
+
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--canvas); color: var(--ink); font-family: var(--font-sans); font-size: 15px; line-height: 1.6; }
 a { color: inherit; text-decoration: none; }
@@ -172,4 +189,10 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 }
 @media (prefers-reduced-motion: no-preference) {
   a, button { transition: background-color .15s ease, border-color .15s ease; }
+}
+
+@media (max-width: 767px) {
+  .workspace-topbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+  .workspace-topbar .workspace-name { grid-column: 1 / -1; }
+  .workspace-user > span { max-width: 160px; }
 }

@@ -5,3 +5,4 @@ export { payments, paymentAllocations, expenses } from "./finance";
 export { paymentReceipts, receiptVersions, receiptCounters } from "./receipts";
 export { auditEvents, entityVersions } from "./history";
 export { operationRequests } from "./operations";
+export { authSessions, authAccountControl, authLoginLimits } from "./auth";
