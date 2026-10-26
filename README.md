@@ -1,6 +1,8 @@
 # Construction website & management workspace
 
-WP-01 provides the local Next.js interface foundation; WP-02/WP-02V provide the verified MySQL foundation. WP-03 protects the workspace with email/password authentication, revocable server-side sessions and an Adore operator CLI. The public website has five pages in Albanian and English; business-module screens remain empty previews.
+WP-01 provides the local Next.js interface foundation; WP-02/WP-02V provide the verified MySQL foundation. WP-03 protects the workspace with email/password authentication, revocable server-side sessions and an Adore operator CLI. WP-04 adds authenticated Clients management. The public website has five pages in Albanian and English; other business-module screens remain previews.
+
+**WP-04 implementation:** `/app/clients` now supports individual/business creation, search, filtering, pagination, details, edit and confirmed logical archiving. Mutations use parameterized Drizzle queries, version checks and atomic actor-attributed audit/version history. See the [WP-04 technical report](docs/WP-04-report.md). Browser visual and interactive verification remains outstanding because no browser is connected.
 
 **WP-03 implementation:** `/app` now requires an active authenticated account. There is no public registration or client account-administration API. See the [WP-03 technical report](docs/WP-03-report.md) and the authentication setup below. Production deployment is outside this package; production prerequisites remain documented.
 
@@ -43,6 +45,8 @@ This smoke check verifies public HTTP responses, document languages, headings, a
 - `/{sq|en}/{about|services|projects|contact}`: the other four public pages.
 - `/app`: dashboard.
 - `/app/{clients|projects|payments|expenses|receipts|reports|categories|persons|vehicles|accounts}`: workspace sections.
+- `/app/clients/new`, `/app/clients/[id]`, `/app/clients/[id]/edit`: authenticated Clients workflows; archived details remain readable.
+- `/api/clients` (GET/POST), `/api/clients/[id]` (GET/PUT/DELETE): authenticated, uncached Clients operations. DELETE performs logical archiving only.
 - `/login`: login screen; authenticated users are redirected to a safe private path.
 - `/api/auth/login`, `/api/auth/logout`: origin-validated authentication POST endpoints.
 - `/api/auth/session`: safe, uncached identity information; anonymous requests get 401, database failures get 503.
@@ -52,7 +56,7 @@ App Router route groups separate entry, website, authentication and workspace la
 
 The typed dictionaries in `src/i18n/dictionaries.ts` drive both languages through shared page components. The language switcher preserves the current page. URLs use the same section slugs in both languages.
 
-Routing composes feature screens; shared components do not import feature business logic. The server-only persistence foundation is in `src/server/db`. Its connection is lazy and explicitly closed, so importing or building pages does not access a database. No business domain service or CRUD is implemented. Add transactional business logic within the authorized future packages.
+Routing composes feature screens; shared components do not import feature business logic. The server-only persistence foundation is in `src/server/db`. Its connection is lazy and explicitly closed, so importing or building pages does not access a database. The Clients service is in `src/features/clients/service.ts`; authentication remains in `src/server/auth`. Other business services await their authorized packages.
 
 ## Files
 
@@ -102,9 +106,9 @@ Desktop workspace navigation uses a sidebar. Mobile navigation uses a native but
 
 ## Scope and security
 
-- Authentication and authorization are implemented; business CRUD is not. Only the authentication workflow accesses persistence from the UI.
+- Authentication, authorization and Clients management access real local persistence. Other business modules remain previews.
 - No real client information, financial values or simulated production records.
-- No working save, payment confirmation, delete, receipt or export actions.
+- Clients save and logical archive actions are operational. Payment confirmation, receipt and export actions remain unavailable.
 - Contact controls are disabled, labeled as unavailable and have no submission service.
 - Company content, project descriptions, contact information and photos await approval.
 - Income refers to received payments; expenses refer to outgoing payments; currency is EUR.
@@ -120,7 +124,7 @@ Setup follows the official [Next.js installation guidance](https://nextjs.org/do
 
 ## Next package
 
-WP-04 — Clients can build on the authenticated page/operation guards after separate authorization. Client CRUD was not started. Browser verification of responsive authentication/navigation and production release prerequisites remain outstanding; this implementation was tested locally only.
+WP-05 — Construction Projects, Contracts & Phases can build on authenticated Clients management after separate authorization. Project mutations must lock/recheck the referenced client, reject archived parents and preserve financial/domain invariants. Browser QA, missing approved UX resources and production prerequisites remain open; no WP-05 implementation or deployment is included.
 
 ## WP-01 verification record — 26 October 2026
 
@@ -446,4 +450,21 @@ The HTTP suite verifies anonymous redirects, authenticated access to every priva
 
 The completed WP-03 run used only synthetic test accounts and cleaned up its owned container, server and credential files. Recreate a disposable target and private configuration before rerunning database tests; an absent URL is explicitly reported as unverified/skipped. Browser connection discovery returned no browser, so actual responsive visual, keyboard/menu interaction and hydration checks remain **NOT VERIFIED**. No approved visual assets beyond the existing neutral foundation were available.
 
-Production prerequisites include approved HTTPS/origin/proxy configuration, least-privilege runtime/migration database roles, protected operator access and secret rotation/handling, external password-recovery identity verification, hosting-specific abuse protection, browser QA and security review of the application-owned session/authorization orchestration. No production deployment or WP-04 business CRUD is included.
+Production prerequisites include approved HTTPS/origin/proxy configuration, least-privilege runtime/migration database roles, protected operator access and secret rotation/handling, external password-recovery identity verification, hosting-specific abuse protection, browser QA and security review of the application-owned session/authorization orchestration. No production deployment is included. WP-04 Clients management is described in the current report linked above.
+
+## Clients development and verification
+
+Apply the additive `0003_wp04_clients.sql` through `npm run db:migrate` against the explicitly disposable local MySQL 8.4 target before using Clients. Migrations 0000–0002 and the original 13 history guards are unchanged. Existing clients get version 1 and nullable actor metadata; historical actors and audit events are never fabricated.
+
+Client names are not unique. NUI is optional and has only the existing 100-character storage bound. Optional contact/address fields are trimmed and blank values become null; email is validated and normalized. No country-specific identifier or telephone rule is inferred. A full PUT replaces editable contact fields and requires the version last read. Stale writes receive 409; the UI retains edits and provides an explicit reload. Archiving requires confirmation plus the current version and rejects non-archived active/suspended project associations. Archived clients are excluded from lists and remain readable by stable ID.
+
+The list returns at most 20 rows per page, with a capped page number and literal escaped search. Details show up to five actual project references and 20 audit events; all history remains stored. No financial summaries are invented. Project/financial CRUD and client restoration are outside this package.
+
+```sh
+npm run test:clients
+npm run test:clients:db
+# Build and start the local production server first:
+npm run test:clients:http
+```
+
+`test` includes Clients validation; `test:db` includes Clients integration and runs sequentially with authentication/integrity tests. The HTTP suite uses synthetic operator-created accounts, targets only loopback and the same disposable database as the app, and deactivates accounts afterward. Use an isolated database with no active accounts; run HTTP suites sequentially. The existing auth outage suite accepts the exact task-owned container ID plus `AUTH_TEST_WORK_PACKAGE=WP-04` for this package; both the full ID and ownership label must match before pause/resume. Do not point these tests at another environment.

@@ -150,7 +150,9 @@ test("HTTP authentication, private routes, cookies, server actions and outage de
       const inspected = spawnSync("docker", ["inspect", containerId], { encoding: "utf8", timeout: 10_000 });
       assert.equal(inspected.status, 0);
       const container = JSON.parse(inspected.stdout)[0];
-      assert.ok(container.Id === containerId && container.Config.Labels["adore.work-package"] === "WP-03", "Only the task-owned test container may be paused");
+      const expectedPackage = process.env.AUTH_TEST_WORK_PACKAGE ?? "WP-03";
+      assert.ok(["WP-03", "WP-04"].includes(expectedPackage), "Only an explicitly supported test work package is permitted");
+      assert.ok(container.Id === containerId && container.Config.Labels["adore.work-package"] === expectedPackage, "Only the exact task-owned test container may be paused");
       await signIn();
       const paused = spawnSync("docker", ["pause", containerId], { encoding: "utf8", timeout: 10_000 });
       assert.equal(paused.status, 0);

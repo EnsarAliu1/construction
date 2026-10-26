@@ -7,6 +7,8 @@ export const historyFields = [
   "cancellationReason", "isActive", "identifier", "receiptNumber", "issuedAt",
   "clientName", "projectName", "issuerName", "storageReference", "fileChecksum",
   "resultId", "resultType",
+  "nui", "phone", "addressLine1", "addressLine2", "city", "postalCode", "country",
+  "createdAt", "updatedAt", "createdBy", "updatedBy", "deletedBy",
 ] as const;
 
 type Scalar = string | number | boolean | null;

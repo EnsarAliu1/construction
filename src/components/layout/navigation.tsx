@@ -8,10 +8,13 @@ import { cn } from "@/lib/utils";
 
 function NavigationLinks({ items, onNavigate }: { items: NavigationItem[]; onNavigate?: () => void }) {
   const pathname = usePathname();
-  return items.map(item => <Link key={item.href} href={item.href} onClick={onNavigate}
-    className={cn("nav-item", pathname === item.href && "active")} aria-current={pathname === item.href ? "page" : undefined}>
+  return items.map(item => {
+    const active = pathname === item.href || (item.href.startsWith("/app/") && pathname.startsWith(`${item.href}/`));
+    return <Link key={item.href} href={item.href} onClick={onNavigate}
+    className={cn("nav-item", active && "active")} aria-current={active ? "page" : undefined}>
     {item.label}
-  </Link>);
+  </Link>;
+  });
 }
 
 export function DesktopNavigation({ items, label, className }: { items: NavigationItem[]; label: string; className?: string }) {

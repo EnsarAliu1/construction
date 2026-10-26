@@ -1,564 +1,572 @@
 # ADORE TECH SOLUTIONS — CODEX IMPLEMENTATION PROMPT
 
-## WP-03: Authentication, Authorization & Account Administration
+## WP-04: Clients Management — Full CRUD, Validation & Audit
 
 **Project:** Fitimi Construction Management System & Corporate Website  
-**Package:** WP-03  
+**Package:** WP-04  
 **Version:** 1.0  
 **Date:** 26.10.2026  
 **Developer:** Codex  
-**Technical Lead:** Adore Tech Solutions  
-**Authorization:** Local implementation, dependencies, migrations and disposable database testing.
+**Technical Lead:** Adore Tech Solutions
+
+**Authorization:** Real local implementation, required dependencies, additive migrations, disposable MySQL database testing and local verification.
 
 ---
 
 ## 1. MISSION
 
-Implement real, secure authentication and server-side authorization for the existing Next.js application.
+Implement a complete, usable Clients Management module within the existing authenticated Next.js application.
 
-WP-01 created the public website and private application shell.
+The module must support:
 
-WP-02 and WP-02V established and verified the MySQL/Drizzle database foundation.
+- Listing clients.
+- Creating clients.
+- Viewing client details.
+- Editing clients.
+- Searching and filtering.
+- Logical deletion with history preservation.
+- Server-side validation.
+- Authentication and authorization.
+- Audit trail.
+- Responsive desktop/mobile behavior.
+- Automated tests against disposable MySQL 8.4.
 
-Your task is to replace the unsecured `/app` development preview with a protected application area.
+This is a real coding task.
 
-Implement working authentication, secure sessions, access control, account lifecycle support and automated tests.
+Do not return only a plan.
 
-This is a real implementation task, not a planning exercise.
+Do not implement construction projects, contracts, payments or expenses in this package.
 
-Do not implement business CRUD or financial operations.
+## 2. CURRENT PROJECT BASELINE
 
-## 2. VERIFIED PROJECT BASELINE
+Reported completed packages:
 
-Reported baseline:
+- WP-01: Next.js bootstrap and UI foundation.
+- WP-02: MySQL/Drizzle schema foundation.
+- WP-02V: MySQL 8.4 migration verification.
+- WP-03: Authentication, authorization and account administration.
 
-- Next.js 16.4.3
-- React 19.3.1
-- TypeScript 6.0.3
-- Tailwind CSS 4.3.3
-- Drizzle ORM 0.45.4
-- Drizzle Kit 0.31.11
-- mysql2 3.24.6
-- MySQL 8.4.13 verified in WP-02V
-- 17 application tables
-- 13 verified database triggers
-- 25 passing MySQL integration tests
-- 14 passing static tests
+Technology baseline:
 
-Latest reported Git HEAD before WP-02V was `09fe783`.
+- Next.js 16.4.3.
+- React 19.3.1.
+- TypeScript 6.0.3.
+- Tailwind CSS 4.3.3.
+- Drizzle ORM 0.45.4.
+- Drizzle Kit 0.31.11.
+- mysql2 3.24.6.
+- MySQL 8.4.13.
+- Argon2id authentication.
+- Opaque server-side sessions.
 
-WP-02V introduced uncommitted changes to tests, `.gitattributes`, README and technical documentation.
+WP-03 introduced:
 
-The project owner's `AGENTS.md` also contained existing changes.
+- Protected `/app` routes.
+- `requirePageUser`.
+- `requireOperationUser` / `requireSessionUser`.
+- Authentication audit infrastructure.
+- Database-backed sessions and rate limiting.
+- New migration `0002_wp03_authentication.sql`.
 
-**Before implementation:**
+Inspect the actual repository before coding.
 
-1. Inspect the actual Git state.
-2. Review AGENTS.md and repository instructions.
-3. Preserve all existing work.
-4. Inspect the real users schema.
-5. Review current route groups and layouts.
-6. Inspect database connection and migration tooling.
-7. Verify the availability of approved specifications.
+The reported Git state may have changed. Do not assume any specific HEAD.
 
-Do not assume the repository is unchanged.
+Preserve existing user changes, including AGENTS.md and other uncommitted files.
 
-Do not overwrite unrelated modifications.
+## 3. SOURCE OF TRUTH
 
-## 3. AUTHORIZATION BOUNDARIES
+Follow:
 
-Authorized:
+1. Approved business decisions D-01 through D-14.
+2. Codex Master Project Prompt v1.1.
+3. Current Technical Specification.
+4. Approved UX decisions and Wireframes v2.1, when accessible.
+5. Approved Operational Clarity / Visual Foundation / UI Design System, when accessible.
+6. Existing repository conventions.
 
-- Local source-code implementation.
-- Necessary authentication dependencies.
-- New versioned migration files.
-- Applying migrations to an isolated disposable MySQL database.
-- Synthetic test accounts.
-- Local unit, integration and browser tests.
-- Necessary documentation changes.
+Do not falsely claim to have read unavailable design documents.
 
-Not authorized:
+If exact visual references are missing, continue using the established UI foundation and report visual alignment as pending.
 
-- Production deployment.
-- Production database access.
-- Real client accounts or information.
-- Hosting purchases or remote infrastructure changes.
-- Destructive changes to persistent databases.
-- Automatic Git commit or push without separate instruction.
-- Financial CRUD, payment confirmation or PDF generation.
+Do not copy financial values or client identities from screenshots.
 
-## 4. REQUIRED AUTHENTICATION MODEL
+## 4. CLIENT DATA MODEL
+
+The system supports two kinds of clients:
+
+**Individual**
+
+- Personal client.
+- Name.
+- Contact information.
+- Address.
+
+**Business**
+
+- Company/business client.
+- Name.
+- NUI where applicable.
+- Contact information.
+- Address.
+
+Both may own multiple construction projects in future work packages.
+
+Inspect the existing `clients` schema before implementing.
+
+Reuse its fields and relations.
+
+Do not create a second clients table.
+
+Do not introduce a separate company-management or CRM product.
+
+### Required business rules
+
+- A client has a stable unique database ID.
+- A client may exist without a construction project.
+- A client may have multiple projects in the future.
+- Business NUI is stored when provided or required by confirmed specifications.
+- Do not invent Kosovo-specific NUI validation rules.
+- Client deletion is logical, not physical.
+- Historical references must survive logical deletion.
+- Client modifications must be auditable.
+
+Use appropriate database uniqueness rules where approved and justified.
+
+Do not impose global unique names: two different clients may legitimately have the same name.
+
+Do not automatically merge records based on matching names or contact details.
+
+## 5. SCOPE — BACKEND
+
+Implement actual server-side operations for:
+
+### Create Client
+
+- Validate input.
+- Require an authenticated user.
+- Normalize safe text fields.
+- Save using Drizzle.
+- Record the corresponding audit event.
+- Return a safe result.
+
+### List Clients
+
+- Require authentication.
+- Return clients with pagination or bounded result sets.
+- Support search by relevant available fields.
+- Support filtering by client type.
+- Exclude logically deleted clients by default.
+- Avoid unbounded database reads.
+
+### Get Client
+
+- Require authentication.
+- Retrieve by stable ID.
+- Distinguish not found from unauthorized access appropriately.
+- Do not reveal private data through public endpoints.
+
+### Update Client
+
+- Require authentication.
+- Validate inputs.
+- Preserve stable client identity.
+- Record old/new values safely.
+- Prevent lost updates using an appropriate optimistic concurrency mechanism.
+
+If version fields are not already present, evaluate whether a small additive migration is necessary.
+
+### Logical Delete Client
+
+- Require authentication.
+- Mark the client as logically deleted.
+- Record actor and timestamp.
+- Retain the database identity and history.
+- Prevent or safely handle deletion when active related projects exist.
+
+For the final point, use the existing business relationships and conservative behavior. Do not silently cascade deletion to projects.
+
+Do not implement client restoration unless already approved or supported by an existing product decision.
+
+## 6. AUDIT REQUIREMENTS
+
+Every create, update and logical delete must produce the necessary audit record.
+
+For critical changes, persist the business modification and its audit event in the same database transaction.
+
+Include:
+
+- Entity type.
+- Entity ID.
+- Action.
+- Acting user.
+- Timestamp.
+- Relevant previous/new values.
+- Correlation identifier where useful.
+
+Do not store raw session tokens, credentials or password hashes.
+
+Avoid logging unnecessary sensitive client details in application logs.
+
+Use existing audit tables and conventions.
+
+Do not create duplicate audit infrastructure.
+
+## 7. CLIENT USER INTERFACE
+
+Replace the existing Clients placeholder page with a functioning interface.
 
 Implement:
 
-- Individual email/password login.
-- Secure password verification.
-- Server-managed sessions.
-- Logout.
-- Session revocation.
-- Disabled-user rejection.
-- Protected application routes.
-- Generic authentication failure messages.
-- No public registration.
+### Clients List
 
-Each client user has equal operational permissions.
-
-Maximum five active client accounts.
-
-Adore is responsible for:
-
-- Account creation.
-- Account deactivation.
-- Account recovery/password reset.
-
-Do not expose open self-registration.
-
-Do not allow ordinary client users to create additional accounts merely because they have equal operational rights.
-
-The distinction between Adore account administration and client operational permissions is mandatory.
-
-## 5. AUTHENTICATION TECHNOLOGY
-
-Inspect the current project and select a maintained authentication approach compatible with Next.js 16, TypeScript and Drizzle/MySQL.
-
-Prefer an established library if it fits the actual requirements.
-
-Do not implement custom cryptography.
-
-Use an established password-hashing algorithm such as Argon2id or another modern, justified alternative.
-
-Never store plaintext passwords or reversible password encryption.
-
-Use cryptographically secure session identifiers.
-
-Session tokens must not appear in URLs.
-
-If a library requires additional database tables or migration files, add only the necessary structures.
-
-Explain the selected library, versions and architectural reasons in the final report.
-
-## 6. DATABASE REQUIREMENTS
-
-Reuse the existing `users` table where possible.
-
-Do not create a competing identity table without a compelling reason.
-
-Add the minimum necessary persistence for server-side sessions and account recovery state.
-
-Use new versioned migrations.
-
-**Do not modify the previously verified WP-02 SQL migrations in place.**
-
-Preserve:
-
-- Previous migration journal and hashes.
-- Existing foreign keys.
-- Financial triggers.
-- Audit and history tables.
-- Existing business data relationships.
-
-Account-related migration design must consider:
-
-- Session expiration.
-- Session revocation.
-- User deactivation.
-- Unique email identity.
-- Case-insensitive email normalization.
-- Active-account limit.
-- Safe handling of password reset state.
-- Existing schema compatibility.
-
-For the five-active-account limit, ensure creation and activation are concurrency-safe. A simple frontend count check is insufficient.
-
-## 7. AD ORE ACCOUNT ADMINISTRATION
-
-Implement a secure local administrative workflow appropriate for Adore's operational responsibility.
-
-Because no browser-based Adore administration interface has been approved, do not invent a public or client-facing account-management dashboard.
-
-A protected operator-only CLI is acceptable for this package, provided that it:
-
-- Uses the existing database configuration safely.
-- Requires explicit operator action.
-- Creates users with securely hashed passwords.
-- Prevents duplicate emails.
-- Enforces the maximum of five active client accounts.
-- Supports account deactivation.
-- Supports password reset/recovery without exposing plaintext stored passwords.
-- Can revoke active sessions.
-- Does not embed credentials or fixed passwords in source code.
-- Does not print sensitive tokens or passwords unnecessarily.
-
-Use synthetic accounts for development tests.
-
-Do not create a default production admin account.
-
-Do not seed publicly known credentials.
-
-If the chosen recovery mechanism involves reset tokens, ensure secure token generation, expiration, single use and hashed token storage.
-
-Do not assume an email delivery service exists. A production email integration is outside WP-03.
-
-Document the operational process and its remaining production prerequisites.
-
-## 8. LOGIN AND LOGOUT UI
-
-Create a responsive login screen consistent with the current UI foundation.
-
-Use the approved Operational Clarity design materials if available.
-
-If exact visual references are missing, maintain the existing neutral design system and document the pending visual alignment.
-
-Login screen requirements:
-
-- Email field.
-- Password field.
-- Submit button.
+- Clear page title.
+- Search input.
+- Client type filter.
+- Add Client action.
+- Responsive client list or table.
 - Loading state.
-- Generic invalid-credentials message.
-- Keyboard accessibility.
-- Appropriate error handling.
-- Responsive layout.
+- Empty state.
+- Error state.
+- Safe pagination or bounded listing.
 
-Do not reveal whether a particular email exists.
+### Create Client
 
-Use the current application's language and terminology conventions where appropriate.
+- Individual/business type selection.
+- Appropriate fields for the selected type.
+- Required-field validation.
+- Clear error messages.
+- Submit state.
+- Success feedback and navigation.
 
-Implement a working logout action.
+### Client Details
 
-Show the authenticated user's name or email in the private application shell.
+- Client name and type.
+- Available contact information.
+- Address.
+- NUI where applicable.
+- Edit action.
+- Appropriate representation of related projects if not yet implemented.
 
-Avoid unnecessary profile-management features.
+Do not display fake project totals as real data.
 
-## 9. PROTECT PRIVATE ROUTES
+### Edit Client
 
-The public SQ/EN website must remain accessible without login.
+- Prefilled current values.
+- Save/cancel behavior.
+- Server-side validation.
+- Safe handling of concurrent changes.
 
-The `/app` area must require authentication.
+### Logical Delete
 
-Expected behavior:
+- Deliberate confirmation.
+- Appropriate authorization.
+- Server-side operation.
+- Audit record.
+- Clear success/error feedback.
 
-- Anonymous visitors cannot access private pages.
-- Unauthenticated requests are redirected to login where appropriate.
-- Private server operations reject unauthenticated requests.
-- Expired sessions are rejected.
-- Revoked sessions are rejected.
-- Disabled users lose access.
-- A logged-out session cannot be reused.
+Do not render nonfunctional buttons as though they perform an operation.
 
-Use server-side authentication checks as the security boundary.
+## 8. UX/UI REQUIREMENTS
 
-A Next.js middleware/proxy redirect alone is not sufficient authorization for sensitive server operations.
+Maintain the existing Operational Clarity foundation.
 
-Implement reusable authorization helpers suitable for later modules.
+Use reusable components and tokens already present in the project.
 
-Use the appropriate Next.js 16 runtime conventions.
+Do not redesign the website or unrelated app sections.
 
-## 10. SESSION SECURITY
+Ensure:
 
-Use secure session handling.
+- Desktop usability.
+- Mobile usability.
+- Accessible labels.
+- Visible focus states.
+- Keyboard operation.
+- Clear errors.
+- Useful empty states.
+- Long names and addresses do not break layouts.
+- Search and filters remain usable on narrow screens.
 
-Requirements:
+If approved wireframes are accessible, match their established behavior and styling.
 
-- HttpOnly cookies.
-- SameSite protection.
-- Secure cookies in HTTPS production environments.
-- Appropriate session expiration.
-- Server-side revocation.
-- Session invalidation after deactivation.
-- Session rotation when required by the chosen approach.
-- No sensitive tokens in browser localStorage.
-- No credentials embedded in client-side code.
+If not, report the limitation instead of inventing design approvals.
 
-Consider CSRF protections appropriate to the selected authentication approach.
+## 9. VALIDATION AND SECURITY
 
-Validate Origin/Host for state-changing actions where necessary.
+All mutations must validate input on the server.
 
-Avoid open redirects after login.
+Client-side validation may improve usability, but is not sufficient for data integrity.
 
-Prevent session-fixation vulnerabilities.
+Use bounded text lengths and appropriate normalization.
 
-Do not disclose session tokens or password hashes in logs.
+Prevent:
 
-## 11. LOGIN ABUSE PROTECTION
+- Unauthorized data access.
+- Anonymous client creation.
+- Anonymous updates and deletion.
+- Unsafe mass assignment.
+- Injection vulnerabilities.
+- Invalid client types.
+- Unexpected field overwrites.
+- Lost updates due to concurrent edits.
 
-Implement proportionate protection against repeated authentication attempts.
+Use parameterized Drizzle queries.
 
-Requirements:
+Do not accept protected server fields such as record ID, created_by or deleted_at directly from ordinary form input.
 
-- Generic errors.
-- Reasonable rate limiting or equivalent mitigation.
-- No user-enumeration messages.
-- No unlimited brute-force attempts.
-- Appropriate event logging without secrets.
+Maintain CSRF/origin protection using the existing project's established safe patterns.
 
-For any in-memory limiter, explicitly document that it does not provide reliable distributed or multi-instance protection.
+Business users have equal approved operational permissions.
 
-Do not pretend a development-only limiter is production-ready.
+Do not add new business roles.
 
-Do not introduce Redis or a new remote service without authorization.
+## 10. DATABASE AND MIGRATIONS
 
-If a robust production rate-limiting strategy depends on the final hosting environment, document that as a release prerequisite.
+Reuse the existing `clients` table.
 
-## 12. AUTHORIZATION MODEL
+Only introduce an additive versioned migration when necessary.
 
-Use a simple authorization model:
+Do not rewrite migrations 0000, 0001 or 0002.
 
-**Client operational user**
+Preserve the previously verified migration hashes and trigger behavior.
 
-- Has equal access to approved business modules.
-- Cannot administer account creation, recovery or activation through ordinary client UI.
+If an additive migration is required:
 
-**Adore operator**
+- Generate it through the project's established migration workflow.
+- Test it against fresh disposable MySQL 8.4.
+- Verify old migrations remain intact.
+- Confirm the resulting schema matches declarations.
 
-- Controls account lifecycle through a separate protected administrative process.
+Do not connect to production or real client databases.
 
-Do not invent additional business roles such as accountant, supervisor, manager or employee.
+Do not use MariaDB 10.4 as the authoritative verification engine.
 
-Do not rely on hidden navigation items as authorization.
+## 11. TESTING
 
-Design reusable guards for future operations involving clients, projects, expenses, payments, documents and reports.
+Implement meaningful automated tests.
 
-Business-module CRUD authorization will be integrated by later packages.
+### Database / Integration
 
-## 13. AUDIT AND LOGGING
+Test:
 
-Record appropriate security-relevant events, such as:
-
-- Successful login.
-- Failed login attempts, with safe/redacted information.
-- Logout or session revocation where useful.
-- Account creation.
-- Account deactivation.
-- Account reactivation, if supported.
-- Password reset.
-- Security-sensitive account changes.
-
-Use the existing audit infrastructure where compatible.
-
-Never store password values, password hashes, raw reset tokens or session tokens in audit snapshots.
-
-Use safe correlation identifiers for diagnosing failures.
-
-Do not implement financial audit workflows in WP-03.
-
-## 14. ERROR AND INTERRUPTION HANDLING
-
-Ensure the following situations are handled safely:
-
-- Incorrect credentials.
-- Nonexistent account.
-- Disabled account.
-- Expired session.
-- Revoked session.
-- Database temporarily unavailable.
-- Multiple concurrent login attempts.
-- Repeated logout request.
-- Interrupted login response.
-- Password reset token expiration, if applicable.
-
-Database failures must not bypass authorization.
-
-Fail closed: when session validity cannot be established, deny protected access.
-
-Return understandable error messages without exposing internals.
-
-## 15. TESTING REQUIREMENTS
-
-Implement automated tests for:
-
-### Authentication
-
-- Correct credentials.
-- Incorrect credentials.
-- Unknown email.
-- Disabled account.
-- Password hash verification.
-- Password-reset behavior where implemented.
-
-### Sessions
-
-- Session creation.
-- Session expiration.
-- Logout and revocation.
-- Disabled-user invalidation.
-- Reuse of an invalidated session.
+- Create individual client.
+- Create business client.
+- Optional NUI.
+- Valid and invalid references where relevant.
+- Successful updates.
+- Failed validation.
+- Optimistic concurrency conflict.
+- Logical deletion.
+- Historical retention.
+- Audit entries.
+- Atomic rollback when audit persistence fails.
+- Active projects or historical-reference protection as applicable.
 
 ### Authorization
 
-- Anonymous `/app` access denied.
-- Authenticated `/app` access permitted.
-- Public SQ/EN website remains public.
-- Protected server action rejects anonymous requests.
-- Unauthorized account-administration attempt rejected.
+Test:
 
-### Account limits
+- Anonymous access denied.
+- Authenticated access permitted.
+- Anonymous create/update/delete rejected.
+- Disabled user rejected.
+- Existing session rules preserved.
 
-- Five active client accounts permitted.
-- Sixth active account rejected.
-- Deactivation frees an active slot.
-- Concurrent activation/creation cannot exceed the limit.
+### UI / HTTP
 
-### Security
+Test:
 
-- No open redirect.
-- No sensitive token exposure.
-- Safe cookies.
-- Generic failed-login responses.
-- Brute-force mitigation behavior.
+- Clients route protected.
+- List renders appropriate state.
+- Create form input validation.
+- Edit behavior.
+- Delete confirmation behavior.
+- Search/filter behavior.
+- Relevant loading and error states.
 
-Use disposable MySQL 8.4 for integration tests.
+Use browser-based interaction testing when available.
 
-Do not use MariaDB 10.4 as proof of MySQL 8.4 behavior.
+If a browser is unavailable, do not report browser verification as PASS.
 
-Include a safe cleanup procedure for synthetic test data and containers owned by the work package.
+HTTP tests are useful but do not substitute for full visual/interaction verification.
 
-## 16. REGRESSION TESTS
+### Regression
 
-Verify that WP-03 does not break WP-01 and WP-02.
+Verify the following areas remain functional:
 
-Run applicable project commands, including:
+- Public website SQ/EN.
+- Authentication.
+- Logout.
+- Session protection.
+- Existing database migrations.
+- Existing 13 triggers.
+- App navigation.
+- TypeScript.
+- ESLint.
+- Build.
+
+## 12. OUT OF SCOPE
+
+Do not implement:
+
+- Projects CRUD.
+- Contract/phase management.
+- Expenses.
+- Payments.
+- Payment allocations.
+- Receipt generation.
+- Company financial reports.
+- PDF/Excel exports.
+- Account administration changes unrelated to Clients.
+- New business roles.
+- Production deployment.
+- Hosting purchases.
+- Real client data imports.
+
+Do not add CRM marketing, messaging, lead tracking or unnecessary features.
+
+## 13. VERIFICATION COMMANDS
+
+Inspect the real `package.json` first.
+
+Execute applicable commands including:
 
 - `npm.cmd test`
-- `npm.cmd run db:check`
 - `npm.cmd run test:db`
 - `npm.cmd run typecheck`
 - `npm.cmd run lint`
 - `npm.cmd run build`
 - `npm.cmd run check:routes`
 
-Inspect the actual package scripts first.
+Also execute new client-specific tests and any applicable database migration checks.
 
-Because `/app` becomes protected, update route smoke tests to distinguish expected login redirects/unauthorized responses from public-page success.
+Verify tests against disposable MySQL 8.4.
 
-Do not weaken existing route tests just to make them pass.
+Record exact executed commands and their results.
 
-Ensure all existing migration and trigger tests remain valid.
+Do not weaken previous tests to achieve a passing build.
 
-Execute browser-based login/navigation verification if the environment supports it; otherwise report NOT VERIFIED.
+Fix observed WP-04 defects within scope before completing the report.
 
-## 17. OUT OF SCOPE
+## 14. ACCEPTANCE CRITERIA
 
-Do not implement:
+**WP04-AC01:** Clients module uses the existing Drizzle/MySQL schema.
 
-- Client CRUD.
-- Project or contract CRUD.
-- Expense entry.
-- Payment confirmation.
-- Payment allocations.
-- Receipt generation.
-- Financial reports.
-- PDF/Excel export.
-- Public registration.
-- Social login.
-- MFA unless separately approved.
-- Complex roles and permissions.
-- Real email delivery integrations.
-- Production deployment.
-- Hosting infrastructure changes.
+**WP04-AC02:** Authenticated users can create individual clients.
 
-Do not replace existing UI pages unnecessarily.
+**WP04-AC03:** Authenticated users can create business clients.
 
-## 18. ACCEPTANCE CRITERIA
+**WP04-AC04:** Required fields and client types are validated server-side.
 
-**WP03-AC01:** Authentication integrates with the existing Next.js/Drizzle architecture.
+**WP04-AC05:** Clients list loads from the database.
 
-**WP03-AC02:** Real password verification works with securely stored hashes.
+**WP04-AC06:** Search and type filtering work correctly.
 
-**WP03-AC03:** Anonymous users cannot access `/app`.
+**WP04-AC07:** Client details load by stable ID.
 
-**WP03-AC04:** Authenticated active users can access approved private pages.
+**WP04-AC08:** Existing client information can be edited.
 
-**WP03-AC05:** Logout revokes the active session.
+**WP04-AC09:** Concurrent updates cannot silently overwrite each other.
 
-**WP03-AC06:** Disabled accounts lose access, including existing sessions.
+**WP04-AC10:** Logical deletion preserves client identity and history.
 
-**WP03-AC07:** Maximum five active client accounts is enforced, including concurrent operations.
+**WP04-AC11:** Existing related project references are not destroyed.
 
-**WP03-AC08:** Account creation, deactivation and recovery are controlled by Adore.
+**WP04-AC12:** Mutations produce appropriate audit records.
 
-**WP03-AC09:** No public registration endpoint exists.
+**WP04-AC13:** Business changes and audit records are committed atomically.
 
-**WP03-AC10:** Public SQ/EN pages remain available.
+**WP04-AC14:** Unauthenticated access and mutations are denied.
 
-**WP03-AC11:** Sessions and cookies follow the specified security requirements.
+**WP04-AC15:** Disabled sessions cannot access the module.
 
-**WP03-AC12:** Unauthorized server-side operations are rejected.
+**WP04-AC16:** UI uses the existing shared design foundation.
 
-**WP03-AC13:** Login abuse protection is implemented or remaining production dependency is explicitly identified.
+**WP04-AC17:** Desktop/mobile layout and accessibility are verified where tooling permits.
 
-**WP03-AC14:** Security events are logged without secrets.
+**WP04-AC18:** MySQL integration tests pass.
 
-**WP03-AC15:** Database migrations execute successfully against disposable MySQL 8.4.
+**WP04-AC19:** TypeScript, lint, build and relevant regressions pass.
 
-**WP03-AC16:** Existing WP-02 migration history and triggers remain intact.
+**WP04-AC20:** No real client data or production infrastructure is accessed.
 
-**WP03-AC17:** Automated authentication and authorization tests pass.
+Classify every criterion as PASS, FAIL or NOT VERIFIED.
 
-**WP03-AC18:** Typecheck, lint, build and applicable regressions pass.
+Provide evidence.
 
-**WP03-AC19:** Responsive login UI and authenticated navigation are verified where tooling permits.
-
-**WP03-AC20:** No real client data, production infrastructure or deployment is involved.
-
-Mark each as PASS, FAIL or NOT VERIFIED.
-
-## 19. REQUIRED DELIVERY REPORT
+## 15. REQUIRED DELIVERY REPORT
 
 Return:
 
-### A. Initial Repository State
+### A. Repository Baseline
 
-Branch, commit and working-tree changes.
+- Branch.
+- HEAD.
+- Initial working-tree state.
+- Existing changes preserved.
 
-### B. Technology Decisions
+### B. Implemented Functionality
 
-Authentication library, password hashing, sessions and justification.
+- Actual user-facing features.
+- Server-side operations.
+- Validation rules.
+- Audit behavior.
+- Concurrency handling.
 
-### C. Implemented Features
+### C. Database
 
-Login, logout, guards, account administration and recovery.
+- Existing structures reused.
+- New migrations, if any.
+- Migration execution evidence.
 
-### D. Database Changes
+### D. Created/Modified Files
 
-New migrations, tables and indexes.
+- Exact paths and purposes.
 
-### E. Created/Modified Files
+### E. Testing
 
-Exact paths and purpose.
+- Commands executed.
+- Results.
+- Test counts.
+- Browser verification status.
 
-### F. Verification
+### F. Acceptance Checklist
 
-Actual commands, outputs and test results.
+- WP04-AC01 through WP04-AC20.
 
 ### G. Security Review
 
-Cookies, session invalidation, rate limits, secrets and authorization.
+- Server-side authorization.
+- Input validation.
+- Session checks.
+- Audit integrity.
 
-### H. Acceptance Checklist
+### H. Known Issues
 
-WP03-AC01 through WP03-AC20.
+- Defects.
+- Missing UX resources.
+- Deferred verification.
 
-### I. Remaining Risks
+### I. Scope Confirmation
 
-Known defects, limitations and production prerequisites.
+- No projects/contracts/payments implemented.
+- No real client data.
+- No production deployment.
 
-### J. Next Package
+### J. Next Work Package
 
-Readiness for WP-04 — Clients.
+Assess readiness for WP-05 — Construction Projects, Contracts & Phases.
 
-## 20. EXECUTION
+Do not implement WP-05 automatically.
 
-Proceed with real local WP-03 implementation.
+## 16. EXECUTION
 
-Preserve WP-02V changes and prior migration history.
+Proceed with real WP-04 implementation in the local project.
 
-Use only synthetic local accounts and disposable databases.
+Inspect existing files, implement the complete Clients module, verify behavior against disposable MySQL 8.4, run regression checks and return the technical report.
 
-Implement authentication and authorization, execute applicable tests and report actual results.
+Do not stop at a plan.
 
-Do not start WP-04 automatically.
+Do not automatically commit or push unless separately authorized.
 
-Do not commit or push without explicit instruction.
-
-**END OF WP-03**
+**END OF WP-04**

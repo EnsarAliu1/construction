@@ -12,8 +12,11 @@
     "db:generate": "drizzle-kit generate",
     "db:check": "drizzle-kit check",
     "db:migrate": "tsx scripts/migrate-db.ts",
-    "test": "tsx --test tests/db/config.test.ts tests/db/schema.test.ts tests/db/history.test.ts tests/auth/security.test.ts",
-    "test:db": "tsx --test --test-concurrency=1 tests/db/integrity.integration.test.ts tests/auth/auth.integration.test.ts",
+    "test": "tsx --test tests/db/config.test.ts tests/db/schema.test.ts tests/db/history.test.ts tests/auth/security.test.ts tests/clients/validation.test.ts",
+    "test:db": "tsx --test --test-concurrency=1 tests/db/integrity.integration.test.ts tests/auth/auth.integration.test.ts tests/clients/clients.integration.test.ts",
+    "test:clients": "tsx --test tests/clients/validation.test.ts",
+    "test:clients:db": "tsx --test tests/clients/clients.integration.test.ts",
+    "test:clients:http": "tsx --test tests/clients/http.integration.test.ts",
     "test:auth": "tsx --test tests/auth/security.test.ts",
     "test:auth:http": "tsx --test tests/auth/http.integration.test.ts",
     "accounts": "tsx scripts/accounts.ts"
