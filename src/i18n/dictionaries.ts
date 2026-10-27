@@ -1,62 +1,38 @@
-export const locales = ["sq", "en"] as const;
-export type Locale = typeof locales[number];
-export const publicPages = ["about", "services", "projects", "contact"] as const;
-export type PublicPage = "home" | typeof publicPages[number];
-export function isLocale(value: string): value is Locale { return locales.some(locale => locale === value); }
-export function isPublicPage(value: string): value is typeof publicPages[number] { return publicPages.some(page => page === value); }
-
-type PageCopy = { title: string; description: string; bodyTitle: string; body: string };
-type Dictionary = {
-  nav: Record<PublicPage, string>; menu: string; close: string; navigation: string; skip: string;
-  brandNote: string; contentNote: string; footer: string; eyebrow: string;
-  explore: string; contact: string; imagePlaceholder: string; imageNote: string;
-  pages: Record<PublicPage, PageCopy>;
-  serviceAreas: string[]; pending: string; projectEmpty: string;
-  contactNote: string; name: string; email: string; message: string; submit: string;
-};
-
-export const dictionaries: Record<Locale, Dictionary> = {
-  sq: {
-    nav: { home: "Kryefaqja", about: "Rreth nesh", services: "Shërbimet", projects: "Projektet", contact: "Kontakti" },
-    menu: "Menyja", close: "Mbyll", navigation: "Navigimi kryesor", skip: "Kalo te përmbajtja",
-    brandNote: "Emërtim i përkohshëm", contentNote: "Përmbajtje paraprake · Në pritje të miratimit të klientit",
-    footer: "Identiteti i kompanisë, fotografitë dhe të dhënat e kontaktit presin miratimin e klientit.",
-    eyebrow: "Ndërtim · Prezantim i kompanisë", explore: "Shiko shërbimet", contact: "Faqja e kontaktit",
-    imagePlaceholder: "Hapësirë për fotografinë e miratuar", imageNote: "Ilustrim skematik · Nuk paraqet projekt real",
-    pages: {
-      home: { title: "Një bazë e qartë për çdo projekt.", description: "Hapësira e ardhshme për prezantimin e kompanisë, shërbimeve dhe projekteve të saj.", bodyTitle: "Njihuni me kompaninë", body: "Këtu do të publikohet prezantimi i miratuar i kompanisë. Historia, përvoja dhe identiteti zyrtar do të shtohen pas konfirmimit nga klienti." },
-      about: { title: "Rreth nesh", description: "Një vend për historinë, njerëzit dhe mënyrën e punës së kompanisë.", bodyTitle: "Historia që do të ndajmë", body: "Tekst i përkohshëm. Prezantimi i kompanisë, ekipi dhe historia do të shtohen pasi të dorëzohen dhe miratohen materialet përfundimtare." },
-      services: { title: "Shërbimet", description: "Një pasqyrë e qartë e shërbimeve që do të prezantohen nga kompania.", bodyTitle: "Fushat e shërbimit", body: "Kategoritë më poshtë janë vetëm vende të rezervuara. Emërtimet, përshkrimet dhe fusha e shërbimeve presin miratimin e klientit." },
-      projects: { title: "Projektet", description: "Hapësirë e rezervuar për projekte dhe fotografi të miratuara nga klienti.", bodyTitle: "Projektet do të prezantohen këtu", body: "Çdo prezantim do të përdorë vetëm përshkrime, të dhëna dhe fotografi të miratuara. Ende nuk ka projekte të publikuara." },
-      contact: { title: "Kontakti", description: "Të dhënat zyrtare të kontaktit do të publikohen pas konfirmimit nga klienti.", bodyTitle: "Le të lidhemi", body: "Adresa, telefoni, emaili dhe orari i punës janë në pritje të materialeve të miratuara. Aktualisht nuk ka kanal kontakti aktiv në këtë faqe." },
-    },
-    serviceAreas: ["Shërbimi 01", "Shërbimi 02", "Shërbimi 03"], pending: "Përshkrimi pret miratimin e klientit.",
-    projectEmpty: "Asnjë projekt i publikuar", contactNote: "Pamje paraprake. Dërgimi i mesazheve nuk është aktiv në këtë fazë.",
-    name: "Emri", email: "Emaili", message: "Mesazhi", submit: "Dërgimi nuk është aktiv",
+export const locales=["sq","en"] as const;
+export type Locale=typeof locales[number];
+export const publicPages=["about","services","projects","contact"] as const;
+export type PublicPage="home"|typeof publicPages[number];
+export const isLocale=(value:string):value is Locale=>locales.some(l=>l===value);
+export const isPublicPage=(value:string):value is typeof publicPages[number]=>publicPages.some(p=>p===value);
+type PageCopy={title:string;description:string;bodyTitle:string;body:string};
+export type Dictionary={nav:Record<PublicPage,string>;menu:string;close:string;navigation:string;skip:string;brandNote:string;footer:string;eyebrow:string;explore:string;contact:string;approach:string;imageNote:string;pages:Record<PublicPage,PageCopy>;principles:{title:string;body:string}[];questions:{title:string;body:string}[];processTitle:string;processIntro:string;serviceEmpty:string;projectEmpty:string;projectIntro:string;ctaTitle:string;ctaBody:string;contactNote:string;contactUnavailable:string;name:string;email:string;message:string;submit:string;footerNavigation:string;language:string};
+export const dictionaries:Record<Locale,Dictionary>={
+ sq:{
+  nav:{home:"Kryefaqja",about:"Rreth nesh",services:"Shërbimet",projects:"Projektet",contact:"Kontakti"},menu:"Menyja",close:"Mbyll",navigation:"Navigimi kryesor",skip:"Kalo te përmbajtja",brandNote:"Ndërtim",footer:"Një pikënisje e qartë për bisedat rreth ndërtimit.",eyebrow:"Fitimi Construction",explore:"Informata për shërbimet",contact:"Shiko kontaktin",approach:"Njihuni me qasjen",imageNote:"Studim arkitektonik abstrakt. Nuk paraqet një projekt të realizuar.",
+  pages:{
+   home:{title:"Çdo ndërtim nis me një ide të qartë.",description:"Nga pyetjet e para te përcaktimi i hapësirës, qëllimit dhe kërkesave të një projekti ndërtimi.",bodyTitle:"Hapësirë për ide. Qartësi në detaje.",body:"Një projekt është më shumë se një ndërtesë. Ai lidh hapësirën me nevojat, vendin dhe jetën e përditshme. Një përmbledhje e qartë e këtyre nevojave është një pikënisje e dobishme."},
+   about:{title:"Një këndvështrim i menduar për ndërtimin.",description:"Njihuni me prezantimin e Fitimi Construction dhe me temat që i japin formë një projekti.",bodyTitle:"Fillimisht, pyetjet e duhura.",body:"Çdo projekt fillon me një vend, një qëllim dhe një sërë pyetjesh. Çfarë duhet të mundësojë hapësira? Cilat janë kufizimet? Cilat detaje kanë më shumë rëndësi? Qartësia e këtyre pyetjeve ndihmon në përcaktimin e hapave të ardhshëm."},
+   services:{title:"Shërbimi i duhur fillon me një fushë të qartë.",description:"Informata për shërbimet dhe pyetje të dobishme për përgatitjen e një kërkese ndërtimi.",bodyTitle:"Përcaktoni çfarë ka rëndësi për projektin.",body:"Vendi, përdorimi i synuar dhe nevojat kryesore krijojnë bazën për një diskutim më të saktë. Temat më poshtë janë pyetje për përgatitje, jo një katalog shërbimesh."},
+   projects:{title:"Hapësirë për punë që flet vetë.",description:"Prezantime publike të projekteve, me përshkrime dhe fotografi të autorizuara.",bodyTitle:"Projektet e publikuara",body:"Kjo faqe i kushtohet prezantimit publik të projekteve. Informacioni i klientëve dhe i projekteve private nuk publikohet këtu."},
+   contact:{title:"Biseda e parë fillon me qartësi.",description:"Disponueshmëria e kontaktit dhe temat që mund të përgatitni për një bisedë rreth ndërtimit.",bodyTitle:"Përgatitni idenë tuaj.",body:"Vendi, qëllimi i hapësirës dhe kërkesat kryesore janë një përmbledhje e dobishme për bisedën e parë. Mos dërgoni dokumente personale apo të dhëna konfidenciale përmes kanaleve të paverifikuara."}
   },
-  en: {
-    nav: { home: "Home", about: "About us", services: "Services", projects: "Projects", contact: "Contact" },
-    menu: "Menu", close: "Close", navigation: "Main navigation", skip: "Skip to content",
-    brandNote: "Working title", contentNote: "Placeholder content · Awaiting client approval",
-    footer: "Company identity, photography and contact details are awaiting client approval.",
-    eyebrow: "Construction · Company introduction", explore: "Explore services", contact: "Contact page",
-    imagePlaceholder: "Reserved for approved photography", imageNote: "Schematic illustration · Does not depict a real project",
-    pages: {
-      home: { title: "A clear foundation for every project.", description: "A future home for the company, its services and its construction projects.", bodyTitle: "Get to know the company", body: "The approved company introduction will appear here. Company history, experience and official identity will be added after client confirmation." },
-      about: { title: "About us", description: "A place for the company's story, people and approach to work.", bodyTitle: "A story to be shared", body: "Placeholder copy. The company introduction, team and history will be added once the final materials have been supplied and approved." },
-      services: { title: "Services", description: "A clear overview of the services the company will present.", bodyTitle: "Service areas", body: "The categories below are reserved spaces. Service names, descriptions and scope are awaiting client approval." },
-      projects: { title: "Projects", description: "A space for construction projects and photography approved by the client.", bodyTitle: "Projects will be presented here", body: "Every project presentation will use approved descriptions, details and photographs. There are no published projects yet." },
-      contact: { title: "Contact", description: "Official contact details will be published after confirmation by the client.", bodyTitle: "Get in touch", body: "The address, phone number, email and opening hours are awaiting approved materials. There is currently no active contact channel on this page." },
-    },
-    serviceAreas: ["Service 01", "Service 02", "Service 03"], pending: "Description awaiting client approval.",
-    projectEmpty: "No published projects", contactNote: "Preview only. Message submission is unavailable in this phase.",
-    name: "Name", email: "Email", message: "Message", submit: "Submission unavailable",
+  principles:[{title:"Qartësi",body:"Një qëllim i kuptueshëm dhe kërkesa të përcaktuara ndihmojnë në marrjen e vendimeve."},{title:"Kujdes për kontekstin",body:"Vendi dhe përdorimi i hapësirës janë pjesë e çdo bisede të menduar për ndërtimin."},{title:"Vëmendje ndaj detajeve",body:"Materialet, hapësirat dhe lidhjet mes tyre meritojnë të shqyrtohen së bashku."}],
+  questions:[{title:"Çfarë dëshironi të ndërtoni?",body:"Përshkruani përdorimin e synuar dhe nevojat që duhet të përmbushë hapësira."},{title:"Çfarë e përcakton vendin?",body:"Përmblidhni kontekstin, kufizimet e njohura dhe informacionin që keni në dispozicion."},{title:"Cila është fusha e kërkesës?",body:"Dalloni nevojat kryesore nga pyetjet e hapura dhe hapat që kërkojnë sqarim."}],
+  processTitle:"Nga ideja te një drejtim i kuptueshëm.",processIntro:"Një mënyrë për të organizuar mendimet para se të përcaktohen hapat e projektit.",serviceEmpty:"Detajet e shërbimeve të disponueshme nuk janë publikuar ende.",projectEmpty:"Ende nuk ka projekte publike.",projectIntro:"Këtu do të shfaqen vetëm prezantime me përmbajtje të autorizuar për publikim. Nuk përdoren projekte shembull apo fotografi të paraqitura si punë reale.",ctaTitle:"Një ide për hapësirën tuaj?",ctaBody:"Shikoni informacionin e kontaktit dhe përgatitni pyetjet e para.",contactNote:"Dërgimi i mesazheve në internet nuk është i disponueshëm. Kjo faqe nuk dërgon dhe nuk ruan mesazhe.",contactUnavailable:"Nuk ka ende të dhëna kontakti të publikuara.",name:"Emri",email:"Emaili",message:"Mesazhi",submit:"Dërgimi nuk është i disponueshëm",footerNavigation:"Navigimi në fund të faqes",language:"Gjuha"
+ },
+ en:{
+  nav:{home:"Home",about:"About us",services:"Services",projects:"Projects",contact:"Contact"},menu:"Menu",close:"Close",navigation:"Main navigation",skip:"Skip to content",brandNote:"Construction",footer:"A clear starting point for conversations about construction.",eyebrow:"Fitimi Construction",explore:"Service information",contact:"View contact information",approach:"Explore the approach",imageNote:"Abstract architectural study. This does not depict a completed project.",
+  pages:{
+   home:{title:"Every build begins with a clear idea.",description:"From the first questions to defining a construction project's space, purpose and requirements.",bodyTitle:"Room for ideas. Clarity in the details.",body:"A project is more than a building. It connects a space with its purpose, its surroundings and everyday life. A clear brief brings those needs into focus."},
+   about:{title:"A considered perspective on construction.",description:"An introduction to Fitimi Construction and the questions that help shape a project.",bodyTitle:"Start with the right questions.",body:"Every project begins with a place, a purpose and a set of questions. What should the space make possible? What constraints need attention? Which details matter most? Clear answers help define the next steps."},
+   services:{title:"The right service starts with a clear scope.",description:"Service information and useful questions for preparing a construction enquiry.",bodyTitle:"Define what matters to your project.",body:"The site, intended use and main requirements provide a useful basis for a focused conversation. The topics below help you prepare a brief; they are not a service catalogue."},
+   projects:{title:"A place for the work to speak.",description:"Public project presentations with authorised descriptions and photography.",bodyTitle:"Published projects",body:"This space is reserved for public project presentations. Private client and management-system project information is not published here."},
+   contact:{title:"A clear brief starts the conversation.",description:"Contact availability and useful topics to prepare for a conversation about construction.",bodyTitle:"Bring your idea into focus.",body:"The site, intended use and main requirements make a useful starting brief. Do not send personal documents or confidential information through unverified channels."}
   },
+  principles:[{title:"Clarity",body:"A clear purpose and defined requirements help guide decisions."},{title:"Attention to context",body:"The site and the way a space will be used belong in every considered construction conversation."},{title:"Care in the details",body:"Materials, spaces and the connections between them deserve to be considered together."}],
+  questions:[{title:"What would you like to build?",body:"Describe the intended use and the needs the space should meet."},{title:"What defines the site?",body:"Outline the context, known constraints and information already available."},{title:"What is the scope of the enquiry?",body:"Separate the main requirements from open questions and the steps that need clarification."}],
+  processTitle:"From an idea to a clear direction.",processIntro:"A way to organise your thinking before defining a project's next steps.",serviceEmpty:"Details of available services have not yet been published.",projectEmpty:"No public projects yet.",projectIntro:"Only presentations authorised for publication will appear here. No sample projects or photographs are presented as completed company work.",ctaTitle:"An idea for your space?",ctaBody:"Check contact availability and prepare your first questions.",contactNote:"Online messaging is unavailable. This page does not send or store messages.",contactUnavailable:"No contact details have been published yet.",name:"Name",email:"Email",message:"Message",submit:"Submission unavailable",footerNavigation:"Footer navigation",language:"Language"
+ }
 };
-
-export function publicNavigation(locale: Locale) {
-  return (["home", ...publicPages] as const).map(page => ({
-    href: page === "home" ? `/${locale}` : `/${locale}/${page}`,
-    label: dictionaries[locale].nav[page],
-  }));
-}
+export const publicPath=(locale:Locale,page:PublicPage)=>`/${locale}${page==="home"?"":"/"+page}`;
+export function publicNavigation(locale:Locale){return (["home",...publicPages] as const).map(page=>({href:publicPath(locale,page),label:dictionaries[locale].nav[page]}));}

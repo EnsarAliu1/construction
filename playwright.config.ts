@@ -1,0 +1,4 @@
+import {defineConfig} from "@playwright/test";
+const target=new URL(process.env.AUTH_ORIGIN??"http://127.0.0.1:3000");
+if(!["127.0.0.1","localhost","[::1]"].includes(target.hostname)||target.username||target.password||target.pathname!=="/"||target.search||target.hash)throw new Error("Browser verification requires an isolated loopback origin.");
+export default defineConfig({testDir:"./tests/website/browser",testMatch:"*.spec.ts",outputDir:"artifacts/wp11/browser-results",fullyParallel:false,workers:1,retries:0,timeout:45000,reporter:[["list"],["json",{outputFile:"artifacts/wp11/browser-results/results.json"}]],use:{baseURL:target.origin,browserName:"chromium",channel:"msedge",headless:true,viewport:{width:1440,height:1000},colorScheme:"light",locale:"en-GB",screenshot:"only-on-failure",trace:"retain-on-failure"}});

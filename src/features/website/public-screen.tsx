@@ -1,28 +1,15 @@
 import Link from "next/link";
-import { Badge, Button, Card, EmptyState, FormField, Input } from "@/components/ui";
-import { dictionaries, type Locale, type PublicPage } from "@/i18n/dictionaries";
-
-export function PublicScreen({ locale, page }: { locale: Locale; page: PublicPage }) {
-  const copy = dictionaries[locale];
-  const content = copy.pages[page];
-  return <>
-    <section className={`public-container public-hero ${page === "home" ? "home-hero" : ""}`}>
-      <div className="hero-copy"><p className="eyebrow">{copy.eyebrow}</p><h1>{content.title}</h1><p className="hero-description">{content.description}</p>
-        {page === "home" && <div className="hero-actions"><Link href={`/${locale}/services`} className="button">{copy.explore} <span aria-hidden="true">↗</span></Link><Link className="text-link" href={`/${locale}/contact`}>{copy.contact} <span aria-hidden="true">→</span></Link></div>}
-        <p className="content-note">{copy.contentNote}</p>
-      </div>
-      {(page === "home" || page === "about") && <figure className="blueprint"><div className="blueprint-drawing" aria-hidden="true"><span className="plan-room room-one" /><span className="plan-room room-two" /><span className="plan-room room-three" /><span className="plan-axis" /></div><figcaption><span>{copy.imagePlaceholder}</span><small>{copy.imageNote}</small></figcaption></figure>}
-    </section>
-    <section className="public-section"><div className="public-container">
-      <div className="public-section-heading"><span className="eyebrow">{page === "home" ? "01" : "02"} / {copy.nav[page]}</span><div><h2>{content.bodyTitle}</h2><p className="muted">{content.body}</p></div></div>
-      {page === "home" && <div className="public-paths">{(["about", "services", "projects"] as const).map((item, index) => <Link key={item} href={`/${locale}/${item}`}><span className="eyebrow">0{index + 1}</span><h3>{copy.nav[item]} <span aria-hidden="true">↗</span></h3><p className="muted">{copy.pages[item].description}</p></Link>)}</div>}
-      {page === "services" && <div className="dashboard-grid">{copy.serviceAreas.map((title, index) => <Card key={title}><p className="eyebrow">0{index + 1}</p><h3>{title}</h3><p className="muted">{copy.pending}</p><Badge>{copy.brandNote}</Badge></Card>)}</div>}
-      {page === "projects" && <Card><EmptyState title={copy.projectEmpty} description={copy.pending} /></Card>}
-      {page === "about" && <Card className="about-placeholder"><Badge>{copy.contentNote}</Badge><p className="muted">{copy.imagePlaceholder}</p></Card>}
-      {page === "contact" && <Card className="contact-preview"><p id="contact-note" className="notice">{copy.contactNote}</p><fieldset disabled aria-describedby="contact-note"><legend className="sr-only">{copy.nav.contact}</legend>
-        <div className="form-grid"><FormField label={copy.name} htmlFor="name"><Input id="name" name="name" autoComplete="name" /></FormField><FormField label={copy.email} htmlFor="email"><Input id="email" name="email" type="email" autoComplete="email" /></FormField></div>
-        <FormField label={copy.message} htmlFor="message"><textarea id="message" name="message" className="input" rows={4} /></FormField><Button disabled type="button">{copy.submit}</Button>
-      </fieldset></Card>}
-    </div></section>
-  </>;
+import {dictionaries,publicPath,type Locale,type PublicPage} from "@/i18n/dictionaries";
+import {publishedServices,publishedProjects,publishedContacts} from "./content";
+import {ArchitecturalScene,Approach,Preparation,ServiceCards,ProjectGallery,ContactCta} from "./sections";
+export function PublicScreen({locale,page}:{locale:Locale;page:PublicPage}){
+ const c=dictionaries[locale],content=c.pages[page],services=publishedServices(),projects=publishedProjects(),contacts=publishedContacts();
+ return <><section className={`public-container site-hero ${page==="home"||page==="about"?"site-hero-split":"site-hero-inner"}`}><div className="site-hero-copy"><p className="eyebrow">{c.eyebrow} <span aria-hidden="true">/</span> {c.nav[page]}</p><h1>{content.title}</h1><p className="site-hero-description">{content.description}</p>{page==="home"&&<div className="hero-actions"><Link className="button" href={publicPath(locale,"about")}>{c.approach}<span aria-hidden="true">↗</span></Link><Link className="text-link" href={publicPath(locale,"contact")}>{c.contact}</Link></div>}</div>{(page==="home"||page==="about")&&<ArchitecturalScene locale={locale}/>}</section>
+  {page==="home"?<><Approach locale={locale}/><Preparation locale={locale}/><ServiceCards locale={locale} services={services}/>{projects.length>0&&<ProjectGallery locale={locale} projects={projects}/>}<ContactCta locale={locale}/></>:<>
+   {(page==="about"||page==="contact")&&<section className="site-section site-section-paper"><div className="public-container site-section-heading"><p className="eyebrow">{c.nav[page]}</p><div><h2>{content.bodyTitle}</h2><p>{content.body}</p></div></div></section>}
+   {page==="about"&&<><Approach locale={locale} showLink={false}/><Preparation locale={locale}/></>}
+   {page==="services"&&<><ServiceCards locale={locale} services={services} introduction={content.body}/><Preparation locale={locale}/></>}
+   {page==="projects"&&<ProjectGallery locale={locale} projects={projects}/>}
+   {page==="contact"?<section className="site-section"><div className="public-container site-contact-grid"><div><p className="eyebrow">{c.nav.contact}</p><h2>{contacts.length?c.pages.contact.bodyTitle:c.contactUnavailable}</h2>{contacts.map((entry,i)=>entry.kind==="address"?<address key={i}>{entry.value}</address>:<p key={i}><a className="text-link" href={`${entry.kind==="email"?"mailto:":"tel:"}${entry.value}`}>{entry.value}</a></p>)}<p className="site-contact-note" id="contact-note">{c.contactNote}</p></div><div className="site-contact-panel"><fieldset disabled aria-describedby="contact-note"><legend>{c.nav.contact}</legend><div className="form-field"><label htmlFor="contact-name">{c.name}</label><input className="input" id="contact-name" name="name" autoComplete="name"/></div><div className="form-field"><label htmlFor="contact-email">{c.email}</label><input className="input" id="contact-email" type="email" name="email" autoComplete="email"/></div><div className="form-field"><label htmlFor="contact-message">{c.message}</label><textarea className="input" id="contact-message" name="message" rows={4}/></div><button className="button" type="button" disabled>{c.submit}</button></fieldset></div></div></section>:<ContactCta locale={locale}/>}</>}
+ </>;
 }

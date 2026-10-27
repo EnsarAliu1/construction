@@ -1,731 +1,597 @@
 # ADORE TECH SOLUTIONS — CODEX IMPLEMENTATION PROMPT
 
-## WP-10: Financial Dashboard, Company Reports & Full Data Export
+## WP-11: Corporate Website Foundation, Content Architecture & Premium Experience Preparation
 
 **Project:** Fitimi Construction Management System & Corporate Website  
-**Work Package:** WP-10  
+**Work Package:** WP-11  
 **Version:** 1.0  
 **Date:** 27 October 2026  
 **Developer:** Codex  
 **Technical Lead:** Adore Tech Solutions  
-**Authorization:** Local implementation, justified dependencies, additive migrations, isolated MySQL 8.4 testing, PDF/XLSX/CSV generation and regression verification.
+**Authorization:** Local implementation, justified dependencies, local tests and verified corrections. No production deployment.
 
 ---
 
 ## 1. MISSION
 
-Implement real financial visibility and data portability on top of the existing database-backed modules.
+Turn the existing bilingual SQ/EN corporate website from an initial foundation into a complete, polished, structurally production-oriented public website.
 
-Deliver:
+Build a credible, responsive and accessible construction-company website that provides an excellent foundation for the later advanced visual and motion-design package.
 
-1. A functional company dashboard.
-2. Company-wide financial summaries.
-3. On-screen financial summaries for individual projects.
-4. Company-wide financial reports with PDF and Excel export.
-5. Filterable financial reporting by approved dimensions.
-6. Complete customer/business data export, including history and audit records.
-7. Secure authorization, exact money calculations and consistent historical accounting of current active business states.
-8. Meaningful real MySQL, document and HTTP tests.
+Required routes:
 
-This is real implementation work, not planning only.
+- Home
+- About
+- Services
+- Projects
+- Contact
 
-Do not fabricate financial data or claim fiscal/accounting certification.
+Each route must exist in Albanian and English.
 
-## 2. VERIFIED REPORTED BASELINE
+This package focuses on complete website functionality, content architecture, interaction quality, responsive behavior, SEO foundations and preparation for premium motion.
 
-Previous work packages WP-01 through WP-09 have been implemented locally.
+Do not treat this package as permission to invent real company facts, projects, testimonials or credentials.
 
-WP-09 reports:
+Do not rebuild the internal Construction Management System.
 
-- 275 distinct automated test results passing.
-- MySQL 8.4.13.
-- Nine migrations, numbered 0000–0008.
-- 20 application tables.
-- 13 original integrity/history triggers.
-- Receipt PDFs rendered with PDFKit 0.20.2.
-- Immutable receipt PDF versions stored privately.
-- Working payment confirmation, correction and cancellation.
-- Existing exact monetary arithmetic, idempotency and audit.
-- Browser visual/interaction verification NOT VERIFIED.
+## 2. PROJECT BASELINE
 
-Before coding:
+Reported completed packages WP-01 through WP-10.
 
-- Inspect actual branch, HEAD and working tree.
-- Read AGENTS.md and applicable repository instructions.
-- Preserve owner changes and existing manual test environments.
-- Review every relevant existing service, database query, schema and migration.
-- Read WP-05, WP-07, WP-08 and WP-09 reports and existing test patterns.
-- Verify which approved source/design materials are actually accessible.
-- Do not assume missing Master Prompt or wireframes have been inspected.
-- Do not modify README.md if the owner's current instructions prohibit it.
-- Follow current Git commit/push instructions; never deploy.
+WP-10 reports:
 
-Do not rewrite earlier migrations.
+- Working authenticated construction-management modules.
+- Real financial dashboard and company reports.
+- Full business-data export.
+- Actual receipt PDFs.
+- 309 passing Node test results.
+- MySQL 8.4.13 integration evidence.
+- No browser interaction verification.
+- Missing original approved visual design assets.
 
-## 3. APPROVED BUSINESS SCOPE
+Before implementation:
 
-The financial system records:
+1. Inspect current Git branch and working tree.
+2. Read AGENTS.md and all current owner instructions.
+3. Preserve existing uncommitted work.
+4. Inspect actual public pages, route architecture, translations and design tokens.
+5. Inspect public/private layout separation.
+6. Inspect metadata, image handling and current contact behavior.
+7. Review any accessible approved UX, branding and copywriting resources.
+8. Preserve all financial/authentication/reporting behavior.
 
-- Incoming payments linked to projects and contract phases.
-- Actual expenses that may be project-linked or company-wide.
-- Project contract totals and phase values.
-- Historical corrections, cancellations and audit entries.
-- Immutable receipt document versions.
+Follow existing README restrictions if still active.
 
-Only EUR is supported.
+Do not silently replace approved design decisions.
 
-Financial difference is calculated as:
+## 3. CREATIVE DIRECTION
 
-`Active received income - Active recorded expenses`
+The website represents a professional construction company.
 
-It may be labeled "Diferenca hyrje–dalje" or an equivalent approved operational term.
+Its desired brand experience is:
 
-**It is NOT statutory accounting profit.**
+- Premium and credible.
+- Modern architectural composition.
+- Strong typography.
+- Excellent hierarchy.
+- Confident but restrained copy.
+- Refined interactions.
+- Clear service storytelling.
+- A memorable construction-inspired visual language.
 
-Never label it legal/accounting profit, taxable income or an accountant-certified balance.
+The owner has explicitly requested later extraordinary animations inspired by real construction activities, including:
 
-### Reporting limits
+- Bricks assembling into structures.
+- Construction vehicles and trucks.
+- Cranes and machinery.
+- Buildings being assembled progressively.
+- Scroll-driven architectural storytelling.
+- Cinematic transitions and subtle depth.
 
-The company-level financial report can be exported to:
+**These are creative directions for WP-12, not authorization to invent approved final designs.**
 
-- PDF.
-- XLSX.
+WP-11 must create clean component boundaries and section structures that allow WP-12 to introduce these effects without rewriting the website.
 
-Individual project financial summaries are available **on screen only**.
+Do not install a heavyweight 3D engine merely to prepare for future animations.
 
-**Do not provide project-specific financial report PDF or XLSX exports in the MVP.**
+## 4. CONTENT INTEGRITY
 
-The complete customer data export is a separate data-portability feature and may contain project data in CSV/XLSX and appropriate PDF/document form, including audit/history, as already approved. It must not be presented as an individual project financial report.
+Do not invent:
 
-## 4. FINANCIAL DEFINITIONS
+- Completed construction projects.
+- Client testimonials.
+- Years of experience.
+- Number of employees.
+- Awards or certifications.
+- Exact company address.
+- Company registration or tax numbers.
+- Telephone numbers or emails.
+- Named leadership.
+- Real project photographs or ownership rights.
+- Quantified construction achievements.
 
-### Active income
+Inspect available sources for real company facts.
 
-Include only qualifying payments whose current status is `received`.
+Use only verified information.
 
-Use the latest corrected payment state.
+Where approved content is missing:
 
-Exclude cancelled payments from active income.
+- Implement a clear typed content model.
+- Maintain an explicit missing-content inventory.
+- Use neutral, nonfactual wording where possible.
+- Keep unverified claims out of the public-facing experience.
+- Use appropriately labeled development placeholders only in nonproduction preview contexts.
+- Avoid visually presenting fictitious portfolio projects as real completed work.
 
-For project and phase breakdowns, use only current non-retired allocations belonging to qualifying received payments.
+Do not copy material from other construction businesses.
 
-Do not add historical allocation versions as though they were new money.
+Do not publish stock imagery as actual Fitimi Construction work.
 
-### Active expenses
+## 5. BILINGUAL SQ/EN QUALITY
 
-Include only qualifying expenses whose current status is `recorded`.
-
-Use the latest corrected expense state.
-
-Exclude cancelled expenses from active outgoing totals.
-
-### Company-wide expenses
-
-A recorded expense without a project contributes to the company total, but not to an individual project's costs.
-
-Do not distribute company-wide expenses across projects automatically.
-
-### Contract value
-
-Use current active contract and phase state according to the existing business rules.
-
-Clearly distinguish contract value from actual cash received.
-
-Unpaid contract balance is not actual cash income.
-
-### Actual transaction dates
-
-Date-range filters for payments and expenses must use their actual transaction dates, not creation timestamps or audit timestamps.
-
-### Historical audit
-
-Audit records and immutable snapshots show what changed.
-
-They must not be summed as additional income or additional expense.
-
-Current operational reports reflect the latest active state, while all history remains accessible through the appropriate audit/export functionality.
-
-## 5. FINANCIAL QUERY ARCHITECTURE
-
-Build reusable server-only reporting services.
-
-Do not copy financial formulas independently into multiple UI components or document generators.
-
-Use a single shared definition of eligible payment, allocation and expense states.
-
-Prefer database-side aggregates or bounded, consistent queries as appropriate.
-
-All monetary calculation paths must preserve DECIMAL(19,2) precision.
-
-Use decimal strings, BigInt cents or an equivalent exact decimal representation.
-
-Do not convert financial DECIMAL values to JavaScript floating-point numbers for summation or equality.
-
-### Read consistency
-
-Dashboard cards, report totals and exported detail rows must not disagree because different queries see different transaction snapshots.
-
-Use an appropriate consistent MySQL read transaction or documented snapshot/materialization strategy.
-
-Do not hold long-lived database transactions open while generating potentially slow PDF or XLSX bytes.
-
-If a full export requires materialization, establish a consistent, bounded snapshot and document the memory/storage tradeoff.
-
-Report-generation filters and totals must derive from the same snapshot and eligibility rules.
-
-## 6. COMPANY DASHBOARD
-
-Replace the placeholder dashboard with real data.
-
-Include appropriate high-level metrics:
-
-- Current total contract value.
-- Total active received income.
-- Total active recorded expenses.
-- Operational income-minus-expense difference.
-- Outstanding contract amount where its calculation is unambiguous.
-- Active project count.
-- Relevant financial and project-status breakdowns.
-- Recent actual payments and expenses where useful.
-
-Never equate the contract's unpaid portion with guaranteed future cash collection.
-
-Provide meaningful loading, empty, zero-data and failure states.
-
-Visual charts may be included only when based on real values and clearly labeled.
-
-No fake KPI trends, growth percentages or invented comparisons.
-
-For filters that mix different financial concepts, label the calculation scope precisely.
-
-## 7. PROJECT FINANCIAL SUMMARIES
-
-Provide on-screen summaries in the existing project details interface, including:
-
-- Current contract value.
-- Active received payments for that project.
-- Active recorded expenses directly linked to that project.
-- Operational difference between those two amounts.
-- Phase values.
-- Phase paid totals.
-- Remaining phase capacity.
-- Contract remaining amount according to approved interpretation.
-
-Preserve WP-05's exact aggregate and phase-capacity semantics.
-
-A company-wide expense must not appear inside a project expense total.
-
-Do not duplicate business logic.
-
-**Do not add project financial PDF/XLSX buttons or endpoints.**
-
-Avoid showing a financial summary for invalid/historically inconsistent records as if it were verified. Fail safely or label any detected inconsistency.
-
-## 8. COMPANY FINANCIAL REPORT
-
-Implement authenticated company-wide reporting.
-
-Support:
-
-- Start date.
-- End date.
-- Cash/bank payment method where applicable.
-- Expense category filter where useful.
-- Project dimension in company-level breakdowns where appropriate.
-- Clear inclusion/exclusion of cancelled records.
-- Total active income.
-- Total active expenses.
-- Operational difference.
-- Appropriate payment and expense detail sections.
-- Company-wide vs project-linked expense distinction.
-
-The report must cover the company as a whole, including qualifying records with or without a linked project.
-
-If a project selection is offered as an analytical filter, it must not silently become a separately generated "individual project financial report." Preserve the approved company-report-only export policy.
-
-Show a preview or accurate report summary before export.
-
-Use meaningful headings and date-range labels.
-
-For any historical comparison, clearly distinguish transaction-date filtering from "state as of date" reconstruction. Do not invent full point-in-time accounting if it has not been approved.
-
-## 9. PDF COMPANY REPORT EXPORT
-
-Generate a real company-level financial report PDF.
-
-Requirements:
-
-- Readable A4 or appropriate documented report page format.
-- Company identity only from real/configured data.
-- Explicit report creation timestamp.
-- Selected report period.
-- EUR formatting.
-- Exact income/expense/difference totals.
-- Clear section headings and tables.
-- Correct handling of long content and pagination.
-- Albanian character rendering.
-- No clipping, overflow or blank trailing pages.
-- Non-fiscal/operational report wording where needed.
-- No unsupported official tax/accounting assertions.
-
-Reuse the installed PDF tooling where appropriate.
-
-Do not modify receipt rendering/versioning behavior unnecessarily.
-
-A generated financial report is not itself a numbered payment receipt.
-
-Document export authorization must be enforced server-side.
-
-## 10. XLSX COMPANY REPORT EXPORT
-
-Generate an actual valid XLSX workbook.
-
-Include:
-
-- Summary sheet.
-- Incoming payments detail sheet.
-- Expenses detail sheet.
-- Relevant company-level breakdowns.
-- Report filters and generation metadata.
-- Accurate date and monetary representations.
-- Useful column widths, headers, freeze panes and number formats.
-
-Avoid floating-point-derived financial totals.
-
-If spreadsheet cells contain numeric values, guarantee that their serialization does not silently change monetary values. Test exact output and clearly document any XLSX numeric precision limitations.
-
-For identifiers and values that could be interpreted as formulas, use explicit safe text cells.
-
-Prevent spreadsheet formula injection from user-entered names, descriptions, addresses and other text.
-
-Do not let exported data become executable formulas.
-
-## 11. COMPLETE BUSINESS DATA EXPORT
-
-Implement a separate, authenticated full customer/business data export capability.
-
-Scope includes the customer's complete relevant business information, such as:
-
-- Clients.
-- Projects.
-- Contracts.
-- Contract phases.
-- Payments.
-- Payment allocations.
-- Expenses.
-- Expense categories.
-- Persons/suppliers.
-- Vehicles.
-- Receipt metadata.
-- Receipt version metadata.
-- Audit events.
-- Entity version history.
-- Relevant stable IDs, relationships and timestamps.
-
-Preserve:
-
-- Historical/cancelled states.
-- Logical deletion metadata.
-- Original entity identifiers.
-- Version values.
-- Event timestamps.
-- Relationship identifiers.
-- Exact financial decimal values.
-
-Use appropriately structured CSV and/or XLSX datasets plus suitable PDF documentation or manifest, in accordance with the approved full-export requirement.
-
-**Do not export authentication secrets.**
-
-Explicitly exclude:
-
-- Password hashes.
-- Raw session tokens or session token digests.
-- Operator credentials.
-- Login limiter secrets/state.
-- Environment variables.
-- Private storage filesystem paths.
-- Unnecessary internal security metadata.
-- Database connection strings.
-
-Receipts themselves remain accessible as authorized immutable PDF files. If including receipt PDF documents in a complete export, package their actual bytes safely and verify checksums; do not substitute fake metadata as though it contained the documents.
-
-Choose and document an appropriate bounded export packaging strategy, such as a private ZIP bundle containing structured datasets, real receipt PDFs and a manifest/checksum file.
-
-Avoid arbitrary filesystem enumeration.
-
-All included documents must originate from authorized, database-referenced storage keys.
-
-### Completeness
-
-A full export must not silently omit older audit events or historical versions because an ordinary UI list caps results at 20 or 30.
-
-Implement safe batching or pagination internally.
-
-Detect and report partial or failed exports.
-
-Record the export schema version and generation timestamp.
-
-Use stable filenames and formats that permit data portability.
-
-Avoid excessive memory use with large datasets.
-
-## 12. EXPORT SECURITY
-
-Every export action must require a live authenticated business user.
-
-Use server-side authorization.
+Maintain equivalent Albanian and English experiences.
 
 Implement:
 
-- No-store/private download headers.
-- Appropriate content types.
-- Safe attachment filenames.
-- No public static export paths.
-- Bounded resource use.
-- Safe temporary-file handling.
-- Cleanup of incomplete generated exports.
-- Authorization rechecks for long-running generation where feasible.
-- Audit events indicating export execution without embedding exported sensitive data.
+- Real translations for UI labels and verified content.
+- Correct route-preserving language switching.
+- Correct language-specific document lang metadata.
+- SEO canonical and hreflang handling.
+- Appropriate localized page titles and descriptions.
+- Correct fallback behavior.
+- No mixed-language UI.
+- No missing translation keys.
+- No broken direct-link navigation.
+- Correct Albanian special characters.
 
-Do not accept arbitrary table names or filesystem paths from browser input.
+English should read naturally, not as literal awkward translation.
 
-Protect against:
+Do not add unsupported languages.
 
-- Path traversal.
-- CSV/XLSX formula injection.
-- Unauthorized export access.
-- Unbounded memory consumption.
-- Partial downloads mislabeled as complete.
-- Accidentally publishing customer data.
+## 6. HOME PAGE
 
-Do not expose the raw financial or audit database through an unguarded API.
+Implement a clear premium page structure:
 
-Consider how concurrent edits, corrections and cancellations affect the chosen export snapshot.
+1. Strong hero section.
+2. Concise company positioning.
+3. Services overview.
+4. Construction process or working philosophy.
+5. Projects section only where authentic project information is available.
+6. Differentiators based on verifiable facts or neutral service approach.
+7. Clear contact CTA.
+8. Consistent footer.
 
-## 13. FILTERING AND REPORT VALIDATION
+The hero should be architecturally composed to support a future building-assembly animation.
 
-Validate:
+Use progressive enhancement so the future animation is not required for the content to be readable.
 
-- Valid actual calendar dates.
-- Start/end ordering.
-- Allowed filter types and values.
-- Bounded search lengths.
-- Bounded HTTP request sizes.
-- Appropriate report-size/resource limits.
-- Exact monetary values.
-- Supported PDF/XLSX formats.
-- Stable pagination.
+Avoid fabricated metrics, testimonials or project galleries.
 
-Use parameterized Drizzle queries.
+## 7. ABOUT PAGE
 
-For report details, always reconcile displayed totals to the exported rows under the selected filter scope.
+Create a well-structured company presentation with:
 
-For full exports, establish a reliable completeness/manifest check.
+- Company introduction.
+- Working approach.
+- Values expressed without unverified factual claims.
+- Construction expertise/service positioning when supported.
+- Clear CTA.
 
-Fail closed when data is inconsistent or the database is unavailable.
+Do not invent a founding story, founder identity or company history.
 
-Return safe, understandable errors.
+If real business history is unavailable, keep the presentation factual and restrained.
 
-## 14. AUDIT AND HISTORY
+## 8. SERVICES PAGE
 
-Report generation must not rewrite existing financial history.
+Create an extensible service-data model.
 
-Use current audit facilities to record appropriate export events, without storing the exported dataset inside audit snapshots.
+Each approved service should support:
 
-If an audit event is required to authorize/finalize an export, define a safe failure policy.
+- Localized title.
+- Localized description.
+- Appropriate visual treatment.
+- Optional supporting details.
+- Clear CTA.
 
-Do not mutate receipt version rows or financial records to create a report.
+Do not assume the company offers every possible construction service.
 
-Never regenerate old immutable receipt PDFs as part of reporting.
+Use only services confirmed by available sources.
 
-The latest active state determines ordinary financial views.
+If the specific service catalog is incomplete, provide a maintainable content structure without claiming unsupported offerings.
 
-Audit/history export preserves past corrections for traceability.
+Prepare components so WP-12 can add construction-specific animations to individual service sections.
 
-## 15. UI/UX
+## 9. PROJECTS PAGE
 
-Implement actual dashboard and company reporting screens using the existing Operational Clarity design foundation.
+The public project portfolio must be separate from the internal authenticated projects database.
 
-Provide:
+Never expose private customer/project records publicly by default.
 
-- Financial KPI cards.
-- Clear transaction-date filters.
-- Real trend/breakdown views where justified.
-- Company report preview.
-- PDF and XLSX download actions.
-- Export progress/pending/error states.
-- Separate complete-data-export action.
-- Clear warnings about sensitive export data.
-- Responsive mobile summaries.
-- Accessible labels and focus behavior.
-- Good empty states and hierarchy.
+Implement a curated public project-data source or equivalent secure publishing boundary.
 
-Do not implement the final premium motion-design overhaul in this package.
+Do not create a public endpoint that queries private projects simply because they exist in the management application.
 
-Prioritize correct numbers, clear navigation and functional workflows.
+Real public projects require explicitly approved content and image rights.
 
-Do not fabricate demonstration figures.
+If no such entries exist:
 
-Browser tests should be executed if a real connected browser is available; otherwise mark browser behavior NOT VERIFIED.
+- Show a carefully designed empty/introductory project presentation.
+- Avoid fictitious portfolio cards.
+- Keep a clean path for later authorized content entry.
 
-## 16. DATABASE & MIGRATIONS
+Do not introduce a full CMS unless justified and authorized.
 
-Inspect existing schema and audit capability before introducing new structures.
+## 10. CONTACT PAGE
 
-Do not create unnecessary reporting tables or duplicate financial ledgers.
+Implement a polished contact experience using only real verified company contact details.
 
-If export-job tracking or audit metadata genuinely requires a new table, use a narrowly scoped additive migration after 0008.
+If actual delivery infrastructure exists and is configured, a working contact form may be implemented with:
 
-Preserve all prior migration SQL, hashes, immutable version history and 13 existing triggers.
+- Server-side validation.
+- Abuse protection.
+- Appropriate privacy handling.
+- Reliable delivery or storage.
+- Honest success and failure responses.
 
-Apply any required migrations on disposable MySQL 8.4.
+If no delivery destination/service has been approved, **do not enable a fake contact submission workflow**.
 
-Verify repeat migration execution, indexes and foreign keys.
+Instead, keep a transparent contact presentation and document the required configuration.
 
-Do not modify production data or use real customer records.
+Do not silently discard visitor messages while showing "Message sent".
 
-## 17. AUTOMATED TESTS
+Do not invent contact email addresses or phone numbers.
 
-### Financial Aggregates
+## 11. DESIGN SYSTEM PREPARATION
+
+Reuse the existing Operational Clarity foundation where appropriate, but recognize that the public marketing website can have its own expressive visual layer.
+
+Maintain shared brand coherence without forcing operational dashboard density onto the public site.
+
+Prepare reusable:
+
+- Page containers and spacing.
+- Display/headline typography.
+- Responsive grids.
+- Service cards.
+- Project presentation components.
+- Section transitions.
+- CTA patterns.
+- Interactive navigation.
+- Footer.
+- Accessible mobile menu.
+- Motion-ready visual slots.
+
+Use design tokens rather than hard-coded inconsistent styling.
+
+Do not alter authenticated business-module styling unnecessarily.
+
+## 12. MOTION ARCHITECTURE FOR WP-12
+
+Prepare future animation components as progressive enhancements.
+
+Recommended concepts:
+
+- `ConstructionHeroScene`
+- `BrickAssemblySequence`
+- `CraneMotionScene`
+- `VehicleScrollSequence`
+- `ArchitecturalReveal`
+
+These are conceptual names, not mandatory implementation artifacts.
+
+WP-11 should establish where scenes attach and what content they support.
+
+Do not implement costly elaborate animations in this package just to increase visual complexity.
+
+Future motion must support:
+
+- Reduced-motion preferences.
+- Mobile performance fallbacks.
+- Keyboard and screen-reader accessibility.
+- Pause/visibility considerations where relevant.
+- No motion-dependent access to essential content.
+- Graceful failure without JavaScript animation.
+
+Content must remain understandable if every animation is disabled.
+
+## 13. ACCESSIBILITY
+
+Use WCAG 2.2 AA as the accessibility target.
+
+Implement or verify:
+
+- Semantic headings.
+- Landmark navigation.
+- Keyboard-accessible menus.
+- Visible focus indicators.
+- Correct link/button semantics.
+- Meaningful image alt text.
+- Adequate contrast.
+- Form labels and error associations.
+- Reduced-motion behavior.
+- No hidden essential content.
+- Responsive text and zoom.
+- No keyboard traps.
+
+Do not claim full conformance from static checks alone.
+
+## 14. SEO AND DISCOVERABILITY
+
+Implement accurate:
+
+- Localized metadata.
+- Title/description per public route.
+- Canonical URLs when the public domain is configured.
+- Hreflang alternates.
+- Robots handling.
+- Sitemap for public website routes only.
+- Open Graph metadata.
+- Appropriate social preview defaults if real assets exist.
+- Appropriate semantic structured data only when supported by verified facts.
+
+Do not include authenticated app pages in the public sitemap.
+
+Do not invent a production domain.
+
+Do not leak private app data into page metadata or structured data.
+
+## 15. IMAGE AND ASSET POLICY
+
+Prioritize authentic company imagery and approved brand assets when available.
+
+Do not assume such assets are present.
+
+For missing assets:
+
+- Provide a clear asset requirements inventory.
+- Use properly identified temporary development imagery where permitted.
+- Do not disguise generated/stock images as real construction work.
+- Avoid images whose rights are unknown.
+
+Optimize delivered assets through appropriate responsive formats and dimensions.
+
+Do not place sensitive company documents, receipts or internal application files in public assets.
+
+## 16. PERFORMANCE FOUNDATION
+
+Performance matters even before WP-13.
+
+Implement:
+
+- Sensible server/client component boundaries.
+- Minimal client-side JavaScript.
+- Correct image sizing.
+- Lazy loading where appropriate.
+- Reduced layout shifts.
+- Deferred nonessential visual effects.
+- Avoidance of unnecessary animation packages.
+- Efficient navigation.
+- Reasonable caching for genuinely public static content.
+
+Do not weaken privacy/authentication caching rules of internal application pages.
+
+Do not sacrifice content visibility or accessibility for performance scores.
+
+## 17. BROWSER TESTING — PRIORITY
+
+WP-01 through WP-10 repeatedly reported browser interaction as NOT VERIFIED.
+
+Do not repeat this gap automatically.
+
+First inspect whether Playwright, Chromium, Edge or another supported browser-testing setup is available in the owner's local Windows environment.
+
+You are authorized to install necessary **local development-only browser-testing dependencies and browser binaries** if supported and safe, while preserving the existing environment.
+
+Use an isolated test setup and synthetic/local content.
+
+Do not change global browser defaults or modify the owner's personal browser profile.
+
+If a real browser can be used, test:
+
+- Desktop navigation.
+- Mobile navigation.
+- SQ/EN switching.
+- Direct-route loading.
+- Responsive breakpoints.
+- Keyboard focus and menus.
+- Contact states.
+- Console errors.
+- Hydration.
+- Layout overflow.
+- Screenshot evidence.
+
+If browser automation is unavailable after bounded setup attempts, document the actual blocker and mark browser acceptance NOT VERIFIED.
+
+Do not treat successful HTTP markup as proof of visual behavior.
+
+## 18. SECURITY
+
+Keep public website routes isolated from all private application data.
+
+Verify:
+
+- No unauthenticated data leakage.
+- No public receipt/document exposure.
+- No private project/customer information in website payloads.
+- No accidental exposure through search metadata or static assets.
+- Safe contact form behavior.
+- Appropriate response headers.
+- No secrets embedded in client bundles.
+- Safe external links.
+- No unsafe HTML injection.
+- No unnecessary tracking of visitor data.
+
+Do not modify or weaken WP-03 through WP-10 authorization boundaries.
+
+## 19. AUTOMATED TESTS
+
+Implement relevant unit, route, HTML and browser tests.
 
 Test:
 
-- Exact income sum from received payments.
-- Cancelled payments excluded.
-- Corrected payment contributes only its current amount.
-- Retired allocations excluded from current phase totals.
-- Exact expense sum from recorded expenses.
-- Cancelled expense excluded.
-- Corrected expense contributes current amount only.
-- Company-wide expense counted in company totals.
-- Company-wide expense excluded from each project total.
-- Correct project/client associations.
-- No double counting of history.
-- Actual transaction-date range boundaries.
-- Cash/bank and category filters.
-- Decimal precision, including large valid EUR values.
-- Empty database and zero-data results.
+- All ten public content routes.
+- Locale-preserving navigation.
+- Translation completeness.
+- Correct metadata/hreflang.
+- Sitemap exclusion of `/app`.
+- Invalid route handling.
+- Public portfolio isolation from private records.
+- Contact form never reports false delivery.
+- Keyboard/navigation behavior where browser tooling exists.
+- No hydration warnings.
+- Mobile responsive layout.
+- Reduced-motion fallback structure.
+- Asset and image loading.
+- No authentication regression.
 
-### Reports
-
-Test:
-
-- Company report totals match underlying filtered data.
-- PDF is valid and readable.
-- XLSX opens as a valid workbook.
-- Detail rows reconcile to summary totals.
-- Long values render safely.
-- Special Albanian characters.
-- Formula-injection protection.
-- Cancelled/corrected records follow approved active-state policy.
-- No individual project report export endpoint exists.
-
-### Full Export
-
-Test:
-
-- Every approved business table included.
-- Older audit/history rows beyond UI pagination are included.
-- Stable IDs and relationships preserved.
-- Cancelled and archived records included.
-- No password hashes/session secrets/operator keys.
-- Real included receipt PDFs match stored checksums.
-- Manifest/checksum correctness.
-- Data-export pagination or batching completeness.
-- Partial export fails clearly.
-- Unauthorized export denied.
-- Sensitive temporary files cleaned up.
-
-### Security
-
-Test:
-
-- Anonymous dashboard/report/export access denied.
-- Disabled session denied.
-- Safe Origin/Host protection on export-starting mutations where applicable.
-- SQL/PII error redaction.
-- No-store headers.
-- No public export URLs.
-- Malicious filenames and spreadsheet cell values.
-- Database outage handling.
-
-### Regression
-
-Preserve:
-
-- WP-03 authentication.
-- WP-04 clients.
-- WP-05 projects/contracts/phases.
-- WP-06 reference data.
-- WP-07 expenses.
-- WP-08 payment allocations and idempotency.
-- WP-09 receipts and immutable PDFs.
-- All prior migration hashes and 13 triggers.
-- Public SQ/EN pages.
-- Private navigation.
-- TypeScript, ESLint and build.
-
-Do not weaken previous tests.
-
-## 18. ACCEPTANCE CRITERIA
-
-**WP10-AC01:** Dashboard uses real persisted business data.
-
-**WP10-AC02:** Active income excludes cancelled payments.
-
-**WP10-AC03:** Active expenses exclude cancelled expenses.
-
-**WP10-AC04:** Corrected records contribute only their latest active values.
-
-**WP10-AC05:** Company-wide expenses are not automatically assigned to projects.
-
-**WP10-AC06:** Company income-minus-expenses is not misrepresented as statutory profit.
-
-**WP10-AC07:** Project summaries are viewable on screen using real exact values.
-
-**WP10-AC08:** No individual project financial PDF/XLSX report export is provided.
-
-**WP10-AC09:** Company report filters and totals use correct transaction-date semantics.
-
-**WP10-AC10:** Company PDF report is generated with actual correct data.
-
-**WP10-AC11:** Company XLSX report is generated with actual correct data.
-
-**WP10-AC12:** PDF/XLSX detail sections reconcile with their summaries.
-
-**WP10-AC13:** Financial arithmetic retains exact EUR cents.
-
-**WP10-AC14:** Report queries use consistent data snapshots.
-
-**WP10-AC15:** Complete business-data export includes required active and historical data.
-
-**WP10-AC16:** Export is not limited by ordinary UI history pagination.
-
-**WP10-AC17:** Real referenced receipt PDFs are handled safely in complete export.
-
-**WP10-AC18:** Full export excludes authentication and infrastructure secrets.
-
-**WP10-AC19:** CSV/XLSX formula injection is prevented.
-
-**WP10-AC20:** Export access and downloads are independently authorized.
-
-**WP10-AC21:** Export failures and partial outputs are handled safely.
-
-**WP10-AC22:** Dashboard/reports/exports use existing UI foundation.
-
-**WP10-AC23:** Real MySQL integration tests pass.
-
-**WP10-AC24:** Real PDF/XLSX/export content is verified, not only mocked.
-
-**WP10-AC25:** Previous migrations, triggers and module regressions pass.
-
-**WP10-AC26:** TypeScript, lint, build and HTTP route checks pass.
-
-**WP10-AC27:** Browser/mobile/accessibility verification runs where available; otherwise NOT VERIFIED.
-
-**WP10-AC28:** No production database, real client data or deployment is involved.
-
-Report PASS, FAIL or NOT VERIFIED for every criterion.
-
-## 19. VERIFICATION
-
-Inspect package scripts before running commands.
-
-Execute appropriate:
+Run the earlier project tests as appropriate:
 
 - `npm.cmd test`
 - `npm.cmd run db:check`
-- `npm.cmd run db:migrate`
 - `npm.cmd run test:db`
 - `npm.cmd run typecheck`
 - `npm.cmd run lint`
 - `npm.cmd run build`
 - `npm.cmd run check:routes`
 
-Add focused financial-report, PDF, XLSX and complete-export integration/HTTP tests.
+Use the project's established isolated local testing strategy.
 
-Use synthetic records, disposable MySQL 8.4 and task-owned private output directories.
+Do not touch production or real customer records.
 
-Preserve the owner's separate local development environment.
+Do not disable prior tests to obtain a passing build.
 
-Record actual commands, test results and relevant file integrity evidence.
+## 20. ACCEPTANCE CRITERIA
 
-Do not pretend PDF/XLSX inspection occurred if it was not executed.
+**WP11-AC01:** Five public pages function in both SQ and EN.
 
-Do not deploy.
+**WP11-AC02:** Locale navigation and route preservation work.
 
-## 20. REQUIRED DELIVERY REPORT
+**WP11-AC03:** No unverified company fact or fictitious portfolio item is published as real.
+
+**WP11-AC04:** Website structure supports approved future premium visual storytelling.
+
+**WP11-AC05:** Shared public components and design tokens are consistent.
+
+**WP11-AC06:** Public projects remain isolated from private application project records.
+
+**WP11-AC07:** Contact workflow does not falsely acknowledge undelivered messages.
+
+**WP11-AC08:** Public metadata and technical SEO are correct.
+
+**WP11-AC09:** Authenticated application pages are excluded from public sitemap/indexing.
+
+**WP11-AC10:** Appropriate accessibility and reduced-motion foundations exist.
+
+**WP11-AC11:** Desktop/mobile navigation works when browser testing is available.
+
+**WP11-AC12:** Real browser/hydration testing is attempted with evidence; unverified cases are explicitly reported.
+
+**WP11-AC13:** Performance-oriented component and image loading boundaries are established.
+
+**WP11-AC14:** Public/private security separation remains intact.
+
+**WP11-AC15:** Public routes and translations pass automated regression tests.
+
+**WP11-AC16:** Existing business modules, financial rules and receipt/download protections remain valid.
+
+**WP11-AC17:** TypeScript, lint and production build pass.
+
+**WP11-AC18:** No real customer data, production infrastructure or deployment is involved.
+
+**WP11-AC19:** Missing content, photography and branding approvals are documented clearly.
+
+**WP11-AC20:** A concrete WP-12 motion/visual implementation map is delivered.
+
+Classify each PASS, FAIL or NOT VERIFIED with evidence.
+
+## 21. DELIVERY REPORT
+
+Return:
 
 ### A. Repository Baseline
 
-Branch, HEAD, preserved user modifications and accessible source specifications.
+Branch, HEAD, working-tree state and sources actually available.
 
-### B. Financial Definitions
+### B. Website Architecture
 
-Exact current-state eligibility, date filters, contract totals and project/company allocation rules.
+Routes, locale handling, content structure and public/private separation.
 
-### C. Dashboard and Project Summaries
+### C. Content and Assets
 
-Routes, calculations, UI and actual data sources.
+Verified content, unavailable information and approvals needed.
 
-### D. Company Report
+### D. UI/UX Foundation
 
-PDF/XLSX layout, filters and reconciliation evidence.
+Components, tokens, responsive behavior and interaction patterns.
 
-### E. Full Data Export
+### E. SEO & Accessibility
 
-Included entities/history/PDFs, structure, batching and security exclusions.
+Localized metadata, semantics and audit results.
 
-### F. Consistency & Performance
+### F. Browser Verification
 
-Snapshot strategy, query bounds, large-export behavior and resource limitations.
+Actual browser/tool versions, routes tested, viewport sizes, screenshots, hydration and errors.
 
-### G. Database & Migrations
+### G. Security
 
-Any additive migration and actual verification.
+Private-data isolation, safe contact handling and public assets.
 
-### H. Files Changed
+### H. Testing
 
-Exact paths/purpose.
+Exact commands, results, regression counts and limitations.
 
-### I. Test Evidence
+### I. Acceptance Checklist
 
-Commands, counts, rendered documents, spreadsheet validation, error/recovery tests.
+WP11-AC01 through WP11-AC20.
 
-### J. Acceptance Checklist
+### J. WP-12 Creative Map
 
-WP10-AC01 through WP10-AC28.
+Specific website sections suited to:
 
-### K. Security Review
+- Brick-by-brick animation.
+- Crane/building assembly.
+- Vehicle/truck motion.
+- Architectural scroll storytelling.
+- Microinteraction polish.
 
-Authorization, PII protection, export isolation, spreadsheet safety, secret exclusion.
+Separate feasible ideas from approved final visuals.
 
-### L. Known Issues and Release Gates
+### K. Remaining Risks
 
-Browser QA, accountant approval, production storage/backup compatibility and anything not verified.
+Missing content/assets, browser QA, production release prerequisites.
 
-### M. Next Package
+## 22. SCOPE RESTRICTIONS
 
-Assess readiness for the next website-content and premium UI/UX implementation phase.
+Do not:
 
-Do not start the next package automatically.
+- Implement WP-12's complete cinematic animation system.
+- Implement WP-13's full performance overhaul.
+- Change financial business rules.
+- Change receipt numbering or immutable PDFs.
+- Relax authentication or access controls.
+- Add unsupported company claims.
+- Publish private projects.
+- Create fake contact success.
+- Introduce unrelated CRM/CMS systems.
+- Deploy.
+- Purchase infrastructure.
 
-## 21. EXECUTION
+## 23. EXECUTION
 
-Implement WP-10 locally now.
+Implement WP-11 locally.
 
-Build the real dashboard, project-level on-screen summaries, company-wide financial report PDF/XLSX and full authorized business-data export.
+Complete the bilingual public website architecture, factual content handling, reusable components, SEO, accessibility foundations and browser-testing setup where possible.
 
-Use existing persisted financial services, exact-money rules and private receipt storage.
+Preserve the internal application's verified behavior.
 
-Preserve prior migration history, audit guarantees and security boundaries.
+Deliver real implementation and test evidence.
 
-Verify all new capabilities with real MySQL and actual generated documents.
+Prepare a concrete technical/creative handoff for WP-12.
 
-Do not stop at a plan.
+Do not begin WP-12 automatically.
 
-Do not deploy or access real customer data.
+Do not deploy.
 
-Commit/push only under the project's current explicit owner authorization.
+Commit/push only if the current owner's authorization covers the action.
 
-**END OF WP-10**
+**END OF WP-11**

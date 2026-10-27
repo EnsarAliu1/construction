@@ -13,3 +13,7 @@ next-env.d.ts
 /.next-wp09/
 
 .next-wp10/
+
+.next-wp11/
+playwright-report/
+test-results/

@@ -5,5 +5,5 @@ import nextTypescript from "eslint-config-next/typescript";
 export default defineConfig([
   ...nextVitals,
   ...nextTypescript,
-  globalIgnores([".next/**", ".next-wp09/**", ".next-wp10/**", "out/**", "next-env.d.ts", "artifacts/**"]),
+  globalIgnores([".next/**", ".next-wp09/**", ".next-wp10/**", ".next-wp11/**", "playwright-report/**", "test-results/**", "out/**", "next-env.d.ts", "artifacts/**"]),
 ]);
