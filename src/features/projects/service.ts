@@ -2,11 +2,12 @@ import { randomUUID } from "node:crypto";
 import { and, asc, count, desc, eq, inArray, isNull, or, sql } from "drizzle-orm";
 import { drizzle, type MySql2Database } from "drizzle-orm/mysql2";
 import type { Connection } from "mysql2/promise";
-import { auditEvents, clients, contractPhases, contracts, entityVersions, paymentAllocations, payments, projects, users } from "@/server/db/schema";
+import { auditEvents, clients, contractPhases, contracts, entityVersions, paymentAllocations, payments, expenses, projects, users } from "@/server/db/schema";
 import { requireSessionUser } from "@/server/auth/sessions";
 import { safeHistorySnapshot } from "@/server/db/history-snapshot";
 import { escapedSearch } from "@/features/clients/validation";
 import { cents, decimal } from "./money";
+import { financialStates, operationalTotals } from "@/features/reporting/money";
 import { MAX_PHASES, PROJECT_PAGE_SIZE, ProjectError, conflict, expectedVersion, object, parsePlan, parseProject, parseProjectQuery, uuid, type ContractPlan } from "./validation";
 
 type Db = MySql2Database<Record<string, never>>;
@@ -175,7 +176,13 @@ export async function getProject(connection: Connection, token: string | undefin
     const phaseIds = tx.select({ id: contractPhases.id }).from(contractPhases).where(eq(contractPhases.contractId, contract?.id ?? ""));
     const history = await tx.select({ id: auditEvents.id, entityType: auditEvents.entityType, action: auditEvents.action, recordedAt: auditEvents.recordedAt, operationId: auditEvents.operationId, actorName: users.displayName, before: auditEvents.beforeSnapshot, after: auditEvents.afterSnapshot }).from(auditEvents).leftJoin(users, eq(users.id, auditEvents.actorId))
       .where(or(and(eq(auditEvents.entityType, "project"), eq(auditEvents.entityId, id)), contract ? and(eq(auditEvents.entityType, "contract"), eq(auditEvents.entityId, contract.id)) : undefined, contract ? and(eq(auditEvents.entityType, "phase"), inArray(auditEvents.entityId, phaseIds)) : undefined)).orderBy(desc(auditEvents.recordedAt), desc(auditEvents.id)).limit(20);
-    return { ...joined, contract: contract ?? null, phases, phaseTotal: decimal(phases.reduce((sum, phase) => sum + cents(phase.value), BigInt(0))), history };
+    const [incoming]=await tx.select({amount:sql<string>`COALESCE(SUM(${payments.amount}),0)`}).from(payments).where(and(eq(payments.projectId,id),eq(payments.status,financialStates.income)));
+    const [outgoing]=await tx.select({amount:sql<string>`COALESCE(SUM(${expenses.amount}),0)`}).from(expenses).where(and(eq(expenses.projectId,id),eq(expenses.status,financialStates.expense)));
+    const aggregate=(value:string)=>cents(String(value).includes(".")?String(value):String(value)+".00"),income=aggregate(incoming.amount),cost=aggregate(outgoing.amount),phaseValue=phases.reduce((n,p)=>n+cents(p.value),BigInt(0)),phasePaid=phases.reduce((n,p)=>n+cents(p.paid),BigInt(0));
+    const [invalidPayments]=await tx.execute(sql`SELECT p.id FROM payments p LEFT JOIN payment_allocations a ON a.payment_id=p.id AND a.deleted_at IS NULL WHERE p.project_id=${id} AND p.status=${financialStates.income} GROUP BY p.id,p.amount HAVING COALESCE(SUM(a.amount),0)<>p.amount LIMIT 1`);
+    const activeValue=contract?.status==="active"?cents(contract.totalValue):BigInt(0),verified=!(invalidPayments as unknown as unknown[]).length&&phasePaid===income&&phases.every(p=>cents(p.paid)<=cents(p.value))&&(!contract||contract.status!=="active"||phaseValue===activeValue)&&(!income||contract?.status==="active");
+    const financial={...operationalTotals(income,cost),contractValue:decimal(activeValue),outstanding:decimal(activeValue-phasePaid),verified};
+    return { ...joined, contract: contract ?? null, phases, phaseTotal: decimal(phaseValue), history, financial };
   }, { isolationLevel: "repeatable read", accessMode: "read only" });
 }
 export type ProjectDetail = Awaited<ReturnType<typeof getProject>>;

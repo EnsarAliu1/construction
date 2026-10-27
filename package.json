@@ -12,8 +12,8 @@
     "db:generate": "drizzle-kit generate",
     "db:check": "drizzle-kit check",
     "db:migrate": "tsx scripts/migrate-db.ts",
-    "test": "tsx --test tests/db/config.test.ts tests/db/schema.test.ts tests/db/history.test.ts tests/auth/security.test.ts tests/clients/validation.test.ts tests/projects/validation.test.ts tests/references/validation.test.ts tests/expenses/validation.test.ts tests/payments/validation.test.ts tests/receipts/pdf.test.ts",
-    "test:db": "tsx --test --test-concurrency=1 tests/db/integrity.integration.test.ts tests/auth/auth.integration.test.ts tests/clients/clients.integration.test.ts tests/projects/projects.integration.test.ts tests/references/references.integration.test.ts tests/expenses/expenses.integration.test.ts tests/payments/payments.integration.test.ts tests/receipts/receipts.integration.test.ts",
+    "test": "node --conditions=react-server --import tsx --test tests/reporting/validation.test.ts && tsx --test tests/db/config.test.ts tests/db/schema.test.ts tests/db/history.test.ts tests/auth/security.test.ts tests/clients/validation.test.ts tests/projects/validation.test.ts tests/references/validation.test.ts tests/expenses/validation.test.ts tests/payments/validation.test.ts tests/receipts/pdf.test.ts",
+    "test:db": "node --conditions=react-server --import tsx --test tests/reporting/reporting.integration.test.ts && tsx --test --test-concurrency=1 tests/db/integrity.integration.test.ts tests/auth/auth.integration.test.ts tests/clients/clients.integration.test.ts tests/projects/projects.integration.test.ts tests/references/references.integration.test.ts tests/expenses/expenses.integration.test.ts tests/payments/payments.integration.test.ts tests/receipts/receipts.integration.test.ts",
     "test:references": "tsx --test tests/references/validation.test.ts",
     "test:references:db": "tsx --test tests/references/references.integration.test.ts",
     "test:references:http": "tsx --test tests/references/http.integration.test.ts",
@@ -35,7 +35,10 @@
     "test:receipts": "tsx --test tests/receipts/pdf.test.ts",
     "test:receipts:db": "tsx --test tests/receipts/receipts.integration.test.ts",
     "test:receipts:http": "tsx --test tests/receipts/http.integration.test.ts",
-    "receipts:recover": "tsx scripts/receipts-recover.ts"
+    "receipts:recover": "tsx scripts/receipts-recover.ts",
+    "test:reports": "node --conditions=react-server --import tsx --test tests/reporting/validation.test.ts",
+    "test:reports:db": "node --conditions=react-server --import tsx --test tests/reporting/reporting.integration.test.ts",
+    "test:reports:http": "node --conditions=react-server --import tsx --test tests/reporting/http.integration.test.ts"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -43,6 +46,8 @@
   "dependencies": {
     "@node-rs/argon2": "2.2.2",
     "drizzle-orm": "0.45.4",
+    "exceljs": "4.4.0",
+    "jszip": "3.10.2",
     "mysql2": "3.24.6",
     "next": "16.4.3",
     "pdfkit": "0.20.2",

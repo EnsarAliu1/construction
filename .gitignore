@@ -11,3 +11,5 @@ next-env.d.ts
 /artifacts/
 /.private/
 /.next-wp09/
+
+.next-wp10/

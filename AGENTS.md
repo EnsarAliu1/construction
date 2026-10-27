@@ -1,647 +1,637 @@
 # ADORE TECH SOLUTIONS — CODEX IMPLEMENTATION PROMPT
 
-## WP-09: Receipt Issuance, Immutable PDF Versioning & Cancellation
+## WP-10: Financial Dashboard, Company Reports & Full Data Export
 
 **Project:** Fitimi Construction Management System & Corporate Website  
-**Package:** WP-09  
+**Work Package:** WP-10  
 **Version:** 1.0  
-**Date:** 27.10.2026  
+**Date:** 27 October 2026  
 **Developer:** Codex  
 **Technical Lead:** Adore Tech Solutions  
-**Authorization:** Local development, necessary dependencies, additive migrations, disposable MySQL and private local file-storage testing.
+**Authorization:** Local implementation, justified dependencies, additive migrations, isolated MySQL 8.4 testing, PDF/XLSX/CSV generation and regression verification.
 
 ---
 
 ## 1. MISSION
 
-Implement the complete local payment-and-receipt workflow by integrating real receipt creation, A4 PDF generation, immutable document versions, cancellation handling and authorized PDF access with WP-08's existing payment engine.
+Implement real financial visibility and data portability on top of the existing database-backed modules.
 
-After this work package, users must be able to:
+Deliver:
 
-1. Confirm a received payment and receive a real numbered receipt.
-2. Download its actual A4 PDF.
-3. Correct the payment and obtain a new version of the same receipt number.
-4. Access previous immutable receipt versions.
-5. Cancel a payment and clearly identify its receipt as cancelled.
-6. Preserve the original payment, allocation and receipt history.
-7. Recover safely from interrupted requests or document-storage failures.
-8. Avoid duplicate payments, duplicate receipt numbers and inconsistent payment/receipt state.
+1. A functional company dashboard.
+2. Company-wide financial summaries.
+3. On-screen financial summaries for individual projects.
+4. Company-wide financial reports with PDF and Excel export.
+5. Filterable financial reporting by approved dimensions.
+6. Complete customer/business data export, including history and audit records.
+7. Secure authorization, exact money calculations and consistent historical accounting of current active business states.
+8. Meaningful real MySQL, document and HTTP tests.
 
-This is real implementation work.
+This is real implementation work, not planning only.
 
-Do not stop at a plan or mock PDF.
+Do not fabricate financial data or claim fiscal/accounting certification.
 
-Receipts are operational, non-fiscal documents pending accountant/legal validation.
+## 2. VERIFIED REPORTED BASELINE
 
-Do not claim fiscal certification or production release readiness.
+Previous work packages WP-01 through WP-09 have been implemented locally.
 
-## 2. CURRENT BASELINE
+WP-09 reports:
 
-Reported WP-08 result:
-
-- 246 passing Node test results.
-- MySQL 8.4.13 tested.
-- Eight Drizzle migrations, 0000 through 0007.
+- 275 distinct automated test results passing.
+- MySQL 8.4.13.
+- Nine migrations, numbered 0000–0008.
 - 20 application tables.
-- 13 original history/receipt triggers.
-- Exact EUR allocation arithmetic.
-- Persistent idempotency.
-- Server-authorized operation-status lookup.
-- Working payment registration/correction/cancellation engines.
-- Final receipt-dependent operations gated.
-- An existing trusted `ReceiptBoundary` integration interface.
+- 13 original integrity/history triggers.
+- Receipt PDFs rendered with PDFKit 0.20.2.
+- Immutable receipt PDF versions stored privately.
+- Working payment confirmation, correction and cancellation.
+- Existing exact monetary arithmetic, idempotency and audit.
+- Browser visual/interaction verification NOT VERIFIED.
 
-Before changes:
+Before coding:
 
-- Inspect actual Git branch, HEAD and working tree.
-- Read AGENTS.md and all applicable repository instructions.
-- Preserve user changes.
-- Inspect WP-08 services and receipt integration types.
-- Inspect actual receipt tables, counters, statuses, constraints and triggers.
-- Inspect audit, versioning, storage and HTTP authorization conventions.
-- Inspect available reports and design materials.
-- Preserve migrations 0000–0007 exactly.
+- Inspect actual branch, HEAD and working tree.
+- Read AGENTS.md and applicable repository instructions.
+- Preserve owner changes and existing manual test environments.
+- Review every relevant existing service, database query, schema and migration.
+- Read WP-05, WP-07, WP-08 and WP-09 reports and existing test patterns.
+- Verify which approved source/design materials are actually accessible.
+- Do not assume missing Master Prompt or wireframes have been inspected.
+- Do not modify README.md if the owner's current instructions prohibit it.
+- Follow current Git commit/push instructions; never deploy.
 
-Do not assume the repository is unchanged.
+Do not rewrite earlier migrations.
 
-Follow current owner instructions about README, commits and GitHub.
+## 3. APPROVED BUSINESS SCOPE
 
-Do not overwrite unavailable approved specifications with assumptions.
+The financial system records:
 
-## 3. NON-NEGOTIABLE BUSINESS RULES
+- Incoming payments linked to projects and contract phases.
+- Actual expenses that may be project-linked or company-wide.
+- Project contract totals and phase values.
+- Historical corrections, cancellations and audit entries.
+- Immutable receipt document versions.
 
-Follow D-01 through D-14, especially:
+Only EUR is supported.
 
-**D-03:** Receipt numbers are unique company-wide.
+Financial difference is calculated as:
 
-**D-04:** Financial views use the latest valid corrected state, while retaining complete history.
+`Active received income - Active recorded expenses`
 
-**D-09:** A correction keeps the same receipt number, generates a new immutable document version and preserves old PDFs.
+It may be labeled "Diferenca hyrje–dalje" or an equivalent approved operational term.
 
-**D-13:** Payment correction creates a new receipt version; cancellation changes receipt status while retaining its identity and versions.
+**It is NOT statutory accounting profit.**
 
-**D-14:** Cancelled receipts remain accessible and visibly marked cancelled; cancelled payments are excluded from active income and allocations.
+Never label it legal/accounting profit, taxable income or an accountant-certified balance.
 
-Additional requirements:
+### Reporting limits
 
-- Every finalized actual received payment must have a corresponding valid receipt.
-- PDF format: A4.
-- Currency: EUR.
-- One receipt identity per payment.
-- Sequential company-wide receipt numbering.
-- Never reuse an issued/exposed receipt number.
-- Receipt versions must be immutable.
-- A payment correction must not leave the current receipt out of sync.
-- Financial phase allocations remain governed by WP-08.
-- Receipts are not asserted to be legally fiscal documents.
+The company-level financial report can be exported to:
 
-## 4. IMPORTANT SOURCE AND ACCOUNTING LIMITATIONS
+- PDF.
+- XLSX.
 
-The final receipt template, tax/accounting wording and exact numbering format remain subject to accountant/PM validation.
+Individual project financial summaries are available **on screen only**.
 
-Do not invent:
+**Do not provide project-specific financial report PDF or XLSX exports in the MVP.**
 
-- Tax registration information.
-- Company address.
-- Tax rate or VAT treatment.
-- Fiscal device number.
-- Legal certification statement.
-- Official accounting approval.
-- Real customer information.
+The complete customer data export is a separate data-portability feature and may contain project data in CSV/XLSX and appropriate PDF/document form, including audit/history, as already approved. It must not be presented as an individual project financial report.
 
-For local development, implement a clearly identified, configurable NON-FISCAL operational receipt.
+## 4. FINANCIAL DEFINITIONS
 
-Use actual persisted payment, client and project information.
+### Active income
 
-For missing real company information, use explicit configuration requirements or clearly marked development-only placeholders.
+Include only qualifying payments whose current status is `received`.
 
-Do not embed imaginary company identity information into official-looking documents.
+Use the latest corrected payment state.
 
-Use a deterministic, human-readable company-wide numbering policy for development, backed by a transactional database counter. Keep formatting separate from the counter identity so the exact accountant-approved format can be adopted later without renumbering already issued documents.
+Exclude cancelled payments from active income.
 
-Document that numbering format and operational receipt layout remain release prerequisites, not approved fiscal policy.
+For project and phase breakdowns, use only current non-retired allocations belonging to qualifying received payments.
 
-## 5. ARCHITECTURE — REUSE WP-08
+Do not add historical allocation versions as though they were new money.
 
-Inspect the existing trusted server-side interface:
+### Active expenses
 
-`ReceiptBoundary { mode: "wp09", apply(tx, context) }`
+Include only qualifying expenses whose current status is `recorded`.
 
-The callback receives:
+Use the latest corrected expense state.
 
-- Existing `PaymentTx`.
-- Action: confirm, correct or cancel.
-- Acting user.
-- Correlation/operation ID.
-- Payment before/after state.
-- Allocation state, including historical allocations.
-- Current relevant payment and contract information.
+Exclude cancelled expenses from active outgoing totals.
 
-Integrate receipt functionality through this interface.
+### Company-wide expenses
 
-Do not:
+A recorded expense without a project contributes to the company total, but not to an individual project's costs.
 
-- Duplicate payment registration.
-- Create a second payment service.
-- Start a new database transaction inside the callback.
-- Commit the payment independently of receipt metadata.
-- Accept a test receipt adapter from client input.
-- Expose an API switch that disables receipt enforcement.
+Do not distribute company-wide expenses across projects automatically.
 
-The real production-facing payment routes must use the trusted WP-09 integration.
+### Contract value
 
-The test-only WP-08 boundary must remain unavailable to production-facing routes.
+Use current active contract and phase state according to the existing business rules.
 
-## 6. RECEIPT IDENTITY AND NUMBERING
+Clearly distinguish contract value from actual cash received.
 
-Reuse:
+Unpaid contract balance is not actual cash income.
 
-- `payment_receipts`
-- `receipt_versions`
-- `receipt_counters`
+### Actual transaction dates
 
-Inspect actual schema before designing changes.
+Date-range filters for payments and expenses must use their actual transaction dates, not creation timestamps or audit timestamps.
 
-For first-time payment confirmation:
+### Historical audit
 
-1. Acquire locks according to WP-08.
-2. Verify payment/allocations and idempotency.
-3. Acquire the company-wide receipt counter only after required payment/aggregate locks.
-4. Reserve or assign a unique company-wide number under a documented safe policy.
-5. Create the receipt identity and first immutable version.
-6. Ensure PDF bytes are durably available before acknowledging successful issuance.
-7. Finish the payment/receipt transaction consistently.
+Audit records and immutable snapshots show what changed.
 
-Concurrency requirements:
+They must not be summed as additional income or additional expense.
 
-- Two payments cannot receive the same number.
-- Same idempotent operation cannot issue two receipt identities.
-- A correction never receives a new receipt number.
-- Cancellation never reassigns or reuses a number.
-- An issued/exposed number must never be reused.
-- Failed or uncertain number allocation must have an explicitly documented policy.
+Current operational reports reflect the latest active state, while all history remains accessible through the appropriate audit/export functionality.
 
-Do not claim gapless legal sequencing unless the approved accounting process establishes that requirement.
+## 5. FINANCIAL QUERY ARCHITECTURE
 
-If sequence gaps can occur after failures, preserve an internal explanation/audit mechanism and flag accountant validation as outstanding.
+Build reusable server-only reporting services.
 
-## 7. IMMUTABLE RECEIPT VERSIONS
+Do not copy financial formulas independently into multiple UI components or document generators.
 
-Reuse `receipt_versions`.
+Use a single shared definition of eligible payment, allocation and expense states.
 
-For each issued document version preserve:
+Prefer database-side aggregates or bounded, consistent queries as appropriate.
 
-- Receipt identity and number.
-- Integer document version.
-- Relevant payment identity/version.
-- Project and client information.
-- Payment amount and method.
-- Actual payment transaction date.
-- Financial allocation representation, where appropriate.
-- Creation/issuance timestamp.
-- Acting user.
-- Content snapshot.
-- Private storage reference.
-- PDF SHA-256 checksum.
-- Historical version metadata.
+All monetary calculation paths must preserve DECIMAL(19,2) precision.
 
-Use the actual schema and add only necessary fields.
+Use decimal strings, BigInt cents or an equivalent exact decimal representation.
 
-Do not update or delete an existing issued receipt-version row.
+Do not convert financial DECIMAL values to JavaScript floating-point numbers for summation or equality.
 
-Do not overwrite its existing PDF file.
+### Read consistency
 
-A correction must append version N+1 and preserve every earlier version.
+Dashboard cards, report totals and exported detail rows must not disagree because different queries see different transaction snapshots.
 
-The current-version lookup must be consistent with WP-08's receipt verification and the chosen receipt identity model.
+Use an appropriate consistent MySQL read transaction or documented snapshot/materialization strategy.
 
-Use the correct document version in reads/downloads.
+Do not hold long-lived database transactions open while generating potentially slow PDF or XLSX bytes.
 
-## 8. PDF RENDERING
+If a full export requires materialization, establish a consistent, bounded snapshot and document the memory/storage tradeoff.
 
-Implement actual A4 PDF generation.
+Report-generation filters and totals must derive from the same snapshot and eligibility rules.
 
-Use a maintained Node.js-compatible PDF library suitable for the current Next.js server runtime.
+## 6. COMPANY DASHBOARD
 
-Record exact dependency versions.
+Replace the placeholder dashboard with real data.
 
-Generate real PDF bytes with:
+Include appropriate high-level metrics:
 
-- Clear company/receipt header.
-- Explicit NON-FISCAL / operational document designation appropriate to a development-stage receipt.
-- Receipt number.
-- Document version.
-- Issuance date/time.
-- Linked client.
-- Project/site.
-- Received amount in EUR.
-- Cash or bank method.
-- Actual transaction date.
-- Appropriate phase allocation summary if included in the receipt design.
-- Correction/version identification where relevant.
-- Status where appropriate.
+- Current total contract value.
+- Total active received income.
+- Total active recorded expenses.
+- Operational income-minus-expense difference.
+- Outstanding contract amount where its calculation is unambiguous.
+- Active project count.
+- Relevant financial and project-status breakdowns.
+- Recent actual payments and expenses where useful.
 
-Use true company information only when configured/available.
+Never equate the contract's unpaid portion with guaranteed future cash collection.
 
-Never invent company legal details.
+Provide meaningful loading, empty, zero-data and failure states.
 
-Use an appropriate font that supports Albanian characters and avoid broken glyphs.
+Visual charts may be included only when based on real values and clearly labeled.
 
-Verify:
+No fake KPI trends, growth percentages or invented comparisons.
 
-- Actual PDF format and magic bytes.
-- A4 page dimensions.
-- Text is readable.
-- Long names and content do not overflow the page.
-- All required receipt fields are present.
-- Checksum matches actual bytes.
-- File is retrievable after issuance.
+For filters that mix different financial concepts, label the calculation scope precisely.
 
-Do not substitute a static HTML preview for an issued PDF.
+## 7. PROJECT FINANCIAL SUMMARIES
 
-Do not add a watermark that could be mistaken for government fiscal certification.
+Provide on-screen summaries in the existing project details interface, including:
 
-## 9. PRIVATE DOCUMENT STORAGE
+- Current contract value.
+- Active received payments for that project.
+- Active recorded expenses directly linked to that project.
+- Operational difference between those two amounts.
+- Phase values.
+- Phase paid totals.
+- Remaining phase capacity.
+- Contract remaining amount according to approved interpretation.
 
-Use a storage abstraction that can support:
+Preserve WP-05's exact aggregate and phase-capacity semantics.
 
-- Local private document storage for development/testing.
-- Later production storage chosen after hosting proof of concept.
-- Immutable version paths/keys.
-- Private authorized downloads.
-- Existence and checksum validation.
-- Staging, finalization and cleanup.
-- Failure recovery.
+A company-wide expense must not appear inside a project expense total.
 
-For WP-09, implement a safe local private storage adapter.
+Do not duplicate business logic.
 
-Storage must be outside public website assets.
+**Do not add project financial PDF/XLSX buttons or endpoints.**
 
-Do not put receipt PDFs under `/public` or any publicly accessible static path.
+Avoid showing a financial summary for invalid/historically inconsistent records as if it were verified. Fail safely or label any detected inconsistency.
 
-Use non-guessable or opaque storage keys where appropriate.
+## 8. COMPANY FINANCIAL REPORT
 
-Never trust arbitrary user-provided filesystem paths.
+Implement authenticated company-wide reporting.
 
-Avoid path traversal and overwrite vulnerabilities.
+Support:
 
-Document the configured private-storage directory and file permissions.
+- Start date.
+- End date.
+- Cash/bank payment method where applicable.
+- Expense category filter where useful.
+- Project dimension in company-level breakdowns where appropriate.
+- Clear inclusion/exclusion of cancelled records.
+- Total active income.
+- Total active expenses.
+- Operational difference.
+- Appropriate payment and expense detail sections.
+- Company-wide vs project-linked expense distinction.
 
-Do not choose or purchase production storage infrastructure.
+The report must cover the company as a whole, including qualifying records with or without a linked project.
 
-## 10. DATABASE + FILE STORAGE CONSISTENCY
+If a project selection is offered as an analytical filter, it must not silently become a separately generated "individual project financial report." Preserve the approved company-report-only export policy.
 
-**This is a critical acceptance requirement.**
+Show a preview or accurate report summary before export.
 
-MySQL transactions cannot automatically roll back filesystem writes.
+Use meaningful headings and date-range labels.
 
-Implement a recoverable protocol that accounts for this.
+For any historical comparison, clearly distinguish transaction-date filtering from "state as of date" reconstruction. Do not invent full point-in-time accounting if it has not been approved.
 
-The protocol must:
+## 9. PDF COMPANY REPORT EXPORT
 
-1. Generate and validate actual PDF content.
-2. Stage it privately using a unique immutable key.
-3. Make the document durable and retrievable through a safe finalization step.
-4. Write the receipt metadata and checksum in the coordinated payment transaction.
-5. Ensure a successful payment confirmation is never acknowledged without a durable corresponding PDF.
-6. Handle database rollback after file creation.
-7. Handle file failure before database commit.
-8. Handle process interruption between file creation and commit.
-9. Detect and safely clean up orphaned task-owned staged files.
-10. Never delete an issued historical document during cleanup.
+Generate a real company-level financial report PDF.
 
-Choose and document the precise ordering for file preparation, immutable finalization and database commit.
+Requirements:
 
-If using a final-file-before-DB-commit protocol, orphan files after rollback must be recoverable and safely garbage-collected.
+- Readable A4 or appropriate documented report page format.
+- Company identity only from real/configured data.
+- Explicit report creation timestamp.
+- Selected report period.
+- EUR formatting.
+- Exact income/expense/difference totals.
+- Clear section headings and tables.
+- Correct handling of long content and pagination.
+- Albanian character rendering.
+- No clipping, overflow or blank trailing pages.
+- Non-fiscal/operational report wording where needed.
+- No unsupported official tax/accounting assertions.
 
-If using any other staging/finalization scheme, prove that a committed payment cannot become visible as fully issued while its PDF is missing.
+Reuse the installed PDF tooling where appropriate.
 
-Do not mark a receipt current or issued merely because a metadata row exists.
+Do not modify receipt rendering/versioning behavior unnecessarily.
 
-Do not treat a filesystem operation as though it were part of the SQL transaction.
+A generated financial report is not itself a numbered payment receipt.
 
-Add deterministic failure-injection tests for every important interruption boundary.
+Document export authorization must be enforced server-side.
 
-Use safe recovery procedures with strong ownership checks.
+## 10. XLSX COMPANY REPORT EXPORT
 
-## 11. RECEIPT CORRECTIONS
+Generate an actual valid XLSX workbook.
 
-When an approved payment correction is confirmed:
+Include:
 
-1. Authenticate and validate the new payment and allocation state.
-2. Enforce existing phase capacity and exact allocation rules.
-3. Lock and version-check the payment.
-4. Preserve receipt identity and number.
-5. Render a new PDF from the corrected state.
-6. Persist immutable version N+1 and its checksum.
-7. Preserve all older version rows and PDFs.
-8. Set the new version as current only when its file is durably available.
-9. Commit payment, allocations, audit, idempotency state where applicable, and receipt metadata consistently.
+- Summary sheet.
+- Incoming payments detail sheet.
+- Expenses detail sheet.
+- Relevant company-level breakdowns.
+- Report filters and generation metadata.
+- Accurate date and monetary representations.
+- Useful column widths, headers, freeze panes and number formats.
 
-Never modify an earlier PDF in place.
+Avoid floating-point-derived financial totals.
 
-A failed PDF operation must not leave the payment changed without the corresponding current receipt version.
+If spreadsheet cells contain numeric values, guarantee that their serialization does not silently change monetary values. Test exact output and clearly document any XLSX numeric precision limitations.
 
-Do not invent a different receipt number for a correction.
+For identifiers and values that could be interpreted as formulas, use explicit safe text cells.
 
-Test repeated corrections with multiple versions.
+Prevent spreadsheet formula injection from user-entered names, descriptions, addresses and other text.
 
-## 12. RECEIPT AND PAYMENT CANCELLATION
+Do not let exported data become executable formulas.
 
-When a payment is cancelled:
+## 11. COMPLETE BUSINESS DATA EXPORT
 
-- Preserve payment and allocation identities.
-- Preserve the receipt identity and number.
-- Preserve every previously issued PDF version.
-- Mark the receipt `void`/cancelled using the existing approved schema semantics.
-- Record cancellation actor, time and reason.
-- Keep the receipt accessible historically.
-- Release active phase capacity through the WP-08 payment cancellation rules.
-- Exclude cancelled payment from current income totals.
-- Append audit and version history.
+Implement a separate, authenticated full customer/business data export capability.
 
-**Do not rewrite an immutable issued PDF merely to add a CANCELLED mark.**
+Scope includes the customer's complete relevant business information, such as:
 
-Instead, render the cancelled status prominently in the current receipt details/download interface and, if the approved document workflow requires a separately issued cancellation document, implement that only as a distinct immutable artifact after confirming its intended semantics.
+- Clients.
+- Projects.
+- Contracts.
+- Contract phases.
+- Payments.
+- Payment allocations.
+- Expenses.
+- Expense categories.
+- Persons/suppliers.
+- Vehicles.
+- Receipt metadata.
+- Receipt version metadata.
+- Audit events.
+- Entity version history.
+- Relevant stable IDs, relationships and timestamps.
 
-The user must not be able to mistake a cancelled receipt for a currently valid one.
+Preserve:
 
-Use explicit cancelled-status metadata and authorized UI indicators.
+- Historical/cancelled states.
+- Logical deletion metadata.
+- Original entity identifiers.
+- Version values.
+- Event timestamps.
+- Relationship identifiers.
+- Exact financial decimal values.
 
-If a historical PDF itself cannot change, the download interface must clearly communicate that it is a historical, cancelled receipt document.
+Use appropriately structured CSV and/or XLSX datasets plus suitable PDF documentation or manifest, in accordance with the approved full-export requirement.
 
-Do not invent fiscal voiding procedures.
+**Do not export authentication secrets.**
 
-## 13. PAYMENT UI INTEGRATION
+Explicitly exclude:
 
-Enable the existing gated payment controls only after the complete receipt integration is working.
+- Password hashes.
+- Raw session tokens or session token digests.
+- Operator credentials.
+- Login limiter secrets/state.
+- Environment variables.
+- Private storage filesystem paths.
+- Unnecessary internal security metadata.
+- Database connection strings.
+
+Receipts themselves remain accessible as authorized immutable PDF files. If including receipt PDF documents in a complete export, package their actual bytes safely and verify checksums; do not substitute fake metadata as though it contained the documents.
+
+Choose and document an appropriate bounded export packaging strategy, such as a private ZIP bundle containing structured datasets, real receipt PDFs and a manifest/checksum file.
+
+Avoid arbitrary filesystem enumeration.
+
+All included documents must originate from authorized, database-referenced storage keys.
+
+### Completeness
+
+A full export must not silently omit older audit events or historical versions because an ordinary UI list caps results at 20 or 30.
+
+Implement safe batching or pagination internally.
+
+Detect and report partial or failed exports.
+
+Record the export schema version and generation timestamp.
+
+Use stable filenames and formats that permit data portability.
+
+Avoid excessive memory use with large datasets.
+
+## 12. EXPORT SECURITY
+
+Every export action must require a live authenticated business user.
+
+Use server-side authorization.
 
 Implement:
 
-- Actual Confirm Payment action.
-- Persistent idempotency key across uncertain submission outcomes.
-- Operation-status lookup/recovery.
-- Successful payment details with receipt number and working PDF download.
-- Version-aware correction action.
-- Receipt-version history view.
-- Version-specific PDF download.
-- Confirmed cancellation workflow.
-- Clearly marked cancelled receipt state.
-- Useful error, conflict and retry feedback.
+- No-store/private download headers.
+- Appropriate content types.
+- Safe attachment filenames.
+- No public static export paths.
+- Bounded resource use.
+- Safe temporary-file handling.
+- Cleanup of incomplete generated exports.
+- Authorization rechecks for long-running generation where feasible.
+- Audit events indicating export execution without embedding exported sensitive data.
 
-Do not display success until durable document issuance is confirmed.
+Do not accept arbitrary table names or filesystem paths from browser input.
 
-If finalization fails, the user must receive a safe error without falsely reporting payment success.
+Protect against:
 
-Avoid generating a second payment on a repeat click or network retry.
+- Path traversal.
+- CSV/XLSX formula injection.
+- Unauthorized export access.
+- Unbounded memory consumption.
+- Partial downloads mislabeled as complete.
+- Accidentally publishing customer data.
 
-Use the current Operational Clarity UI foundation.
+Do not expose the raw financial or audit database through an unguarded API.
 
-Do not redesign unrelated modules.
+Consider how concurrent edits, corrections and cancellations affect the chosen export snapshot.
 
-## 14. AUTHORIZATION
+## 13. FILTERING AND REPORT VALIDATION
 
-Every receipt read and download must require a live authenticated session.
+Validate:
 
-Use WP-03's established guards.
+- Valid actual calendar dates.
+- Start/end ordering.
+- Allowed filter types and values.
+- Bounded search lengths.
+- Bounded HTTP request sizes.
+- Appropriate report-size/resource limits.
+- Exact monetary values.
+- Supported PDF/XLSX formats.
+- Stable pagination.
 
-Do not rely solely on the private app layout.
+Use parameterized Drizzle queries.
 
-Downloads must:
+For report details, always reconcile displayed totals to the exported rows under the selected filter scope.
 
-- Authenticate.
-- Validate receipt/version identifiers.
-- Verify access to the requested receipt.
-- Resolve storage keys server-side.
-- Prevent directory traversal.
-- Return appropriate private/no-store/cache-control headers.
-- Avoid revealing filesystem paths.
-- Stream or return the actual PDF.
+For full exports, establish a reliable completeness/manifest check.
 
-Never expose raw storage credentials or unrestricted document URLs.
+Fail closed when data is inconsistent or the database is unavailable.
 
-Keep the current model of equal business-user permissions.
+Return safe, understandable errors.
 
-Do not invent accountant/manager roles.
+## 14. AUDIT AND HISTORY
 
-## 15. AUDIT AND HISTORY
+Report generation must not rewrite existing financial history.
 
-Receipt issuance, correction and cancellation must be auditable.
+Use current audit facilities to record appropriate export events, without storing the exported dataset inside audit snapshots.
 
-Reuse:
+If an audit event is required to authorize/finalize an export, define a safe failure policy.
 
-- `audit_events`
-- `entity_versions`
-- Existing immutable history triggers.
+Do not mutate receipt version rows or financial records to create a report.
 
-Record:
+Never regenerate old immutable receipt PDFs as part of reporting.
 
-- Actor.
-- Receipt identity.
-- Receipt number.
-- Version.
-- Payment identity/version.
-- Action.
-- UTC timestamp.
-- Relevant before/after status.
-- Storage/checksum metadata as appropriate.
-- Shared correlation UUID.
+The latest active state determines ordinary financial views.
 
-Never store:
+Audit/history export preserves past corrections for traceability.
 
-- Password hashes.
-- Session tokens.
-- Operator keys.
-- Raw credentials.
+## 15. UI/UX
 
-Audit, financial mutation and receipt metadata must be coordinated in the existing SQL transaction.
+Implement actual dashboard and company reporting screens using the existing Operational Clarity design foundation.
 
-PDF byte storage requires the separate recovery strategy described above.
+Provide:
 
-## 16. FAILURE SCENARIOS TO HANDLE
+- Financial KPI cards.
+- Clear transaction-date filters.
+- Real trend/breakdown views where justified.
+- Company report preview.
+- PDF and XLSX download actions.
+- Export progress/pending/error states.
+- Separate complete-data-export action.
+- Clear warnings about sensitive export data.
+- Responsive mobile summaries.
+- Accessible labels and focus behavior.
+- Good empty states and hierarchy.
 
-Implement real tests for:
+Do not implement the final premium motion-design overhaul in this package.
 
-- PDF rendering failure.
-- Storage directory unavailable.
-- Partial file write.
-- Failure before final file rename/finalization.
-- Failure after durable file creation but before database commit.
-- Database audit insertion failure.
-- Database commit failure.
-- Interrupted response after successful commit.
-- Concurrent confirmations requesting new numbers.
-- Exact idempotent retry.
-- Same idempotency key with different payload.
-- Concurrent corrections.
-- Correction versus cancellation.
-- Attempt to overwrite issued PDF bytes.
-- Missing PDF during a download.
-- Corrupted PDF/checksum mismatch.
-- Failed cleanup/recovery path.
-- Existing issued receipt with historical version.
-- Cancellation while retaining old PDFs.
+Prioritize correct numbers, clear navigation and functional workflows.
 
-Never use synthetic success metadata as proof that real storage worked.
+Do not fabricate demonstration figures.
 
-## 17. DATABASE AND MIGRATIONS
+Browser tests should be executed if a real connected browser is available; otherwise mark browser behavior NOT VERIFIED.
 
-Inspect actual receipt schema first.
+## 16. DATABASE & MIGRATIONS
 
-Add an additive migration after 0007 only if needed.
+Inspect existing schema and audit capability before introducing new structures.
 
-Preserve all existing migration SQL files and hashes.
+Do not create unnecessary reporting tables or duplicate financial ledgers.
 
-Do not rewrite earlier receipt triggers.
+If export-job tracking or audit metadata genuinely requires a new table, use a narrowly scoped additive migration after 0008.
 
-Verify:
+Preserve all prior migration SQL, hashes, immutable version history and 13 existing triggers.
 
-- Company-wide receipt-number uniqueness.
-- Receipt/payment identity uniqueness.
-- Version uniqueness per receipt.
-- Historical version immutability.
-- Appropriate receipt statuses.
-- Counter concurrency.
-- Audit integrity.
-- Existing allocation constraints.
-- All 13 original triggers.
+Apply any required migrations on disposable MySQL 8.4.
 
-Test against actual disposable MySQL 8.4.
+Verify repeat migration execution, indexes and foreign keys.
 
-Do not modify production databases.
+Do not modify production data or use real customer records.
 
-## 18. AUTOMATED TESTS
+## 17. AUTOMATED TESTS
 
-### Issuance
+### Financial Aggregates
 
-- First payment generates actual numbered receipt and PDF.
-- Payment and allocations are correct.
-- PDF contains correct payment/receipt values.
-- PDF is stored privately.
-- Checksum matches.
-- Receipt is downloadable only by an authorized user.
+Test:
 
-### Numbering
+- Exact income sum from received payments.
+- Cancelled payments excluded.
+- Corrected payment contributes only its current amount.
+- Retired allocations excluded from current phase totals.
+- Exact expense sum from recorded expenses.
+- Cancelled expense excluded.
+- Corrected expense contributes current amount only.
+- Company-wide expense counted in company totals.
+- Company-wide expense excluded from each project total.
+- Correct project/client associations.
+- No double counting of history.
+- Actual transaction-date range boundaries.
+- Cash/bank and category filters.
+- Decimal precision, including large valid EUR values.
+- Empty database and zero-data results.
 
-- Unique numbers under concurrent issuance.
-- Company-wide scope.
-- No number reuse.
-- Same idempotent request returns original receipt.
-- Failure handling and gaps documented.
+### Reports
 
-### Corrections
+Test:
 
-- Same number retained.
-- Version increments.
-- Old PDF remains byte-identical.
-- New PDF reflects corrected data.
-- Current version is correct.
-- Audit/version history survives.
-- Failure rolls back financial state safely.
+- Company report totals match underlying filtered data.
+- PDF is valid and readable.
+- XLSX opens as a valid workbook.
+- Detail rows reconcile to summary totals.
+- Long values render safely.
+- Special Albanian characters.
+- Formula-injection protection.
+- Cancelled/corrected records follow approved active-state policy.
+- No individual project report export endpoint exists.
 
-### Cancellation
+### Full Export
 
-- Payment/receipt status consistent.
-- Cancellation visible.
-- Old versions still available.
-- Active income and phase capacity updated.
-- Repeated cancellation rejected or handled safely.
-- No fiscal certification claim.
+Test:
 
-### Storage and Recovery
+- Every approved business table included.
+- Older audit/history rows beyond UI pagination are included.
+- Stable IDs and relationships preserved.
+- Cancelled and archived records included.
+- No password hashes/session secrets/operator keys.
+- Real included receipt PDFs match stored checksums.
+- Manifest/checksum correctness.
+- Data-export pagination or batching completeness.
+- Partial export fails clearly.
+- Unauthorized export denied.
+- Sensitive temporary files cleaned up.
 
-- Private download authorization.
-- File-system failure rollback behavior.
-- Orphan staging cleanup.
-- Corruption detection.
-- Missing-document behavior.
-- No deletion of issued files.
-- Interrupted request replay.
+### Security
+
+Test:
+
+- Anonymous dashboard/report/export access denied.
+- Disabled session denied.
+- Safe Origin/Host protection on export-starting mutations where applicable.
+- SQL/PII error redaction.
+- No-store headers.
+- No public export URLs.
+- Malicious filenames and spreadsheet cell values.
+- Database outage handling.
 
 ### Regression
 
-- Existing payment exactness/capacity and concurrency.
-- WP-05 contract/phase locking.
-- WP-07 expenses.
-- WP-06 references.
-- WP-04 clients.
+Preserve:
+
 - WP-03 authentication.
-- Earlier migration hashes.
-- All original receipt/audit triggers.
-- Public bilingual website.
-- TypeScript.
-- ESLint.
-- Build and route smoke tests.
+- WP-04 clients.
+- WP-05 projects/contracts/phases.
+- WP-06 reference data.
+- WP-07 expenses.
+- WP-08 payment allocations and idempotency.
+- WP-09 receipts and immutable PDFs.
+- All prior migration hashes and 13 triggers.
+- Public SQ/EN pages.
+- Private navigation.
+- TypeScript, ESLint and build.
 
-Run browser-based visual and interaction tests when an actual browser is available.
+Do not weaken previous tests.
 
-If not, explicitly report NOT VERIFIED.
+## 18. ACCEPTANCE CRITERIA
 
-Do not claim PDF rendering was visually reviewed unless PDF pages were actually inspected.
+**WP10-AC01:** Dashboard uses real persisted business data.
 
-## 19. ACCEPTANCE CRITERIA
+**WP10-AC02:** Active income excludes cancelled payments.
 
-**WP09-AC01:** The real WP-08 ReceiptBoundary is integrated.
+**WP10-AC03:** Active expenses exclude cancelled expenses.
 
-**WP09-AC02:** Confirmed payment creates one valid company-wide numbered receipt.
+**WP10-AC04:** Corrected records contribute only their latest active values.
 
-**WP09-AC03:** Receipt number uniqueness is enforced under concurrent confirmations.
+**WP10-AC05:** Company-wide expenses are not automatically assigned to projects.
 
-**WP09-AC04:** Actual A4 PDF is generated with the required operational information.
+**WP10-AC06:** Company income-minus-expenses is not misrepresented as statutory profit.
 
-**WP09-AC05:** PDF bytes are durably stored in a private location.
+**WP10-AC07:** Project summaries are viewable on screen using real exact values.
 
-**WP09-AC06:** Receipt download requires authenticated authorization.
+**WP10-AC08:** No individual project financial PDF/XLSX report export is provided.
 
-**WP09-AC07:** Receipt PDF checksum and storage integrity are verified.
+**WP10-AC09:** Company report filters and totals use correct transaction-date semantics.
 
-**WP09-AC08:** Correcting a payment retains the receipt number and appends version N+1.
+**WP10-AC10:** Company PDF report is generated with actual correct data.
 
-**WP09-AC09:** Previous receipt PDFs remain immutable and accessible.
+**WP10-AC11:** Company XLSX report is generated with actual correct data.
 
-**WP09-AC10:** A failed correction does not create mismatched current payment/receipt state.
+**WP10-AC12:** PDF/XLSX detail sections reconcile with their summaries.
 
-**WP09-AC11:** Cancellation preserves identities/history and marks receipt cancelled.
+**WP10-AC13:** Financial arithmetic retains exact EUR cents.
 
-**WP09-AC12:** Cancelled payment is excluded from active received totals/capacity.
+**WP10-AC14:** Report queries use consistent data snapshots.
 
-**WP09-AC13:** Receipt audit/history is actor-attributed and append-only.
+**WP10-AC15:** Complete business-data export includes required active and historical data.
 
-**WP09-AC14:** Payment and receipt metadata are transactionally coordinated.
+**WP10-AC16:** Export is not limited by ordinary UI history pagination.
 
-**WP09-AC15:** File/SQL failure boundaries have tested recovery behavior.
+**WP10-AC17:** Real referenced receipt PDFs are handled safely in complete export.
 
-**WP09-AC16:** Idempotent confirmation/retry does not create duplicate payment or receipt.
+**WP10-AC18:** Full export excludes authentication and infrastructure secrets.
 
-**WP09-AC17:** Interrupted HTTP responses are safely recoverable through operation status.
+**WP10-AC19:** CSV/XLSX formula injection is prevented.
 
-**WP09-AC18:** Existing payment capacity and concurrent-writer invariants remain valid.
+**WP10-AC20:** Export access and downloads are independently authorized.
 
-**WP09-AC19:** No speculative receipt PDF/number is represented as issued.
+**WP10-AC21:** Export failures and partial outputs are handled safely.
 
-**WP09-AC20:** Fiscal/accountant validation is explicitly outstanding.
+**WP10-AC22:** Dashboard/reports/exports use existing UI foundation.
 
-**WP09-AC21:** Previous migrations, original triggers and earlier modules pass regressions.
+**WP10-AC23:** Real MySQL integration tests pass.
 
-**WP09-AC22:** Real disposable MySQL 8.4 integration tests pass.
+**WP10-AC24:** Real PDF/XLSX/export content is verified, not only mocked.
 
-**WP09-AC23:** PDF rendering/storage/download are exercised with actual bytes, not mocks only.
+**WP10-AC25:** Previous migrations, triggers and module regressions pass.
 
-**WP09-AC24:** TypeScript, ESLint, build and HTTP checks pass.
+**WP10-AC26:** TypeScript, lint, build and HTTP route checks pass.
 
-**WP09-AC25:** Desktop/mobile/browser interaction is verified when available; otherwise NOT VERIFIED.
+**WP10-AC27:** Browser/mobile/accessibility verification runs where available; otherwise NOT VERIFIED.
 
-**WP09-AC26:** No real client data or production infrastructure is accessed.
+**WP10-AC28:** No production database, real client data or deployment is involved.
 
-Classify each as PASS, FAIL or NOT VERIFIED.
+Report PASS, FAIL or NOT VERIFIED for every criterion.
 
-A passing unit test with a fake storage adapter is not sufficient for document-durability acceptance.
+## 19. VERIFICATION
 
-## 20. VERIFICATION
+Inspect package scripts before running commands.
 
-Inspect package.json first.
-
-Execute applicable:
+Execute appropriate:
 
 - `npm.cmd test`
 - `npm.cmd run db:check`
@@ -652,110 +642,90 @@ Execute applicable:
 - `npm.cmd run build`
 - `npm.cmd run check:routes`
 
-Add targeted receipt/PDF/storage integration and authenticated HTTP tests.
+Add focused financial-report, PDF, XLSX and complete-export integration/HTTP tests.
 
-Use:
+Use synthetic records, disposable MySQL 8.4 and task-owned private output directories.
 
-- Disposable MySQL 8.4.
-- Task-owned private temporary file storage.
-- Synthetic client/project/payment data.
-- Real generated PDF bytes.
+Preserve the owner's separate local development environment.
 
-Inspect PDF format, page dimensions, content and checksum.
+Record actual commands, test results and relevant file integrity evidence.
 
-Report actual execution evidence.
-
-Do not disable prior checks to obtain passing status.
-
-Fix confirmed WP-09 defects within scope.
-
-## 21. OUT OF SCOPE
-
-Do not implement:
-
-- Fiscalization or certified tax receipts.
-- VAT/tax calculation policy not approved by accountant.
-- Online payment integration.
-- Bank integration.
-- Company financial report PDF/Excel.
-- Full business-data export.
-- Individual project financial report export.
-- Payroll.
-- Inventory.
-- Scheduling.
-- Production storage infrastructure.
-- Hosting purchase.
-- Production deployment.
-- Real client information import.
-
-Do not invent legal accounting validity.
-
-## 22. REQUIRED DELIVERY REPORT
-
-### A. Repository Baseline
-
-Branch, HEAD, existing modifications and actual source availability.
-
-### B. Receipt Architecture
-
-ReceiptBoundary implementation, numbering and immutable version model.
-
-### C. Durable Storage Protocol
-
-File preparation, persistence, database commit, recovery and cleanup.
-
-### D. Implemented Workflows
-
-Issue, correct, cancel, download and retry.
-
-### E. Database & Migrations
-
-Actual SQL migrations, constraints, hashes and real MySQL results.
-
-### F. Files Changed
-
-Exact paths and purposes.
-
-### G. Test Evidence
-
-Commands, counts, actual PDFs tested, failure injection and fixes.
-
-### H. Acceptance Checklist
-
-WP09-AC01 through WP09-AC26.
-
-### I. Security Review
-
-Downloads, file permissions, session guards, CSRF, origin protection and secrets.
-
-### J. Remaining Risks
-
-Accounting validation, numbering policy, production storage/hosting, browser QA.
-
-### K. Next Work Package
-
-Readiness for WP-10 — Dashboard, Company Financial Reports & Full Data Export.
-
-Do not implement WP-10 automatically.
-
-## 23. EXECUTION
-
-Implement WP-09 now.
-
-Integrate real receipt issuance with the existing payment service.
-
-Generate actual immutable A4 PDF documents.
-
-Implement safe private storage, numbering, versioning, authorized downloads, correction and cancellation.
-
-Test real database and file-storage failure scenarios.
-
-Preserve all previous financial invariants, migration history and authorization.
-
-Do not stop at a plan.
+Do not pretend PDF/XLSX inspection occurred if it was not executed.
 
 Do not deploy.
 
-Commit/push only within the project owner's currently valid authorization.
+## 20. REQUIRED DELIVERY REPORT
 
-**END OF WP-09**
+### A. Repository Baseline
+
+Branch, HEAD, preserved user modifications and accessible source specifications.
+
+### B. Financial Definitions
+
+Exact current-state eligibility, date filters, contract totals and project/company allocation rules.
+
+### C. Dashboard and Project Summaries
+
+Routes, calculations, UI and actual data sources.
+
+### D. Company Report
+
+PDF/XLSX layout, filters and reconciliation evidence.
+
+### E. Full Data Export
+
+Included entities/history/PDFs, structure, batching and security exclusions.
+
+### F. Consistency & Performance
+
+Snapshot strategy, query bounds, large-export behavior and resource limitations.
+
+### G. Database & Migrations
+
+Any additive migration and actual verification.
+
+### H. Files Changed
+
+Exact paths/purpose.
+
+### I. Test Evidence
+
+Commands, counts, rendered documents, spreadsheet validation, error/recovery tests.
+
+### J. Acceptance Checklist
+
+WP10-AC01 through WP10-AC28.
+
+### K. Security Review
+
+Authorization, PII protection, export isolation, spreadsheet safety, secret exclusion.
+
+### L. Known Issues and Release Gates
+
+Browser QA, accountant approval, production storage/backup compatibility and anything not verified.
+
+### M. Next Package
+
+Assess readiness for the next website-content and premium UI/UX implementation phase.
+
+Do not start the next package automatically.
+
+## 21. EXECUTION
+
+Implement WP-10 locally now.
+
+Build the real dashboard, project-level on-screen summaries, company-wide financial report PDF/XLSX and full authorized business-data export.
+
+Use existing persisted financial services, exact-money rules and private receipt storage.
+
+Preserve prior migration history, audit guarantees and security boundaries.
+
+Verify all new capabilities with real MySQL and actual generated documents.
+
+Do not stop at a plan.
+
+Do not deploy or access real customer data.
+
+Commit/push only under the project's current explicit owner authorization.
+
+**END OF WP-10**
