@@ -286,3 +286,7 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
   .workspace-topbar .workspace-name { grid-column: 1 / -1; }
   .workspace-user > span { max-width: 160px; }
 }
+
+/* WP-07 bounded reference results share the established form layout. */
+.expense-choices { list-style: none; padding: 0; display: grid; gap: .5rem; max-height: 20rem; overflow-y: auto; }
+.expense-choices .button { width: 100%; text-align: left; white-space: normal; overflow-wrap: anywhere; }

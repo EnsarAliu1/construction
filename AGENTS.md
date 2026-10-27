@@ -1,717 +1,836 @@
 # ADORE TECH SOLUTIONS — CODEX IMPLEMENTATION PROMPT
 
-## WP-06: Expense Categories, Persons/Suppliers & Vehicles
+## WP-07: Expense Transactions — Registration, Corrections, Cancellation & Audit
 
 **Project:** Fitimi Construction Management System & Corporate Website  
-**Package:** WP-06  
+**Work Package:** WP-07  
 **Version:** 1.0  
-**Date:** 26.10.2026  
+**Date:** 27.10.2026  
 **Developer:** Codex  
-**Technical Lead:** Adore Tech Solutions
-
-**Authorization:** Local implementation, necessary additive migrations, isolated MySQL testing, regression verification and documented defect corrections.
+**Technical Lead:** Adore Tech Solutions  
+**Authorization:** Local implementation, additive migrations when necessary, disposable MySQL tests, regression tests and corrections of confirmed WP-07 defects.
 
 ---
 
 ## 1. MISSION
 
-Implement three production-quality reference-data modules:
+Implement the actual Expense Transactions (Daljet Financiare) module in the existing authenticated construction-management application.
 
-1. Expense Categories
-2. Persons / Suppliers
-3. Vehicles
+Users must be able to:
 
-These modules will support expense registration in WP-07.
+1. Register actual outgoing expenses in EUR.
+2. Browse and search recorded expenses.
+3. Filter expenses by actual transaction date, category, project and other supported associations.
+4. Open an expense's details and history.
+5. Correct permitted expense fields with full auditability.
+6. Cancel an expense without physically destroying its history.
+7. Associate an expense with an optional project, person/supplier and vehicle.
+8. Create a new expense category directly from the expense form.
+9. Preserve consistency under concurrent operations.
+10. Use secure, validated server-side functionality.
 
-Deliver real, authenticated, database-backed screens and operations.
+This is a real implementation task.
 
-This is an implementation task, not a planning-only exercise.
+Write executable code and run real tests. Do not stop at a plan.
 
-The modules must support the management of registered records, validated edits, safe historical retention, concurrency protection and appropriate audit trails.
+Do not implement incoming payments, phase allocations, receipts or financial-report exports.
 
-Do not implement financial expense transactions in this package.
+## 2. PROJECT BASELINE
 
-## 2. REPOSITORY BASELINE
+Reported completed and tested:
 
-Completed work packages reported:
+- WP-01: Next.js and website/application foundation.
+- WP-02 and WP-02V: MySQL/Drizzle schema and real MySQL verification.
+- WP-03: Authentication, secure sessions and account administration.
+- WP-04: Clients.
+- WP-05: Projects, contracts and financial phases.
+- WP-06: Expense categories, persons/suppliers and vehicles.
 
-- WP-01: Next.js bootstrap and UI foundation.
-- WP-02: Drizzle/MySQL database schema.
-- WP-02V: MySQL migration verification.
-- WP-03: Authentication and authorization.
-- WP-04: Clients Management.
-- WP-05: Projects, Contracts & Financial Phases.
-
-The latest report confirms:
+Existing technology:
 
 - Next.js 16.4.3
 - React 19.3.1
 - TypeScript 6.0.3
+- Tailwind CSS 4.3.3
 - Drizzle ORM 0.45.4
 - Drizzle Kit 0.31.11
 - mysql2 3.24.6
-- MySQL 8.4.13 for local integration testing
-- Migration 0004 for WP-05
-- 20 application tables
-- 13 existing database triggers
-- Existing authentication and business-audit infrastructure
+- MySQL 8.4.13 during disposable local tests
 
-Before coding:
+WP-06 reportedly completed migration:
 
-1. Inspect the real Git state, branch and HEAD.
-2. Read the current AGENTS.md and repository instructions.
-3. Inspect the existing database schema.
-4. Review WP-04 and WP-05 implementation patterns.
-5. Inspect audit and entity-version utilities.
-6. Inspect the shared UI components and navigation.
-7. Preserve all uncommitted work.
+`drizzle/0005_wp06_reference_lifecycle.sql`
 
-Do not assume that previous reports describe the current working tree exactly.
+WP-06 reported:
 
-Do not rewrite previously applied migrations.
+- 20 application tables.
+- Six migrations.
+- 13 original history-protection triggers.
+- 175 passing Node test results.
+- No browser verification.
 
-## 3. APPROVED BUSINESS RULES
+Inspect the actual repository state before implementation.
 
-The relevant approved project requirements are:
+Read AGENTS.md and existing project instructions.
 
-- Expenses use predefined categories, persons/suppliers and vehicles where applicable.
-- A category may also be created during expense registration in a later package.
-- Persons and vehicles are registered entities.
-- Linking a person or vehicle to an expense is optional.
-- A person linked to an expense represents the supplier or payment recipient.
-- Expenses may be associated with a client or project where applicable.
-- Historical expense references must remain valid.
-- Business users have equal operational rights.
-- Changes must be auditable.
-- EUR is the only currency for future expense transactions.
+Preserve existing changes, migration history and test coverage.
 
-These three reference-data modules must not be used to invent additional business functions.
+Do not assume a historical commit remains HEAD.
 
-Do not introduce:
+## 3. SOURCE HIERARCHY
 
-- Human resources or employee payroll.
-- Vehicle GPS tracking.
-- Fuel tracking as a separate module.
-- Vehicle maintenance scheduling.
-- Purchasing or inventory management.
-- Supplier invoices/payables.
-- Customer relationship management.
-- Unapproved financial reporting.
+Respect:
 
-## 4. DATABASE MODELS
+1. Latest approved PM/business decisions.
+2. Business decisions D-01 through D-14 and approved MVP scope.
+3. Codex Master Project Prompt v1.1.
+4. Technical Specification and accepted implementation decisions.
+5. Approved UX-01 through UX-05 and Wireframes v2.1, where actually available.
+6. Operational Clarity and UI Design System, where actually available.
+7. Existing repository conventions.
 
-Reuse the existing database tables:
+Do not claim to have read missing source documents.
 
+The existing neutral UI foundation may be reused when design references are unavailable.
+
+If a business rule is genuinely ambiguous, adopt the least expansive, history-preserving behavior that does not contradict approved requirements, document the assumption, and escalate only a material unresolved conflict.
+
+## 4. DEFINITIONS AND APPROVED SCOPE
+
+An **expense** is an actual outgoing payment by the company.
+
+It is not:
+
+- An incoming customer payment.
+- A future payable or unpaid invoice.
+- A payment allocation to a contract phase.
+- A physical construction-progress entry.
+
+Currency is EUR.
+
+Amounts must be exact monetary values, using the existing DECIMAL(19,2) representation and validated decimal-string/BigInt-cents conventions.
+
+The actual expense date (`transaction_date`) must be distinct from the record creation timestamp (`created_at`).
+
+An expense may belong to:
+
+- A specific project — optional.
+- A category — required when the existing approved schema requires it.
+- A person/supplier/payment recipient — optional.
+- A vehicle — optional.
+
+The project client is derived from the project relationship. Do not introduce an independent, potentially inconsistent client association unless the approved schema already establishes one.
+
+**Company-wide expenses without a project are valid.**
+
+Never automatically distribute general expenses to projects.
+
+## 5. INSPECT EXISTING DATA MODEL
+
+Reuse the existing tables and relationships:
+
+- `expenses`
 - `expense_categories`
 - `persons`
 - `vehicles`
-- `expenses`
+- `projects`
+- `clients`
+- `users`
 - `audit_events`
 - `entity_versions`
-- `users`
 
-Inspect actual field definitions before implementing.
+Inspect:
 
-Do not create duplicate tables.
+- Existing expense columns.
+- Status/lifecycle representation.
+- Existing nullable relations.
+- Date representation.
+- Amount constraints.
+- Foreign keys and indexes.
+- Available actor/version columns.
+- Existing history snapshot allowlist.
 
-Use existing relations and approved schema constraints.
+Do not create a replacement expense table.
 
-Only add required fields or indexes through additive migrations.
+Create an additive migration only if necessary to implement the approved expense workflow safely.
 
-### A. Expense Categories
+Do not rewrite migrations 0000–0005 or invalidate existing migration hashes.
+
+## 6. REQUIRED BACKEND OPERATIONS
+
+### A. Create Expense
+
+Implement authenticated expense registration.
+
+Fields should follow the existing schema and approved scope:
+
+- Amount in EUR.
+- Actual transaction date.
+- Category.
+- Description.
+- Optional project.
+- Optional person/supplier.
+- Optional vehicle.
+
+Reject invalid, unknown or inactive references.
+
+Use a single database transaction for:
+
+- Expense creation.
+- Any approved inline category creation.
+- Audit event.
+- Entity version snapshot.
+
+The server determines the acting user.
+
+No actor ID, status override, timestamps or internal financial state may be accepted from unrestricted form input.
+
+### B. List Expenses
+
+Implement authenticated, bounded database-backed listing.
 
 Support:
 
-- Stable category ID.
-- Category name.
-- Active/inactive status.
-- Relevant timestamps.
-- Actor and version metadata when required.
+- Pagination.
+- Search by description and appropriate linked reference labels.
+- Actual transaction-date range.
+- Category filter.
+- Project filter, including company-wide expenses.
+- Supplier/person and vehicle filters when useful.
+- Active/cancelled status visibility.
 
-Use the actual database schema's limits.
+Use the real transaction date when filtering by date.
 
-Categories may be used by multiple expenses.
+Do not filter financial records by `created_at` when the user selected an expense date range.
 
-Historical expense references must remain intact.
+Return totals only if computed correctly from filtered, persisted data and clearly labelled.
 
-### B. Persons / Suppliers
+Do not fabricate financial dashboards.
 
-Support existing person information, such as:
+### C. Expense Details
 
-- Stable ID.
-- Name.
-- Existing contact/identification fields where available.
-- Active/inactive status.
-- Relevant timestamps.
-- Actor and version metadata when required.
+Display:
 
-Within the Expenses workflow, a linked person means the supplier or payment recipient.
-
-Do not add employee-specific fields or assume every supplier is a registered business.
-
-Do not invent mandatory personal identification requirements.
-
-### C. Vehicles
-
-Support existing vehicle information, such as:
-
-- Stable ID.
-- Registration/identifier where provided.
+- Stable expense ID or safe reference.
+- Actual transaction date.
+- Amount.
 - Description.
-- Active/inactive status.
-- Relevant timestamps.
-- Actor and version metadata when required.
+- Category.
+- Project, when linked.
+- Person/supplier, when linked.
+- Vehicle, when linked.
+- Current status.
+- Creation/correction/cancellation metadata.
+- Relevant audit history.
 
-Do not require vehicle ownership documents or maintenance information unless already part of the approved schema.
+Inactive reference entities must remain readable historically.
 
-Do not assume vehicle registration numbers must be globally unique without an explicit business or justified data-integrity requirement.
+Do not hide an expense simply because its category, person or vehicle was later deactivated.
 
-## 5. IMPLEMENTATION PATTERN
+### D. Correct Expense
 
-Reuse the existing application patterns from Clients and Projects.
+Implement an explicitly confirmed edit workflow.
 
-For each module implement:
+Allow correction of approved editable fields.
 
-- Authenticated list.
-- Bounded search.
-- Create.
-- Details.
-- Edit.
-- Active/inactive lifecycle.
-- Concurrency protection.
-- Actor-attributed audit records.
-- Immutable version snapshots where compatible.
-- Appropriate error and empty states.
+Preserve:
 
-Do not implement physical deletion for records that may be referenced by historical expenses.
+- Stable expense identity.
+- Previous values.
+- Actor.
+- Correction timestamp.
+- Audit event.
+- Historical entity version.
 
-### Lifecycle behavior
+Use optimistic concurrency/version checks.
 
-Prefer logical deactivation over physical deletion.
+Do not silently overwrite another user's correction.
 
-When a category, person or vehicle becomes inactive:
+Corrections must be performed atomically with audit/history writes.
 
-- Keep its stable identity.
-- Preserve historical references.
-- Exclude it from future active-record selectors by default.
-- Continue allowing authorized historical reads.
-- Reject attempts to attach inactive records to newly created expenses in later packages.
-- Do not silently reactivate it through an edit.
+Do not generate a receipt or receipt version for expenses.
 
-If approved requirements do not specify reactivation behavior, use a conservative explicit lifecycle operation or leave reactivation outside scope. Do not expose ambiguous functionality.
+### E. Cancel Expense
 
-Document the exact behavior implemented.
+Implement safe logical cancellation, using the existing schema's lifecycle conventions.
 
-## 6. SERVER-SIDE SERVICES
+Cancellation must:
 
-Implement separate domain services or equivalent feature modules for:
+- Preserve the expense record.
+- Preserve its original history.
+- Record actor and timestamp.
+- Append an audit event and version snapshot.
+- Exclude the cancelled expense from future active outgoing totals.
+- Keep the expense accessible with an explicit CANCELLED indication.
+- Reject stale or otherwise invalid cancellation requests.
 
-### Categories
+Do not physically delete financial expense records.
 
-- List categories.
-- Get category.
-- Create category.
-- Update category.
-- Deactivate category.
+Do not treat cancellation as a negative balancing transaction unless approved business requirements explicitly demand it.
 
-### Persons / Suppliers
+Do not implement automatic reactivation of cancelled expenses without an approved workflow.
 
-- List persons.
-- Get person.
-- Create person.
-- Update person.
-- Deactivate person.
+If the existing schema cannot safely represent the cancellation semantics, introduce a minimal additive migration and explain its impact.
 
-### Vehicles
+## 7. INLINE CATEGORY CREATION
 
-- List vehicles.
-- Get vehicle.
-- Create vehicle.
-- Update vehicle.
-- Deactivate vehicle.
+The ability to create a new expense category directly from the expense-entry form is an approved requirement.
 
-All operations must independently require a valid current user session.
+Provide:
 
-Do not rely only on the authenticated workspace layout.
+- Existing active category selector.
+- Clear "Create new category" action.
+- Category name input.
+- Server-side duplicate validation.
+- Clear validation/conflict feedback.
 
-Use parameterized Drizzle queries.
+**Critical atomicity rule:**
 
-Use bounded inputs and outputs.
+If the user submits a new category as part of a new expense, creation of the category and expense must be one atomic database business operation.
 
-Do not accept protected fields such as actor ID, timestamps, versions or status transitions through unrestricted object assignment.
+If expense validation or persistence fails, the new category must not remain orphaned as a side effect of that failed expense submission.
 
-## 7. VALIDATION RULES
+Do not call the existing top-level category creation service if it independently begins and commits its own transaction.
 
-Use the actual database field bounds.
+Instead, reuse or extract transaction-level primitives that operate inside the expense's existing transaction, maintaining the prior public category service behavior.
 
-Requirements:
+Create the category's audit/version entries inside that same transaction.
 
-- Trim and safely normalize textual inputs.
-- Require meaningful names for categories and persons.
-- Validate vehicle data according to the existing model.
-- Reject control characters and unsupported field types.
-- Validate bounded text lengths.
-- Validate existing ID formats.
-- Reject invalid lifecycle status transitions.
-- Reject updates using stale versions.
-- Normalize optional empty fields consistently.
-- Prevent arbitrary field injection/mass assignment.
+Respect the existing unique-name constraint and MySQL collation behavior.
 
-Do not invent country-specific phone, NUI or vehicle-registration validation formats.
+If two requests race to create the same category, do not accidentally create duplicates or silently attach a category against the user's intent. Return or handle a well-defined conflict result.
 
-### Duplicate handling
+## 8. LOCKING AND REFERENCE VALIDATION
 
-Prevent exact duplicate reference categories when a stable normalization rule can safely do so.
+Use a consistent transaction and locking protocol that composes with WP-03 through WP-06.
 
-However, do not silently merge existing records.
+Recommended order:
 
-Avoid unjustified uniqueness assumptions for person names or vehicle descriptions.
+1. Authenticate and validate request shape.
+2. Start a Drizzle/InnoDB transaction.
+3. Shared-lock and recheck the acting user's current session.
+4. If a project is linked, lock its client and project in WP-05's established order, rechecking parent relationships and lifecycle eligibility.
+5. Lock selected reference rows in this fixed order:
+   - Category.
+   - Optional person/supplier.
+   - Optional vehicle.
+6. Recheck reference identity, active status and expected version under the locks.
+7. Lock the existing expense row for correction/cancellation, using a documented consistent order compatible with future financial operations.
+8. Validate the final expense state.
+9. Save expense and audit/version records.
+10. Commit.
 
-If duplicates are ambiguous, provide clear validation or document the design choice.
+For update operations where associations change, inspect existing and proposed relationships and define a deterministic lock order that cannot deadlock with reference deactivation or other expense mutations.
 
-## 8. CONCURRENCY AND ATOMICITY
+Do not lock only the selected new references while ignoring an existing relationship whose lifecycle state matters.
 
-All create/update/deactivate operations must safely coordinate:
+Document the final locking design and test relevant concurrency cases.
 
-- Business row changes.
-- Actor attribution.
-- Audit event creation.
-- Historical version snapshot creation.
+Do not acquire independent nested transactions inside the already open business transaction.
 
-Use database transactions.
+A foreign key alone does not prove that a selected category/person/vehicle is active.
 
-If a version field is needed, add it through an appropriate migration.
+Future payment allocation locks remain governed by WP-05; do not implement or interfere with that workflow here.
 
-Updates and deactivations must not silently overwrite one another.
+## 9. EXACT MONEY AND DATE HANDLING
 
-When a write depends on the current active status:
+Use:
 
-1. Authenticate.
-2. Validate input.
-3. Open a database transaction.
-4. Apply the established user/session lock convention.
-5. Lock the affected reference-data record.
-6. Recheck its current status and expected version.
-7. Save the authorized change.
-8. Append audit and history entries.
-9. Commit atomically.
+- DECIMAL(19,2) storage.
+- Exact decimal-string parsing and validation.
+- BigInt cents or equivalent exact integer representation for monetary calculations.
+- Calendar-date semantics for actual transaction dates.
+- UTC for system-event timestamps.
 
-On any failure, roll back all business and audit changes.
+Do not use JavaScript floating-point math to decide monetary consistency.
 
-Keep lock ordering compatible with earlier modules.
+Ensure amounts:
 
-Avoid adding unnecessary locks on unrelated project/contract aggregates for independent reference-data edits.
+- Have at most two fractional digits.
+- Fit storage bounds.
+- Satisfy approved positivity constraints.
+- Cannot be silently rounded by raw MySQL.
+- Cannot be submitted as NaN/Infinity or malformed strings.
 
-### Future WP-07 requirement
+Use the existing currency helper patterns where applicable.
 
-Expense creation must lock and recheck selected category/person/vehicle states according to a documented protocol.
+Do not invent multi-currency support.
 
-This prevents an expense from being created against a reference record that was concurrently deactivated.
+## 10. AUDIT AND VERSION HISTORY
 
-Do not implement expense creation yet.
+All expense creation, correction and cancellation must be audited.
 
-## 9. AUDIT AND HISTORY
-
-Reuse:
+Use the established:
 
 - `audit_events`
 - `entity_versions`
-- Existing server-side audit conventions
 
-For each supported mutation record:
+Include:
 
-- Actor.
-- Entity type.
-- Entity ID.
+- Acting user.
+- Entity identity.
 - Action.
 - Relevant before/after values.
 - UTC timestamp.
-- Correlation/operation identifier.
-- Version where applicable.
+- Version.
+- Operation/correlation UUID.
 
-Do not add sensitive authentication information to audit snapshots.
+Write audit/history in the same transaction as the expense mutation.
 
-Avoid inventing historic actors for existing legacy records.
+If audit insertion fails, roll back the entire operation.
 
-If database snapshot safety checks require expansion, use an explicit field allowlist and test it.
+Do not include:
 
-Do not relax credential or nested-data protection.
+- Session tokens.
+- Password hashes.
+- Operator credentials.
+- Unrelated personal secrets.
 
-## 10. USER INTERFACE
+Extend the existing safe snapshot allowlist only for the actual expense fields needed.
 
-Replace the three existing placeholder screens with functioning pages.
+Do not disable existing immutability triggers.
 
-Use established Operational Clarity components and design tokens.
+Do not rewrite historical snapshots.
 
-Do not redesign unrelated sections.
+## 11. USER INTERFACE
 
-### Expense Categories screen
+Replace the Expenses placeholder with real working screens.
 
-Provide:
+### Expenses List
 
-- Category list.
+Include:
+
+- Title "Daljet Financiare" or terminology consistent with the approved UI.
+- Add Expense action.
 - Search.
-- Create category.
-- Edit category.
-- Active/inactive distinction.
-- Clear action feedback.
-- Empty state.
-- Appropriate confirmation before deactivation.
+- Transaction-date range.
+- Category/project filters.
+- Status distinction.
+- Real expense list.
+- EUR formatting.
+- Clear empty and error states.
+- Responsive presentation.
 
-### Persons / Suppliers screen
+### Create Expense
 
-Provide:
+Include:
 
-- Persons list.
-- Search.
-- Create person.
-- Edit person.
-- Contact information where available.
-- Active/inactive distinction.
-- Historical detail access.
+- Amount.
+- Actual expense date.
+- Category selector.
+- Inline category creation.
+- Description.
+- Optional project.
+- Optional person/supplier.
+- Optional vehicle.
+- Submit/cancel controls.
+- Field-level errors.
+- Loading/pending feedback.
 
-Use the approved meaning of supplier/payment recipient.
+Use the existing authenticated active-reference selector services.
 
-Do not add HR terminology.
+Use bounded search for large reference sets, not unbounded dropdown downloads.
 
-### Vehicles screen
+### Expense Details
 
-Provide:
+Show all persisted fields and their linked reference labels.
 
-- Vehicle list.
-- Search.
-- Create vehicle.
-- Edit vehicle.
-- Registration/description information where available.
-- Active/inactive distinction.
-- Historical detail access.
+Provide visible correction and cancellation actions when permitted.
 
-### Shared UX requirements
+Display cancelled entries with clear status.
 
-- Responsive layout.
-- Accessible labels.
-- Visible focus.
-- Keyboard-operable controls.
-- Proper loading/pending states.
-- Field-level validation errors.
-- Confirmation for deactivation.
-- Clear error and success messages.
-- Conflict feedback for stale updates.
-- No dead buttons.
-- Safe handling of long names/descriptions.
+### Edit Expense
 
-Do not fabricate real suppliers, vehicles or expense totals.
+Prefill existing values.
 
-If demonstration data is needed for screenshots/tests, use isolated synthetic fixtures only.
+Handle stale versions and reference lifecycle changes.
 
-## 11. PREPARATION FOR WP-07
+Do not silently clear optional associations.
 
-The reference-data modules must provide reusable server-side read functions for future expense forms.
+Do not replace invalid input with a default monetary amount.
 
-Future WP-07 must be able to retrieve:
+### Cancel Expense
 
-- Active expense categories.
-- Active persons/suppliers.
-- Active vehicles.
+Require deliberate confirmation.
 
-Selectors should be bounded and searchable as appropriate.
+Clearly communicate that cancellation excludes the expense from active financial totals but preserves its history.
 
-Historical expense display must still resolve inactive references.
+Do not render a destructive hard-delete button.
 
-Category creation during expense entry is an approved requirement, but the actual inline-create UX and expense-save transaction belong to WP-07.
+### UX Quality
 
-Do not implement the expense form or persistence in WP-06.
+Reuse Operational Clarity components and tokens.
 
-## 12. AUTHORIZATION AND SECURITY
+Provide accessible labels, keyboard focus, error feedback, responsive layouts and appropriate table scrolling.
 
-Apply WP-03 server-side authorization to every page and mutation.
+Do not redesign unrelated website/application modules.
+
+If real browser testing is unavailable, mark visual and interaction verification NOT VERIFIED.
+
+## 12. SECURITY
+
+Use the existing WP-03 server-side authorization helpers for:
+
+- Pages.
+- APIs.
+- Server Actions.
+- Domain services.
+
+Do not rely on workspace layout alone.
 
 Requirements:
 
 - Anonymous access denied.
-- Disabled users denied.
-- Equal client operational permissions.
-- Protected mutations.
-- Existing Origin/Host validation preserved.
-- No sensitive details in error responses.
-- No direct exposure of SQL or credentials.
-- Bounded search and request sizes.
-- No unauthorized access through API routes.
+- Disabled user access denied.
+- Existing Origin/Host validation for mutations.
+- Bounded request sizes.
+- Strict field whitelists.
+- Safe IDs and versions.
+- Parameterized queries.
+- No leaking internal SQL or personal data in errors.
+- Safe no-store responses.
+- No unauthorized mass assignment.
 
-Use existing safe error conventions.
+Preserve equal operational permissions for the five client users.
 
-Do not create additional business roles.
+Do not introduce new business roles.
 
-## 13. DATABASE MIGRATIONS
+## 13. BUSINESS BEHAVIOR FOR REPORTING
 
-If required, add a new migration after 0004.
+WP-07 is not the reporting package.
 
-Do not modify migrations 0000–0004.
+However, persist data so future reports can correctly calculate:
 
-Preserve their exact hashes and Drizzle migration history.
+`Active outgoing expenses = SUM(non-cancelled expense amounts)`
 
-Test changes on disposable MySQL 8.4.
+Use actual transaction dates for reporting filters.
+
+Keep project-linked and company-wide expenses distinguishable.
+
+Do not automatically assign a company-wide expense to any project.
+
+Do not label income-minus-expenses as statutory accounting profit.
+
+Do not implement individual project report exports.
+
+Do not implement company PDF/Excel reporting yet.
+
+## 14. DATABASE MIGRATIONS
+
+If a new migration is necessary, generate it after migration 0005.
+
+Preserve all historical migration SQL bytes and hashes.
+
+Test in isolated disposable MySQL 8.4.
 
 Verify:
 
-- New version/actor fields where introduced.
-- Foreign keys.
-- Indexes.
-- History constraints.
-- Existing 13 triggers.
-- Migration repeatability.
+- All previous migrations.
+- New expense fields/constraints/indexes.
+- All 13 original history guards.
+- Migration journal hashes.
+- Repeat execution.
+- Audit snapshot compatibility.
+- Historical reference integrity.
 
-Do not apply migrations to a production or non-disposable database.
+Do not disable production-style integrity constraints merely to pass tests.
 
-Do not weaken existing constraints to make tests pass.
+Use synthetic test data only.
 
-## 14. AUTOMATED TESTING
+No production database access is authorized.
 
-Create unit, MySQL integration and HTTP tests for the three modules.
+## 15. AUTOMATED TESTS
 
-### Categories
+Implement meaningful unit, MySQL integration and HTTP tests.
 
-Test:
-
-- Create valid category.
-- Reject invalid or blank name.
-- Duplicate normalization behavior.
-- Search/list.
-- Update.
-- Deactivate.
-- Historical reference preservation.
-- Reject stale update.
-- Audit and rollback.
-
-### Persons
+### Create
 
 Test:
 
-- Create valid person.
-- Optional contact data.
-- Search/list.
-- Update.
-- Deactivate.
-- Duplicate-name safety.
-- Historical reference preservation.
-- Reject stale update.
-- Audit and rollback.
+- Valid company-wide expense without a project.
+- Valid project-linked expense.
+- Optional supplier/person.
+- Optional vehicle.
+- Active category association.
+- Rejection of inactive category/person/vehicle.
+- Rejection of archived or otherwise ineligible project relationship.
+- Exact amount and date persistence.
+- Required-field and bounds validation.
 
-### Vehicles
-
-Test:
-
-- Create valid vehicle.
-- Optional fields as allowed by schema.
-- Search/list.
-- Update.
-- Deactivate.
-- Historical reference preservation.
-- Reject stale update.
-- Audit and rollback.
-
-### Concurrency
+### Inline Category
 
 Test:
 
-- Two simultaneous edits of the same record.
-- Edit versus deactivation.
-- Audit insertion failure causes complete rollback.
-- Invalid/inactive historical references remain readable.
-- Future selector queries exclude inactive records.
+- Create category and expense atomically.
+- Duplicate category name.
+- Category name normalization/collation.
+- Rollback when expense insertion fails after category creation.
+- Rollback when category audit/history insertion fails.
+- Two concurrent category creations with conflicting names.
+- No category left behind after a failed combined operation.
 
-### Authorization
+### Read/Search
 
 Test:
 
-- Anonymous reads/mutations denied.
-- Active sessions accepted.
-- Disabled sessions rejected.
-- Origin/Host validation enforced.
-- Unknown records handled safely.
+- List pagination.
+- Search.
+- Date-range boundaries.
+- Category filter.
+- Project filter.
+- Company-wide expense filter.
+- Correct handling of inactive linked references.
+- Cancellation visibility.
+
+### Corrections
+
+Test:
+
+- Successful edit with audit.
+- Old values retained.
+- Stale version rejected.
+- Concurrent edit conflict.
+- Relationship change to active eligible reference.
+- Relationship change to inactive reference rejected.
+- Audit failure rolls back correction.
+
+### Cancellation
+
+Test:
+
+- Cancellation retains stable ID/history.
+- Correct actor/time/status.
+- Cancelled expenses excluded from active totals.
+- Already cancelled request handled safely.
+- Cancellation and edit race does not corrupt data.
+- Forced audit failure rolls back cancellation.
+
+### Security
+
+Test:
+
+- Anonymous reads denied.
+- Anonymous writes denied.
+- Disabled sessions denied.
+- CSRF/Origin protections.
+- SQL parameterization/escaped output.
+- Sensitive errors redacted.
+- Protected fields cannot be mass assigned.
 
 ### Regression
 
-Preserve:
+Verify:
 
-- WP-03 authentication.
-- WP-04 clients.
-- WP-05 projects/contracts/phases.
-- All previous MySQL migrations.
-- All 13 database triggers.
+- Authentication and sessions.
+- Clients.
+- Projects/contracts/phases.
+- Categories/persons/vehicles lifecycle and selectors.
+- Six previous migrations.
+- All 13 triggers.
 - Public SQ/EN website.
-- App navigation.
+- Application navigation.
 - TypeScript.
 - ESLint.
-- Production build.
+- Build.
+- Route smoke tests.
 
-Browser tests should be executed if tooling is available.
+Use browser testing where available.
 
-If browser tooling is unavailable, report visual/interaction verification as NOT VERIFIED.
+Do not claim browser PASS from HTTP-only tests.
 
-## 15. OUT OF SCOPE
+## 16. OUT OF SCOPE
 
 Do not implement:
 
-- Expense transactions.
-- Payment transactions.
-- Payment allocations.
-- Contract changes.
-- Receipt generation.
-- PDF/Excel reports.
-- Project financial summaries.
-- Supplier invoices.
+- Incoming payments.
+- Allocation of income across contract phases.
+- Receipt numbering/versioning/PDFs.
+- Financial dashboard.
+- Company report PDF/Excel.
+- Full business-data export.
+- Project financial report export.
+- Supplier invoices/payables.
 - Payroll.
 - Inventory.
-- Vehicle tracking.
-- Maintenance management.
+- Online payments.
+- Banking integrations.
 - Production deployment.
-- Real client/business data import.
+- Real business data import.
 
-Do not add unrelated dependencies or refactor unrelated modules.
+Avoid adding unnecessary dependencies.
 
-## 16. ACCEPTANCE CRITERIA
+Do not refactor unrelated modules.
 
-**WP06-AC01:** Reuses existing category, person and vehicle tables.
+## 17. ACCEPTANCE CRITERIA
 
-**WP06-AC02:** Authenticated users can create, list, view and update categories.
+**WP07-AC01:** Reuses the existing expenses schema and related reference tables.
 
-**WP06-AC03:** Authenticated users can create, list, view and update persons/suppliers.
+**WP07-AC02:** Authenticated users can create a company-wide expense.
 
-**WP06-AC04:** Authenticated users can create, list, view and update vehicles.
+**WP07-AC03:** Authenticated users can create a project-linked expense.
 
-**WP06-AC05:** Inputs are validated server-side using schema-compatible bounds.
+**WP07-AC04:** Category requiredness and all optional associations follow the approved data model.
 
-**WP06-AC06:** Search/list operations are bounded and functional.
+**WP07-AC05:** New expense categories can be created inline during expense entry.
 
-**WP06-AC07:** Lifecycle deactivation preserves record identities.
+**WP07-AC06:** Inline category and expense persistence is atomic.
 
-**WP06-AC08:** Historical references are not physically deleted.
+**WP07-AC07:** Inactive category/person/vehicle references are rejected for new associations.
 
-**WP06-AC09:** Inactive records are excluded from future active selectors by default.
+**WP07-AC08:** Expense creation coordinates safely with reference deactivation.
 
-**WP06-AC10:** Concurrent updates cannot silently overwrite each other.
+**WP07-AC09:** Expenses are listed, searchable, filterable and paginated.
 
-**WP06-AC11:** Mutations and audit/history are committed atomically.
+**WP07-AC10:** Transaction-date filtering uses the actual expense date.
 
-**WP06-AC12:** Audit snapshots are safe and actor-attributed.
+**WP07-AC11:** Existing expenses can be corrected with version checks.
 
-**WP06-AC13:** Unauthenticated or disabled users cannot access or modify data.
+**WP07-AC12:** Cancelled expenses remain historically accessible.
 
-**WP06-AC14:** Existing UI components and Operational Clarity foundation are reused.
+**WP07-AC13:** Cancelled expenses do not contribute to active outgoing totals.
 
-**WP06-AC15:** Desktop/mobile functionality and accessibility are verified where tooling permits.
+**WP07-AC14:** Expense changes and audit/version records commit atomically.
 
-**WP06-AC16:** MySQL integration tests pass against an isolated MySQL 8.4 environment.
+**WP07-AC15:** Concurrent corrections/cancellations cannot silently overwrite changes.
 
-**WP06-AC17:** Existing migrations, triggers and earlier modules remain functional.
+**WP07-AC16:** Exact EUR amounts are validated without floating-point errors.
 
-**WP06-AC18:** TypeScript, ESLint, build and applicable HTTP tests pass.
+**WP07-AC17:** All pages/APIs/services enforce server-side authorization.
 
-**WP06-AC19:** Reusable active-reference selectors are ready for WP-07.
+**WP07-AC18:** Historical relationships survive deactivation/cancellation.
 
-**WP06-AC20:** No expense or payment processing is implemented.
+**WP07-AC19:** Reuses the established UI foundation and working forms.
 
-**WP06-AC21:** No production infrastructure or real client data is accessed.
+**WP07-AC20:** Browser/mobile/accessibility verification is executed where available; otherwise honestly marked NOT VERIFIED.
 
-Report PASS, FAIL or NOT VERIFIED for every criterion.
+**WP07-AC21:** MySQL 8.4 integration tests pass.
 
-## 17. VERIFICATION COMMANDS
+**WP07-AC22:** Existing migration hashes, triggers and prior module tests remain valid.
+
+**WP07-AC23:** TypeScript, lint, build and HTTP regression checks pass.
+
+**WP07-AC24:** No incoming payments, allocations, receipts or reporting exports are implemented.
+
+**WP07-AC25:** No real client data or production infrastructure is accessed.
+
+For each criterion report PASS, FAIL or NOT VERIFIED with concise evidence.
+
+## 18. VERIFICATION
 
 Inspect the actual package scripts first.
 
-Run applicable project commands, including:
+Execute applicable commands including:
 
-- `npm.cmd test`
-- `npm.cmd run db:check`
-- `npm.cmd run test:db`
-- `npm.cmd run typecheck`
-- `npm.cmd run lint`
-- `npm.cmd run build`
-- `npm.cmd run check:routes`
+- npm.cmd test
+- npm.cmd run db:check
+- npm.cmd run test:db
+- npm.cmd run typecheck
+- npm.cmd run lint
+- npm.cmd run build
+- npm.cmd run check:routes
 
-Add focused WP-06 tests.
+Add dedicated WP-07 commands if appropriate.
 
-Execute all database integration tests against disposable MySQL 8.4.
+Run the actual migrations and integration tests against disposable MySQL 8.4.
 
-Record exact commands and actual outcomes.
+Use a safely isolated Docker container with verified ownership, loopback networking and synthetic credentials.
 
-Do not disable tests or safeguards.
+Do not touch unrelated containers or persistent volumes.
 
-## 18. REQUIRED DELIVERY REPORT
+If the database environment is unavailable, report NOT VERIFIED rather than simulating results.
 
-Return:
+Fix confirmed WP-07 defects before the final report.
+
+## 19. REQUIRED DELIVERY REPORT
 
 ### A. Repository Baseline
 
 - Branch and HEAD.
-- Existing modifications.
-- Confirmed source documents.
+- Existing modifications preserved.
+- Source materials actually accessible.
 
-### B. Implemented Features
+### B. Implementation
 
-- Categories.
-- Persons/suppliers.
-- Vehicles.
-- Search and lifecycle behavior.
+- Expense create/list/details/edit/cancel.
+- Inline category behavior.
+- Reference selectors.
+- Search and filtering.
 
 ### C. Database
 
-- Existing tables reused.
-- New migrations.
-- Exact MySQL execution results.
+- Reused tables.
+- Any additive migration.
+- Real migration execution.
+- Actual schema/constraints.
 
-### D. Atomicity and Audit
+### D. Transaction & Concurrency Review
 
-- Locking.
-- Concurrency handling.
-- Actor/history persistence.
-- Rollback tests.
+- Lock acquisition order.
+- Atomic inline category creation.
+- Active-reference rechecks.
+- Edit/cancellation races.
+- Audit rollback evidence.
 
-### E. Files Changed
+### E. File Manifest
 
-- Exact paths and purpose.
+- Exact modified/created file paths.
 
-### F. Test Results
+### F. Test Evidence
 
-- Exact commands.
-- Test counts.
-- Failures and limitations.
+- Exact commands and results.
+- Distinct test counts.
+- Relevant failures and corrections.
+- Browser verification status.
 
 ### G. Acceptance Checklist
 
-- WP06-AC01 through WP06-AC21.
+- WP07-AC01 through WP07-AC25.
 
 ### H. Security Review
 
+- Authentication.
 - Authorization.
+- CSRF/Origin checks.
 - Input validation.
-- Audit/privacy protections.
+- Safe errors.
+- Audit privacy.
 
 ### I. Open Issues
 
+- Missing UX/UI sources.
 - Browser verification.
-- Missing visual documents.
-- Remaining reference-data decisions.
+- Remaining business or technical constraints.
+- Prerequisites for future incoming-payment services.
 
-### J. Next Package
+### J. Scope Confirmation
 
-Assess readiness for WP-07 — Expense Transactions.
+- No income/payment allocations or receipts.
+- No financial-report exports.
+- No real data.
+- No production deployment.
 
-Do not implement WP-07 automatically.
+### K. Next Package
 
-## 19. EXECUTION
+Assess readiness for WP-08 — Incoming Payments & Financial Phase Allocations.
 
-Proceed with actual local WP-06 implementation.
+Do not implement WP-08 automatically.
 
-Inspect the repository, reuse existing architecture, build the three reference-data modules, apply any necessary additive migrations to disposable MySQL, execute verification and return the full report.
+## 20. EXECUTION INSTRUCTION
 
-Fix confirmed WP-06 defects within scope.
+Implement WP-07 now.
 
-Do not begin WP-07 automatically.
+Create real, working Expense Transactions functionality using the existing authenticated Next.js/Drizzle architecture.
 
-Do not deploy to production.
+Perform all applicable local MySQL, security and regression tests.
 
-Do not commit or push unless explicitly authorized by the project owner.
+Preserve previous migrations and functionality.
 
-**END OF WP-06**
+Return a complete technical report with real evidence.
+
+Do not stop at a plan.
+
+Do not commit or push unless the project owner's authorization currently covers that action.
+
+Do not deploy.
+
+**END OF WP-07**

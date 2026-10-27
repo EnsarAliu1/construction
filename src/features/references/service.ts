@@ -62,8 +62,31 @@ async function edit(tx: Tx, kind: ReferenceKind, id: string, value: ReferenceInp
   else if (kind === "persons") await tx.update(persons).set({ ...metadata, name: value.name!, email: value.email, phone: value.phone, identificationReference: value.identificationReference, address: value.address, updatedAt: sql`UTC_TIMESTAMP(3)` }).where(eq(persons.id, id));
   else await tx.update(vehicles).set({ ...metadata, identifier: value.identifier!, description: value.description, updatedAt: sql`UTC_TIMESTAMP(3)` }).where(eq(vehicles.id, id));
 }
+/** Internal transaction primitive. Caller must authenticate, hold the user lock and own the transaction. */
+export async function insertCategoryInTransaction(tx: Tx, name: string, actor: string, operationId: string = randomUUID()) {
+  const value = parseReference("categories", { name });
+  const id = randomUUID();
+  try { await insert(tx, "categories", id, value, actor); }
+  catch (error) {
+    if (duplicate(error, "expense_categories_name_uq")) throw new ReferenceError("DUPLICATE", "This category already exists, including inactive categories.", 409, { newCategoryName: "Choose the existing category or use a different name." });
+    throw error;
+  }
+  const after = await find(tx, "categories", id);
+  const { label: _label, ...fields } = after; void _label;
+  const snapshot = safeHistorySnapshot(fields);
+  await tx.insert(auditEvents).values({ id: randomUUID(), actorId: actor, operationId, entityType: "expense_category", entityId: id, action: "reference_created", afterSnapshot: snapshot });
+  await tx.insert(entityVersions).values({ id: randomUUID(), entityType: "expense_category", entityId: id, version: 1, snapshot });
+  return after;
+}
 export async function createReference(connection: Connection, token: string | undefined, kind: ReferenceKind, value: unknown) {
   return mutation(connection, token, kind, () => parseReference(kind, value), async (tx, input, actor) => {
+    if (kind === "categories") {
+      try { return await insertCategoryInTransaction(tx, input.name!, actor); }
+      catch (error) {
+        if (error instanceof ReferenceError && error.code === "DUPLICATE") throw new ReferenceError("DUPLICATE", error.message, 409, { name: "Already registered. Case and accent differences do not create a separate identity." });
+        throw error;
+      }
+    }
     const id = randomUUID(); await insert(tx, kind, id, input, actor); const after = await find(tx, kind, id);
     await writeAudit(tx, kind, actor, "reference_created", null, after); return after;
   });

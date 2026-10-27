@@ -1,8 +1,10 @@
 # Construction website & management workspace
 
-WP-01 provides the local Next.js interface foundation; WP-02/WP-02V provide the verified MySQL foundation. WP-03 protects the workspace with email/password authentication, revocable sessions and an Adore operator CLI. WP-04 adds Clients; WP-05 adds Projects, Contracts and Financial Phases; WP-06 adds Expense Categories, Persons/Suppliers and Vehicles. The public website has five pages in Albanian and English; expense/payment entry and other later modules remain previews.
+WP-01 provides the local Next.js interface foundation; WP-02/WP-02V provide the verified MySQL foundation. WP-03 protects the workspace with email/password authentication, revocable sessions and an Adore operator CLI. WP-04 adds Clients; WP-05 adds Projects, Contracts and Financial Phases; WP-06 adds Expense Categories, Persons/Suppliers and Vehicles; WP-07 adds actual outgoing Expense Transactions. The public website has five pages in Albanian and English; incoming payments, receipts and reporting remain previews.
 
-**Latest implementation — WP-06:** `/app/categories`, `/app/persons` and `/app/vehicles` now provide real authenticated reference-data workflows, bounded active selectors, explicit deactivation/reactivation and atomic versioned audit history. See the [WP-06 report](docs/WP-06-report.md). Browser appearance and interaction remain unverified because no browser is connected. Expense transactions are not implemented.
+**Latest implementation - WP-07:** `/app/expenses` supports actual EUR expense registration, transaction-date search/filtering, details, confirmed corrections and logical cancellation. Inline category creation shares one atomic transaction with the expense. See the [WP-07 report](docs/WP-07-report.md). All 208 Node test results passed on disposable MySQL 8.4.13. Browser/mobile interaction remains NOT VERIFIED. WP-08 has not started.
+
+**WP-06 implementation:** `/app/categories`, `/app/persons` and `/app/vehicles` provide authenticated reference-data workflows, bounded active selectors, explicit deactivation/reactivation and atomic versioned audit history. See the [WP-06 report](docs/WP-06-report.md).
 
 **WP-05 implementation:** `/app/projects` supports real projects linked to active clients, searching/filtering/pagination, audited project edits and a combined contract/phase editor. Exact cent arithmetic, compatible aggregate locks and version checks enforce consistent totals and allocation capacity. See the [WP-05 technical report](docs/WP-05-report.md). Its 124 test results passed locally against MySQL 8.4.13; visual/hydration verification remains open because Browser is unavailable.
 
@@ -10,9 +12,20 @@ WP-01 provides the local Next.js interface foundation; WP-02/WP-02V provide the 
 
 **WP-03 implementation:** `/app` now requires an active authenticated account. There is no public registration or client account-administration API. See the [WP-03 technical report](docs/WP-03-report.md) and the authentication setup below. Production deployment is outside this package; production prerequisites remain documented.
 
-**Historical verification — WP-02V, 26 October 2026:** both initial migrations and all 13 triggers were executed successfully on an isolated official MySQL 8.4.13 Docker instance. That integration suite passed 25 test results with no skips; 14 static tests and application regression checks also passed. See the [WP-02V evidence report](docs/WP-02V-report.md). Current WP-05 evidence supersedes these earlier counts; old records are retained for provenance.
+**Historical verification — WP-02V, 26 October 2026:** both initial migrations and all 13 triggers were executed successfully on an isolated official MySQL 8.4.13 Docker instance. That integration suite passed 25 test results with no skips; 14 static tests and application regression checks also passed. See the [WP-02V evidence report](docs/WP-02V-report.md). Current WP-07 evidence supersedes these earlier counts; old records are retained for provenance.
 
 The workspace uses server-side authorization on each private page and operation. A `noindex` directive remains for previews; authorization is enforced independently of indexing or navigation visibility.
+
+## Expense workflows (WP-07)
+
+- `/app/expenses`, `/new`, `/[id]`, `/[id]/edit`: authenticated list/create/details/correction screens.
+- `/api/expenses`: bounded GET with `q`, `from`, `to`, category/project/person/vehicle IDs, `status` and `page`; POST registration.
+- `/api/expenses/[id]`: GET details/history; PUT explicitly confirmed correction. `/cancel`: POST confirmed cancellation with reason. No DELETE or reactivation endpoint.
+- `/api/expenses/projects`: bounded project choices; historical search supports filters. Reference choices reuse WP-06 active selectors.
+- Category required; project, supplier and vehicle optional. `projectId=company` filters company-wide expenses. Amounts are positive exact EUR decimal strings; dates are real `YYYY-MM-DD` transaction dates.
+- New associations require active reference records and an active, unarchived project/client. Corrections may retain inactive historical links using their current versions; cancelled expenses are read-only. Corrections cannot create inline categories; new-expense registration can.
+- Migration `0006_wp07_expenses.sql` adds nullable `expenses.updated_by`, its RESTRICT FK/index and the explicit scalar `cancelledBy` history allowlist key. Old migrations and all 13 triggers are preserved.
+- `npm.cmd run test:expenses`, `test:expenses:db`, `test:expenses:http` provide focused checks; unit and DB checks are also included in the existing main test commands. Use only a disposable MySQL 8.4 environment and synthetic accounts.
 
 ## Local setup
 

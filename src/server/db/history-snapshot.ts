@@ -4,7 +4,7 @@ export const historyFields = [
   "contractId", "phaseId", "paymentId", "receiptId", "categoryId", "personId", "vehicleId",
   "amount", "totalValue", "value", "version", "sortOrder", "transactionDate", "method",
   "description", "location", "startDate", "endDate", "deletedAt", "cancelledAt",
-  "cancellationReason", "isActive", "identifier", "receiptNumber", "issuedAt",
+  "cancellationReason", "cancelledBy", "isActive", "identifier", "receiptNumber", "issuedAt",
   "clientName", "projectName", "issuerName", "storageReference", "fileChecksum",
   "resultId", "resultType",
   "nui", "phone", "addressLine1", "addressLine2", "city", "postalCode", "country",
