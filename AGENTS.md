@@ -1,717 +1,647 @@
 # ADORE TECH SOLUTIONS — CODEX IMPLEMENTATION PROMPT
 
-## WP-08: Incoming Payments & Financial Phase Allocations
+## WP-09: Receipt Issuance, Immutable PDF Versioning & Cancellation
 
 **Project:** Fitimi Construction Management System & Corporate Website  
-**Package:** WP-08  
+**Package:** WP-09  
 **Version:** 1.0  
 **Date:** 27.10.2026  
 **Developer:** Codex  
 **Technical Lead:** Adore Tech Solutions  
-**Authorization:** Local code development, additive migrations, disposable database testing and verified WP-08 defect corrections.
+**Authorization:** Local development, necessary dependencies, additive migrations, disposable MySQL and private local file-storage testing.
 
 ---
 
 ## 1. MISSION
 
-Implement the core incoming-payment and contract-phase allocation functionality using the existing authenticated Next.js, Drizzle and MySQL architecture.
+Implement the complete local payment-and-receipt workflow by integrating real receipt creation, A4 PDF generation, immutable document versions, cancellation handling and authorized PDF access with WP-08's existing payment engine.
 
-This is one of the project's highest-risk financial work packages.
+After this work package, users must be able to:
 
-The implementation must guarantee that:
+1. Confirm a received payment and receive a real numbered receipt.
+2. Download its actual A4 PDF.
+3. Correct the payment and obtain a new version of the same receipt number.
+4. Access previous immutable receipt versions.
+5. Cancel a payment and clearly identify its receipt as cancelled.
+6. Preserve the original payment, allocation and receipt history.
+7. Recover safely from interrupted requests or document-storage failures.
+8. Avoid duplicate payments, duplicate receipt numbers and inconsistent payment/receipt state.
 
-- Each actual incoming payment belongs to exactly one project.
-- A payment may be allocated across one or more financial phases of that same project.
-- Active allocation amounts sum exactly to the payment amount.
-- Active allocations never exceed a phase's current value.
-- Concurrent writers cannot overbook phase capacity.
-- Payment confirmation is idempotent.
-- Payment corrections and cancellations preserve complete history.
-- Cancelled payments do not contribute to active received totals or phase capacity.
-- All financial mutations are atomic and auditable.
+This is real implementation work.
 
-Implement working application code and meaningful database/integration tests.
+Do not stop at a plan or mock PDF.
 
-Do not stop at an architecture document.
+Receipts are operational, non-fiscal documents pending accountant/legal validation.
 
-Do not implement PDF generation or complete receipt document lifecycle in this package.
+Do not claim fiscal certification or production release readiness.
 
-## 2. CRITICAL RECEIPT DEPENDENCY
+## 2. CURRENT BASELINE
 
-Approved business requirement: every actual received payment generates a receipt.
+Reported WP-08 result:
 
-The full A4 receipt PDF, immutable PDF version storage and fiscal/accounting validation belong to WP-09.
+- 246 passing Node test results.
+- MySQL 8.4.13 tested.
+- Eight Drizzle migrations, 0000 through 0007.
+- 20 application tables.
+- 13 original history/receipt triggers.
+- Exact EUR allocation arithmetic.
+- Persistent idempotency.
+- Server-authorized operation-status lookup.
+- Working payment registration/correction/cancellation engines.
+- Final receipt-dependent operations gated.
+- An existing trusted `ReceiptBoundary` integration interface.
 
-Do not misrepresent an incoming-payment entry without its receipt document as a fully completed, release-ready business workflow.
+Before changes:
 
-For WP-08:
+- Inspect actual Git branch, HEAD and working tree.
+- Read AGENTS.md and all applicable repository instructions.
+- Preserve user changes.
+- Inspect WP-08 services and receipt integration types.
+- Inspect actual receipt tables, counters, statuses, constraints and triggers.
+- Inspect audit, versioning, storage and HTTP authorization conventions.
+- Inspect available reports and design materials.
+- Preserve migrations 0000–0007 exactly.
 
-1. Inspect the existing `payments`, `payment_receipts`, `receipt_versions`, `receipt_counters` and `operation_requests` structures.
-2. Establish and test the exact transactional boundary needed by WP-09 to integrate receipt issuance.
-3. Implement durable payment/allocation services without inventing fiscal validity.
-4. If an approved existing status can safely represent a provisional, unissued payment, use it only with explicit labeling and keep it excluded from active received totals/capacity until final issuance.
-5. Do not invent a new business-visible payment status or finalize a new receipt workflow without supporting approval.
-6. If no safe provisional state exists, keep the receipt-dependent final-confirmation workflow internal/test-only or explicitly gated in the development UI until WP-09 supplies the missing receipt issuance step.
-7. Never issue a receipt number speculatively and then reuse it after failure.
-8. Document precisely which finalization operation WP-09 must compose with payment confirmation.
+Do not assume the repository is unchanged.
 
-The payment domain engine must be real and testable. However, a visually functional confirmation button must not falsely imply that a downloadable receipt has already been issued.
+Follow current owner instructions about README, commits and GitHub.
 
-Do not silently weaken the receipt requirement merely because WP-09 has not been implemented.
+Do not overwrite unavailable approved specifications with assumptions.
 
-## 3. EXISTING PROJECT BASELINE
+## 3. NON-NEGOTIABLE BUSINESS RULES
 
-Reported completed work:
+Follow D-01 through D-14, especially:
 
-- WP-01: Next.js bootstrap, public website and application shell.
-- WP-02/02V: MySQL/Drizzle database integrity.
-- WP-03: Authentication and authorization.
-- WP-04: Clients Management.
-- WP-05: Projects, Contracts & Financial Phases.
-- WP-06: Categories, Persons/Suppliers & Vehicles.
-- WP-07: Expense Transactions.
+**D-03:** Receipt numbers are unique company-wide.
 
-Reported technology:
+**D-04:** Financial views use the latest valid corrected state, while retaining complete history.
 
-- Next.js 16.4.3.
-- React 19.3.1.
-- TypeScript 6.0.3.
-- Drizzle ORM 0.45.4.
-- Drizzle Kit 0.31.11.
-- mysql2 3.24.6.
-- MySQL 8.4.13 in disposable tests.
+**D-09:** A correction keeps the same receipt number, generates a new immutable document version and preserves old PDFs.
 
-WP-07 introduced migration `0006_wp07_expenses.sql`.
+**D-13:** Payment correction creates a new receipt version; cancellation changes receipt status while retaining its identity and versions.
 
-Before implementation:
+**D-14:** Cancelled receipts remain accessible and visibly marked cancelled; cancelled payments are excluded from active income and allocations.
 
-- Verify actual Git branch, HEAD and working-tree state.
-- Read AGENTS.md and existing repository instructions.
-- Inspect actual schema, migration history and financial service conventions.
-- Review WP-05 contract/phase locking.
-- Review WP-07 transactions and audit patterns.
-- Inspect receipt and idempotency schema even though PDF issuance is deferred.
-- Preserve existing changes and migration hashes.
+Additional requirements:
 
-Do not assume any historical report fully describes the present repository.
+- Every finalized actual received payment must have a corresponding valid receipt.
+- PDF format: A4.
+- Currency: EUR.
+- One receipt identity per payment.
+- Sequential company-wide receipt numbering.
+- Never reuse an issued/exposed receipt number.
+- Receipt versions must be immutable.
+- A payment correction must not leave the current receipt out of sync.
+- Financial phase allocations remain governed by WP-08.
+- Receipts are not asserted to be legally fiscal documents.
 
-## 4. REQUIRED BUSINESS DEFINITIONS
+## 4. IMPORTANT SOURCE AND ACCOUNTING LIMITATIONS
 
-A payment represents actual money received from a client.
+The final receipt template, tax/accounting wording and exact numbering format remain subject to accountant/PM validation.
 
-Only EUR is supported.
+Do not invent:
 
-Payment methods:
+- Tax registration information.
+- Company address.
+- Tax rate or VAT treatment.
+- Fiscal device number.
+- Legal certification statement.
+- Official accounting approval.
+- Real customer information.
 
-- Cash.
-- Bank transfer.
+For local development, implement a clearly identified, configurable NON-FISCAL operational receipt.
 
-The method represents how the money was received.
+Use actual persisted payment, client and project information.
 
-Do not introduce online payments, bank account synchronization or bank statement import.
+For missing real company information, use explicit configuration requirements or clearly marked development-only placeholders.
 
-A payment belongs to one project.
+Do not embed imaginary company identity information into official-looking documents.
 
-All allocations from that payment must refer to financial phases belonging to that exact same project's current contract.
+Use a deterministic, human-readable company-wide numbering policy for development, backed by a transactional database counter. Keep formatting separate from the counter identity so the exact accountant-approved format can be adopted later without renumbering already issued documents.
 
-A payment may be split among multiple phases.
+Document that numbering format and operational receipt layout remain release prerequisites, not approved fiscal policy.
 
-Financial phases are contract-value components, not physical construction progress percentages.
+## 5. ARCHITECTURE — REUSE WP-08
 
-Actual transaction date is separate from creation/audit timestamps.
+Inspect the existing trusted server-side interface:
 
-Cancelled payments are excluded from active received totals.
+`ReceiptBoundary { mode: "wp09", apply(tx, context) }`
 
-## 5. APPROVED FINANCIAL INVARIANTS
+The callback receives:
 
-### PAY-INV-01 — Exact allocation equality
+- Existing `PaymentTx`.
+- Action: confirm, correct or cancel.
+- Acting user.
+- Correlation/operation ID.
+- Payment before/after state.
+- Allocation state, including historical allocations.
+- Current relevant payment and contract information.
 
-For a finalized active payment:
+Integrate receipt functionality through this interface.
 
-`SUM(active allocation amounts for payment) = payment amount`
+Do not:
 
-Do not accept:
+- Duplicate payment registration.
+- Create a second payment service.
+- Start a new database transaction inside the callback.
+- Commit the payment independently of receipt metadata.
+- Accept a test receipt adapter from client input.
+- Expose an API switch that disables receipt enforcement.
 
-- Underallocation.
-- Overallocation.
-- Negative allocation.
-- Duplicate phase allocation that bypasses uniqueness.
-- Silent rounding or fractional-cent residue.
+The real production-facing payment routes must use the trusted WP-09 integration.
 
-### PAY-INV-02 — Same-project allocation
+The test-only WP-08 boundary must remain unavailable to production-facing routes.
 
-Every allocation phase must belong to the payment's project.
+## 6. RECEIPT IDENTITY AND NUMBERING
 
-Do not rely only on valid foreign keys.
+Reuse:
 
-Verify ownership within the transaction.
-
-### PAY-INV-03 — Phase capacity
-
-For every active phase:
-
-`SUM(allocations belonging to active received payments) <= phase value`
-
-Do not count allocations from cancelled payments.
-
-### PAY-INV-04 — Atomic payment registration
-
-A payment and all its allocations must be committed as one business operation, together with required audit/version records.
-
-No partial successful payments.
-
-### PAY-INV-05 — Idempotency
-
-Repeated confirmation of the same logical request must not create duplicate payments or allocations.
-
-Use persistent database-backed idempotency handling.
-
-### PAY-INV-06 — Concurrency
-
-Two users must not simultaneously consume the same phase capacity beyond its allowed value.
-
-### PAY-INV-07 — Corrections
-
-Changing an active payment's amount, date, method, project eligibility or allocation composition must preserve previous values and enforce all affected phase capacity checks.
-
-Do not silently transfer a payment between projects; use only an explicitly approved workflow. If no approved transfer exists, reject project reassignment and document it.
-
-### PAY-INV-08 — Cancellation
-
-Cancellation preserves payment/allocation identities and history while releasing active phase capacity.
-
-A second cancellation attempt must not silently create a new cancellation event.
-
-### PAY-INV-09 — Contract/phase compatibility
-
-Payment and allocation writes must coordinate with the same parent locks as WP-05's contract editor.
-
-### PAY-INV-10 — Receipts
-
-Final receipt issuance and its immutable document history must be integrated before real business usage. A database payment alone is not sufficient evidence that the receipt requirement has been completed.
-
-## 6. DATA MODEL
-
-Reuse the existing tables:
-
-- `projects`
-- `clients`
-- `contracts`
-- `contract_phases`
-- `payments`
-- `payment_allocations`
-- `operation_requests`
 - `payment_receipts`
 - `receipt_versions`
 - `receipt_counters`
-- `audit_events`
-- `entity_versions`
-- `users`
 
-Inspect actual columns, indexes, statuses, lifecycle conventions and constraints before implementation.
+Inspect actual schema before designing changes.
 
-Do not create competing payment or allocation tables.
+For first-time payment confirmation:
 
-Use additive migrations only if necessary.
+1. Acquire locks according to WP-08.
+2. Verify payment/allocations and idempotency.
+3. Acquire the company-wide receipt counter only after required payment/aggregate locks.
+4. Reserve or assign a unique company-wide number under a documented safe policy.
+5. Create the receipt identity and first immutable version.
+6. Ensure PDF bytes are durably available before acknowledging successful issuance.
+7. Finish the payment/receipt transaction consistently.
 
-Do not rewrite migrations 0000–0006.
+Concurrency requirements:
 
-Preserve all original history and receipt protection triggers.
+- Two payments cannot receive the same number.
+- Same idempotent operation cannot issue two receipt identities.
+- A correction never receives a new receipt number.
+- Cancellation never reassigns or reuses a number.
+- An issued/exposed number must never be reused.
+- Failed or uncertain number allocation must have an explicitly documented policy.
 
-## 7. INCOMING PAYMENT OPERATIONS
+Do not claim gapless legal sequencing unless the approved accounting process establishes that requirement.
 
-Implement authenticated domain operations for:
+If sequence gaps can occur after failures, preserve an internal explanation/audit mechanism and flag accountant validation as outstanding.
 
-### A. Payment List
+## 7. IMMUTABLE RECEIPT VERSIONS
 
-Provide:
+Reuse `receipt_versions`.
 
-- Bounded pagination.
-- Search by appropriate project/client/payment references.
-- Transaction-date range.
-- Project filter.
-- Cash/bank method filter.
-- Current payment status.
-- Real persisted amount.
-- Clear cancellation status.
+For each issued document version preserve:
 
-Do not show invented financial totals.
+- Receipt identity and number.
+- Integer document version.
+- Relevant payment identity/version.
+- Project and client information.
+- Payment amount and method.
+- Actual payment transaction date.
+- Financial allocation representation, where appropriate.
+- Creation/issuance timestamp.
+- Acting user.
+- Content snapshot.
+- Private storage reference.
+- PDF SHA-256 checksum.
+- Historical version metadata.
 
-### B. Payment Details
+Use the actual schema and add only necessary fields.
 
-Display:
+Do not update or delete an existing issued receipt-version row.
 
-- Stable payment identity.
-- Linked project and client.
-- Actual received date.
-- Amount in EUR.
-- Payment method.
-- All allocation phase names and amounts.
-- Current status.
-- Audit/history entries.
-- Receipt availability and actual issuance status.
+Do not overwrite its existing PDF file.
 
-Do not show a fake downloadable receipt.
+A correction must append version N+1 and preserve every earlier version.
 
-### C. Payment Registration
+The current-version lookup must be consistent with WP-08's receipt verification and the chosen receipt identity model.
+
+Use the correct document version in reads/downloads.
+
+## 8. PDF RENDERING
+
+Implement actual A4 PDF generation.
+
+Use a maintained Node.js-compatible PDF library suitable for the current Next.js server runtime.
+
+Record exact dependency versions.
+
+Generate real PDF bytes with:
+
+- Clear company/receipt header.
+- Explicit NON-FISCAL / operational document designation appropriate to a development-stage receipt.
+- Receipt number.
+- Document version.
+- Issuance date/time.
+- Linked client.
+- Project/site.
+- Received amount in EUR.
+- Cash or bank method.
+- Actual transaction date.
+- Appropriate phase allocation summary if included in the receipt design.
+- Correction/version identification where relevant.
+- Status where appropriate.
+
+Use true company information only when configured/available.
+
+Never invent company legal details.
+
+Use an appropriate font that supports Albanian characters and avoid broken glyphs.
+
+Verify:
+
+- Actual PDF format and magic bytes.
+- A4 page dimensions.
+- Text is readable.
+- Long names and content do not overflow the page.
+- All required receipt fields are present.
+- Checksum matches actual bytes.
+- File is retrievable after issuance.
+
+Do not substitute a static HTML preview for an issued PDF.
+
+Do not add a watermark that could be mistaken for government fiscal certification.
+
+## 9. PRIVATE DOCUMENT STORAGE
+
+Use a storage abstraction that can support:
+
+- Local private document storage for development/testing.
+- Later production storage chosen after hosting proof of concept.
+- Immutable version paths/keys.
+- Private authorized downloads.
+- Existence and checksum validation.
+- Staging, finalization and cleanup.
+- Failure recovery.
+
+For WP-09, implement a safe local private storage adapter.
+
+Storage must be outside public website assets.
+
+Do not put receipt PDFs under `/public` or any publicly accessible static path.
+
+Use non-guessable or opaque storage keys where appropriate.
+
+Never trust arbitrary user-provided filesystem paths.
+
+Avoid path traversal and overwrite vulnerabilities.
+
+Document the configured private-storage directory and file permissions.
+
+Do not choose or purchase production storage infrastructure.
+
+## 10. DATABASE + FILE STORAGE CONSISTENCY
+
+**This is a critical acceptance requirement.**
+
+MySQL transactions cannot automatically roll back filesystem writes.
+
+Implement a recoverable protocol that accounts for this.
+
+The protocol must:
+
+1. Generate and validate actual PDF content.
+2. Stage it privately using a unique immutable key.
+3. Make the document durable and retrievable through a safe finalization step.
+4. Write the receipt metadata and checksum in the coordinated payment transaction.
+5. Ensure a successful payment confirmation is never acknowledged without a durable corresponding PDF.
+6. Handle database rollback after file creation.
+7. Handle file failure before database commit.
+8. Handle process interruption between file creation and commit.
+9. Detect and safely clean up orphaned task-owned staged files.
+10. Never delete an issued historical document during cleanup.
+
+Choose and document the precise ordering for file preparation, immutable finalization and database commit.
+
+If using a final-file-before-DB-commit protocol, orphan files after rollback must be recoverable and safely garbage-collected.
+
+If using any other staging/finalization scheme, prove that a committed payment cannot become visible as fully issued while its PDF is missing.
+
+Do not mark a receipt current or issued merely because a metadata row exists.
+
+Do not treat a filesystem operation as though it were part of the SQL transaction.
+
+Add deterministic failure-injection tests for every important interruption boundary.
+
+Use safe recovery procedures with strong ownership checks.
+
+## 11. RECEIPT CORRECTIONS
+
+When an approved payment correction is confirmed:
+
+1. Authenticate and validate the new payment and allocation state.
+2. Enforce existing phase capacity and exact allocation rules.
+3. Lock and version-check the payment.
+4. Preserve receipt identity and number.
+5. Render a new PDF from the corrected state.
+6. Persist immutable version N+1 and its checksum.
+7. Preserve all older version rows and PDFs.
+8. Set the new version as current only when its file is durably available.
+9. Commit payment, allocations, audit, idempotency state where applicable, and receipt metadata consistently.
+
+Never modify an earlier PDF in place.
+
+A failed PDF operation must not leave the payment changed without the corresponding current receipt version.
+
+Do not invent a different receipt number for a correction.
+
+Test repeated corrections with multiple versions.
+
+## 12. RECEIPT AND PAYMENT CANCELLATION
+
+When a payment is cancelled:
+
+- Preserve payment and allocation identities.
+- Preserve the receipt identity and number.
+- Preserve every previously issued PDF version.
+- Mark the receipt `void`/cancelled using the existing approved schema semantics.
+- Record cancellation actor, time and reason.
+- Keep the receipt accessible historically.
+- Release active phase capacity through the WP-08 payment cancellation rules.
+- Exclude cancelled payment from current income totals.
+- Append audit and version history.
+
+**Do not rewrite an immutable issued PDF merely to add a CANCELLED mark.**
+
+Instead, render the cancelled status prominently in the current receipt details/download interface and, if the approved document workflow requires a separately issued cancellation document, implement that only as a distinct immutable artifact after confirming its intended semantics.
+
+The user must not be able to mistake a cancelled receipt for a currently valid one.
+
+Use explicit cancelled-status metadata and authorized UI indicators.
+
+If a historical PDF itself cannot change, the download interface must clearly communicate that it is a historical, cancelled receipt document.
+
+Do not invent fiscal voiding procedures.
+
+## 13. PAYMENT UI INTEGRATION
+
+Enable the existing gated payment controls only after the complete receipt integration is working.
 
 Implement:
 
-- Active project selector.
-- Actual transaction date.
-- Amount in EUR.
-- Cash/bank method.
-- Available financial phases for selected project.
-- Editable allocation amounts.
-- Calculated allocation total.
-- Difference versus payment amount.
-- Server-side validation.
-- Clear success/failure feedback.
+- Actual Confirm Payment action.
+- Persistent idempotency key across uncertain submission outcomes.
+- Operation-status lookup/recovery.
+- Successful payment details with receipt number and working PDF download.
+- Version-aware correction action.
+- Receipt-version history view.
+- Version-specific PDF download.
+- Confirmed cancellation workflow.
+- Clearly marked cancelled receipt state.
+- Useful error, conflict and retry feedback.
 
-Use only actual database values.
+Do not display success until durable document issuance is confirmed.
 
-Do not accept allocations for another project.
+If finalization fails, the user must receive a safe error without falsely reporting payment success.
 
-The final active/received confirmation remains subject to the receipt dependency in section 2.
+Avoid generating a second payment on a repeat click or network retry.
 
-### D. Payment Correction
+Use the current Operational Clarity UI foundation.
 
-Implement an explicitly confirmed correction workflow for the payment's approved editable fields and allocations.
+Do not redesign unrelated modules.
 
-A correction must:
+## 14. AUTHORIZATION
 
-- Preserve payment identity.
-- Preserve earlier allocation/history evidence.
-- Validate all affected phase capacities.
-- Recompute the allocation total.
-- Use the existing optimistic version.
-- Write audit/version snapshots atomically.
+Every receipt read and download must require a live authenticated session.
 
-A correction to a payment with an already issued receipt must not bypass WP-09's mandatory receipt-version regeneration.
+Use WP-03's established guards.
 
-Until the document workflow is integrated, prevent finalizing any correction that would leave an issued receipt inconsistent with the payment.
+Do not rely solely on the private app layout.
 
-### E. Payment Cancellation
+Downloads must:
 
-Implement a confirmed logical cancellation workflow.
+- Authenticate.
+- Validate receipt/version identifiers.
+- Verify access to the requested receipt.
+- Resolve storage keys server-side.
+- Prevent directory traversal.
+- Return appropriate private/no-store/cache-control headers.
+- Avoid revealing filesystem paths.
+- Stream or return the actual PDF.
 
-Cancellation must:
+Never expose raw storage credentials or unrestricted document URLs.
 
-- Preserve original payment and allocation references.
-- Preserve the historical received amount and previous state.
-- Record actor, reason and timestamp.
-- Append audit/version history.
-- Exclude the payment from active income totals.
-- Exclude its allocations from phase capacity usage.
-- Preserve existing receipt identities.
-- Hand off receipt cancellation state to WP-09.
+Keep the current model of equal business-user permissions.
 
-Do not physically delete financial records.
+Do not invent accountant/manager roles.
 
-Do not implement unapproved payment reactivation or restoration.
+## 15. AUDIT AND HISTORY
 
-## 8. EXACT MONEY HANDLING
+Receipt issuance, correction and cancellation must be auditable.
 
-Reuse WP-05's established BigInt-cent monetary helpers or an equally exact shared implementation.
-
-Use `DECIMAL(19,2)` for storage.
-
-Validate:
-
-- Strict decimal strings.
-- Positive payment amount.
-- Positive allocation amounts.
-- At most two decimal places.
-- Maximum database-supported monetary range.
-- Exact allocation sum.
-- No JavaScript floating-point equality checks.
-
-Perform arithmetic with exact cents or equivalent exact integer representation.
-
-Never silently round malformed inputs.
-
-Calendar transaction dates must use correct DATE semantics, independent of UTC creation timestamps.
-
-## 9. LOCKING — MANDATORY WP-05 COMPATIBILITY
-
-This is a critical requirement.
-
-WP-05 established the following cooperative lock order:
-
-1. Acting user.
-2. Client.
-3. Project.
-4. Contract.
-5. Contract phases ordered by UUID.
-6. Payment and allocation rows when applicable.
-
-Implement the same protocol.
-
-For registration:
-
-1. Authenticate and validate request shape.
-2. Enter one READ COMMITTED InnoDB transaction.
-3. Lock/recheck the acting user and live session.
-4. Lock the relevant client.
-5. Lock project.
-6. Lock contract.
-7. Lock all relevant phase rows in deterministic UUID order.
-8. Recheck project/client/contract relationships and active eligibility.
-9. Recalculate active allocation totals while holding the aggregate locks.
-10. Enforce equality, same-project membership and capacity.
-11. Persist business rows and audit/version records.
-12. Commit atomically.
-
-For correction/cancellation:
-
-- Preflight-discover existing relationships without treating them as trusted.
-- Acquire the union of old/new relevant parent locks in deterministic order.
-- Recheck discovered parent identities after locking.
-- Lock affected phases in deterministic order.
-- Lock existing payment/allocation rows after parent locks.
-- Recompute capacities with the pending change applied.
-- Reject stale versions and invalid status transitions.
-
-Avoid reverse locking order with WP-05.
-
-Do not depend on an unprotected SUM query for concurrency safety.
-
-Document any deadlock retries and ensure they do not duplicate writes or consume an idempotency key incorrectly.
-
-## 10. PERSISTENT IDEMPOTENCY
-
-Use the existing `operation_requests` table where compatible.
-
-For payment registration/finalization:
-
-- Require a client-generated or server-issued unique idempotency key appropriate to the API.
-- Bind the key to a canonical request fingerprint.
-- Persist the request lifecycle.
-- Return the original result for an exact safe retry.
-- Reject reuse of the same key with a different payload.
-- Handle simultaneous requests with the same key.
-- Handle an interrupted HTTP response after a committed operation.
-- Ensure the key cannot be used by another authenticated user to retrieve private results without authorization.
-
-Do not rely only on a disabled submit button.
-
-Implement or expose a safe way to query operation status after uncertain delivery.
-
-The idempotency record and payment operation must remain transactionally consistent.
-
-Do not call an uncommitted operation successful.
-
-Include real independent-connection race tests.
-
-## 11. AUDIT AND HISTORY
-
-Use existing:
+Reuse:
 
 - `audit_events`
 - `entity_versions`
+- Existing immutable history triggers.
 
 Record:
 
 - Actor.
-- Payment/allocation entity IDs.
+- Receipt identity.
+- Receipt number.
+- Version.
+- Payment identity/version.
 - Action.
 - UTC timestamp.
-- Before/after representations.
-- Monetary values as exact strings.
-- Correlation/operation ID.
-- Entity version.
+- Relevant before/after status.
+- Storage/checksum metadata as appropriate.
+- Shared correlation UUID.
 
-All necessary business rows and audit/version records must commit together.
+Never store:
 
-Do not overwrite previous history.
+- Password hashes.
+- Session tokens.
+- Operator keys.
+- Raw credentials.
 
-Do not hard-delete allocations to represent corrections.
+Audit, financial mutation and receipt metadata must be coordinated in the existing SQL transaction.
 
-If an allocation must become inactive, use the existing model's supported lifecycle or a narrowly scoped additive migration. Do not invent irreversible deletion behavior.
+PDF byte storage requires the separate recovery strategy described above.
 
-Verify compatibility with the current immutable history triggers.
+## 16. FAILURE SCENARIOS TO HANDLE
 
-## 12. STATUS AND REPORTING SEMANTICS
+Implement real tests for:
 
-Only active received payments count as income.
+- PDF rendering failure.
+- Storage directory unavailable.
+- Partial file write.
+- Failure before final file rename/finalization.
+- Failure after durable file creation but before database commit.
+- Database audit insertion failure.
+- Database commit failure.
+- Interrupted response after successful commit.
+- Concurrent confirmations requesting new numbers.
+- Exact idempotent retry.
+- Same idempotency key with different payload.
+- Concurrent corrections.
+- Correction versus cancellation.
+- Attempt to overwrite issued PDF bytes.
+- Missing PDF during a download.
+- Corrupted PDF/checksum mismatch.
+- Failed cleanup/recovery path.
+- Existing issued receipt with historical version.
+- Cancellation while retaining old PDFs.
 
-Cancelled payments are excluded.
+Never use synthetic success metadata as proof that real storage worked.
 
-Provisional, failed or otherwise unissued operations must not be presented as completed active income.
+## 17. DATABASE AND MIGRATIONS
 
-Phase active paid amount is derived from qualifying current payment/allocation state.
+Inspect actual receipt schema first.
 
-Contract-phase totals must remain consistent.
+Add an additive migration after 0007 only if needed.
 
-Do not label income-minus-expenses as statutory profit.
+Preserve all existing migration SQL files and hashes.
 
-Do not implement company report PDF/Excel in WP-08.
-
-Do not implement project-specific financial report export.
-
-## 13. PAYMENT UI
-
-Replace the existing Payments/Income placeholder with a working interface appropriate to the actual implemented backend capabilities.
-
-Provide:
-
-- Payment list.
-- Payment registration interface.
-- Project and phase selection.
-- Allocation editor.
-- Exact allocation totals.
-- Remaining phase capacity information.
-- Payment details.
-- History.
-- Correction and cancellation controls where safe and permitted.
-- Clear pending, conflict, empty and error states.
-- Correct receipt-unavailable or not-yet-issued message.
-
-No button may claim that a payment and its required receipt were fully issued if the receipt document workflow has not been implemented.
-
-If final active confirmation cannot yet satisfy the receipt invariant, gate that action and make the dependency visible.
-
-Keep the underlying domain functionality testable and ready for WP-09 composition.
-
-Use existing Operational Clarity tokens and components.
-
-Implement accessible labels and responsive forms.
-
-Do not redesign unrelated modules.
-
-## 14. AUTHORIZATION & SECURITY
-
-Reuse WP-03 authentication and authorization.
-
-Every page, API and domain service must independently enforce live authorization.
-
-Use:
-
-- Server-side validation.
-- Origin/Host checks on mutations.
-- Parameterized Drizzle queries.
-- Bounded request sizes.
-- Whitelisted editable fields.
-- Version checks.
-- Safe error mapping.
-- No-store responses.
-- No sensitive data in logs.
-
-Five client users retain equal operational rights.
-
-Do not introduce new business roles.
-
-No production or real client data access is authorized.
-
-## 15. MIGRATIONS
-
-Create an additive migration only when required.
-
-Verify real schema fields before generating SQL.
-
-Do not modify any prior migration SQL.
-
-Pin previous migration hashes.
-
-Test on disposable MySQL 8.4.
+Do not rewrite earlier receipt triggers.
 
 Verify:
 
-- Existing schema.
-- All 13 history/receipt guards.
-- New constraints/indexes.
-- Migration repeatability.
-- Idempotency uniqueness.
-- Historical allocation references.
-- Correct amount/status semantics.
+- Company-wide receipt-number uniqueness.
+- Receipt/payment identity uniqueness.
+- Version uniqueness per receipt.
+- Historical version immutability.
+- Appropriate receipt statuses.
+- Counter concurrency.
+- Audit integrity.
+- Existing allocation constraints.
+- All 13 original triggers.
 
-If receipt or payment statuses cannot represent the safe WP-08/WP-09 boundary without changing approved business semantics, document the issue explicitly rather than quietly inventing a final state.
+Test against actual disposable MySQL 8.4.
 
-## 16. AUTOMATED TESTING
+Do not modify production databases.
 
-### Payment Validation
+## 18. AUTOMATED TESTS
 
-Test:
+### Issuance
 
-- Positive exact EUR amount.
-- Cash/bank methods.
-- Valid date.
-- Required fields.
-- Malformed amount rejection.
-- Decimal overflow rejection.
-- Zero/negative allocation rejection.
-- Duplicate phase allocation.
-- Wrong-project phase rejection.
-- Exact allocation equality.
+- First payment generates actual numbered receipt and PDF.
+- Payment and allocations are correct.
+- PDF contains correct payment/receipt values.
+- PDF is stored privately.
+- Checksum matches.
+- Receipt is downloadable only by an authorized user.
 
-### Phase Capacity
+### Numbering
 
-Test:
+- Unique numbers under concurrent issuance.
+- Company-wide scope.
+- No number reuse.
+- Same idempotent request returns original receipt.
+- Failure handling and gaps documented.
 
-- Allocation to a phase with capacity.
-- Allocation exactly equal to remaining capacity.
-- Rejection above capacity.
-- Concurrent payments competing for remaining capacity.
-- Concurrent payment and contract-phase reduction.
-- Cancelled payment exclusion.
-- Correction that moves an allocation between phases.
+### Corrections
 
-### Persistence & Audit
+- Same number retained.
+- Version increments.
+- Old PDF remains byte-identical.
+- New PDF reflects corrected data.
+- Current version is correct.
+- Audit/version history survives.
+- Failure rolls back financial state safely.
 
-Test:
+### Cancellation
 
-- Atomic payment/allocation save.
-- Audit/version rows.
-- Forced failure rollback.
-- Immutable historical identity.
-- Exact transaction-date preservation.
-- Cancellation releases active capacity while preserving history.
+- Payment/receipt status consistent.
+- Cancellation visible.
+- Old versions still available.
+- Active income and phase capacity updated.
+- Repeated cancellation rejected or handled safely.
+- No fiscal certification claim.
 
-### Idempotency
+### Storage and Recovery
 
-Test:
-
-- First confirmation request.
-- Exact retry returns original result.
-- Same key with different payload rejected.
-- Two simultaneous identical requests.
-- Interrupted response followed by status lookup.
-- Rejected operation does not create phantom payment.
-- Unauthorized reuse of an operation key denied.
-
-### Receipt Boundary
-
-Test:
-
-- No released/finalized receipt claim without actual issuance.
-- Payment/receipt consistency requirements are enforced at integration boundaries.
-- Receipt documents are not fabricated.
-- Existing receipt version protection remains unchanged.
-- Future WP-09 finalization hook/contract is clearly specified and testable.
-
-### Security
-
-Test:
-
-- Anonymous denial.
-- Disabled-user denial.
-- Forged IDs and wrong-project relationships.
-- Origin/Host protection.
-- Protected-field injection rejection.
-- Safe database error handling.
-- Session revocation during a financial mutation.
+- Private download authorization.
+- File-system failure rollback behavior.
+- Orphan staging cleanup.
+- Corruption detection.
+- Missing-document behavior.
+- No deletion of issued files.
+- Interrupted request replay.
 
 ### Regression
 
-Preserve:
-
-- Authentication.
-- Clients.
-- Projects/contracts/phases.
-- Categories/suppliers/vehicles.
-- Expenses.
-- Historical migration hashes.
-- All existing triggers.
-- Public SQ/EN website.
-- App navigation.
+- Existing payment exactness/capacity and concurrency.
+- WP-05 contract/phase locking.
+- WP-07 expenses.
+- WP-06 references.
+- WP-04 clients.
+- WP-03 authentication.
+- Earlier migration hashes.
+- All original receipt/audit triggers.
+- Public bilingual website.
 - TypeScript.
 - ESLint.
-- Build.
+- Build and route smoke tests.
 
-Run browser tests if a browser is actually available.
+Run browser-based visual and interaction tests when an actual browser is available.
 
-Otherwise report visual/hydration acceptance as NOT VERIFIED.
+If not, explicitly report NOT VERIFIED.
 
-## 17. OUT OF SCOPE
+Do not claim PDF rendering was visually reviewed unless PDF pages were actually inspected.
 
-Do not implement:
+## 19. ACCEPTANCE CRITERIA
 
-- A4 receipt PDF rendering.
-- PDF storage and version file lifecycle.
-- Fiscal receipts or fiscal certification.
-- Company PDF/Excel report export.
-- Full dataset export.
-- Banking integration.
-- Online payment processing.
-- Supplier payables.
-- Inventory.
-- Scheduling.
-- Physical construction progress.
-- Production deployment.
-- Real business data imports.
+**WP09-AC01:** The real WP-08 ReceiptBoundary is integrated.
 
-Do not invent new financial business rules or receipt legality claims.
+**WP09-AC02:** Confirmed payment creates one valid company-wide numbered receipt.
 
-## 18. ACCEPTANCE CRITERIA
+**WP09-AC03:** Receipt number uniqueness is enforced under concurrent confirmations.
 
-**WP08-AC01:** Existing payment/allocation structures are reused.
+**WP09-AC04:** Actual A4 PDF is generated with the required operational information.
 
-**WP08-AC02:** Payment domain service supports one-project payment allocation.
+**WP09-AC05:** PDF bytes are durably stored in a private location.
 
-**WP08-AC03:** Exact payment/allocation sum is enforced.
+**WP09-AC06:** Receipt download requires authenticated authorization.
 
-**WP08-AC04:** Cross-project allocations are rejected.
+**WP09-AC07:** Receipt PDF checksum and storage integrity are verified.
 
-**WP08-AC05:** Active phase capacity cannot be exceeded.
+**WP09-AC08:** Correcting a payment retains the receipt number and appends version N+1.
 
-**WP08-AC06:** Concurrent writers cannot overbook phase capacity.
+**WP09-AC09:** Previous receipt PDFs remain immutable and accessible.
 
-**WP08-AC07:** Payment/contract-phase operations share compatible locking.
+**WP09-AC10:** A failed correction does not create mismatched current payment/receipt state.
 
-**WP08-AC08:** Actual transaction dates and cash/bank methods are validated.
+**WP09-AC11:** Cancellation preserves identities/history and marks receipt cancelled.
 
-**WP08-AC09:** EUR monetary arithmetic is exact.
+**WP09-AC12:** Cancelled payment is excluded from active received totals/capacity.
 
-**WP08-AC10:** Payment mutations and audit/history commit atomically.
+**WP09-AC13:** Receipt audit/history is actor-attributed and append-only.
 
-**WP08-AC11:** Corrections preserve identity, old values and financial invariants.
+**WP09-AC14:** Payment and receipt metadata are transactionally coordinated.
 
-**WP08-AC12:** Cancellation retains history and releases active phase capacity.
+**WP09-AC15:** File/SQL failure boundaries have tested recovery behavior.
 
-**WP08-AC13:** Cancelled payments are excluded from active received totals.
+**WP09-AC16:** Idempotent confirmation/retry does not create duplicate payment or receipt.
 
-**WP08-AC14:** Idempotency prevents duplicate logical confirmation.
+**WP09-AC17:** Interrupted HTTP responses are safely recoverable through operation status.
 
-**WP08-AC15:** Exact retries, conflicting payloads and concurrent retries behave safely.
+**WP09-AC18:** Existing payment capacity and concurrent-writer invariants remain valid.
 
-**WP08-AC16:** Operation status can be checked safely after uncertain delivery.
+**WP09-AC19:** No speculative receipt PDF/number is represented as issued.
 
-**WP08-AC17:** Payment APIs/services have independent server-side authorization.
+**WP09-AC20:** Fiscal/accountant validation is explicitly outstanding.
 
-**WP08-AC18:** Payment list, details and allocation UI use real database-backed state.
+**WP09-AC21:** Previous migrations, original triggers and earlier modules pass regressions.
 
-**WP08-AC19:** Final receipt-dependent actions are not misrepresented as ready before WP-09.
+**WP09-AC22:** Real disposable MySQL 8.4 integration tests pass.
 
-**WP08-AC20:** Receipt numbering/version guards remain intact.
+**WP09-AC23:** PDF rendering/storage/download are exercised with actual bytes, not mocks only.
 
-**WP08-AC21:** MySQL 8.4 integration and concurrency tests pass.
+**WP09-AC24:** TypeScript, ESLint, build and HTTP checks pass.
 
-**WP08-AC22:** Previous module/migration/trigger regressions pass.
+**WP09-AC25:** Desktop/mobile/browser interaction is verified when available; otherwise NOT VERIFIED.
 
-**WP08-AC23:** TypeScript, ESLint, production build and HTTP checks pass.
+**WP09-AC26:** No real client data or production infrastructure is accessed.
 
-**WP08-AC24:** Browser/mobile/accessibility tests are executed where possible; otherwise NOT VERIFIED.
+Classify each as PASS, FAIL or NOT VERIFIED.
 
-**WP08-AC25:** No real data, production changes or deployment occur.
+A passing unit test with a fake storage adapter is not sufficient for document-durability acceptance.
 
-**WP08-AC26:** A concrete WP-09 receipt integration contract is documented.
+## 20. VERIFICATION
 
-Report each criterion as PASS, FAIL or NOT VERIFIED.
+Inspect package.json first.
 
-Clearly distinguish:
-
-- Fully implemented.
-- Implemented but gated.
-- Deferred until WP-09.
-- Not verified.
-
-Do not claim end-to-end payment/receipt readiness from payment-only tests.
-
-## 19. VERIFICATION
-
-Inspect actual package scripts first.
-
-Run applicable:
+Execute applicable:
 
 - `npm.cmd test`
 - `npm.cmd run db:check`
@@ -722,88 +652,110 @@ Run applicable:
 - `npm.cmd run build`
 - `npm.cmd run check:routes`
 
-Add focused payment unit, integration and HTTP tests.
+Add targeted receipt/PDF/storage integration and authenticated HTTP tests.
 
-Use an isolated, task-owned disposable MySQL 8.4 environment.
+Use:
 
-Do not destroy other containers, databases or volumes.
+- Disposable MySQL 8.4.
+- Task-owned private temporary file storage.
+- Synthetic client/project/payment data.
+- Real generated PDF bytes.
 
-Verify actual server version before migrations.
+Inspect PDF format, page dimensions, content and checksum.
 
-Record exact commands and actual outputs.
+Report actual execution evidence.
 
-Do not disable previous tests to obtain a passing result.
+Do not disable prior checks to obtain passing status.
 
-## 20. REQUIRED DELIVERY REPORT
+Fix confirmed WP-09 defects within scope.
+
+## 21. OUT OF SCOPE
+
+Do not implement:
+
+- Fiscalization or certified tax receipts.
+- VAT/tax calculation policy not approved by accountant.
+- Online payment integration.
+- Bank integration.
+- Company financial report PDF/Excel.
+- Full business-data export.
+- Individual project financial report export.
+- Payroll.
+- Inventory.
+- Scheduling.
+- Production storage infrastructure.
+- Hosting purchase.
+- Production deployment.
+- Real client information import.
+
+Do not invent legal accounting validity.
+
+## 22. REQUIRED DELIVERY REPORT
 
 ### A. Repository Baseline
 
-Branch, HEAD, modifications and sources actually accessible.
+Branch, HEAD, existing modifications and actual source availability.
 
-### B. Payment Functionality
+### B. Receipt Architecture
 
-List, details, registration, allocation editor, correction and cancellation.
+ReceiptBoundary implementation, numbering and immutable version model.
 
-### C. Financial Invariants
+### C. Durable Storage Protocol
 
-Exact sums, project membership, capacity and status handling.
+File preparation, persistence, database commit, recovery and cleanup.
 
-### D. Locking & Concurrency
+### D. Implemented Workflows
 
-Detailed lock order and actual concurrent-test outcomes.
+Issue, correct, cancel, download and retry.
 
-### E. Idempotency
+### E. Database & Migrations
 
-Key scope, request fingerprint, retries, conflict handling and operation status.
+Actual SQL migrations, constraints, hashes and real MySQL results.
 
-### F. Receipt Dependency
-
-Exactly what is implemented, gated and deferred until WP-09.
-
-### G. Database & Migrations
-
-Files, constraints, hashes and real MySQL execution.
-
-### H. Files Changed
+### F. Files Changed
 
 Exact paths and purposes.
 
-### I. Test Evidence
+### G. Test Evidence
 
-Commands, counts, failures, fixes, browser limitations.
+Commands, counts, actual PDFs tested, failure injection and fixes.
 
-### J. Acceptance Checklist
+### H. Acceptance Checklist
 
-WP08-AC01 through WP08-AC26.
+WP09-AC01 through WP09-AC26.
 
-### K. Security and Scope
+### I. Security Review
 
-Authorization, validation, audit, safe data handling and confirmation of no production access.
+Downloads, file permissions, session guards, CSRF, origin protection and secrets.
 
-### L. Next Work Package
+### J. Remaining Risks
 
-Readiness for WP-09 — Receipt Issuance, PDF Versioning & Cancellation.
+Accounting validation, numbering policy, production storage/hosting, browser QA.
 
-Do not implement WP-09 automatically.
+### K. Next Work Package
 
-## 21. EXECUTION
+Readiness for WP-10 — Dashboard, Company Financial Reports & Full Data Export.
 
-Implement WP-08 financial domain functionality and its authenticated UI in the existing local application.
+Do not implement WP-10 automatically.
 
-Preserve all previous migrations, tests and business rules.
+## 23. EXECUTION
 
-Enforce exact allocations, capacity, transaction safety and persistent idempotency.
+Implement WP-09 now.
 
-Respect the approved requirement that actual received payments require receipts; do not falsely certify an incomplete end-to-end workflow.
+Integrate real receipt issuance with the existing payment service.
 
-Test thoroughly against disposable MySQL 8.4.
+Generate actual immutable A4 PDF documents.
 
-Return a complete evidence-based report.
+Implement safe private storage, numbering, versioning, authorized downloads, correction and cancellation.
 
-Do not start WP-09 automatically.
+Test real database and file-storage failure scenarios.
 
-Do not deploy to production.
+Preserve all previous financial invariants, migration history and authorization.
 
-Commit/push only if the current project owner's authorization explicitly covers it.
+Do not stop at a plan.
 
-**END OF WP-08**
+Do not deploy.
+
+Commit/push only within the project owner's currently valid authorization.
+
+**END OF WP-09**

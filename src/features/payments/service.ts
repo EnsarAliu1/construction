@@ -134,7 +134,7 @@ export async function paymentOperationStatus(c:Connection,token:string|undefined
   return {status:op.status,paymentId:op.status==="completed"?op.resultMetadata?.resultId:null,version:op.resultMetadata?.version??null};
 }
 export async function previewPayment(c:Connection,token:string|undefined,value:unknown){
-  return mutation(c,token,()=>parsePayment(value),async(tx,input)=>{const locked=await aggregate(tx,input.projectId,input,true);await capacity(tx,input,locked.phases);return {valid:true,amount:input.amount,allocationTotal:input.amount,receiptReady:false,confirmationAvailable:false,message:"Allocations are valid now. No payment has been saved. Final confirmation requires receipt issuance."};});
+  return mutation(c,token,()=>parsePayment(value),async(tx,input)=>{const locked=await aggregate(tx,input.projectId,input,true);await capacity(tx,input,locked.phases);return {valid:true,amount:input.amount,allocationTotal:input.amount,receiptReady:false,confirmationAvailable:true,message:"Allocations are valid now. No payment has been saved. Confirm to save and issue the NON-FISCAL receipt."};});
 }
 export async function previewPaymentCorrection(c:Connection,token:string|undefined,id:string,value:unknown){
   return mutation(c,token,()=>{referenceId(id);return parseCorrection(value);},async(tx,{version,payment:input})=>{
@@ -142,7 +142,7 @@ export async function previewPaymentCorrection(c:Connection,token:string|undefin
     const locked=await aggregate(tx,hint.projectId,input,true),current=await find(tx,id,true);validateOld(locked,await allocations(tx,id,true));
     if(current.version!==version||current.version!==hint.version||current.projectId!==hint.projectId)throw conflict();
     if(current.status!=="received")throw new PaymentError("CANCELLED","Cancelled payments are read-only.",409);
-    await capacity(tx,input,locked.phases,id);return {valid:true,receiptReady:false,confirmationAvailable:false,message:"Correction allocations are valid now. No change has been saved. Final correction requires receipt versioning."};
+    await capacity(tx,input,locked.phases,id);return {valid:true,receiptReady:false,confirmationAvailable:true,message:"Correction allocations are valid now. Save the confirmed correction to append a new receipt PDF version."};
   });
 }
 export async function paymentProject(c:Connection,token:string|undefined,id:string){

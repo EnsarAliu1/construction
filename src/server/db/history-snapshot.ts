@@ -11,6 +11,7 @@ export const historyFields = [
   "createdAt", "updatedAt", "createdBy", "updatedBy", "deletedBy",
   "activatedAt",
   "address", "identificationReference", "deactivatedAt", "deactivatedBy",
+  "companyName", "documentVersion", "paymentVersion", "allocationsText",
 ] as const;
 
 type Scalar = string | number | boolean | null;

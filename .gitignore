@@ -9,3 +9,5 @@ next-env.d.ts
 *.log
 .DS_Store
 /artifacts/
+/.private/
+/.next-wp09/

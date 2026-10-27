@@ -45,7 +45,7 @@ test("disposable MySQL 8.4 migrations and schema integrity", {
       } else t.diagnostic("Applying migrations to the empty dedicated disposable test database.");
       await applyMigrations(connection);
       const [first] = await connection.query<RowDataPacket[]>("SELECT hash, created_at FROM __drizzle_migrations ORDER BY created_at");
-      assert.equal(first.length, 8);
+      assert.equal(first.length, 9);
       assert.deepEqual(first.map(row => row.hash), readMigrationFiles({ migrationsFolder: "drizzle" }).map(migration => migration.hash));
       const beforeRepeat = await verifyDatabaseSchema(connection);
       await applyMigrations(connection);
@@ -181,7 +181,8 @@ test("disposable MySQL 8.4 migrations and schema integrity", {
         await insert("operation_requests", { id: randomUUID(), operation_type: "another_synthetic_operation", idempotency_key: fixture.operation, request_fingerprint: "b".repeat(64) });
         const key = `synthetic-${randomUUID()}`;
         for (const value of [key, key.toUpperCase()]) await insert("operation_requests", { id: randomUUID(), operation_type: "synthetic_test", idempotency_key: value, request_fingerprint: "b".repeat(64) });
-        await insert("receipt_counters", { scope: "company", next_number: "1" });
+        const [existingCounters] = await connection.query<RowDataPacket[]>("SELECT scope FROM receipt_counters WHERE scope='company'");
+        if (!existingCounters.length) await insert("receipt_counters", { scope: "company", next_number: "1" });
         await assert.rejects(insert("receipt_counters", { scope: "company", next_number: "2" }), { errno: 1062 });
         await assert.rejects(insert("receipt_counters", { scope: "project", next_number: "1" }), { errno: 3819 });
       });
