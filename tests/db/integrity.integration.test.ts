@@ -45,7 +45,7 @@ test("disposable MySQL 8.4 migrations and schema integrity", {
       } else t.diagnostic("Applying migrations to the empty dedicated disposable test database.");
       await applyMigrations(connection);
       const [first] = await connection.query<RowDataPacket[]>("SELECT hash, created_at FROM __drizzle_migrations ORDER BY created_at");
-      assert.equal(first.length, 7);
+      assert.equal(first.length, 8);
       assert.deepEqual(first.map(row => row.hash), readMigrationFiles({ migrationsFolder: "drizzle" }).map(migration => migration.hash));
       const beforeRepeat = await verifyDatabaseSchema(connection);
       await applyMigrations(connection);

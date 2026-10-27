@@ -1,7 +1,7 @@
 export const sections = {
   clients: { title: "Clients", description: "A central place for client profiles and their construction projects.", columns: ["Client", "Contact", "Projects"], empty: "No clients yet" },
   projects: { title: "Projects", description: "Project records will bring together contracts, financial phases and payments. Project statuses: Active, Suspended and Completed.", columns: ["Project", "Client", "Status"], empty: "No projects yet" },
-  payments: { title: "Income / Payments", description: "Received payments in EUR. Payment entry, confirmation and allocation will be available in a later package.", columns: ["Payment", "Project", "Date", "Amount (EUR)"], empty: "No received payments" },
+  payments: { title: "Income / Payments", description: "Received payments and exact financial phase allocations in EUR. Final confirmation requires receipt issuance.", columns: ["Payment", "Project", "Date", "Amount (EUR)"], empty: "No received payments" },
   expenses: { title: "Daljet Financiare", description: "Actual outgoing payments in EUR, company-wide or optionally linked to a project, supplier and vehicle.", columns: ["Expense", "Supplier / Recipient", "Project", "Amount (EUR)"], empty: "No outgoing payments" },
   receipts: { title: "Receipts", description: "Receipt records and document generation will be introduced in a later package.", columns: ["Receipt", "Payment", "Date"], empty: "No receipts yet" },
   reports: { title: "Reports", description: "Company financial reports will support PDF and Excel exports later. Project financial summaries will be available on screen.", columns: ["Report", "Period", "Availability"], empty: "Reports are not available yet" },

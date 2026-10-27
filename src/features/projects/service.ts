@@ -56,7 +56,7 @@ async function allocations(db: Pick<Db, "select">, phaseIds: string[], projectId
     paid: sql<string>`COALESCE(SUM(CASE WHEN ${payments.status} = 'received' THEN ${paymentAllocations.amount} ELSE 0 END), 0)`,
     invalid: sql<number>`SUM(CASE WHEN ${payments.projectId} <> ${projectId} THEN 1 ELSE 0 END)`,
   }).from(paymentAllocations).innerJoin(payments, eq(payments.id, paymentAllocations.paymentId))
-    .where(inArray(paymentAllocations.phaseId, phaseIds)).groupBy(paymentAllocations.phaseId).limit(MAX_PHASES);
+    .where(and(inArray(paymentAllocations.phaseId, phaseIds), isNull(paymentAllocations.deletedAt))).groupBy(paymentAllocations.phaseId).limit(MAX_PHASES);
   if (rows.some(row => Number(row.invalid) > 0)) throw new ProjectError("ALLOCATION_RELATIONSHIP", "Stored allocations have an invalid project relationship and require correction.", 409);
   return new Map(rows.map(row => [row.phaseId, BigInt(String(row.paid).replace(".", ""))]));
 }

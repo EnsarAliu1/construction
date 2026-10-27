@@ -1,836 +1,809 @@
 # ADORE TECH SOLUTIONS — CODEX IMPLEMENTATION PROMPT
 
-## WP-07: Expense Transactions — Registration, Corrections, Cancellation & Audit
+## WP-08: Incoming Payments & Financial Phase Allocations
 
 **Project:** Fitimi Construction Management System & Corporate Website  
-**Work Package:** WP-07  
+**Package:** WP-08  
 **Version:** 1.0  
 **Date:** 27.10.2026  
 **Developer:** Codex  
 **Technical Lead:** Adore Tech Solutions  
-**Authorization:** Local implementation, additive migrations when necessary, disposable MySQL tests, regression tests and corrections of confirmed WP-07 defects.
+**Authorization:** Local code development, additive migrations, disposable database testing and verified WP-08 defect corrections.
 
 ---
 
 ## 1. MISSION
 
-Implement the actual Expense Transactions (Daljet Financiare) module in the existing authenticated construction-management application.
+Implement the core incoming-payment and contract-phase allocation functionality using the existing authenticated Next.js, Drizzle and MySQL architecture.
 
-Users must be able to:
+This is one of the project's highest-risk financial work packages.
 
-1. Register actual outgoing expenses in EUR.
-2. Browse and search recorded expenses.
-3. Filter expenses by actual transaction date, category, project and other supported associations.
-4. Open an expense's details and history.
-5. Correct permitted expense fields with full auditability.
-6. Cancel an expense without physically destroying its history.
-7. Associate an expense with an optional project, person/supplier and vehicle.
-8. Create a new expense category directly from the expense form.
-9. Preserve consistency under concurrent operations.
-10. Use secure, validated server-side functionality.
+The implementation must guarantee that:
 
-This is a real implementation task.
+- Each actual incoming payment belongs to exactly one project.
+- A payment may be allocated across one or more financial phases of that same project.
+- Active allocation amounts sum exactly to the payment amount.
+- Active allocations never exceed a phase's current value.
+- Concurrent writers cannot overbook phase capacity.
+- Payment confirmation is idempotent.
+- Payment corrections and cancellations preserve complete history.
+- Cancelled payments do not contribute to active received totals or phase capacity.
+- All financial mutations are atomic and auditable.
 
-Write executable code and run real tests. Do not stop at a plan.
+Implement working application code and meaningful database/integration tests.
 
-Do not implement incoming payments, phase allocations, receipts or financial-report exports.
+Do not stop at an architecture document.
 
-## 2. PROJECT BASELINE
+Do not implement PDF generation or complete receipt document lifecycle in this package.
 
-Reported completed and tested:
+## 2. CRITICAL RECEIPT DEPENDENCY
 
-- WP-01: Next.js and website/application foundation.
-- WP-02 and WP-02V: MySQL/Drizzle schema and real MySQL verification.
-- WP-03: Authentication, secure sessions and account administration.
-- WP-04: Clients.
-- WP-05: Projects, contracts and financial phases.
-- WP-06: Expense categories, persons/suppliers and vehicles.
+Approved business requirement: every actual received payment generates a receipt.
 
-Existing technology:
+The full A4 receipt PDF, immutable PDF version storage and fiscal/accounting validation belong to WP-09.
 
-- Next.js 16.4.3
-- React 19.3.1
-- TypeScript 6.0.3
-- Tailwind CSS 4.3.3
-- Drizzle ORM 0.45.4
-- Drizzle Kit 0.31.11
-- mysql2 3.24.6
-- MySQL 8.4.13 during disposable local tests
+Do not misrepresent an incoming-payment entry without its receipt document as a fully completed, release-ready business workflow.
 
-WP-06 reportedly completed migration:
+For WP-08:
 
-`drizzle/0005_wp06_reference_lifecycle.sql`
+1. Inspect the existing `payments`, `payment_receipts`, `receipt_versions`, `receipt_counters` and `operation_requests` structures.
+2. Establish and test the exact transactional boundary needed by WP-09 to integrate receipt issuance.
+3. Implement durable payment/allocation services without inventing fiscal validity.
+4. If an approved existing status can safely represent a provisional, unissued payment, use it only with explicit labeling and keep it excluded from active received totals/capacity until final issuance.
+5. Do not invent a new business-visible payment status or finalize a new receipt workflow without supporting approval.
+6. If no safe provisional state exists, keep the receipt-dependent final-confirmation workflow internal/test-only or explicitly gated in the development UI until WP-09 supplies the missing receipt issuance step.
+7. Never issue a receipt number speculatively and then reuse it after failure.
+8. Document precisely which finalization operation WP-09 must compose with payment confirmation.
 
-WP-06 reported:
+The payment domain engine must be real and testable. However, a visually functional confirmation button must not falsely imply that a downloadable receipt has already been issued.
 
-- 20 application tables.
-- Six migrations.
-- 13 original history-protection triggers.
-- 175 passing Node test results.
-- No browser verification.
+Do not silently weaken the receipt requirement merely because WP-09 has not been implemented.
 
-Inspect the actual repository state before implementation.
+## 3. EXISTING PROJECT BASELINE
 
-Read AGENTS.md and existing project instructions.
+Reported completed work:
 
-Preserve existing changes, migration history and test coverage.
+- WP-01: Next.js bootstrap, public website and application shell.
+- WP-02/02V: MySQL/Drizzle database integrity.
+- WP-03: Authentication and authorization.
+- WP-04: Clients Management.
+- WP-05: Projects, Contracts & Financial Phases.
+- WP-06: Categories, Persons/Suppliers & Vehicles.
+- WP-07: Expense Transactions.
 
-Do not assume a historical commit remains HEAD.
+Reported technology:
 
-## 3. SOURCE HIERARCHY
+- Next.js 16.4.3.
+- React 19.3.1.
+- TypeScript 6.0.3.
+- Drizzle ORM 0.45.4.
+- Drizzle Kit 0.31.11.
+- mysql2 3.24.6.
+- MySQL 8.4.13 in disposable tests.
 
-Respect:
+WP-07 introduced migration `0006_wp07_expenses.sql`.
 
-1. Latest approved PM/business decisions.
-2. Business decisions D-01 through D-14 and approved MVP scope.
-3. Codex Master Project Prompt v1.1.
-4. Technical Specification and accepted implementation decisions.
-5. Approved UX-01 through UX-05 and Wireframes v2.1, where actually available.
-6. Operational Clarity and UI Design System, where actually available.
-7. Existing repository conventions.
+Before implementation:
 
-Do not claim to have read missing source documents.
+- Verify actual Git branch, HEAD and working-tree state.
+- Read AGENTS.md and existing repository instructions.
+- Inspect actual schema, migration history and financial service conventions.
+- Review WP-05 contract/phase locking.
+- Review WP-07 transactions and audit patterns.
+- Inspect receipt and idempotency schema even though PDF issuance is deferred.
+- Preserve existing changes and migration hashes.
 
-The existing neutral UI foundation may be reused when design references are unavailable.
+Do not assume any historical report fully describes the present repository.
 
-If a business rule is genuinely ambiguous, adopt the least expansive, history-preserving behavior that does not contradict approved requirements, document the assumption, and escalate only a material unresolved conflict.
+## 4. REQUIRED BUSINESS DEFINITIONS
 
-## 4. DEFINITIONS AND APPROVED SCOPE
+A payment represents actual money received from a client.
 
-An **expense** is an actual outgoing payment by the company.
+Only EUR is supported.
 
-It is not:
+Payment methods:
 
-- An incoming customer payment.
-- A future payable or unpaid invoice.
-- A payment allocation to a contract phase.
-- A physical construction-progress entry.
+- Cash.
+- Bank transfer.
 
-Currency is EUR.
+The method represents how the money was received.
 
-Amounts must be exact monetary values, using the existing DECIMAL(19,2) representation and validated decimal-string/BigInt-cents conventions.
+Do not introduce online payments, bank account synchronization or bank statement import.
 
-The actual expense date (`transaction_date`) must be distinct from the record creation timestamp (`created_at`).
+A payment belongs to one project.
 
-An expense may belong to:
+All allocations from that payment must refer to financial phases belonging to that exact same project's current contract.
 
-- A specific project — optional.
-- A category — required when the existing approved schema requires it.
-- A person/supplier/payment recipient — optional.
-- A vehicle — optional.
+A payment may be split among multiple phases.
 
-The project client is derived from the project relationship. Do not introduce an independent, potentially inconsistent client association unless the approved schema already establishes one.
+Financial phases are contract-value components, not physical construction progress percentages.
 
-**Company-wide expenses without a project are valid.**
+Actual transaction date is separate from creation/audit timestamps.
 
-Never automatically distribute general expenses to projects.
+Cancelled payments are excluded from active received totals.
 
-## 5. INSPECT EXISTING DATA MODEL
+## 5. APPROVED FINANCIAL INVARIANTS
 
-Reuse the existing tables and relationships:
+### PAY-INV-01 — Exact allocation equality
 
-- `expenses`
-- `expense_categories`
-- `persons`
-- `vehicles`
+For a finalized active payment:
+
+`SUM(active allocation amounts for payment) = payment amount`
+
+Do not accept:
+
+- Underallocation.
+- Overallocation.
+- Negative allocation.
+- Duplicate phase allocation that bypasses uniqueness.
+- Silent rounding or fractional-cent residue.
+
+### PAY-INV-02 — Same-project allocation
+
+Every allocation phase must belong to the payment's project.
+
+Do not rely only on valid foreign keys.
+
+Verify ownership within the transaction.
+
+### PAY-INV-03 — Phase capacity
+
+For every active phase:
+
+`SUM(allocations belonging to active received payments) <= phase value`
+
+Do not count allocations from cancelled payments.
+
+### PAY-INV-04 — Atomic payment registration
+
+A payment and all its allocations must be committed as one business operation, together with required audit/version records.
+
+No partial successful payments.
+
+### PAY-INV-05 — Idempotency
+
+Repeated confirmation of the same logical request must not create duplicate payments or allocations.
+
+Use persistent database-backed idempotency handling.
+
+### PAY-INV-06 — Concurrency
+
+Two users must not simultaneously consume the same phase capacity beyond its allowed value.
+
+### PAY-INV-07 — Corrections
+
+Changing an active payment's amount, date, method, project eligibility or allocation composition must preserve previous values and enforce all affected phase capacity checks.
+
+Do not silently transfer a payment between projects; use only an explicitly approved workflow. If no approved transfer exists, reject project reassignment and document it.
+
+### PAY-INV-08 — Cancellation
+
+Cancellation preserves payment/allocation identities and history while releasing active phase capacity.
+
+A second cancellation attempt must not silently create a new cancellation event.
+
+### PAY-INV-09 — Contract/phase compatibility
+
+Payment and allocation writes must coordinate with the same parent locks as WP-05's contract editor.
+
+### PAY-INV-10 — Receipts
+
+Final receipt issuance and its immutable document history must be integrated before real business usage. A database payment alone is not sufficient evidence that the receipt requirement has been completed.
+
+## 6. DATA MODEL
+
+Reuse the existing tables:
+
 - `projects`
 - `clients`
-- `users`
+- `contracts`
+- `contract_phases`
+- `payments`
+- `payment_allocations`
+- `operation_requests`
+- `payment_receipts`
+- `receipt_versions`
+- `receipt_counters`
 - `audit_events`
 - `entity_versions`
+- `users`
 
-Inspect:
+Inspect actual columns, indexes, statuses, lifecycle conventions and constraints before implementation.
 
-- Existing expense columns.
-- Status/lifecycle representation.
-- Existing nullable relations.
-- Date representation.
-- Amount constraints.
-- Foreign keys and indexes.
-- Available actor/version columns.
-- Existing history snapshot allowlist.
+Do not create competing payment or allocation tables.
 
-Do not create a replacement expense table.
+Use additive migrations only if necessary.
 
-Create an additive migration only if necessary to implement the approved expense workflow safely.
+Do not rewrite migrations 0000–0006.
 
-Do not rewrite migrations 0000–0005 or invalidate existing migration hashes.
+Preserve all original history and receipt protection triggers.
 
-## 6. REQUIRED BACKEND OPERATIONS
+## 7. INCOMING PAYMENT OPERATIONS
 
-### A. Create Expense
+Implement authenticated domain operations for:
 
-Implement authenticated expense registration.
-
-Fields should follow the existing schema and approved scope:
-
-- Amount in EUR.
-- Actual transaction date.
-- Category.
-- Description.
-- Optional project.
-- Optional person/supplier.
-- Optional vehicle.
-
-Reject invalid, unknown or inactive references.
-
-Use a single database transaction for:
-
-- Expense creation.
-- Any approved inline category creation.
-- Audit event.
-- Entity version snapshot.
-
-The server determines the acting user.
-
-No actor ID, status override, timestamps or internal financial state may be accepted from unrestricted form input.
-
-### B. List Expenses
-
-Implement authenticated, bounded database-backed listing.
-
-Support:
-
-- Pagination.
-- Search by description and appropriate linked reference labels.
-- Actual transaction-date range.
-- Category filter.
-- Project filter, including company-wide expenses.
-- Supplier/person and vehicle filters when useful.
-- Active/cancelled status visibility.
-
-Use the real transaction date when filtering by date.
-
-Do not filter financial records by `created_at` when the user selected an expense date range.
-
-Return totals only if computed correctly from filtered, persisted data and clearly labelled.
-
-Do not fabricate financial dashboards.
-
-### C. Expense Details
-
-Display:
-
-- Stable expense ID or safe reference.
-- Actual transaction date.
-- Amount.
-- Description.
-- Category.
-- Project, when linked.
-- Person/supplier, when linked.
-- Vehicle, when linked.
-- Current status.
-- Creation/correction/cancellation metadata.
-- Relevant audit history.
-
-Inactive reference entities must remain readable historically.
-
-Do not hide an expense simply because its category, person or vehicle was later deactivated.
-
-### D. Correct Expense
-
-Implement an explicitly confirmed edit workflow.
-
-Allow correction of approved editable fields.
-
-Preserve:
-
-- Stable expense identity.
-- Previous values.
-- Actor.
-- Correction timestamp.
-- Audit event.
-- Historical entity version.
-
-Use optimistic concurrency/version checks.
-
-Do not silently overwrite another user's correction.
-
-Corrections must be performed atomically with audit/history writes.
-
-Do not generate a receipt or receipt version for expenses.
-
-### E. Cancel Expense
-
-Implement safe logical cancellation, using the existing schema's lifecycle conventions.
-
-Cancellation must:
-
-- Preserve the expense record.
-- Preserve its original history.
-- Record actor and timestamp.
-- Append an audit event and version snapshot.
-- Exclude the cancelled expense from future active outgoing totals.
-- Keep the expense accessible with an explicit CANCELLED indication.
-- Reject stale or otherwise invalid cancellation requests.
-
-Do not physically delete financial expense records.
-
-Do not treat cancellation as a negative balancing transaction unless approved business requirements explicitly demand it.
-
-Do not implement automatic reactivation of cancelled expenses without an approved workflow.
-
-If the existing schema cannot safely represent the cancellation semantics, introduce a minimal additive migration and explain its impact.
-
-## 7. INLINE CATEGORY CREATION
-
-The ability to create a new expense category directly from the expense-entry form is an approved requirement.
+### A. Payment List
 
 Provide:
 
-- Existing active category selector.
-- Clear "Create new category" action.
-- Category name input.
-- Server-side duplicate validation.
-- Clear validation/conflict feedback.
+- Bounded pagination.
+- Search by appropriate project/client/payment references.
+- Transaction-date range.
+- Project filter.
+- Cash/bank method filter.
+- Current payment status.
+- Real persisted amount.
+- Clear cancellation status.
 
-**Critical atomicity rule:**
+Do not show invented financial totals.
 
-If the user submits a new category as part of a new expense, creation of the category and expense must be one atomic database business operation.
+### B. Payment Details
 
-If expense validation or persistence fails, the new category must not remain orphaned as a side effect of that failed expense submission.
+Display:
 
-Do not call the existing top-level category creation service if it independently begins and commits its own transaction.
+- Stable payment identity.
+- Linked project and client.
+- Actual received date.
+- Amount in EUR.
+- Payment method.
+- All allocation phase names and amounts.
+- Current status.
+- Audit/history entries.
+- Receipt availability and actual issuance status.
 
-Instead, reuse or extract transaction-level primitives that operate inside the expense's existing transaction, maintaining the prior public category service behavior.
+Do not show a fake downloadable receipt.
 
-Create the category's audit/version entries inside that same transaction.
+### C. Payment Registration
 
-Respect the existing unique-name constraint and MySQL collation behavior.
+Implement:
 
-If two requests race to create the same category, do not accidentally create duplicates or silently attach a category against the user's intent. Return or handle a well-defined conflict result.
+- Active project selector.
+- Actual transaction date.
+- Amount in EUR.
+- Cash/bank method.
+- Available financial phases for selected project.
+- Editable allocation amounts.
+- Calculated allocation total.
+- Difference versus payment amount.
+- Server-side validation.
+- Clear success/failure feedback.
 
-## 8. LOCKING AND REFERENCE VALIDATION
+Use only actual database values.
 
-Use a consistent transaction and locking protocol that composes with WP-03 through WP-06.
+Do not accept allocations for another project.
 
-Recommended order:
+The final active/received confirmation remains subject to the receipt dependency in section 2.
+
+### D. Payment Correction
+
+Implement an explicitly confirmed correction workflow for the payment's approved editable fields and allocations.
+
+A correction must:
+
+- Preserve payment identity.
+- Preserve earlier allocation/history evidence.
+- Validate all affected phase capacities.
+- Recompute the allocation total.
+- Use the existing optimistic version.
+- Write audit/version snapshots atomically.
+
+A correction to a payment with an already issued receipt must not bypass WP-09's mandatory receipt-version regeneration.
+
+Until the document workflow is integrated, prevent finalizing any correction that would leave an issued receipt inconsistent with the payment.
+
+### E. Payment Cancellation
+
+Implement a confirmed logical cancellation workflow.
+
+Cancellation must:
+
+- Preserve original payment and allocation references.
+- Preserve the historical received amount and previous state.
+- Record actor, reason and timestamp.
+- Append audit/version history.
+- Exclude the payment from active income totals.
+- Exclude its allocations from phase capacity usage.
+- Preserve existing receipt identities.
+- Hand off receipt cancellation state to WP-09.
+
+Do not physically delete financial records.
+
+Do not implement unapproved payment reactivation or restoration.
+
+## 8. EXACT MONEY HANDLING
+
+Reuse WP-05's established BigInt-cent monetary helpers or an equally exact shared implementation.
+
+Use `DECIMAL(19,2)` for storage.
+
+Validate:
+
+- Strict decimal strings.
+- Positive payment amount.
+- Positive allocation amounts.
+- At most two decimal places.
+- Maximum database-supported monetary range.
+- Exact allocation sum.
+- No JavaScript floating-point equality checks.
+
+Perform arithmetic with exact cents or equivalent exact integer representation.
+
+Never silently round malformed inputs.
+
+Calendar transaction dates must use correct DATE semantics, independent of UTC creation timestamps.
+
+## 9. LOCKING — MANDATORY WP-05 COMPATIBILITY
+
+This is a critical requirement.
+
+WP-05 established the following cooperative lock order:
+
+1. Acting user.
+2. Client.
+3. Project.
+4. Contract.
+5. Contract phases ordered by UUID.
+6. Payment and allocation rows when applicable.
+
+Implement the same protocol.
+
+For registration:
 
 1. Authenticate and validate request shape.
-2. Start a Drizzle/InnoDB transaction.
-3. Shared-lock and recheck the acting user's current session.
-4. If a project is linked, lock its client and project in WP-05's established order, rechecking parent relationships and lifecycle eligibility.
-5. Lock selected reference rows in this fixed order:
-   - Category.
-   - Optional person/supplier.
-   - Optional vehicle.
-6. Recheck reference identity, active status and expected version under the locks.
-7. Lock the existing expense row for correction/cancellation, using a documented consistent order compatible with future financial operations.
-8. Validate the final expense state.
-9. Save expense and audit/version records.
-10. Commit.
+2. Enter one READ COMMITTED InnoDB transaction.
+3. Lock/recheck the acting user and live session.
+4. Lock the relevant client.
+5. Lock project.
+6. Lock contract.
+7. Lock all relevant phase rows in deterministic UUID order.
+8. Recheck project/client/contract relationships and active eligibility.
+9. Recalculate active allocation totals while holding the aggregate locks.
+10. Enforce equality, same-project membership and capacity.
+11. Persist business rows and audit/version records.
+12. Commit atomically.
 
-For update operations where associations change, inspect existing and proposed relationships and define a deterministic lock order that cannot deadlock with reference deactivation or other expense mutations.
+For correction/cancellation:
 
-Do not lock only the selected new references while ignoring an existing relationship whose lifecycle state matters.
+- Preflight-discover existing relationships without treating them as trusted.
+- Acquire the union of old/new relevant parent locks in deterministic order.
+- Recheck discovered parent identities after locking.
+- Lock affected phases in deterministic order.
+- Lock existing payment/allocation rows after parent locks.
+- Recompute capacities with the pending change applied.
+- Reject stale versions and invalid status transitions.
 
-Document the final locking design and test relevant concurrency cases.
+Avoid reverse locking order with WP-05.
 
-Do not acquire independent nested transactions inside the already open business transaction.
+Do not depend on an unprotected SUM query for concurrency safety.
 
-A foreign key alone does not prove that a selected category/person/vehicle is active.
+Document any deadlock retries and ensure they do not duplicate writes or consume an idempotency key incorrectly.
 
-Future payment allocation locks remain governed by WP-05; do not implement or interfere with that workflow here.
+## 10. PERSISTENT IDEMPOTENCY
 
-## 9. EXACT MONEY AND DATE HANDLING
+Use the existing `operation_requests` table where compatible.
 
-Use:
+For payment registration/finalization:
 
-- DECIMAL(19,2) storage.
-- Exact decimal-string parsing and validation.
-- BigInt cents or equivalent exact integer representation for monetary calculations.
-- Calendar-date semantics for actual transaction dates.
-- UTC for system-event timestamps.
+- Require a client-generated or server-issued unique idempotency key appropriate to the API.
+- Bind the key to a canonical request fingerprint.
+- Persist the request lifecycle.
+- Return the original result for an exact safe retry.
+- Reject reuse of the same key with a different payload.
+- Handle simultaneous requests with the same key.
+- Handle an interrupted HTTP response after a committed operation.
+- Ensure the key cannot be used by another authenticated user to retrieve private results without authorization.
 
-Do not use JavaScript floating-point math to decide monetary consistency.
+Do not rely only on a disabled submit button.
 
-Ensure amounts:
+Implement or expose a safe way to query operation status after uncertain delivery.
 
-- Have at most two fractional digits.
-- Fit storage bounds.
-- Satisfy approved positivity constraints.
-- Cannot be silently rounded by raw MySQL.
-- Cannot be submitted as NaN/Infinity or malformed strings.
+The idempotency record and payment operation must remain transactionally consistent.
 
-Use the existing currency helper patterns where applicable.
+Do not call an uncommitted operation successful.
 
-Do not invent multi-currency support.
+Include real independent-connection race tests.
 
-## 10. AUDIT AND VERSION HISTORY
+## 11. AUDIT AND HISTORY
 
-All expense creation, correction and cancellation must be audited.
-
-Use the established:
+Use existing:
 
 - `audit_events`
 - `entity_versions`
 
-Include:
+Record:
 
-- Acting user.
-- Entity identity.
+- Actor.
+- Payment/allocation entity IDs.
 - Action.
-- Relevant before/after values.
 - UTC timestamp.
-- Version.
-- Operation/correlation UUID.
+- Before/after representations.
+- Monetary values as exact strings.
+- Correlation/operation ID.
+- Entity version.
 
-Write audit/history in the same transaction as the expense mutation.
+All necessary business rows and audit/version records must commit together.
 
-If audit insertion fails, roll back the entire operation.
+Do not overwrite previous history.
 
-Do not include:
+Do not hard-delete allocations to represent corrections.
 
-- Session tokens.
-- Password hashes.
-- Operator credentials.
-- Unrelated personal secrets.
+If an allocation must become inactive, use the existing model's supported lifecycle or a narrowly scoped additive migration. Do not invent irreversible deletion behavior.
 
-Extend the existing safe snapshot allowlist only for the actual expense fields needed.
+Verify compatibility with the current immutable history triggers.
 
-Do not disable existing immutability triggers.
+## 12. STATUS AND REPORTING SEMANTICS
 
-Do not rewrite historical snapshots.
+Only active received payments count as income.
 
-## 11. USER INTERFACE
+Cancelled payments are excluded.
 
-Replace the Expenses placeholder with real working screens.
+Provisional, failed or otherwise unissued operations must not be presented as completed active income.
 
-### Expenses List
+Phase active paid amount is derived from qualifying current payment/allocation state.
 
-Include:
+Contract-phase totals must remain consistent.
 
-- Title "Daljet Financiare" or terminology consistent with the approved UI.
-- Add Expense action.
-- Search.
-- Transaction-date range.
-- Category/project filters.
-- Status distinction.
-- Real expense list.
-- EUR formatting.
-- Clear empty and error states.
-- Responsive presentation.
+Do not label income-minus-expenses as statutory profit.
 
-### Create Expense
+Do not implement company report PDF/Excel in WP-08.
 
-Include:
+Do not implement project-specific financial report export.
 
-- Amount.
-- Actual expense date.
-- Category selector.
-- Inline category creation.
-- Description.
-- Optional project.
-- Optional person/supplier.
-- Optional vehicle.
-- Submit/cancel controls.
-- Field-level errors.
-- Loading/pending feedback.
+## 13. PAYMENT UI
 
-Use the existing authenticated active-reference selector services.
+Replace the existing Payments/Income placeholder with a working interface appropriate to the actual implemented backend capabilities.
 
-Use bounded search for large reference sets, not unbounded dropdown downloads.
+Provide:
 
-### Expense Details
+- Payment list.
+- Payment registration interface.
+- Project and phase selection.
+- Allocation editor.
+- Exact allocation totals.
+- Remaining phase capacity information.
+- Payment details.
+- History.
+- Correction and cancellation controls where safe and permitted.
+- Clear pending, conflict, empty and error states.
+- Correct receipt-unavailable or not-yet-issued message.
 
-Show all persisted fields and their linked reference labels.
+No button may claim that a payment and its required receipt were fully issued if the receipt document workflow has not been implemented.
 
-Provide visible correction and cancellation actions when permitted.
+If final active confirmation cannot yet satisfy the receipt invariant, gate that action and make the dependency visible.
 
-Display cancelled entries with clear status.
+Keep the underlying domain functionality testable and ready for WP-09 composition.
 
-### Edit Expense
+Use existing Operational Clarity tokens and components.
 
-Prefill existing values.
+Implement accessible labels and responsive forms.
 
-Handle stale versions and reference lifecycle changes.
+Do not redesign unrelated modules.
 
-Do not silently clear optional associations.
+## 14. AUTHORIZATION & SECURITY
 
-Do not replace invalid input with a default monetary amount.
+Reuse WP-03 authentication and authorization.
 
-### Cancel Expense
+Every page, API and domain service must independently enforce live authorization.
 
-Require deliberate confirmation.
+Use:
 
-Clearly communicate that cancellation excludes the expense from active financial totals but preserves its history.
-
-Do not render a destructive hard-delete button.
-
-### UX Quality
-
-Reuse Operational Clarity components and tokens.
-
-Provide accessible labels, keyboard focus, error feedback, responsive layouts and appropriate table scrolling.
-
-Do not redesign unrelated website/application modules.
-
-If real browser testing is unavailable, mark visual and interaction verification NOT VERIFIED.
-
-## 12. SECURITY
-
-Use the existing WP-03 server-side authorization helpers for:
-
-- Pages.
-- APIs.
-- Server Actions.
-- Domain services.
-
-Do not rely on workspace layout alone.
-
-Requirements:
-
-- Anonymous access denied.
-- Disabled user access denied.
-- Existing Origin/Host validation for mutations.
+- Server-side validation.
+- Origin/Host checks on mutations.
+- Parameterized Drizzle queries.
 - Bounded request sizes.
-- Strict field whitelists.
-- Safe IDs and versions.
-- Parameterized queries.
-- No leaking internal SQL or personal data in errors.
-- Safe no-store responses.
-- No unauthorized mass assignment.
+- Whitelisted editable fields.
+- Version checks.
+- Safe error mapping.
+- No-store responses.
+- No sensitive data in logs.
 
-Preserve equal operational permissions for the five client users.
+Five client users retain equal operational rights.
 
 Do not introduce new business roles.
 
-## 13. BUSINESS BEHAVIOR FOR REPORTING
+No production or real client data access is authorized.
 
-WP-07 is not the reporting package.
+## 15. MIGRATIONS
 
-However, persist data so future reports can correctly calculate:
+Create an additive migration only when required.
 
-`Active outgoing expenses = SUM(non-cancelled expense amounts)`
+Verify real schema fields before generating SQL.
 
-Use actual transaction dates for reporting filters.
+Do not modify any prior migration SQL.
 
-Keep project-linked and company-wide expenses distinguishable.
+Pin previous migration hashes.
 
-Do not automatically assign a company-wide expense to any project.
-
-Do not label income-minus-expenses as statutory accounting profit.
-
-Do not implement individual project report exports.
-
-Do not implement company PDF/Excel reporting yet.
-
-## 14. DATABASE MIGRATIONS
-
-If a new migration is necessary, generate it after migration 0005.
-
-Preserve all historical migration SQL bytes and hashes.
-
-Test in isolated disposable MySQL 8.4.
+Test on disposable MySQL 8.4.
 
 Verify:
 
-- All previous migrations.
-- New expense fields/constraints/indexes.
-- All 13 original history guards.
-- Migration journal hashes.
-- Repeat execution.
-- Audit snapshot compatibility.
-- Historical reference integrity.
+- Existing schema.
+- All 13 history/receipt guards.
+- New constraints/indexes.
+- Migration repeatability.
+- Idempotency uniqueness.
+- Historical allocation references.
+- Correct amount/status semantics.
 
-Do not disable production-style integrity constraints merely to pass tests.
+If receipt or payment statuses cannot represent the safe WP-08/WP-09 boundary without changing approved business semantics, document the issue explicitly rather than quietly inventing a final state.
 
-Use synthetic test data only.
+## 16. AUTOMATED TESTING
 
-No production database access is authorized.
-
-## 15. AUTOMATED TESTS
-
-Implement meaningful unit, MySQL integration and HTTP tests.
-
-### Create
+### Payment Validation
 
 Test:
 
-- Valid company-wide expense without a project.
-- Valid project-linked expense.
-- Optional supplier/person.
-- Optional vehicle.
-- Active category association.
-- Rejection of inactive category/person/vehicle.
-- Rejection of archived or otherwise ineligible project relationship.
-- Exact amount and date persistence.
-- Required-field and bounds validation.
+- Positive exact EUR amount.
+- Cash/bank methods.
+- Valid date.
+- Required fields.
+- Malformed amount rejection.
+- Decimal overflow rejection.
+- Zero/negative allocation rejection.
+- Duplicate phase allocation.
+- Wrong-project phase rejection.
+- Exact allocation equality.
 
-### Inline Category
-
-Test:
-
-- Create category and expense atomically.
-- Duplicate category name.
-- Category name normalization/collation.
-- Rollback when expense insertion fails after category creation.
-- Rollback when category audit/history insertion fails.
-- Two concurrent category creations with conflicting names.
-- No category left behind after a failed combined operation.
-
-### Read/Search
+### Phase Capacity
 
 Test:
 
-- List pagination.
-- Search.
-- Date-range boundaries.
-- Category filter.
-- Project filter.
-- Company-wide expense filter.
-- Correct handling of inactive linked references.
-- Cancellation visibility.
+- Allocation to a phase with capacity.
+- Allocation exactly equal to remaining capacity.
+- Rejection above capacity.
+- Concurrent payments competing for remaining capacity.
+- Concurrent payment and contract-phase reduction.
+- Cancelled payment exclusion.
+- Correction that moves an allocation between phases.
 
-### Corrections
-
-Test:
-
-- Successful edit with audit.
-- Old values retained.
-- Stale version rejected.
-- Concurrent edit conflict.
-- Relationship change to active eligible reference.
-- Relationship change to inactive reference rejected.
-- Audit failure rolls back correction.
-
-### Cancellation
+### Persistence & Audit
 
 Test:
 
-- Cancellation retains stable ID/history.
-- Correct actor/time/status.
-- Cancelled expenses excluded from active totals.
-- Already cancelled request handled safely.
-- Cancellation and edit race does not corrupt data.
-- Forced audit failure rolls back cancellation.
+- Atomic payment/allocation save.
+- Audit/version rows.
+- Forced failure rollback.
+- Immutable historical identity.
+- Exact transaction-date preservation.
+- Cancellation releases active capacity while preserving history.
+
+### Idempotency
+
+Test:
+
+- First confirmation request.
+- Exact retry returns original result.
+- Same key with different payload rejected.
+- Two simultaneous identical requests.
+- Interrupted response followed by status lookup.
+- Rejected operation does not create phantom payment.
+- Unauthorized reuse of an operation key denied.
+
+### Receipt Boundary
+
+Test:
+
+- No released/finalized receipt claim without actual issuance.
+- Payment/receipt consistency requirements are enforced at integration boundaries.
+- Receipt documents are not fabricated.
+- Existing receipt version protection remains unchanged.
+- Future WP-09 finalization hook/contract is clearly specified and testable.
 
 ### Security
 
 Test:
 
-- Anonymous reads denied.
-- Anonymous writes denied.
-- Disabled sessions denied.
-- CSRF/Origin protections.
-- SQL parameterization/escaped output.
-- Sensitive errors redacted.
-- Protected fields cannot be mass assigned.
+- Anonymous denial.
+- Disabled-user denial.
+- Forged IDs and wrong-project relationships.
+- Origin/Host protection.
+- Protected-field injection rejection.
+- Safe database error handling.
+- Session revocation during a financial mutation.
 
 ### Regression
 
-Verify:
+Preserve:
 
-- Authentication and sessions.
+- Authentication.
 - Clients.
 - Projects/contracts/phases.
-- Categories/persons/vehicles lifecycle and selectors.
-- Six previous migrations.
-- All 13 triggers.
+- Categories/suppliers/vehicles.
+- Expenses.
+- Historical migration hashes.
+- All existing triggers.
 - Public SQ/EN website.
-- Application navigation.
+- App navigation.
 - TypeScript.
 - ESLint.
 - Build.
-- Route smoke tests.
 
-Use browser testing where available.
+Run browser tests if a browser is actually available.
 
-Do not claim browser PASS from HTTP-only tests.
+Otherwise report visual/hydration acceptance as NOT VERIFIED.
 
-## 16. OUT OF SCOPE
+## 17. OUT OF SCOPE
 
 Do not implement:
 
-- Incoming payments.
-- Allocation of income across contract phases.
-- Receipt numbering/versioning/PDFs.
-- Financial dashboard.
-- Company report PDF/Excel.
-- Full business-data export.
-- Project financial report export.
-- Supplier invoices/payables.
-- Payroll.
+- A4 receipt PDF rendering.
+- PDF storage and version file lifecycle.
+- Fiscal receipts or fiscal certification.
+- Company PDF/Excel report export.
+- Full dataset export.
+- Banking integration.
+- Online payment processing.
+- Supplier payables.
 - Inventory.
-- Online payments.
-- Banking integrations.
+- Scheduling.
+- Physical construction progress.
 - Production deployment.
-- Real business data import.
+- Real business data imports.
 
-Avoid adding unnecessary dependencies.
+Do not invent new financial business rules or receipt legality claims.
 
-Do not refactor unrelated modules.
+## 18. ACCEPTANCE CRITERIA
 
-## 17. ACCEPTANCE CRITERIA
+**WP08-AC01:** Existing payment/allocation structures are reused.
 
-**WP07-AC01:** Reuses the existing expenses schema and related reference tables.
+**WP08-AC02:** Payment domain service supports one-project payment allocation.
 
-**WP07-AC02:** Authenticated users can create a company-wide expense.
+**WP08-AC03:** Exact payment/allocation sum is enforced.
 
-**WP07-AC03:** Authenticated users can create a project-linked expense.
+**WP08-AC04:** Cross-project allocations are rejected.
 
-**WP07-AC04:** Category requiredness and all optional associations follow the approved data model.
+**WP08-AC05:** Active phase capacity cannot be exceeded.
 
-**WP07-AC05:** New expense categories can be created inline during expense entry.
+**WP08-AC06:** Concurrent writers cannot overbook phase capacity.
 
-**WP07-AC06:** Inline category and expense persistence is atomic.
+**WP08-AC07:** Payment/contract-phase operations share compatible locking.
 
-**WP07-AC07:** Inactive category/person/vehicle references are rejected for new associations.
+**WP08-AC08:** Actual transaction dates and cash/bank methods are validated.
 
-**WP07-AC08:** Expense creation coordinates safely with reference deactivation.
+**WP08-AC09:** EUR monetary arithmetic is exact.
 
-**WP07-AC09:** Expenses are listed, searchable, filterable and paginated.
+**WP08-AC10:** Payment mutations and audit/history commit atomically.
 
-**WP07-AC10:** Transaction-date filtering uses the actual expense date.
+**WP08-AC11:** Corrections preserve identity, old values and financial invariants.
 
-**WP07-AC11:** Existing expenses can be corrected with version checks.
+**WP08-AC12:** Cancellation retains history and releases active phase capacity.
 
-**WP07-AC12:** Cancelled expenses remain historically accessible.
+**WP08-AC13:** Cancelled payments are excluded from active received totals.
 
-**WP07-AC13:** Cancelled expenses do not contribute to active outgoing totals.
+**WP08-AC14:** Idempotency prevents duplicate logical confirmation.
 
-**WP07-AC14:** Expense changes and audit/version records commit atomically.
+**WP08-AC15:** Exact retries, conflicting payloads and concurrent retries behave safely.
 
-**WP07-AC15:** Concurrent corrections/cancellations cannot silently overwrite changes.
+**WP08-AC16:** Operation status can be checked safely after uncertain delivery.
 
-**WP07-AC16:** Exact EUR amounts are validated without floating-point errors.
+**WP08-AC17:** Payment APIs/services have independent server-side authorization.
 
-**WP07-AC17:** All pages/APIs/services enforce server-side authorization.
+**WP08-AC18:** Payment list, details and allocation UI use real database-backed state.
 
-**WP07-AC18:** Historical relationships survive deactivation/cancellation.
+**WP08-AC19:** Final receipt-dependent actions are not misrepresented as ready before WP-09.
 
-**WP07-AC19:** Reuses the established UI foundation and working forms.
+**WP08-AC20:** Receipt numbering/version guards remain intact.
 
-**WP07-AC20:** Browser/mobile/accessibility verification is executed where available; otherwise honestly marked NOT VERIFIED.
+**WP08-AC21:** MySQL 8.4 integration and concurrency tests pass.
 
-**WP07-AC21:** MySQL 8.4 integration tests pass.
+**WP08-AC22:** Previous module/migration/trigger regressions pass.
 
-**WP07-AC22:** Existing migration hashes, triggers and prior module tests remain valid.
+**WP08-AC23:** TypeScript, ESLint, production build and HTTP checks pass.
 
-**WP07-AC23:** TypeScript, lint, build and HTTP regression checks pass.
+**WP08-AC24:** Browser/mobile/accessibility tests are executed where possible; otherwise NOT VERIFIED.
 
-**WP07-AC24:** No incoming payments, allocations, receipts or reporting exports are implemented.
+**WP08-AC25:** No real data, production changes or deployment occur.
 
-**WP07-AC25:** No real client data or production infrastructure is accessed.
+**WP08-AC26:** A concrete WP-09 receipt integration contract is documented.
 
-For each criterion report PASS, FAIL or NOT VERIFIED with concise evidence.
+Report each criterion as PASS, FAIL or NOT VERIFIED.
 
-## 18. VERIFICATION
+Clearly distinguish:
 
-Inspect the actual package scripts first.
+- Fully implemented.
+- Implemented but gated.
+- Deferred until WP-09.
+- Not verified.
 
-Execute applicable commands including:
+Do not claim end-to-end payment/receipt readiness from payment-only tests.
 
-- npm.cmd test
-- npm.cmd run db:check
-- npm.cmd run test:db
-- npm.cmd run typecheck
-- npm.cmd run lint
-- npm.cmd run build
-- npm.cmd run check:routes
+## 19. VERIFICATION
 
-Add dedicated WP-07 commands if appropriate.
+Inspect actual package scripts first.
 
-Run the actual migrations and integration tests against disposable MySQL 8.4.
+Run applicable:
 
-Use a safely isolated Docker container with verified ownership, loopback networking and synthetic credentials.
+- `npm.cmd test`
+- `npm.cmd run db:check`
+- `npm.cmd run db:migrate`
+- `npm.cmd run test:db`
+- `npm.cmd run typecheck`
+- `npm.cmd run lint`
+- `npm.cmd run build`
+- `npm.cmd run check:routes`
 
-Do not touch unrelated containers or persistent volumes.
+Add focused payment unit, integration and HTTP tests.
 
-If the database environment is unavailable, report NOT VERIFIED rather than simulating results.
+Use an isolated, task-owned disposable MySQL 8.4 environment.
 
-Fix confirmed WP-07 defects before the final report.
+Do not destroy other containers, databases or volumes.
 
-## 19. REQUIRED DELIVERY REPORT
+Verify actual server version before migrations.
+
+Record exact commands and actual outputs.
+
+Do not disable previous tests to obtain a passing result.
+
+## 20. REQUIRED DELIVERY REPORT
 
 ### A. Repository Baseline
 
-- Branch and HEAD.
-- Existing modifications preserved.
-- Source materials actually accessible.
+Branch, HEAD, modifications and sources actually accessible.
 
-### B. Implementation
+### B. Payment Functionality
 
-- Expense create/list/details/edit/cancel.
-- Inline category behavior.
-- Reference selectors.
-- Search and filtering.
+List, details, registration, allocation editor, correction and cancellation.
 
-### C. Database
+### C. Financial Invariants
 
-- Reused tables.
-- Any additive migration.
-- Real migration execution.
-- Actual schema/constraints.
+Exact sums, project membership, capacity and status handling.
 
-### D. Transaction & Concurrency Review
+### D. Locking & Concurrency
 
-- Lock acquisition order.
-- Atomic inline category creation.
-- Active-reference rechecks.
-- Edit/cancellation races.
-- Audit rollback evidence.
+Detailed lock order and actual concurrent-test outcomes.
 
-### E. File Manifest
+### E. Idempotency
 
-- Exact modified/created file paths.
+Key scope, request fingerprint, retries, conflict handling and operation status.
 
-### F. Test Evidence
+### F. Receipt Dependency
 
-- Exact commands and results.
-- Distinct test counts.
-- Relevant failures and corrections.
-- Browser verification status.
+Exactly what is implemented, gated and deferred until WP-09.
 
-### G. Acceptance Checklist
+### G. Database & Migrations
 
-- WP07-AC01 through WP07-AC25.
+Files, constraints, hashes and real MySQL execution.
 
-### H. Security Review
+### H. Files Changed
 
-- Authentication.
-- Authorization.
-- CSRF/Origin checks.
-- Input validation.
-- Safe errors.
-- Audit privacy.
+Exact paths and purposes.
 
-### I. Open Issues
+### I. Test Evidence
 
-- Missing UX/UI sources.
-- Browser verification.
-- Remaining business or technical constraints.
-- Prerequisites for future incoming-payment services.
+Commands, counts, failures, fixes, browser limitations.
 
-### J. Scope Confirmation
+### J. Acceptance Checklist
 
-- No income/payment allocations or receipts.
-- No financial-report exports.
-- No real data.
-- No production deployment.
+WP08-AC01 through WP08-AC26.
 
-### K. Next Package
+### K. Security and Scope
 
-Assess readiness for WP-08 — Incoming Payments & Financial Phase Allocations.
+Authorization, validation, audit, safe data handling and confirmation of no production access.
 
-Do not implement WP-08 automatically.
+### L. Next Work Package
 
-## 20. EXECUTION INSTRUCTION
+Readiness for WP-09 — Receipt Issuance, PDF Versioning & Cancellation.
 
-Implement WP-07 now.
+Do not implement WP-09 automatically.
 
-Create real, working Expense Transactions functionality using the existing authenticated Next.js/Drizzle architecture.
+## 21. EXECUTION
 
-Perform all applicable local MySQL, security and regression tests.
+Implement WP-08 financial domain functionality and its authenticated UI in the existing local application.
 
-Preserve previous migrations and functionality.
+Preserve all previous migrations, tests and business rules.
 
-Return a complete technical report with real evidence.
+Enforce exact allocations, capacity, transaction safety and persistent idempotency.
 
-Do not stop at a plan.
+Respect the approved requirement that actual received payments require receipts; do not falsely certify an incomplete end-to-end workflow.
 
-Do not commit or push unless the project owner's authorization currently covers that action.
+Test thoroughly against disposable MySQL 8.4.
 
-Do not deploy.
+Return a complete evidence-based report.
 
-**END OF WP-07**
+Do not start WP-09 automatically.
+
+Do not deploy to production.
+
+Commit/push only if the current project owner's authorization explicitly covers it.
+
+**END OF WP-08**
