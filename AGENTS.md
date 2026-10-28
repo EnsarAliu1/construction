@@ -1,676 +1,746 @@
 # ADORE TECH SOLUTIONS — CODEX IMPLEMENTATION PROMPT
 
-## WP-13: Performance Engineering, Measurement & Optimization
+## WP-14: Security Hardening, Private Data Leak Prevention & Independent Audit Preparation
 
 **Project:** Fitimi Construction Management System & Corporate Website  
-**Package:** WP-13  
+**Package:** WP-14  
 **Version:** 1.0  
+**Date:** 28 October 2026  
 **Developer:** Codex  
 **Technical Lead:** Adore Tech Solutions  
-**Status:** Authorized for local implementation and verification  
-**Deployment:** NOT AUTHORIZED
+**Priority:** CRITICAL  
+**Authorization:** Local security assessment, scoped hardening, isolated test infrastructure, dependency review, and full regression testing.
+
+**NOT AUTHORIZED:** Production access, deployment, real customer data, destructive changes to owner resources, purchases, public penetration testing, or independent-audit certification.
 
 ---
 
-## 1. MISSION
+## 1. PRIMARY MISSION
 
-Optimize the real performance of Fitimi Construction across its public bilingual website and authenticated construction-management application.
+Perform a rigorous security review and implement necessary hardening of the existing Fitimi Construction application.
 
-The project owner will personally direct the premium UI/UX, visual identity and motion-design work.
+The owner's primary concern is **unauthorized disclosure or leakage of internal business information**.
 
-**Do not perform a creative redesign.**
+Protected data includes:
 
-Your responsibilities are:
+- Clients and contact records.
+- Private projects and contracts.
+- Contract amounts and financial phases.
+- Incoming payments and allocations.
+- Expenses, suppliers and vehicles.
+- Numbered receipts and immutable PDF versions.
+- Financial reports and XLSX exports.
+- Complete ZIP business exports.
+- Audit trails and historical snapshots.
+- Account, session and operator administration information.
+- Database and storage credentials.
+- Backups and privately stored documents.
 
-1. Establish real performance baselines.
-2. Identify measured bottlenecks.
-3. Improve website loading and responsiveness.
-4. Improve authenticated application responsiveness.
-5. Optimize database queries and critical financial read paths.
-6. Reduce unnecessary client-side JavaScript and rendering.
-7. Improve performance under realistic concurrent activity.
-8. Preserve authentication, financial integrity, receipts, history and data privacy.
-9. Deliver reproducible before/after benchmarks.
-10. Document performance budgets for the owner's upcoming visual and animation work.
+This is not a superficial checklist task.
 
-This is an implementation and engineering package.
+You must inspect actual code paths, build an attack-surface inventory, reproduce credible vulnerabilities in an isolated environment, remediate verified weaknesses and execute comprehensive security regressions.
 
-Do not return only performance advice.
+Do not claim the application is perfectly secure.
 
-## 2. PROJECT BASELINE
+Do not declare independent penetration testing complete; an external qualified reviewer must perform that separately.
 
-Reported completed packages:
+## 2. SOURCE AND BASELINE
 
-- WP-01 through WP-10: Main application and financial functionality.
-- WP-11: Corporate website foundation, bilingual content architecture and real browser tests.
+Inspect actual:
 
-WP-11 reports:
+- Git branch and HEAD.
+- Working tree and owner modifications.
+- AGENTS.md.
+- Next.js 16.4.3 application routes.
+- React and server/client boundaries.
+- Authentication/session implementation.
+- Drizzle/MySQL query and transaction services.
+- PDF storage and recovery infrastructure.
+- Report/ZIP export logic.
+- Public website and SEO routes.
+- Playwright/browser tests.
+- npm dependency tree.
+- Existing HTTP and security tests.
+- Database migrations and original triggers.
 
-- Next.js 16.4.3.
-- React 19.3.1.
-- TypeScript 6.0.3.
-- Drizzle ORM 0.45.4.
-- MySQL 8.4.13.
-- 9 database migrations.
-- 13 original integrity/history triggers.
-- 356 passing automated test results.
-- 32 actual Microsoft Edge/Playwright browser tests.
-- Working SQ/EN public routes.
-- Authenticated business modules.
-- Actual PDF receipt generation and private storage.
-- Financial PDF/XLSX reports and complete ZIP export.
+Preserve all prior migrations and business invariants.
 
-Verify the actual repository state rather than trusting historical figures.
+WP-13 reportedly passed 357 regression results and improved local report/dashboard performance. Its report also identified that the application currently creates database connections per unit of work and has no connection pool.
 
-Before implementation:
+Do not change this architecture merely for performance during WP-14.
 
-- Read AGENTS.md.
-- Inspect Git branch, HEAD and working tree.
-- Preserve existing owner files and configuration.
-- Review current package scripts.
-- Review Next.js route and component structure.
-- Inspect database queries and indexes.
-- Inspect existing Playwright tests.
-- Review previous delivery reports.
-- Check current source and dependency versions.
+Preserve the owner's UI/UX direction, README restrictions and local test environment.
 
-Preserve README.md if the owner's current instructions prohibit editing it.
+No creative redesign.
 
-Do not modify old migrations in place.
-
-## 3. OWNER'S UI/UX AUTHORITY
-
-The owner personally controls:
-
-- Final website visual direction.
-- Typography and brand identity.
-- Motion language.
-- Building/brick/crane/truck animation concepts.
-- Page compositions.
-- Internal application visual polish.
-- Interaction and animation approval.
-
-You may improve implementation efficiency without changing the intended design.
-
-Do not:
-
-- Redesign pages.
-- Change brand colors.
-- Replace typography for aesthetic reasons.
-- Remove visual sections because they could become animated later.
-- Implement cinematic animations.
-- Add visual effects unrelated to measured performance.
-- Invent company content.
-- Alter navigation semantics without demonstrated necessity.
-
-Preserve existing WP-11 motion hooks and server-rendered content.
-
-If a performance optimization conflicts with future premium motion design, document the tradeoff and provide a technical recommendation. Do not make the creative decision yourself.
-
-## 4. MEASUREMENT-FIRST RULE
-
-No unsupported claims such as:
-
-- "The app is 10x faster."
-- "Instant loading."
-- "Lighthouse 100."
-- "All pages load in under one second."
-
-First measure the actual baseline.
-
-Measure again after changes under comparable conditions.
-
-Distinguish:
-
-- Local laboratory measurements.
-- Browser interaction measurements.
-- Database microbenchmarks.
-- API latency measurements.
-- Production user experience, which cannot yet be confirmed.
-
-Record test environment, sample sizes, machine/browser conditions and measurement limitations.
-
-Do not present synthetic benchmarks as real-user production metrics.
-
-## 5. TARGET PERFORMANCE METRICS
-
-Use the following as targets, not guaranteed results.
-
-### Public website
-
-Core Web Vitals targets at the 75th percentile of real-user measurements when available:
-
-- LCP ≤ 2.5 seconds.
-- INP ≤ 200 milliseconds.
-- CLS ≤ 0.1.
-
-For local lab evaluation, use appropriate Lighthouse/Playwright measurements and clearly distinguish those from field p75 data.
-
-Evaluate:
-
-- First Contentful Paint.
-- Largest Contentful Paint.
-- Layout shifts.
-- Main-thread blocking.
-- JavaScript size.
-- Image loading.
-- Font loading.
-- Navigation timing.
-- Mobile simulation.
-
-### Private application
-
-Measure:
-
-- Authenticated page navigation.
-- Dashboard time to useful data.
-- Clients/projects/expenses/payments listing.
-- Search and filter responsiveness.
-- Contract/phase editor responsiveness.
-- Form loading and submit feedback.
-- Receipt PDF downloads.
-- Company report generation.
-- Full business export.
-
-Define realistic performance budgets from actual baselines.
-
-Financial correctness and data security always take priority over shaving milliseconds.
-
-## 6. BROWSER PERFORMANCE ENVIRONMENT
-
-WP-11 successfully used local Microsoft Edge with Playwright.
-
-Reuse the approved browser-testing setup.
-
-Preserve the owner's browser profile and settings.
+## 3. SECURITY TARGET
 
 Use:
 
-- A temporary Playwright profile.
-- Reproducible viewport sizes.
-- Representative desktop and mobile configurations.
-- A controlled production build.
-- Local loopback services.
-- Explicit synthetic fixtures for authenticated paths.
+- OWASP ASVS Level 2 as the application-verification target.
+- OWASP Top 10 and API Security Top 10 for systematic coverage.
+- Appropriate current Next.js/Node security guidance.
+- Relevant secure-deployment and secret-management principles.
 
-Measure multiple runs per scenario.
+Build a verification matrix.
 
-Record median and a useful tail-latency metric where sample sizes justify it.
+For each applicable control, record:
 
-Separate cold-start measurements from warm-navigation measurements.
+- Control identifier or category.
+- Actual relevant code path.
+- Threat being addressed.
+- Evidence collected.
+- Status: PASS / FAIL / NOT VERIFIED / NOT APPLICABLE.
+- Remediation where necessary.
+- Remaining risk.
 
-Do not mix development-mode measurements with production-build measurements without labeling the difference.
+Do not claim ASVS conformance solely from automated testing.
 
-Collect console, network and hydration errors.
+Do not artificially mark controls not applicable to increase passing percentages.
 
-Avoid screenshots containing private or real customer data.
+## 4. THREAT MODEL
 
-## 7. PUBLIC WEBSITE OPTIMIZATION
+Document:
 
-Audit all ten SQ/EN public pages.
+### Assets
 
-Optimize:
+Financial data, customer records, immutable receipts, full exports, audit history, sessions, secrets, database and private storage.
 
-- Server rendering/static generation.
-- Unnecessary client components.
-- JavaScript bundle size.
-- Shared dependencies.
-- Route prefetching behavior.
-- Font loading.
-- Image loading and dimensions.
-- CSS delivery.
-- Above-the-fold content.
-- Layout stability.
-- Responsive navigation performance.
-- Reduced-motion fallback efficiency.
-- Hydration and event listeners.
+### Entry points
 
-Keep the public content fully understandable without animation.
+Public routes, authenticated pages, APIs, Server Actions where present, document downloads, export endpoints, login/logout, operator CLI, deployment configuration and recovery scripts.
 
-Do not remove metadata, canonical/hreflang, language switching, accessibility or security protections.
+### Potential adversaries
 
-Do not add a heavy client-side framework where a lightweight solution is sufficient.
+- Anonymous internet attacker.
+- Attacker holding a stolen or expired session.
+- Authenticated user attempting unauthorized operations.
+- Malicious or compromised third-party dependency.
+- Person with access to leaked logs, exports or backups.
+- Attacker exploiting storage or hosting misconfiguration.
 
-## 8. AUTHENTICATED APPLICATION PERFORMANCE
+### Trust boundaries
 
-Profile the existing business modules:
+- Internet to public website.
+- Browser to authenticated API.
+- API to business service.
+- Application to MySQL.
+- Application to private filesystem.
+- Export generation to downloadable bytes.
+- Operator CLI to account administration.
+- Production host to backup infrastructure.
 
-- Dashboard.
-- Clients.
-- Projects.
-- Contract/phase editor.
-- Expense categories.
-- Persons/suppliers.
-- Vehicles.
-- Expenses.
-- Payments.
-- Receipts.
-- Reports and exports.
+Identify practical data-exfiltration paths and prioritize by business impact and exploitability.
 
-Investigate:
+## 5. AUTHENTICATION AND SESSION SECURITY
 
-- Unnecessary rerenders.
-- Oversized client components.
-- Repeated server fetches.
-- Duplicate queries.
-- Excessive sequential requests.
-- Search typing behavior.
-- List pagination.
-- Selector responsiveness.
-- Large financial forms.
-- Expensive serialization.
-- Slow loading and error boundaries.
+Inspect and test the current WP-03 implementation.
 
-Use React/Next.js-compatible optimizations when justified.
+Review:
 
-Do not introduce speculative memoization everywhere.
+- Argon2id password handling and parameters.
+- Session-token entropy.
+- Token hashing at rest.
+- Session expiration and revocation.
+- Secure cookie flags.
+- SameSite handling.
+- Production HTTPS requirements.
+- Login rate limiting.
+- Account enumeration.
+- Concurrent login behavior.
+- Logout invalidation.
+- Disabled-user invalidation.
+- Password reset and operator recovery.
+- Session fixation.
+- CSRF protection.
+- Origin/Host checks.
+- Trusted reverse-proxy assumptions.
+- Cookie and session behavior across browser environments.
 
-Do not move sensitive database state into public client bundles.
+Test real cookies and sessions, not only synthetic injected headers.
 
-Keep forms correct under slow network, stale data, concurrent writes and session expiration.
+Check whether session tokens or sensitive cookies can appear in URLs, logs, error reports or client bundles.
 
-## 9. DATABASE QUERY PERFORMANCE
+Do not introduce public self-registration or reset endpoints.
 
-Use MySQL 8.4 with representative synthetic data.
+The existing operator-only account-management boundary must remain operator-only.
 
-Inspect and benchmark relevant queries:
+## 6. AUTHORIZATION AND IDOR
 
-- Dashboard summaries.
-- Project financial aggregates.
-- Active allocation capacity.
-- Client/project searches.
-- Expense searches and filters.
-- Payment and receipt lists.
-- Audit/history reads.
-- Company report snapshots.
-- Full export batching.
+Inventory every private route and API endpoint.
 
-Use appropriate:
+Test:
 
-- EXPLAIN / EXPLAIN ANALYZE where safe.
-- Actual row counts.
-- Query latency.
-- Index inspection.
-- Connection-pool measurements.
-- Query-plan analysis.
+- Anonymous access.
+- Invalid session.
+- Expired session.
+- Revoked session.
+- Disabled user.
+- Malformed record ID.
+- Unknown record ID.
+- Cross-entity ID substitution.
+- Request payload field injection.
+- Direct API access without loading the page.
+- Alternate HTTP methods.
+- Nested route manipulation.
+- Unauthorized document/version downloads.
+- Access to historical archived and cancelled records.
+- Session revocation during a financial mutation.
+
+All sensitive access decisions must happen on the server.
+
+Do not rely on hidden buttons, client-side routing or navigation visibility.
+
+**Important permission model:**
 
-Avoid creating indexes blindly.
+The five client users currently have equal approved operational permissions.
 
-Any new index must have a demonstrated query benefit and an analysis of write/storage cost.
+Do not invent project-level restrictions or new roles.
 
-If a database index or schema adjustment is warranted:
+However, clearly document that any authorized user with full export access may legitimately obtain an extensive copy of business data.
 
-- Generate an additive migration after the existing latest migration.
-- Preserve all historical migration hashes.
-- Verify on a fresh disposable database.
-- Test expected query behavior and regression.
+Evaluate stronger export controls as a separately proposed product decision, not a silent permission change.
 
-Do not change transaction isolation, foreign keys, triggers, versioning or locking solely to improve benchmark numbers.
+## 7. HIGHEST-PRIORITY EXFILTRATION REVIEW
 
-## 10. FINANCIAL TRANSACTION SAFETY
+Conduct an especially thorough review of:
 
-The following invariants must remain untouched:
+### Full Business Export
+
+- Authorization and account status.
+- Session rechecks before download.
+- Complete-data scope.
+- Historical records and snapshots.
+- Credential exclusions.
+- Storage path exclusions.
+- Unexpected nested sensitive fields.
+- Export audit events.
+- Resource limits.
+- Rate limiting and abuse.
+- Unauthorized replay or sharing.
+- CDN/cache behavior.
+- Incomplete downloads.
+- Filenames and archive metadata.
+
+### Financial PDF/XLSX Reports
+
+- Authorization.
+- Cross-user leakage.
+- Caching.
+- Formula injection.
+- Unsafe user-controlled strings.
+- Path exposure.
+- Error redaction.
 
-- Exact DECIMAL/BigInt EUR arithmetic.
-- Contract total equals active phase values.
-- Active allocation capacity cannot be exceeded.
-- Payment allocations sum exactly to the payment.
-- Shared deterministic financial lock ordering.
-- Idempotent payment confirmation.
-- No duplicate receipts.
-- Immutable receipt versions.
-- Cancellation history preservation.
-- Full audit trails.
-- Correct active income/expense totals.
+### Receipt PDFs
 
-Do not cache mutable financial capacity as an authorization or validation source.
+- Live session required.
+- Version-level access.
+- Immutable storage.
+- Path traversal.
+- Symlinks/junctions.
+- Unsafe storage-root configuration.
+- Checksum verification.
+- No public static exposure.
+- Missing/corrupt file handling.
+- Storage recovery command authorization.
+
+### Public Website
+
+- No private data inside statically generated HTML.
+- No leaking internal project/customer information.
+- No public receipt or export paths.
+- No sensitive metadata in sitemap, robots, source maps or generated build artifacts.
+- No unsafe public-to-private import boundary.
 
-Do not replace locking reads with stale cached values.
+Use actual synthetic canary customer information in the disposable database, then search responses, generated assets and public build outputs for unintended disclosure.
 
-A fast stale preview may be allowed when transparently identified as a preview, but final mutations must always revalidate inside the authoritative transaction.
+Report any confirmed leak with its exact route, condition and remediation.
 
-Performance work must not relax SQL consistency or financial guards.
+## 8. SECRETS AND LOGGING
 
-## 11. CACHING AND DATA PRIVACY
+Inspect:
 
-Develop a documented caching policy.
+- Source and Git-tracked files.
+- Next.js public environment variables.
+- Build output and runtime traces.
+- Development and production error handling.
+- Structured or unstructured logs.
+- Stack traces.
+- Database query errors.
+- PDF and ZIP metadata.
+- Operator CLI arguments.
+- Authentication recovery procedures.
+- Generated diagnostic scripts.
+
+Verify that secrets are not included in:
+
+- Client-side JavaScript.
+- Static HTML.
+- Public source maps.
+- HTTP responses.
+- Downloadable exports.
+- Application logs.
+- Audit snapshots.
+- Build artifacts committed to Git.
 
-### Public website
+Do not display real secrets in the delivery report.
 
-Use safe static/server caching where appropriate.
+Use synthetic sentinel values for leak-detection tests.
 
-### Authenticated application
+If any genuine secret is discovered, do not reproduce its value; describe rotation requirements and affected surfaces.
 
-Preserve privacy:
+Never perform production rotation without authorization.
 
-- No shared CDN caching of customer data.
-- No public caching of receipts.
-- No public caching of audit records.
-- No public caching of financial reports.
-- No cross-user leakage.
-- Appropriate private/no-store responses.
-- Correct session invalidation.
-- No cached authorization decisions that survive deactivation.
+## 9. DATABASE SECURITY
 
-Do not cache raw receipt storage URLs or private filesystem paths in client state.
+Inspect the current MySQL architecture.
 
-Never optimize performance by weakening authentication checks.
+Evaluate:
 
-## 12. PDF AND EXPORT PERFORMANCE
+- Database network exposure.
+- TLS capability.
+- Application-user privilege requirements.
+- Migration versus runtime privileges.
+- Trigger/function creation privileges.
+- Binary logging and the known MySQL trigger-creation constraint.
+- Connection configuration.
+- Prepared queries.
+- Raw SQL safety.
+- SQL injection boundaries.
+- Transaction isolation.
+- Error handling.
+- Database backup confidentiality.
+- History/financial integrity guards.
 
-Benchmark:
+Design a least-privilege production database role.
 
-- Receipt PDF rendering.
-- Receipt document retrieval.
-- Private checksum verification.
-- Company financial PDF generation.
-- XLSX generation.
-- Full ZIP data export.
-- Export materialization and memory use.
+Distinguish:
 
-Do not change the immutable receipt content of previously issued documents.
+- Runtime application permissions.
+- Migration/deployment permissions.
+- Operator/maintenance permissions.
+- Backup/restore permissions.
 
-Do not skip checksum validation merely to accelerate downloads.
+Do not run production GRANT or ALTER USER commands.
 
-Avoid loading unbounded customer records into memory.
+If changes require an additive migration, verify that old migrations remain byte-identical.
 
-Maintain current explicit export limits unless a measured, safely tested change is justified.
+Do not disable triggers, constraints or audit controls to pass security tests.
 
-If an export fails its limits, return a clear failure rather than a silently truncated download.
+## 10. FINANCIAL ABUSE AND BUSINESS-LOGIC SECURITY
 
-Keep authentication and export audit controls operational.
+Re-test high-risk scenarios:
 
-Production persistent storage and paired database/PDF backup remain separate release prerequisites.
+- Duplicate payment confirmation.
+- Reused idempotency key with different payload.
+- Unauthorized operation-status lookup.
+- Cross-project phase allocation.
+- Phase-capacity overrun.
+- Concurrent payment and contract edit.
+- Incorrect receipt number reuse.
+- Immutable document modification.
+- Receipt correction without a corresponding payment change.
+- Cancellation and correction races.
+- Cancelled-payment inclusion in active income.
+- Inline category creation rollback.
+- Incorrect export totals.
+- Audit insertion failure.
+- History mutation or deletion attempts.
 
-## 13. LOAD AND CONCURRENCY TESTS
+All financial operations must preserve established row-lock order and exact DECIMAL/BigInt arithmetic.
 
-Use disposable MySQL and synthetic data only.
+Do not modify financial business rules without a confirmed defect.
 
-Design representative scenarios:
+## 11. HTTP, BROWSER AND PLATFORM HARDENING
 
-- Multiple users reading the dashboard.
-- Concurrent project/client searches.
-- Concurrent payment allocation previews.
-- Concurrent valid payment confirmations.
-- Contract-phase edits competing with payments.
-- Expense creation and reference deactivation.
-- Receipt PDF downloads.
-- Report generation while reads continue.
-- Full export resource contention.
+Review actual Next.js deployment implications, including:
 
-Observe:
+- Security headers.
+- Content Security Policy design.
+- Trusted script/style requirements.
+- Frame embedding and clickjacking protection.
+- MIME sniffing.
+- Referrer policy.
+- HTTPS/HSTS deployment prerequisites.
+- Cache-Control.
+- Error and not-found responses.
+- CORS.
+- Cross-origin resource exposure.
+- Server Actions where present.
+- File download headers.
+- Source map exposure.
+- Static asset and build artifact leakage.
 
-- Request latency.
-- Error rates.
-- Database connection utilization.
-- Lock waits.
-- CPU/memory use.
-- Timeouts.
-- Deadlocks.
-- Document generation load.
+Use a CSP compatible with the current application.
 
-Avoid excessively destructive or uncontrolled stress testing.
+Do not install a policy that silently breaks React hydration, necessary Next.js scripts, PDF downloads or the owner's future motion code.
 
-Do not load-test production or unrelated local services.
+Prefer a tested enforcement policy where safe; otherwise document a staged Report-Only rollout.
 
-Financial races must preserve all existing invariants.
+Do not claim that HSTS works correctly before actual production HTTPS/proxy configuration is tested.
 
-Do not suppress safe conflicts/409 responses merely to improve throughput statistics.
+## 12. DEPENDENCY AND SUPPLY-CHAIN REVIEW
 
-## 14. REALISTIC TEST DATA
+Inspect the actual dependency tree and current advisories.
 
-Create synthetic datasets large enough to reveal query and rendering bottlenecks.
+Previous reports identified six moderate advisories involving development tooling and ExcelJS transitive dependencies.
 
-Include representative:
+For every current advisory:
 
-- Clients and businesses.
-- Projects and contracts.
-- Contract phases.
-- Payments and allocations.
-- Expenses.
-- Categories/persons/vehicles.
-- Receipt versions.
-- Audit/history rows.
+- Identify the affected package.
+- Installed version.
+- Patched available version, if any.
+- Whether the vulnerable functionality is reachable.
+- Production versus development scope.
+- Recommended mitigation.
+- Upgrade compatibility and regression risk.
 
-Do not invent real Fitimi Construction business data.
+Check currently published authoritative advisories where appropriate.
 
-Do not add synthetic production dashboard content.
+Do not run blind `npm audit fix --force`.
 
-Keep fixtures isolated and removable.
+Apply a minimal, safe upgrade only when justified and supported by full regression evidence.
 
-Test both:
+Record remaining accepted risks and required follow-up.
 
-- Small/empty datasets.
-- Moderate realistic datasets approaching existing pagination/export limits.
+Also assess:
 
-Record dataset sizes explicitly.
+- Lockfile integrity.
+- Unnecessary dependencies.
+- Dependency scripts.
+- Server-only modules being bundled client-side.
+- Direct and transitive runtime package exposure.
 
-## 15. PERFORMANCE BUDGET FOR FUTURE ANIMATIONS
+Do not claim a clean audit if advisories remain.
 
-Prepare a technical budget to help the project owner build premium motion.
+## 13. SECURE CONFIGURATION
 
-Provide recommendations for:
+Produce a production security configuration checklist covering:
 
-- Maximum reasonable animation JavaScript overhead.
-- Appropriate SVG/CSS/Canvas/WebGL tradeoffs.
-- Motion loading after critical content.
-- GPU/compositing-friendly properties.
-- Avoiding forced synchronous layout.
-- Offscreen animation pausing.
-- Reduced-motion support.
-- Mobile quality tiers.
-- Scroll listener design.
-- Event cleanup.
-- Memory and battery considerations.
+- TLS certificate and proxy.
+- Environment secrets.
+- Secure cookies.
+- Allowed origins.
+- Network isolation.
+- Database least privilege.
+- Private receipt storage.
+- File permissions.
+- Safe deployment directories.
+- Backup encryption.
+- Log retention and access.
+- Monitoring and alerting.
+- Deployment separation.
+- Emergency account/session revocation.
 
-Do not pick final artistic concepts or implement the owner-controlled motion package.
+Do not choose or purchase hosting.
 
-Recommend graceful enhancement rather than turning the website into a heavy animation runtime.
+Do not deploy the application.
 
-The owner must be able to introduce premium animations without breaking accessible content or the target loading budget.
+Document which items cannot be tested locally without a real hosting environment.
 
-## 16. CODE CHANGES
+## 14. BACKUP AND DISASTER-RECOVERY SECURITY
 
-Make only evidence-backed changes.
+Review current design requirements:
 
-For each meaningful optimization document:
+- Daily off-site backups.
+- 30-day retention.
+- RPO ≤24 hours.
+- RTO ≤48 hours.
+- Paired database + immutable receipt document recovery.
 
-1. Baseline measurement.
-2. Diagnosed bottleneck.
-3. Source change.
-4. New measurement.
-5. Regression impact.
-6. Relevant tradeoffs.
+Assess:
 
-Preserve existing behavior and public/private boundaries.
+- Backup encryption.
+- Key management.
+- Access separation.
+- Integrity checks.
+- Retention.
+- Restore authorization.
+- Protection against accidental deletion/ransomware.
+- Handling of receipt-storage instance binding.
+- Private export and backup confidentiality.
 
-Prefer focused changes over broad rewrites.
+WP-14 should deliver the security architecture and risks.
 
-Do not install dependencies unless their measurable value justifies their operational cost.
+Actual hosting-specific backup/restore drills are part of WP-15.
 
-Do not introduce an additional caching server or external infrastructure without authorization.
+Do not claim RPO/RTO compliance without completed restore tests.
 
-## 17. SECURITY PRESERVATION
+## 15. LOCAL SECURITY TEST ENVIRONMENT
 
-Performance work must preserve:
+Use:
 
-- Live authorization and account deactivation.
-- Authentication rate limiting.
+- Task-owned disposable official MySQL 8.4.
+- Synthetic users and records.
+- Synthetic financial data.
+- Synthetic receipt PDFs.
+- Private task-owned test storage.
+- Local loopback Next.js server.
+- Edge/Playwright where supported.
+
+Do not access public production targets.
+
+Do not scan unrelated networks, domains or other applications.
+
+Do not inspect the owner's personal browser profile.
+
+Do not modify unrelated containers or databases.
+
+Keep tests bounded and recoverable.
+
+Before cleanup, confirm ownership labels and actual resource identity.
+
+Preserve the owner's `.env.local`, README and existing development resources.
+
+## 16. REQUIRED SECURITY TESTS
+
+Build a repeatable security test suite including:
+
+### Authentication
+
+- Invalid and expired sessions.
 - Session revocation.
-- CSRF/Origin/Host validation.
-- Financial row locks.
-- Exact amounts.
-- Audit integrity.
-- Receipt immutability.
-- Private PDF storage/downloads.
-- Safe exports.
-- Input validation.
-- No-store privacy.
+- Account deactivation.
+- Session token leakage.
+- Login rate limiting.
+- CSRF/origin rejection.
+
+### API Authorization
+
+- Every private route/API anonymously.
+- Malformed/foreign IDs.
+- Disallowed methods.
+- Unexpected fields.
+- Cross-entity relationship manipulation.
+- Authenticated but unauthorized operation-key lookup.
+
+### Exfiltration
+
+- Private-data canary leakage.
+- Static asset leakage.
+- PDF download without session.
+- ZIP export without session.
+- Unauthorized export replay.
+- Metadata and error-based disclosure.
+- Unexpected cache exposure.
+
+### Input and Browser
+
+- Stored and reflected XSS.
+- Spreadsheet injection.
+- Unsafe redirect.
+- Clickjacking protections.
+- Path traversal.
+- Browser cache behavior.
+- CSP compatibility.
+
+### Financial Integrity
+
+- Duplicate logical payment prevention.
+- Financial cross-project isolation.
+- Race conditions.
+- Immutable receipt versions.
+- Historical audit protections.
+
+### Operational Security
+
+- Secrets in build output.
+- Dependency vulnerabilities.
 - Database least-privilege assumptions.
+- Storage recovery authorization.
+- Backup confidentiality requirements.
 
-No benchmark result justifies bypassing these protections.
+Use genuine browser/network requests where required.
 
-Run relevant security regressions after optimizations.
+Do not mark a test PASS if the relevant protection was merely inspected rather than exercised; distinguish code review from dynamic verification.
 
-Do not claim this package replaces the dedicated WP-14 security audit.
+## 17. REMEDIATION PRINCIPLES
 
-## 18. TESTING
+For each confirmed vulnerability:
 
-Run applicable project checks:
+1. Capture synthetic reproduction evidence.
+2. Assess severity and affected data.
+3. Identify root cause.
+4. Implement the smallest reliable fix.
+5. Add a regression test.
+6. Re-run related existing tests.
+7. Document residual risk.
 
-- `npm.cmd test`
-- `npm.cmd run db:check`
-- `npm.cmd run db:migrate` against disposable MySQL.
-- `npm.cmd run test:db`
-- `npm.cmd run typecheck`
-- `npm.cmd run lint`
-- `npm.cmd run build`
-- `npm.cmd run check:routes`
-- `npm.cmd run test:website:browser`
+Prioritize confirmed leakage and authorization defects above lower-risk hardening.
 
-Run existing authenticated HTTP tests and add measured performance/browser tests where justified.
+Do not perform broad rewrites.
 
-Capture:
+Do not reduce current security to increase performance.
 
-- Baseline and optimized browser measurements.
-- Database query plans.
-- Representative server/API latency.
-- Memory and bundle size.
-- Load-test results.
-- All regression results.
+Do not suppress legitimate validation errors or disable earlier test checks.
 
-Do not weaken prior tests.
+Security improvements must preserve usability and business consistency.
 
-Use reproducible local tooling.
+## 18. INDEPENDENT AUDIT HANDOFF
 
-If a metric is not measured, mark it NOT VERIFIED.
+Prepare an external security-review package containing:
+
+- Architecture and trust boundaries.
+- Endpoint inventory.
+- Authentication design.
+- Permission model.
+- Financial transaction controls.
+- Document and export security.
+- Storage and backup assumptions.
+- Security test results.
+- Known vulnerabilities and remediations.
+- Open questions.
+- Deployment prerequisites.
+- Test-environment setup instructions.
+- Explicit authorized scope for independent penetration testing.
+
+Never include live secrets.
+
+Do not claim Codex's self-review is equivalent to an independent penetration test.
+
+Recommend a qualified external specialist review before production.
 
 ## 19. ACCEPTANCE CRITERIA
 
-**WP13-AC01:** Actual baseline performance evidence is recorded.
+**WP14-AC01:** Complete private-data threat model documented.
 
-**WP13-AC02:** Public website performance is measured in real browser tests.
+**WP14-AC02:** Actual private route and endpoint inventory completed.
 
-**WP13-AC03:** Authenticated application performance is measured with synthetic sessions/data.
+**WP14-AC03:** Authentication/session design reviewed and dynamically tested.
 
-**WP13-AC04:** Relevant database query bottlenecks are profiled.
+**WP14-AC04:** Anonymous/expired/disabled session access denied across sensitive endpoints.
 
-**WP13-AC05:** Improvements are supported by comparable before/after measurements.
+**WP14-AC05:** Object-level authorization and ID manipulation reviewed.
 
-**WP13-AC06:** Public SQ/EN navigation and SEO remain intact.
+**WP14-AC06:** Full export cannot be accessed without current authorization.
 
-**WP13-AC07:** Existing UI appearance and owner motion hooks are preserved.
+**WP14-AC07:** Receipt PDFs and versions cannot be downloaded anonymously.
 
-**WP13-AC08:** Financial transaction semantics and locks are unchanged or rigorously proven equivalent.
+**WP14-AC08:** Public website and assets do not expose synthetic private canary data.
 
-**WP13-AC09:** Receipt numbering, immutability and checksum validation remain correct.
+**WP14-AC09:** Secrets do not appear in checked public bundles/logging/export boundaries.
 
-**WP13-AC10:** Authenticated/private responses preserve safe caching rules.
+**WP14-AC10:** Financial integrity and idempotency abuse tests pass.
 
-**WP13-AC11:** Dashboard and project financial values remain exact.
+**WP14-AC11:** PDF storage traversal/overwrite/recovery security tests pass.
 
-**WP13-AC12:** PDF/XLSX/ZIP exports remain complete and secure within documented bounds.
+**WP14-AC12:** CSRF, Origin/Host and safe request-body validation are verified.
 
-**WP13-AC13:** Realistic synthetic data and concurrent-request tests are executed.
+**WP14-AC13:** Browser and HTTP security headers are assessed and hardened appropriately.
 
-**WP13-AC14:** Performance optimizations introduce no unauthorized access or data leakage.
+**WP14-AC14:** Dependency advisories are individually analyzed and mitigated or documented.
 
-**WP13-AC15:** Database migrations and integrity tests pass.
+**WP14-AC15:** Database least-privilege roles and production TLS requirements are documented.
 
-**WP13-AC16:** All original 13 triggers remain intact.
+**WP14-AC16:** Export confidentiality and sensitive-field exclusions are tested.
 
-**WP13-AC17:** TypeScript, lint, production build and prior module regressions pass.
+**WP14-AC17:** Backup encryption/access/recovery security design is documented.
 
-**WP13-AC18:** Real Edge/Playwright navigation, hydration and browser tests pass.
+**WP14-AC18:** No confirmed unresolved Critical/High data-exposure vulnerability remains in the tested scope.
 
-**WP13-AC19:** Future premium-motion performance guidelines are documented.
+**WP14-AC19:** Prior business, financial, receipt and export regressions pass.
 
-**WP13-AC20:** No creative redesign, production deployment or real business data is involved.
+**WP14-AC20:** MySQL migrations, original triggers and financial locking remain intact.
 
-**WP13-AC21:** Remaining bottlenecks and performance risks are accurately reported.
+**WP14-AC21:** TypeScript, lint, production build and browser checks pass.
 
-**WP13-AC22:** Before/after results distinguish lab measurements from production Core Web Vitals.
+**WP14-AC22:** External independent-audit handoff package is delivered.
 
-Report PASS, FAIL or NOT VERIFIED for each criterion.
+**WP14-AC23:** Tests use only isolated synthetic local data and owned resources.
 
-Do not award a PASS solely because code compiles.
+**WP14-AC24:** No deployment, real data or unauthorized external scanning occurs.
 
-## 20. DELIVERABLES
+**WP14-AC25:** Findings clearly distinguish verified controls, assumptions, residual risk and release blockers.
 
-### A. Initial Baseline
+Report each as PASS, FAIL or NOT VERIFIED.
 
-Environment, browser, device settings, dataset sizes and original performance metrics.
+Do not interpret WP14-AC18 as a guarantee that undiscovered vulnerabilities do not exist.
 
-### B. Diagnosed Bottlenecks
+## 20. REQUIRED DELIVERABLES
 
-Measured page, API, database and export issues.
+### A. Executive Security Assessment
 
-### C. Implemented Optimizations
+Overall risk posture and highest-priority findings.
 
-Exact file changes and reasons.
+### B. Threat Model
 
-### D. Before/After Results
+Assets, entry points, adversaries, trust boundaries and data-exfiltration scenarios.
 
-Comparable measurements and honest improvement calculations.
+### C. Endpoint Matrix
 
-### E. Database Performance
+Every private route/API, required authentication and dynamic test outcome.
 
-Query plans, indexes, lock waits and data sizes.
+### D. Findings
 
-### F. Browser Performance
+Severity, root cause, evidence, fix and residual risk.
 
-Public and authenticated routes, hydration, responsiveness and resource use.
+### E. Implemented Hardening
 
-### G. Load Testing
+Exact changed file paths and purpose.
 
-Concurrency, throughput, errors and financial integrity.
+### F. Authentication & Authorization
 
-### H. Motion Performance Handoff
+Session/cookie/account and object-access test evidence.
 
-Technical budgets and constraints for the owner's custom UI/UX work.
+### G. Document & Export Security
 
-### I. Security & Privacy Regression
+Private receipt, report, XLSX, ZIP and historical-data leak review.
 
-No-cache/session/authorization/receipt/export protection results.
+### H. Database & Infrastructure
 
-### J. Automated Verification
+Least privilege, TLS, storage, secrets and deployment hardening.
 
-Commands, actual output and test counts.
+### I. Supply Chain
 
-### K. Acceptance
+Exact advisory review, fixes, reachable risks and remaining findings.
 
-WP13-AC01 through WP13-AC22.
+### J. Backup Security
 
-### L. Remaining Risks
+Encryption, storage separation, retention and restore prerequisites.
 
-Unresolved slow paths, production-hosting uncertainty and future validation needs.
+### K. Tests
 
-### M. Next Package Readiness
+Commands, outcomes, genuine browser/HTTP tests and regressions.
 
-Assess readiness for WP-14 — Security Hardening & Independent Security Audit Preparation.
+### L. ASVS Verification Matrix
 
-Do not implement WP-14 automatically.
+Applicable controls and evidence, without unsupported certification.
+
+### M. Acceptance
+
+WP14-AC01 through WP14-AC25.
+
+### N. Independent Audit Handoff
+
+Safe scope and instructions for a qualified external reviewer.
+
+### O. Final Release Risk Register
+
+Unresolved blockers, owner decisions and required WP-15 actions.
+
+### P. Next Package
+
+Assess readiness for WP-15 — Final QA, Backup/Restore and Controlled Release Readiness.
+
+Do not start WP-15 automatically.
 
 ## 21. EXECUTION
 
-Proceed with WP-13 implementation locally.
+Implement WP-14 locally now.
 
-Measure first.
+Inventory the attack surface, investigate actual data-leak risks, dynamically test security boundaries, fix confirmed vulnerabilities and provide a comprehensive evidence-based report.
 
-Fix proven performance bottlenecks.
+Prioritize the confidentiality of the internal company system.
 
-Preserve all existing financial and security guarantees.
+Preserve all existing financial, historical, receipt and authentication guarantees.
 
-Run production-build browser tests and realistic synthetic MySQL benchmarks.
+Do not alter the owner's creative UI/UX direction.
 
-Provide concrete before/after evidence.
-
-Keep the project owner's visual/UI/UX direction untouched.
-
-Do not begin WP-14 automatically.
+Do not claim independent security certification.
 
 Do not deploy.
 
 Commit/push only under the owner's current explicit authorization.
 
-**END OF WP-13**
+**END OF WP-14**

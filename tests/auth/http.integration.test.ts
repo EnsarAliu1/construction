@@ -26,7 +26,7 @@ test("HTTP authentication, private routes, cookies, server actions and outage de
   let cookie = "";
   let oldCookie = "";
   const id = await createAccount(connection, operator, { email, password, displayName: "Synthetic HTTP User" });
-  const actionManifest = JSON.parse(readFileSync(`${process.env.FITIMI_TEST_BUILD === "wp13" ? ".next-wp13" : process.env.FITIMI_TEST_BUILD === "wp11" ? ".next-wp11" : process.env.FITIMI_TEST_BUILD === "wp10" ? ".next-wp10" : process.env.FITIMI_TEST_BUILD === "wp09" ? ".next-wp09" : ".next"}/server/server-reference-manifest.json`, "utf8"));
+  const actionManifest = JSON.parse(readFileSync(`${process.env.FITIMI_TEST_BUILD === "wp14" ? ".next-wp14" : process.env.FITIMI_TEST_BUILD === "wp13" ? ".next-wp13" : process.env.FITIMI_TEST_BUILD === "wp11" ? ".next-wp11" : process.env.FITIMI_TEST_BUILD === "wp10" ? ".next-wp10" : process.env.FITIMI_TEST_BUILD === "wp09" ? ".next-wp09" : ".next"}/server/server-reference-manifest.json`, "utf8"));
   const actionEntry = Object.entries(actionManifest.node as Record<string, { exportedName?: string }>).find(([, action]) => action.exportedName === "logoutAction");
   assert.ok(actionEntry, "Build the application before testing its actual protected server action");
   const actionId = actionEntry[0];
@@ -151,7 +151,7 @@ test("HTTP authentication, private routes, cookies, server actions and outage de
       assert.equal(inspected.status, 0);
       const container = JSON.parse(inspected.stdout)[0];
       const expectedPackage = process.env.AUTH_TEST_WORK_PACKAGE ?? "WP-03";
-      assert.ok(["WP-03", "WP-04", "WP-05", "WP-06", "WP-07", "WP-08", "WP-09", "WP-10", "WP-11", "WP-13"].includes(expectedPackage), "Only an explicitly supported test work package is permitted");
+      assert.ok(["WP-03", "WP-04", "WP-05", "WP-06", "WP-07", "WP-08", "WP-09", "WP-10", "WP-11", "WP-13", "WP-14"].includes(expectedPackage), "Only an explicitly supported test work package is permitted");
       assert.ok(container.Id === containerId && container.Config.Labels["adore.work-package"] === expectedPackage, "Only the exact task-owned test container may be paused");
       await signIn();
       const paused = spawnSync("docker", ["pause", containerId], { encoding: "utf8", timeout: 10_000 });

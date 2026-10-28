@@ -1,0 +1,21 @@
+import assert from "node:assert/strict";
+import {readFile,readdir,lstat,writeFile} from "node:fs/promises";
+import {spawnSync} from "node:child_process";
+import {parseEnv} from "node:util";
+import {join} from "node:path";
+
+async function main(){
+ assert.equal(process.env.AUTH_TEST_WORK_PACKAGE,"WP-14");const url=new URL(process.env.DATABASE_URL!);assert.equal(url.pathname,"/fitimi_test_wp14");assert.equal(url.port,"3307");
+ const safe=`safe.directory=${process.cwd().replaceAll('\\','/')}`;
+ const git=(args:string[])=>{const r=spawnSync('git',['-c',safe,...args],{maxBuffer:50*1024*1024,windowsHide:true});assert.equal(r.status,0);return r.stdout;};
+ const secrets=new Set<string>();for(const file of ['.env.local','artifacts/wp14/test.env','artifacts/wp14/mysql.env']){const env=parseEnv(await readFile(file,'utf8'));for(const [key,value]of Object.entries(env))if(value&&/PASSWORD|SECRET|TOKEN|OPERATOR|DATABASE_URL/.test(key)&&value.length>=16){secrets.add(value);if(/DATABASE_URL/.test(key))secrets.add(decodeURIComponent(new URL(value).password));}}
+ const findings:{path:string;category:string}[]=[];let tracked=0,publicBuild=0,logs=0,traces=0;
+ const check=(bytes:Buffer,path:string)=>{for(const secret of secrets)if(secret.length>=16&&(bytes.includes(Buffer.from(secret))||bytes.includes(Buffer.from(secret,'utf16le'))))findings.push({path,category:'known credential sentinel'});if(/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{36}/.test(bytes.toString('utf8')))findings.push({path,category:'credential format'});};
+ for(const path of git(['ls-files','-z']).toString().split('\0').filter(Boolean)){check(await readFile(path),path);tracked++;}
+ async function walk(dir:string,kind:'public'|'log'|'trace'){for(const name of await readdir(dir)){const path=join(dir,name),stat=await lstat(path);if(stat.isSymbolicLink())throw new Error('Linked scan path refused');if(stat.isDirectory()){if(kind!=='log')await walk(path,kind);}else if(kind==='trace'&&name.endsWith('.nft.json')){const trace=JSON.parse(await readFile(path,'utf8'));assert((trace.files as string[]).every(p=>!/(?:^|[\\/])(?:artifacts|\.private|\.env(?:\.|$))/.test(p)));traces++;}else if(kind==='public'||kind==='log'&&name.endsWith('.log')){check(await readFile(path),path);if(kind==='public')publicBuild++;else logs++;}}}
+ await walk('.next-wp14/static','public');await walk('artifacts/wp14','log');await walk('.next-wp14/server','trace');
+ const historySensitiveFiles:string[]=[];for(const sha of git(['rev-list','--all']).toString().trim().split(/\r?\n/)){const paths=git(['ls-tree','-r','--name-only',sha]).toString().split(/\r?\n/).filter(p=>/(?:^|\/)\.env(?:\.|$)/.test(p)&&!p.endsWith('.env.example'));for(const path of paths)historySensitiveFiles.push(`${sha.slice(0,7)}:${path}`);}
+ const result={trackedFiles:tracked,publicBuildFiles:publicBuild,logs,traces,knownCredentialSentinels:secrets.size,findings,historySensitiveFiles,scope:'Known owner/test credential values and key formats; history filename scan only, not exhaustive historical blob/entropy analysis. Server action encryption manifests are private build assets, not public bundles.'};
+ await writeFile('artifacts/wp14/source-build-log-scan.json',JSON.stringify(result,null,2));assert.equal(findings.length,0,'Sensitive scan findings; values withheld.');assert.equal(historySensitiveFiles.length,0,'Historical sensitive filenames require review; values withheld.');console.log(`PASS: ${tracked} tracked files, ${publicBuild} public build files, ${logs} logs, ${traces} tracing manifests; no checked credential sentinels exposed.`);
+}
+void main().catch(()=>{console.error('Security scan failed; inspect redacted evidence, never print credential values.');process.exitCode=1;});

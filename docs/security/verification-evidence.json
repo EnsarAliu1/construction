@@ -1,0 +1,1458 @@
+{
+  "baseline": "0677430e814b5a5ebf16e59745c874539a68a91f",
+  "apiSourcePatterns": 30,
+  "privatePageSourcePatterns": 25,
+  "apiDeclaredMethods": 38,
+  "dynamicDenialRequests": 410,
+  "scope": "All declared private API methods and concrete supported private page templates, with reference kinds and account index expanded. Public login/logout excluded from private-denial expectations. HEAD/OPTIONS and unsupported methods are separately reviewed.",
+  "outcomes": [
+    {
+      "pattern": "/api/auth/session",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/clients",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/clients",
+      "method": "POST",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "method": "PUT",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "method": "DELETE",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/expenses",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/expenses",
+      "method": "POST",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "method": "PUT",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/expenses/[id]/cancel",
+      "method": "POST",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/expenses/projects",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/payments",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/payments",
+      "method": "POST",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "method": "PUT",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/payments/[id]/cancel",
+      "method": "POST",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/payments/[id]/preview",
+      "method": "POST",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/payments/operations/[key]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/payments/preview",
+      "method": "POST",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/payments/projects/[id]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/projects",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/projects",
+      "method": "POST",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "method": "PUT",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/projects/[id]/contract",
+      "method": "PUT",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/projects/clients",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/receipts",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/receipts/[id]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/receipts/[id]/versions/[version]/pdf",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 15
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "method": "POST",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 15
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 15
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "method": "PUT",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 15
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "method": "POST",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 15
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          401
+        ],
+        "malformed": [
+          401
+        ],
+        "expired": [
+          401
+        ],
+        "revoked": [
+          401
+        ],
+        "disabled": [
+          401
+        ]
+      },
+      "concreteRequests": 15
+    },
+    {
+      "pattern": "/app",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/[section]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 20
+    },
+    {
+      "pattern": "/app/[section]/[id]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 15
+    },
+    {
+      "pattern": "/app/[section]/[id]/edit",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 15
+    },
+    {
+      "pattern": "/app/[section]/new",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 15
+    },
+    {
+      "pattern": "/app/clients",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/clients/[id]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/clients/[id]/edit",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/clients/new",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/expenses",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/expenses/[id]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/expenses/[id]/edit",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/expenses/new",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/payments",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/payments/[id]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/payments/[id]/edit",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/payments/new",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/projects",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/projects/[id]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/projects/[id]/contract",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/projects/[id]/edit",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/projects/new",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/receipts",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/receipts/[id]",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    },
+    {
+      "pattern": "/app/reports",
+      "method": "GET",
+      "states": {
+        "anonymous": [
+          307
+        ],
+        "malformed": [
+          307
+        ],
+        "expired": [
+          307
+        ],
+        "revoked": [
+          307
+        ],
+        "disabled": [
+          307
+        ]
+      },
+      "concreteRequests": 5
+    }
+  ],
+  "realBrowser": {
+    "browser": "156.0.4314.50",
+    "viewport": "1440x1000",
+    "results": [
+      "Actual login form, host-only Secure/HttpOnly/SameSite cookie and cookie-authenticated API",
+      "Stored HTML/event payload rendered as text; no execution",
+      "Reflected search payload remains escaped",
+      "Enforced private nonce CSP blocks untrusted inline script while React hydrates",
+      "Real browser frame embedding denied",
+      "Actual logout Server Action invalidates cookie/session",
+      "Expired real cookie redirects and cannot retrieve private data",
+      "Account deactivation invalidates actual browser session",
+      "Back navigation after deactivation exposes no canary"
+    ],
+    "unexpectedErrors": []
+  },
+  "paymentRecovery": {
+    "browser": "156.0.4314.50",
+    "financialPayloadPresent": false,
+    "results": [
+      "Uncommitted interruption: explicit re-entry retains original key and commits once",
+      "Lost committed response: key-only reload recovery returns existing payment/receipt",
+      "Login/logout migration removes legacy financial drafts and retains opaque recovery keys"
+    ]
+  },
+  "canaryScan": {
+    "files": 75,
+    "syntheticSentinels": 6,
+    "publicScriptRequests": 9,
+    "leaks": 0
+  },
+  "sourceBuildLogScan": {
+    "trackedFiles": 287,
+    "publicBuildFiles": 35,
+    "logs": 31,
+    "traces": 65,
+    "knownCredentialSentinels": 7,
+    "findings": [],
+    "historySensitiveFiles": [],
+    "scope": "Known owner/test credential values and key formats; history filename scan only, not exhaustive historical blob/entropy analysis. Server action encryption manifests are private build assets, not public bundles."
+  },
+  "schema": {
+    "version": "8.4.13",
+    "databaseName": "fitimi_test_wp14",
+    "engine": "InnoDB",
+    "timezone": "+00:00",
+    "port": 3307,
+    "migrations": 9,
+    "tables": 20,
+    "foreignKeys": 45,
+    "indexes": 89,
+    "checks": 37,
+    "triggers": [
+      "audit_events_no_delete",
+      "audit_events_no_update",
+      "contracts_no_delete",
+      "contract_phases_no_delete",
+      "entity_versions_no_delete",
+      "entity_versions_no_update",
+      "expenses_no_delete",
+      "payments_no_delete",
+      "payment_allocations_no_delete",
+      "payment_receipts_identity_guard",
+      "payment_receipts_no_delete",
+      "receipt_versions_no_delete",
+      "receipt_versions_no_update"
+    ],
+    "activeUsers": 0
+  },
+  "regressions": {
+    "unit": 69,
+    "existingDatabase": 169,
+    "securityDatabase": 2,
+    "securityHTTP": 8,
+    "existingHTTP": 85,
+    "publicIsolation": 7,
+    "existingBrowser": 32,
+    "totalFrameworkResults": 372,
+    "additionalBrowserScenarios": 12
+  },
+  "fixedFindingEvidence": {
+    "receiptRevocationRace": {
+      "before": "FAIL: missing expected AuthenticationRequired after actual session revocation during checksum/file read",
+      "after": "PASS: AuthenticationRequired; byte release denied"
+    },
+    "browserDraft": {
+      "before": {
+        "confirmed": true,
+        "persistedFields": [
+          "idempotencyKey",
+          "payment"
+        ],
+        "financialPayloadPresent": true,
+        "condition": "Interrupted confirmation leaves financial draft readable in tab storage after page change."
+      },
+      "after": {
+        "browser": "156.0.4314.50",
+        "financialPayloadPresent": false,
+        "results": [
+          "Uncommitted interruption: explicit re-entry retains original key and commits once",
+          "Lost committed response: key-only reload recovery returns existing payment/receipt",
+          "Login/logout migration removes legacy financial drafts and retains opaque recovery keys"
+        ]
+      }
+    }
+  }
+}

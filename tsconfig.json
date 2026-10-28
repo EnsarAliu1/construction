@@ -41,7 +41,9 @@
     ".next-wp11/types/**/*.ts",
     ".next-wp11/dev/types/**/*.ts",
     ".next-wp13/types/**/*.ts",
-    ".next-wp13/dev/types/**/*.ts"
+    ".next-wp13/dev/types/**/*.ts",
+    ".next-wp14/types/**/*.ts",
+    ".next-wp14/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

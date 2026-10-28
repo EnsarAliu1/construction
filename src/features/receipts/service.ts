@@ -108,7 +108,11 @@ export async function downloadReceipt(c:Connection,token:string|undefined,id:str
   await requireSessionUser(c,token);referenceId(id);const version=versionNumber(value);
   const [row]=await drizzle(c).select({receipt:paymentReceipts,document:receiptVersions}).from(paymentReceipts).innerJoin(receiptVersions,eq(receiptVersions.receiptId,paymentReceipts.id)).where(and(eq(paymentReceipts.id,id),eq(receiptVersions.version,version))).limit(1);
   if(!row)throw new ReferenceError("NOT_FOUND","Receipt version not found.",404);
-  try{const store=await storeFor(c);await store.initialize();const bytes=await store.read(row.document.storageReference,row.document.fileChecksum);return {bytes,number:row.receipt.receiptNumber,version,status:row.receipt.status};}catch{throw documentUnavailable();}
+  let bytes:Buffer;
+  try{const store=await storeFor(c);await store.initialize();bytes=await store.read(row.document.storageReference,row.document.fileChecksum);}catch{throw documentUnavailable();}
+  // Filesystem/checksum work can outlive revocation. Recheck before releasing bytes.
+  await requireSessionUser(c,token);
+  return {bytes,number:row.receipt.receiptNumber,version,status:row.receipt.status};
 }
 export async function recoverReceiptFiles(c:Connection,operator:OperatorContext,after=""){
   requireOperator(operator);return withStore(c,async()=>{},store=>store.recover(c,undefined,after));

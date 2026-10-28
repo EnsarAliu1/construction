@@ -8,6 +8,7 @@ import { cents, decimal, inputMoney } from "@/features/projects/money";
 import type { ExpenseChoice } from "@/features/expenses/service";
 import type { PaymentDetails, PaymentProject } from "./service";
 import type { parsePaymentQuery } from "./validation";
+import {readRecoveryKey,retainRecoveryKey} from "./recovery-key";
 
 export function PaymentForm({detail,initialProject,actorId}:{detail?:PaymentDetails;initialProject?:PaymentProject;actorId:string}){
   const [choice,setChoice]=useState<ExpenseChoice|null>(initialProject?{id:initialProject.project.id,version:initialProject.project.version,label:initialProject.project.name}:null);
@@ -16,18 +17,22 @@ export function PaymentForm({detail,initialProject,actorId}:{detail?:PaymentDeta
   const [busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[message,setMessage]=useState(""),[errors,setErrors]=useState<Record<string,string>>({}),[confirmed,setConfirmed]=useState(false),[conflict,setConflict]=useState(false),[unauthorized,setUnauthorized]=useState(false);
   const router=useRouter(),pendingKey=`fitimi.payment.pending.${actorId}`;
   const flight=useRef(false),form=useRef<HTMLFormElement>(null),alert=useRef<HTMLDivElement>(null);
+  const pendingRequest=useRef<{idempotencyKey:string;payment:unknown}|null>(null);
+  const clearPending=()=>{sessionStorage.removeItem(pendingKey);pendingRequest.current=null;};
   const selected=project?.project.id===choice?.id;
   let total="0.00",difference="Not calculated";
   try{total=decimal(Object.values(values).filter(value=>value.trim()).reduce((sum,value)=>sum+cents(inputMoney(value)),BigInt(0)));difference=decimal(cents(inputMoney(amount))-cents(total));}catch{difference="Enter valid EUR values";}
   async function load(){if(!choice||loading)return;setLoading(true);setMessage("");try{const response=await fetch(`/api/payments/projects/${choice.id}`,{cache:"no-store"}),body=await response.json();if(!response.ok){setMessage(body.message);return;}setProject(body);setValues({});}catch{setMessage("Unable to load phases. Please retry.");}finally{setLoading(false);}}
   async function recover(){
     if(flight.current)return;flight.current=true;setBusy(true);setMessage("");let saved=false;
-    try{const raw=sessionStorage.getItem(pendingKey);if(!raw){setMessage("There is no pending confirmation in this tab.");return;}const pending=JSON.parse(raw);if(typeof pending.idempotencyKey!=="string"||!pending.payment)throw new Error();
+    try{const pending=readRecoveryKey(sessionStorage,pendingKey);if(!pending){setMessage("There is no pending confirmation in this tab.");return;}
       const status=await fetch(`/api/payments/operations/${encodeURIComponent(pending.idempotencyKey)}`,{cache:"no-store"}),operation=await status.json();
-      if(status.ok&&operation.status==="completed"){if(!operation.documentAvailable){setMessage("The payment was recorded but its document is unavailable. Do not create another payment; contact your operator.");return;}sessionStorage.removeItem(pendingKey);saved=true;router.push(`/app/payments/${operation.paymentId}`);router.refresh();return;}
+      if(status.ok&&operation.status==="completed"){if(!operation.documentAvailable){setMessage("The payment was recorded but its document is unavailable. Do not create another payment; contact your operator.");return;}clearPending();saved=true;router.push(`/app/payments/${operation.paymentId}`);router.refresh();return;}
       if(status.status!==404){setMessage(operation.message??"Operation status unavailable; keep the original confirmation key.");return;}
-      const response=await fetch("/api/payments",{method:"POST",headers:{"Content-Type":"application/json"},body:raw}),body=await response.json();if(!response.ok){if([400,409].includes(response.status)&&!["IDEMPOTENCY_CONFLICT","OPERATION_PENDING"].includes(body.code))sessionStorage.removeItem(pendingKey);setMessage(body.message??"Retry failed; your original confirmation key is retained.");return;}
-      sessionStorage.removeItem(pendingKey);saved=true;router.push(`/app/payments/${body.paymentId}`);router.refresh();
+      const retry=pendingRequest.current;
+      if(!retry||retry.idempotencyKey!==pending.idempotencyKey){setMessage("No completed payment was found under this key. Re-enter the original details and confirm using the retained recovery key. If status is unavailable, do not submit a new payment.");return;}
+      const response=await fetch("/api/payments",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(retry)}),body=await response.json();if(!response.ok){if([400,409].includes(response.status)&&!["IDEMPOTENCY_CONFLICT","OPERATION_PENDING"].includes(body.code))clearPending();setMessage(body.message??"Retry failed; your original confirmation key is retained.");return;}
+      clearPending();saved=true;router.push(`/app/payments/${body.paymentId}`);router.refresh();
     }catch{setMessage("Unable to recover. The original confirmation remains pending; retry recovery before creating another payment.");}finally{if(!saved){flight.current=false;setBusy(false);}}
   }
   async function check(e:FormEvent){
@@ -37,12 +42,19 @@ export function PaymentForm({detail,initialProject,actorId}:{detail?:PaymentDeta
     const payment={projectId:project.project.id,projectVersion:project.project.version,contractId:project.contract.id,contractVersion:project.contract.version,amount,transactionDate:date,method,allocations:project.phases.filter(phase=>values[phase.id]?.trim()).map(phase=>({phaseId:phase.id,phaseVersion:phase.version,amount:values[phase.id]}))};
     try{
       let payload:object=detail?{version:detail.payment.version,confirmation:confirmed?"correct":"",payment}:payment;
-      if(finalize&&!detail){const raw=sessionStorage.getItem(pendingKey);const pending=raw?JSON.parse(raw):{idempotencyKey:crypto.randomUUID(),payment};if(JSON.stringify(pending.payment)!==JSON.stringify(payment)){setMessage("An earlier confirmation may still be pending. Recover it before submitting different values.");return;}sessionStorage.setItem(pendingKey,JSON.stringify(pending));payload=pending;}
+      if(finalize&&!detail){
+        const retained=readRecoveryKey(sessionStorage,pendingKey),prior=pendingRequest.current;
+        if(prior&&JSON.stringify(prior.payment)!==JSON.stringify(payment)){setMessage("An earlier confirmation may still be pending. Recover it before submitting different values.");return;}
+        if(retained&&!prior){const status=await fetch(`/api/payments/operations/${encodeURIComponent(retained.idempotencyKey)}`,{cache:"no-store"}),operation=await status.json();
+          if(status.ok&&operation.status==="completed"){if(!operation.documentAvailable){setMessage("The payment was recorded but its document is unavailable. Do not create another payment; contact your operator.");return;}clearPending();saved=true;router.push(`/app/payments/${operation.paymentId}`);router.refresh();return;}
+          if(status.status!==404){setMessage("Original confirmation status is unavailable. Recover it before submitting a payment.");return;}}
+        const pending={idempotencyKey:retained?.idempotencyKey??crypto.randomUUID(),payment};retainRecoveryKey(sessionStorage,pendingKey,pending.idempotencyKey);pendingRequest.current=pending;payload=pending;
+      }
       const url=finalize?(detail?`/api/payments/${detail.payment.id}`:"/api/payments"):(detail?`/api/payments/${detail.payment.id}/preview`:"/api/payments/preview");
       const response=await fetch(url,{method:finalize&&detail?"PUT":"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),body=await response.json();
       setErrors(body.fields??{});setConflict(body.code==="CONFLICT"||body.code==="CAPACITY");setUnauthorized(response.status===401);
-      if(!response.ok){if(finalize&&!detail&&[400,409].includes(response.status)&&!["IDEMPOTENCY_CONFLICT","OPERATION_PENDING"].includes(body.code))sessionStorage.removeItem(pendingKey);setMessage(body.message??"Unable to save. Check the original operation before resubmitting.");return;}
-      if(finalize){if(!detail)sessionStorage.removeItem(pendingKey);saved=true;router.push(`/app/payments/${detail?.payment.id??body.paymentId}`);router.refresh();return;}
+      if(!response.ok){if(finalize&&!detail&&[400,409].includes(response.status)&&!["IDEMPOTENCY_CONFLICT","OPERATION_PENDING"].includes(body.code))clearPending();setMessage(body.message??"Unable to save. Check the original operation before resubmitting.");return;}
+      if(finalize){if(!detail)clearPending();saved=true;router.push(`/app/payments/${detail?.payment.id??body.paymentId}`);router.refresh();return;}
       setMessage(body.message??"Allocation validation completed.");
     }catch{setMessage("Unable to complete the request. For a new payment use Recover / retry last confirmation; do not create another confirmation key.");}finally{if(!saved){flight.current=false;setBusy(false);requestAnimationFrame(()=>((form.current?.querySelector('[aria-invalid="true"]')as HTMLElement|null)??alert.current)?.focus());}}
   }

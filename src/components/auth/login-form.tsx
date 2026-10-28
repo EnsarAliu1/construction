@@ -1,14 +1,16 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button, FormField, Input } from "@/components/ui";
+import {redactLegacyRecoveryDrafts} from "@/features/payments/recovery-key";
 
 export function LoginForm({ returnTo, unavailable }: { returnTo: string; unavailable: boolean }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState(unavailable ? "Sign-in is temporarily unavailable. Please try again later." : "");
   const error = useRef<HTMLParagraphElement>(null);
+  useEffect(()=>{try{redactLegacyRecoveryDrafts(sessionStorage);}catch{/* Browser storage may be disabled. */}},[]);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);

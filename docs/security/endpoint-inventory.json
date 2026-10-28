@@ -1,0 +1,447 @@
+[
+  {
+    "file": "src/app/api/auth/login/route.ts",
+    "path": "/api/auth/login",
+    "kind": "api",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "file": "src/app/api/auth/logout/route.ts",
+    "path": "/api/auth/logout",
+    "kind": "api",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "file": "src/app/api/auth/session/route.ts",
+    "path": "/api/auth/session",
+    "kind": "api",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/api/clients/route.ts",
+    "path": "/api/clients",
+    "kind": "api",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "file": "src/app/api/clients/[id]/route.ts",
+    "path": "/api/clients/[id]",
+    "kind": "api",
+    "methods": [
+      "GET",
+      "PUT",
+      "DELETE"
+    ]
+  },
+  {
+    "file": "src/app/api/dashboard/route.ts",
+    "path": "/api/dashboard",
+    "kind": "api",
+    "methods": []
+  },
+  {
+    "file": "src/app/api/expenses/route.ts",
+    "path": "/api/expenses",
+    "kind": "api",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "file": "src/app/api/expenses/[id]/route.ts",
+    "path": "/api/expenses/[id]",
+    "kind": "api",
+    "methods": [
+      "GET",
+      "PUT"
+    ]
+  },
+  {
+    "file": "src/app/api/expenses/[id]/cancel/route.ts",
+    "path": "/api/expenses/[id]/cancel",
+    "kind": "api",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "file": "src/app/api/expenses/projects/route.ts",
+    "path": "/api/expenses/projects",
+    "kind": "api",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/api/exports/business/route.ts",
+    "path": "/api/exports/business",
+    "kind": "api",
+    "methods": []
+  },
+  {
+    "file": "src/app/api/payments/route.ts",
+    "path": "/api/payments",
+    "kind": "api",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "file": "src/app/api/payments/[id]/route.ts",
+    "path": "/api/payments/[id]",
+    "kind": "api",
+    "methods": [
+      "GET",
+      "PUT"
+    ]
+  },
+  {
+    "file": "src/app/api/payments/[id]/cancel/route.ts",
+    "path": "/api/payments/[id]/cancel",
+    "kind": "api",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "file": "src/app/api/payments/[id]/preview/route.ts",
+    "path": "/api/payments/[id]/preview",
+    "kind": "api",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "file": "src/app/api/payments/operations/[key]/route.ts",
+    "path": "/api/payments/operations/[key]",
+    "kind": "api",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/api/payments/preview/route.ts",
+    "path": "/api/payments/preview",
+    "kind": "api",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "file": "src/app/api/payments/projects/[id]/route.ts",
+    "path": "/api/payments/projects/[id]",
+    "kind": "api",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/api/projects/route.ts",
+    "path": "/api/projects",
+    "kind": "api",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "file": "src/app/api/projects/[id]/route.ts",
+    "path": "/api/projects/[id]",
+    "kind": "api",
+    "methods": [
+      "GET",
+      "PUT"
+    ]
+  },
+  {
+    "file": "src/app/api/projects/[id]/contract/route.ts",
+    "path": "/api/projects/[id]/contract",
+    "kind": "api",
+    "methods": [
+      "PUT"
+    ]
+  },
+  {
+    "file": "src/app/api/projects/clients/route.ts",
+    "path": "/api/projects/clients",
+    "kind": "api",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/api/receipts/route.ts",
+    "path": "/api/receipts",
+    "kind": "api",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/api/receipts/[id]/route.ts",
+    "path": "/api/receipts/[id]",
+    "kind": "api",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/api/receipts/[id]/versions/[version]/pdf/route.ts",
+    "path": "/api/receipts/[id]/versions/[version]/pdf",
+    "kind": "api",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/api/references/[kind]/route.ts",
+    "path": "/api/references/[kind]",
+    "kind": "api",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "file": "src/app/api/references/[kind]/[id]/route.ts",
+    "path": "/api/references/[kind]/[id]",
+    "kind": "api",
+    "methods": [
+      "GET",
+      "PUT"
+    ]
+  },
+  {
+    "file": "src/app/api/references/[kind]/[id]/lifecycle/route.ts",
+    "path": "/api/references/[kind]/[id]/lifecycle",
+    "kind": "api",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "file": "src/app/api/references/[kind]/active/route.ts",
+    "path": "/api/references/[kind]/active",
+    "kind": "api",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/api/reports/company/route.ts",
+    "path": "/api/reports/company",
+    "kind": "api",
+    "methods": []
+  },
+  {
+    "file": "src/app/(workspace)/app/page.tsx",
+    "path": "/app",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/[section]/page.tsx",
+    "path": "/app/[section]",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/[section]/[id]/page.tsx",
+    "path": "/app/[section]/[id]",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/[section]/[id]/edit/page.tsx",
+    "path": "/app/[section]/[id]/edit",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/[section]/new/page.tsx",
+    "path": "/app/[section]/new",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/clients/page.tsx",
+    "path": "/app/clients",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/clients/[id]/page.tsx",
+    "path": "/app/clients/[id]",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/clients/[id]/edit/page.tsx",
+    "path": "/app/clients/[id]/edit",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/clients/new/page.tsx",
+    "path": "/app/clients/new",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/expenses/page.tsx",
+    "path": "/app/expenses",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/expenses/[id]/page.tsx",
+    "path": "/app/expenses/[id]",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/expenses/[id]/edit/page.tsx",
+    "path": "/app/expenses/[id]/edit",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/expenses/new/page.tsx",
+    "path": "/app/expenses/new",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/payments/page.tsx",
+    "path": "/app/payments",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/payments/[id]/page.tsx",
+    "path": "/app/payments/[id]",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/payments/[id]/edit/page.tsx",
+    "path": "/app/payments/[id]/edit",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/payments/new/page.tsx",
+    "path": "/app/payments/new",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/projects/page.tsx",
+    "path": "/app/projects",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/projects/[id]/page.tsx",
+    "path": "/app/projects/[id]",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/projects/[id]/contract/page.tsx",
+    "path": "/app/projects/[id]/contract",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/projects/[id]/edit/page.tsx",
+    "path": "/app/projects/[id]/edit",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/projects/new/page.tsx",
+    "path": "/app/projects/new",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/receipts/page.tsx",
+    "path": "/app/receipts",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/receipts/[id]/page.tsx",
+    "path": "/app/receipts/[id]",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "file": "src/app/(workspace)/app/reports/page.tsx",
+    "path": "/app/reports",
+    "kind": "page",
+    "methods": [
+      "GET"
+    ]
+  }
+]
