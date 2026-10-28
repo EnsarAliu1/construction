@@ -6,7 +6,7 @@ import { loadLocalEnvironment, localDatabaseOptions, openLocalConnection } from 
 import { createAccount, resetAccountPassword, revokeAccountSessions, setAccountActive } from "../../src/server/auth/accounts";
 import { authenticateOperator, type OperatorContext } from "../../src/server/auth/operator";
 import { ActiveAccountLimit, tokenDigest } from "../../src/server/auth/security";
-import { login } from "../../src/server/auth/login";
+import {fixtureLogin as login} from "./mfa-fixture";
 import { requireSessionUser, revokeSession, sessionUser } from "../../src/server/auth/sessions";
 import { applyMigrations } from "../../src/server/db/migrate";
 
@@ -31,7 +31,7 @@ test("real authentication, sessions, operator lifecycle and concurrent account l
   }
   async function resetLimiter() {
     // Expire only the global test bucket and buckets for this suite's synthetic emails.
-    const keys = [tokenDigest("login:global"), ...createdEmails.map(value => tokenDigest(`login:email:${value.toLowerCase()}`))];
+    const keys = [tokenDigest("login:global"), tokenDigest("mfa:global"), ...users.map(id=>tokenDigest(`mfa:verify:${id}`)), ...createdEmails.map(value => tokenDigest(`login:email:${value.toLowerCase()}`))];
     for (const key of keys) await connection.execute("UPDATE auth_login_limits SET window_ends_at = DATE_SUB(UTC_TIMESTAMP(3), INTERVAL 1 SECOND) WHERE bucket_key = ?", [key]);
   }
   async function independent<T>(work: (client: Connection) => Promise<T>) {

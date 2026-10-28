@@ -1,0 +1,759 @@
+{
+  "package": "WP-16",
+  "date": "2026-10-28",
+  "productionVerdict": "NO-GO",
+  "baseline": {
+    "branch": "main",
+    "head": "f7bef8d7ccd4073f8e1fb11a4cc596c9c4f0ecdf"
+  },
+  "protectedFiles": {
+    "README.md": "UNCHANGED",
+    ".env.local": "UNCHANGED",
+    "AGENTS.md": "OWNER BYTES PRESERVED"
+  },
+  "environment": {
+    "node": "24.18.0",
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "mysql": "8.4.13",
+    "edge": "156.0.4314.50",
+    "appPort": 3000,
+    "mysqlPort": 3307,
+    "database": "fitimi_test_wp16",
+    "scope": "task-owned synthetic only"
+  },
+  "frameworkResults": {
+    "unit": 74,
+    "originalMySql": 169,
+    "mfaMySql": 16,
+    "securityMySql": 2,
+    "originalHttp": 85,
+    "websiteIsolation": 7,
+    "securityHttp": 8,
+    "mfaHttp": 8,
+    "websitePlaywright": 32,
+    "total": 401,
+    "failed": 0,
+    "skipped": 0,
+    "counting": "Framework parent/nested result counts retained; reruns and HTTP request counts not added."
+  },
+  "imperativeBrowserScenarios": {
+    "mfa": 13,
+    "business": 13,
+    "security": 9,
+    "paymentRecovery": 3,
+    "total": 38
+  },
+  "authorization": {
+    "inventoryApiPatterns": 31,
+    "apiMethods": 40,
+    "privatePagePatterns": 26,
+    "anonymousRevokedDisabledRequests": 425,
+    "additionalPendingTokenDenials": 170,
+    "compiledServerActionDenied": true
+  },
+  "mfaDb": {
+    "migrationTransition": true,
+    "originalTriggers": 13,
+    "scenarios": 14,
+    "actualIndependentConnections": true,
+    "legacySessionDenied": true,
+    "plaintextSeedsOrCodesPersisted": false,
+    "allFiveUsersEnrolled": true,
+    "recoveryExhaustionVerified": true
+  },
+  "mfaHttp": {
+    "pendingBusinessDenialRequests": 170,
+    "fullAssuranceRequired": true,
+    "secretExportExclusion": true,
+    "serverActionDenied": true
+  },
+  "mfaBrowser": {
+    "browser": "156.0.4314.50",
+    "scenarios": [
+      "Password-only cookie denies business/PDF access; abandoned setup does not activate; refresh never re-displays secret",
+      "Actual QR/manual enrollment, invalid proof, one-time recovery display/refresh, acknowledgement and first full session",
+      "Actual password + authenticator form creates a new secure full session",
+      "Spent TOTP step is rejected through the real form",
+      "Password-bound recovery succeeds once and reused code is rejected",
+      "Actual factor replacement requires fresh password/current OTP and new authenticator possession; sessions/codes rotate",
+      "Actual stepped-up recovery-code regeneration displays one replacement set",
+      "Old factor generation codes stay invalid; current replacement recovery code works",
+      "Operator reset revokes real browser session and requires fresh proved enrollment",
+      "Mobile keyboard/security form, layout and secret-free browser storage",
+      "Expired real challenge shows safe restart feedback and denies private access",
+      "Persisted five-attempt challenge limit produces actual browser throttle feedback",
+      "Account disabled during MFA is denied and no factor material remains in browser persistence"
+    ],
+    "unexpectedErrors": [],
+    "timings": [
+      {
+        "kind": "password-to-MFA-page",
+        "ms": 872.3447999999999
+      },
+      {
+        "kind": "password-to-MFA-page",
+        "ms": 349.46590000000015
+      },
+      {
+        "kind": "password-to-MFA-page",
+        "ms": 322.1081000000013
+      },
+      {
+        "kind": "TOTP-submit-to-useful-private-page",
+        "ms": 698.8896000000004
+      },
+      {
+        "kind": "password-to-MFA-page",
+        "ms": 288.3055000000004
+      },
+      {
+        "kind": "password-to-MFA-page",
+        "ms": 374.5770999999986
+      },
+      {
+        "kind": "password-to-MFA-page",
+        "ms": 261.5178999999989
+      },
+      {
+        "kind": "password-to-MFA-page",
+        "ms": 263.3054999999986
+      },
+      {
+        "kind": "password-to-MFA-page",
+        "ms": 224.6706000000013
+      },
+      {
+        "kind": "password-to-MFA-page",
+        "ms": 406.4861000000019
+      },
+      {
+        "kind": "password-to-MFA-page",
+        "ms": 273.8597000000009
+      }
+    ],
+    "fixtureAdmissionWindows": "Explicitly expired only in synthetic setup between independent UI scenarios; throttle scenario itself retains real SQL limits."
+  },
+  "authLatency": {
+    "scope": "Local Node service timings against disposable MySQL; ten fresh sequential accounts; no production percentile claim.",
+    "standaloneFullSessionInsertion": "NOT VERIFIED separately; included in authoritative TOTP verification transaction.",
+    "samples": {
+      "argonVerification": {
+        "n": 10,
+        "medianMs": 22.022899999999936,
+        "sampleP95Ms": 34.650300000000016,
+        "minMs": 16.82030000000009
+      },
+      "passwordToChallenge": {
+        "n": 10,
+        "medianMs": 39.880499999999984,
+        "sampleP95Ms": 61.789300000000026,
+        "minMs": 30.780499999999847
+      },
+      "enrollmentProofAndAcknowledgement": {
+        "n": 10,
+        "medianMs": 65.1286,
+        "sampleP95Ms": 98.26929999999999,
+        "minMs": 49.44640000000004
+      },
+      "totpAndFullSession": {
+        "n": 10,
+        "medianMs": 21.959600000000137,
+        "sampleP95Ms": 28.813199999999938,
+        "minMs": 16.63799999999992
+      },
+      "fullSessionGuard": {
+        "n": 10,
+        "medianMs": 1.837500000000091,
+        "sampleP95Ms": 2.586500000000001,
+        "minMs": 0.9675999999999476
+      },
+      "totpPrimitiveOnly": {
+        "n": 10,
+        "medianMs": 0.22699999999986176,
+        "sampleP95Ms": 0.3105000000000473,
+        "minMs": 0.14850000000001273
+      }
+    }
+  },
+  "pairedRecovery": {
+    "mysql": "8.4",
+    "backupMs": 1206.9563999999955,
+    "restoreMs": 4448.718000000008,
+    "encryptedBytes": 185590,
+    "documentVersions": 3,
+    "mfaRecoveryUsageHistoryPreserved": true,
+    "restoredTotpEnrollment": true,
+    "restoreHoldAndRecoveryRevocation": true,
+    "postSnapshotSpentCodeCannotRevive": true,
+    "restoredOldPasswordReplaced": true,
+    "mfaOperatorResetAfterRestore": true,
+    "mfaKeyIds": [
+      "local-v1"
+    ],
+    "checksums": [
+      {
+        "version": 2,
+        "sha256": "40eaceb2ca741ddfee06d1257c454f585d2a2d06b454ad7b0445b16e086e1e15"
+      },
+      {
+        "version": 1,
+        "sha256": "fdd39df4975d496369e36dd809d8f1ffec21a60649fd47508de94cf0607eff95"
+      },
+      {
+        "version": 1,
+        "sha256": "1e014a66890e394344f83f1cf0c80031e07ff774946508d467fb790181ab5c91"
+      }
+    ],
+    "sourceIdentity": "e6117217-d2dd-11f1-ad3d-16045be45677/fitimi_test_wp16",
+    "targetIdentity": "11f68d15-d2de-11f1-b1b7-4e397ffbef5a/fitimi_test_wp16",
+    "tables": 24,
+    "triggers": 13,
+    "migrations": 11,
+    "baselineTotals": {
+      "income": "12.00",
+      "expenses": "5.00",
+      "difference": "7.00",
+      "companyExpenses": "3.00",
+      "contractValue": "100.00",
+      "outstanding": "88.00"
+    },
+    "restoredTotals": {
+      "income": "12.00",
+      "expenses": "5.00",
+      "difference": "7.00",
+      "companyExpenses": "3.00",
+      "contractValue": "100.00",
+      "outstanding": "88.00"
+    },
+    "sessionRevocation": true,
+    "idempotentReplay": true,
+    "continuedReceiptNumber": "DEV-00000003",
+    "postRestoreRace": {
+      "success": 1,
+      "capacityConflict": 1
+    },
+    "sourceUnchanged": true,
+    "failures": [
+      "corrupt archive",
+      "wrong key",
+      "wrong source identity",
+      "unauthorized operator",
+      "missing PDF",
+      "tampered manifest",
+      "incomplete pair",
+      "same server/identity not approved",
+      "missing separate MFA key",
+      "simulated ENOSPC before publication"
+    ],
+    "productionRPO": "NOT VERIFIED",
+    "productionRTO": "NOT VERIFIED"
+  },
+  "dependencies": {
+    "versions": {
+      "otpauth": "9.5.2",
+      "qrcode-generator": "2.0.4",
+      "newNobleHashes": "2.4.0"
+    },
+    "fullAudit": {
+      "info": 0,
+      "low": 0,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0,
+      "total": 4
+    },
+    "runtimeAudit": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "treeIntegrity": {
+      "command": "npm.cmd ls --all --json",
+      "exit": 0,
+      "repair": "Invalidated generated hidden npm cache and quarantined only two confirmed extraneous optional packages; declared dependency resolutions preserved."
+    }
+  },
+  "verificationCommands": [
+    {
+      "command": "node scripts/mfa/lab.mjs run test:security:db",
+      "exit": 0,
+      "ms": 6134.155199999994,
+      "log": "test-security-db.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:website:db",
+      "exit": 0,
+      "ms": 7024.7399000000005,
+      "log": "test-website-db.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:release:browser",
+      "exit": 0,
+      "ms": 40849.03090000001,
+      "log": "test-release-browser.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:security:browser",
+      "exit": 0,
+      "ms": 17113.44889999999,
+      "log": "test-security-browser.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:security:recovery",
+      "exit": 0,
+      "ms": 14778.152900000016,
+      "log": "test-security-recovery.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:auth:http",
+      "exit": 0,
+      "ms": 35606.019499999995,
+      "log": "test-auth-http.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:clients:http",
+      "exit": 0,
+      "ms": 5736.912499999977,
+      "log": "test-clients-http.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:projects:http",
+      "exit": 0,
+      "ms": 8223.786300000036,
+      "log": "test-projects-http.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:references:http",
+      "exit": 0,
+      "ms": 10933.781199999969,
+      "log": "test-references-http.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:expenses:http",
+      "exit": 0,
+      "ms": 5595.303799999994,
+      "log": "test-expenses-http.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:payments:http",
+      "exit": 0,
+      "ms": 9732.915199999989,
+      "log": "test-payments-http.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:receipts:http",
+      "exit": 0,
+      "ms": 10712.122800000012,
+      "log": "test-receipts-http.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:security:http",
+      "exit": 0,
+      "ms": 28117.007299999997,
+      "log": "test-security-http.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:website:browser",
+      "exit": 0,
+      "ms": 58026.69539999997,
+      "log": "test-website-browser.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run perf:lab seed baseline",
+      "exit": 0,
+      "ms": 6605.200699999987,
+      "log": "performance-seed.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run perf:lab db baseline",
+      "exit": 0,
+      "ms": 27371.995200000005,
+      "log": "performance-db.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run perf:lab browser baseline",
+      "exit": 0,
+      "ms": 116349.89250000002,
+      "log": "performance-browser.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run perf:lab races baseline",
+      "exit": 0,
+      "ms": 13310.998499999987,
+      "log": "performance-races.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs reset",
+      "exit": 0,
+      "ms": 490.9553,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 4134.672,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:mfa:browser",
+      "exit": 0,
+      "ms": 34713.246100000004,
+      "log": "test-mfa-browser.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs reset",
+      "exit": 0,
+      "ms": 560.2229000000007,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 4555.111100000002,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:mfa:http",
+      "exit": 0,
+      "ms": 6827.040000000001,
+      "log": "test-mfa-http.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs reset",
+      "exit": 0,
+      "ms": 371.1435999999958,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 4136.083599999998,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run test:reports:http",
+      "exit": 0,
+      "ms": 12534.952600000004,
+      "log": "test-reports-http.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs reset",
+      "exit": 0,
+      "ms": 497.4746000000014,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3800.012300000002,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/mfa/lab.mjs run check:routes",
+      "exit": 0,
+      "ms": 2408.6581000000006,
+      "log": "check-routes.log"
+    }
+  ],
+  "publicIsolation": {
+    "files": 77,
+    "syntheticSentinels": 6,
+    "publicScriptRequests": 9,
+    "leaks": 0
+  },
+  "migrations": [
+    {
+      "path": "drizzle/0000_wp02_integrity_foundation.sql",
+      "sha256": "5f972707b506644f976f71bd139f74c72f9e269bfeaba63ff3ca7165572ef16c",
+      "originalUnchanged": true
+    },
+    {
+      "path": "drizzle/0001_wp02_history_guards.sql",
+      "sha256": "21a7d78e4846ea6b53224593eca961dc92edd7bc7d48a42db8b14ed1c1ce9205",
+      "originalUnchanged": true
+    },
+    {
+      "path": "drizzle/0002_wp03_authentication.sql",
+      "sha256": "023ff3b046a78f33ad4c7fa799804be11254f86a46f31847279d952cceb8eb9a",
+      "originalUnchanged": true
+    },
+    {
+      "path": "drizzle/0003_wp04_clients.sql",
+      "sha256": "a2c5cdad7751945aa77a8eef88b94efec28eab9857c63763e0e40dc677d15797",
+      "originalUnchanged": true
+    },
+    {
+      "path": "drizzle/0004_wp05_project_aggregates.sql",
+      "sha256": "ad18f5a53f4e45790395d2e6db18972658d53f9fee92a33efac2f60bbccef8dc",
+      "originalUnchanged": true
+    },
+    {
+      "path": "drizzle/0005_wp06_reference_lifecycle.sql",
+      "sha256": "a90f76f7149e6737dcef9be33f6f00db4218fb35fd4fd83c743dbb3863b85bb4",
+      "originalUnchanged": true
+    },
+    {
+      "path": "drizzle/0006_wp07_expenses.sql",
+      "sha256": "5a784ca21c0ab0c7f0878381f68a6599c3bfa52a407c70cbecf2c37688da6a7e",
+      "originalUnchanged": true
+    },
+    {
+      "path": "drizzle/0007_wp08_payment_allocations.sql",
+      "sha256": "cb0a5a2770ee7b2b107982a7ff17e7787002f9d092374732d7944c12416e94bc",
+      "originalUnchanged": true
+    },
+    {
+      "path": "drizzle/0008_wp09_receipt_issuance.sql",
+      "sha256": "cd85620b9068367085e3d0590bef2b0166cc41cee09ff0b9d9f27998709e76f7",
+      "originalUnchanged": true
+    },
+    {
+      "path": "drizzle/0009_wp16_mandatory_mfa.sql",
+      "sha256": "593d71e62d0796709838005a133ef05b06ae2baabe723eb7f9ea994d39f9ed87",
+      "originalUnchanged": false
+    },
+    {
+      "path": "drizzle/0010_wp16_restore_mfa_hold.sql",
+      "sha256": "00e108bafac5a7fe6632ac581d76af619c23c26dcb3fd9d26380cde1a95ba2fe",
+      "originalUnchanged": false
+    }
+  ],
+  "remainingGates": [
+    "Actual production hosting/TLS/private storage/vault/offsite recovery",
+    "Human identity proofing and real five-user MFA rollout",
+    "Independent security audit",
+    "ASVS6.5.5 strict TOTP lifetime FAIL",
+    "ASVS6.2.4 only10 policy-eligible blocklist entries FAIL",
+    "Owner idle/session/export decisions; accountant and UI/content approvals",
+    "Production capacity and slower directional core metrics"
+  ],
+  "productionRPO": "NOT VERIFIED",
+  "productionRTO": "NOT VERIFIED",
+  "performance": {
+    "at": "2026-10-28T14:19:44.209Z",
+    "dataset": {
+      "clients": 1001,
+      "projects": 1001,
+      "contracts": 1001,
+      "contract_phases": 2002,
+      "payments": 301,
+      "payment_allocations": 301,
+      "expenses": 300,
+      "audit_events": 12016,
+      "entity_versions": 11,
+      "receipt_versions": 1,
+      "persons": 1,
+      "vehicles": 1
+    },
+    "core": {
+      "finance": {
+        "n": 30,
+        "medianMs": 15.016999999999825,
+        "p95Ms": 23.38720000000012,
+        "minMs": 9.475099999999657,
+        "maxMs": 24.914999999999964
+      },
+      "snapshot": {
+        "n": 12,
+        "medianMs": 135.29890000000023,
+        "p95Ms": 147.02570000000014,
+        "minMs": 97.45330000000013,
+        "maxMs": 147.02570000000014
+      },
+      "fullSnapshot": {
+        "n": 6,
+        "medianMs": 332.8042999999998,
+        "p95Ms": 387.65970000000016,
+        "minMs": 279.91280000000006,
+        "maxMs": 387.65970000000016
+      },
+      "/api/dashboard": {
+        "n": 7,
+        "medianMs": 219.23420000000078,
+        "p95Ms": 241.78309999999874,
+        "minMs": 196.66610000000037,
+        "maxMs": 241.78309999999874
+      },
+      "/api/clients?q=Synthetic": {
+        "n": 7,
+        "medianMs": 31.563000000000102,
+        "p95Ms": 39.628999999998996,
+        "minMs": 26.79030000000057,
+        "maxMs": 39.628999999998996
+      },
+      "/api/projects?q=Synthetic": {
+        "n": 7,
+        "medianMs": 38.04559999999947,
+        "p95Ms": 46.44920000000093,
+        "minMs": 32.10180000000037,
+        "maxMs": 46.44920000000093
+      },
+      "/api/expenses": {
+        "n": 7,
+        "medianMs": 48.09820000000036,
+        "p95Ms": 57.12489999999889,
+        "minMs": 35.816499999998996,
+        "maxMs": 57.12489999999889
+      },
+      "/api/payments": {
+        "n": 7,
+        "medianMs": 45.11909999999989,
+        "p95Ms": 89.38550000000032,
+        "minMs": 32.58460000000014,
+        "maxMs": 89.38550000000032
+      },
+      "/api/receipts": {
+        "n": 7,
+        "medianMs": 52.76939999999922,
+        "p95Ms": 65.17029999999977,
+        "minMs": 34.95269999999982,
+        "maxMs": 65.17029999999977
+      },
+      "/api/reports/company": {
+        "n": 7,
+        "medianMs": 267.8701999999994,
+        "p95Ms": 362.40560000000005,
+        "minMs": 226.95679999999993,
+        "maxMs": 362.40560000000005
+      },
+      "/api/receipts/09a3deb3-177e-4c75-a4f5-59c71e5525e5/versions/1/pdf": {
+        "n": 7,
+        "medianMs": 72.4364999999998,
+        "p95Ms": 101.07899999999972,
+        "minMs": 60.372299999999086,
+        "maxMs": 101.07899999999972
+      },
+      "pdf": {
+        "n": 3,
+        "medianMs": 805.0112000000008,
+        "p95Ms": 1262.7222999999976,
+        "minMs": 753.806700000001,
+        "maxMs": 1262.7222999999976
+      },
+      "xlsx": {
+        "n": 3,
+        "medianMs": 258.9998999999989,
+        "p95Ms": 375.39340000000084,
+        "minMs": 235.15250000000015,
+        "maxMs": 375.39340000000084
+      },
+      "zip": {
+        "n": 3,
+        "medianMs": 1099.9478999999992,
+        "p95Ms": 1128.3606,
+        "minMs": 1054.2324999999983,
+        "maxMs": 1128.3606
+      },
+      "concurrentReads": {
+        "n": 32,
+        "medianMs": 108.77659999999742,
+        "p95Ms": 404.40929999999935,
+        "minMs": 63.470000000001164,
+        "maxMs": 441.89010000000053
+      }
+    },
+    "concurrency": {
+      "environment": {
+        "at": "2026-10-28T14:22:17.718Z",
+        "node": "v24.18.0",
+        "mysql": "8.4.13",
+        "platform": "win32",
+        "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+        "logicalCpus": 12,
+        "ramBytes": 8247566336,
+        "dataset": {
+          "clients": 1001,
+          "projects": 1001,
+          "contracts": 1001,
+          "contract_phases": 2002,
+          "payments": 301,
+          "payment_allocations": 301,
+          "expenses": 300,
+          "audit_events": 12016,
+          "entity_versions": 11,
+          "receipt_versions": 1,
+          "persons": 1,
+          "vehicles": 1
+        },
+        "label": "baseline",
+        "mode": "races"
+      },
+      "previews": {
+        "n": 8,
+        "medianMs": 311.59090000000106,
+        "p95Ms": 359.71659999999974,
+        "minMs": 248.06930000000102,
+        "maxMs": 359.71659999999974
+      },
+      "idempotentRetries": {
+        "n": 4,
+        "medianMs": 583.8256000000001,
+        "p95Ms": 613.8504999999986,
+        "minMs": 518.8173000000006,
+        "maxMs": 613.8504999999986,
+        "uniquePaymentIds": 1
+      },
+      "competing": {
+        "n": 2,
+        "medianMs": 418.5543999999991,
+        "p95Ms": 418.5543999999991,
+        "minMs": 407.6178,
+        "maxMs": 418.5543999999991,
+        "statuses": [
+          201,
+          409
+        ]
+      },
+      "verified": true,
+      "locks": [
+        {
+          "Variable_name": "Innodb_row_lock_time",
+          "Value": "2075"
+        },
+        {
+          "Variable_name": "Innodb_row_lock_waits",
+          "Value": "57"
+        },
+        {
+          "Variable_name": "Threads_connected",
+          "Value": "1"
+        },
+        {
+          "Variable_name": "Threads_running",
+          "Value": "2"
+        }
+      ]
+    },
+    "scope": "Directional local samples; core data precedes last export-filter/disaster-password edits; final affected tests rerun. Not a controlled production benchmark.",
+    "publicNavigations": 60,
+    "privateNavigations": 36,
+    "browserErrors": []
+  },
+  "sourceBuildLogScan": {
+    "trackedFiles": 332,
+    "publicBuildFiles": 37,
+    "logs": 40,
+    "traces": 68,
+    "knownCredentialSentinels": 24,
+    "findings": [],
+    "historySensitiveFiles": [],
+    "scope": "Known owner/test credential values and key formats; history filename scan only, not exhaustive historical blob/entropy analysis. Server action encryption manifests are private build assets, not public bundles."
+  },
+  "cleanup": {
+    "ownedContainersRemoved": 8,
+    "ownedVolumesRemoved": 8,
+    "backupKeysRemoved": true,
+    "syntheticCredentialFilesRemoved": true,
+    "ownerResourcesModified": false,
+    "regressionContainerDisposed": true,
+    "ownerContainer": "fitimiconstruction-mysql-wp08 remains exited255",
+    "originalPortsReleased": [
+      3000,
+      3307
+    ]
+  }
+}

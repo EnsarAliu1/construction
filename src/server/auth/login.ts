@@ -2,10 +2,11 @@ import { randomUUID } from "node:crypto";
 import type { Connection, RowDataPacket } from "mysql2/promise";
 import { verifyPassword } from "./password";
 import { admitLogin } from "./rate-limit";
-import { normalizeEmail, validEmail, newSessionToken, SESSION_SECONDS, tokenDigest } from "./security";
+import { normalizeEmail, validEmail, tokenDigest } from "./security";
 import { securityEvent, transaction } from "./store";
+import {passwordChallenge} from "./mfa";
 
-type LoginResult = { ok: false; limited: boolean } | { ok: true; token: string };
+type LoginResult = { ok: false; limited: boolean } | { ok: true; token: string; state: "enroll"|"verify"|"ack" };
 
 export async function login(connection: Connection, rawEmail: string, password: string, previousToken?: string): Promise<LoginResult> {
   const email = normalizeEmail(rawEmail);
@@ -27,12 +28,8 @@ export async function login(connection: Connection, rawEmail: string, password: 
       await securityEvent(connection, "login_failed", operationId, null, { status: "invalid_credentials" });
       return { ok: false, limited: false };
     }
-    const token = newSessionToken();
-    const sessionId = randomUUID();
-    // Login always issues a new token; an existing session is never adopted.
+    // Password verification creates only an isolated five-minute MFA challenge.
     if (previousToken) await connection.execute("UPDATE auth_sessions SET revoked_at = UTC_TIMESTAMP(3), updated_at = UTC_TIMESTAMP(3) WHERE token_hash = ? AND user_id = ? AND revoked_at IS NULL", [tokenDigest(previousToken), candidate.id]);
-    await connection.execute("INSERT INTO auth_sessions (id, user_id, token_hash, user_auth_version, expires_at) VALUES (?, ?, ?, ?, DATE_ADD(UTC_TIMESTAMP(3), INTERVAL ? SECOND))", [sessionId, candidate.id, tokenDigest(token), candidate.authVersion, SESSION_SECONDS]);
-    await securityEvent(connection, "login_success", sessionId, String(candidate.id));
-    return { ok: true, token };
+    return passwordChallenge(connection, String(candidate.id), Number(candidate.authVersion));
   });
 }

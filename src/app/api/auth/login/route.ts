@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { authJson, limitedJson, loginFailure, setSessionCookie } from "@/server/auth/http";
+import { authJson, limitedJson, loginFailure, setChallengeCookie,clearSessionCookie } from "@/server/auth/http";
 import { assertSameOrigin, safeReturnPath, sessionCookieSettings } from "@/server/auth/security";
 import { withAuthConnection } from "@/server/auth/store";
 import { login } from "@/server/auth/login";
@@ -13,8 +13,9 @@ export async function POST(request: NextRequest) {
   try {
     const result = await withAuthConnection(connection => login(connection, body.email as string, body.password as string, request.cookies.get(sessionCookieSettings().name)?.value));
     if (!result.ok) return loginFailure(result.limited ? 429 : 401);
-    const response = authJson({ ok: true, returnTo: safeReturnPath(body.returnTo) });
-    setSessionCookie(response, result.token);
+    const response = authJson({ ok: true, state:result.state, returnTo: `/login/mfa?returnTo=${encodeURIComponent(safeReturnPath(body.returnTo))}` });
+    clearSessionCookie(response);
+    setChallengeCookie(response, result.token);
     return response;
   } catch { return loginFailure(503); }
 }

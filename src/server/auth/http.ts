@@ -17,6 +17,9 @@ export function clearSessionCookie(response: NextResponse) {
   const { name, ...settings } = sessionCookieSettings();
   response.cookies.set(name, "", { ...settings, maxAge: 0, expires: new Date(0) });
 }
+export function challengeCookieSettings(){const {name,...settings}=sessionCookieSettings();return {...settings,name:name.startsWith('__Host-')?'__Host-fitimi_pre_auth':'fitimi_pre_auth',sameSite:'strict' as const,maxAge:300};}
+export function setChallengeCookie(response:NextResponse,token:string){const {name,...settings}=challengeCookieSettings();response.cookies.set(name,token,settings);}
+export function clearChallengeCookie(response:NextResponse){const {name,...settings}=challengeCookieSettings();response.cookies.set(name,'',{...settings,maxAge:0,expires:new Date(0)});}
 
 export async function limitedJson(request: Request, maxBytes = 8192): Promise<Record<string, unknown>> {
   const reader = request.body?.getReader();

@@ -1,3 +1,5 @@
+import {requireMfaKeyIds,openMfaSeed} from '../../src/server/auth/mfa-crypto';
+import {readMigrationFiles} from 'drizzle-orm/migrator';
 import assert from 'node:assert/strict';
 import { createCipheriv, createDecipheriv, randomBytes, randomUUID } from 'node:crypto';
 import * as fs from 'node:fs/promises';
@@ -9,10 +11,12 @@ import { PrivateReceiptStore, checksum, validatePdf } from '../../src/features/r
 import { secureWindowsReceiptDirectory } from '../../src/features/receipts/permissions';
 import { securityEvent } from '../../src/server/auth/store';
 import { securitySignal } from '../../src/server/operations/events';
-const MAX = 128 * 1024 * 1024, dbName = 'fitimi_test_wp15';
+const evidenceRoot=process.env.AUTH_TEST_WORK_PACKAGE==='WP-16'?'artifacts/wp16':'artifacts/wp15';
+const MAX = 128 * 1024 * 1024, dbName = process.env.AUTH_TEST_WORK_PACKAGE==='WP-16'?'fitimi_test_wp16':'fitimi_test_wp15';
 type Row = Record<string, unknown>;
 type Manifest = {
-    format: 'fitimi-paired/1';
+    format: 'fitimi-paired/2';
+    mfaKeyIds:string[];
     id: string;
     createdAt: string;
     retainUntil: string;
@@ -53,11 +57,11 @@ export async function databaseDigest(c: Connection) {
     }
     const [triggers] = await c.query<RowDataPacket[]>('SELECT TRIGGER_NAME AS name,ACTION_TIMING AS timing,EVENT_MANIPULATION AS event,EVENT_OBJECT_TABLE AS tableName,ACTION_STATEMENT AS statement FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA=DATABASE() ORDER BY TRIGGER_NAME');
     assert.equal(triggers.length, 13);
-    assert.equal(tables.__drizzle_migrations?.count, 9);
+    assert.equal(tables.__drizzle_migrations?.count, readMigrationFiles({migrationsFolder:'drizzle'}).length);
     return { tables, triggers: triggers as Row[] };
 }
 export async function privateDirectory(path: string) {
-    const root = resolve(path), base = resolve('artifacts/wp15');
+    const root = resolve(path), base = resolve(evidenceRoot);
     assert(root.startsWith(base + '\\') || root.startsWith(base + '/'));
     const rel = relative(base, root);
     assert(!isAbsolute(rel) && !rel.startsWith('..'));
@@ -136,7 +140,8 @@ function validateZip(data: Buffer) {
 }
 export async function validatePairedArchive(data: Buffer, key: Buffer, approveSource: string) {
     const plain = decryptBackup(data, key), names = validateZip(plain), zip = await JSZip.loadAsync(plain, { checkCRC32: true }), manifest = JSON.parse(await zip.file('manifest.json')!.async('string')) as Manifest;
-    assert.equal(manifest.format, 'fitimi-paired/1');
+    assert.equal(manifest.format, 'fitimi-paired/2');
+    requireMfaKeyIds(manifest.mfaKeyIds);
     assert(Number.isFinite(Date.parse(manifest.createdAt)));
     assert.equal(manifest.retainUntil,new Date(Date.parse(manifest.createdAt)+30*86400000).toISOString());
     assert.equal(manifest.sourceIdentity, approveSource);
@@ -178,6 +183,8 @@ export async function createPairedBackup(c: Connection, operator: OperatorContex
         const id = randomUUID(), createdAt = new Date().toISOString(), owner = JSON.parse(await fs.readFile(resolve(store.root, '.owner.json'), 'utf8')), sql = await dump();
         assert(sql.length < 64 * 1024 * 1024);
         const digest = await databaseDigest(c);
+        const [factors]=await c.query<RowDataPacket[]>('SELECT * FROM auth_mfa_factors');for(const factor of factors)openMfaSeed({secretCipher:factor.secret_cipher,keyId:factor.key_id},factor.user_id,factor.id);
+        const [keyRows]=await c.query<RowDataPacket[]>('SELECT key_id FROM auth_mfa_factors UNION SELECT key_id FROM auth_mfa_challenges WHERE key_id IS NOT NULL ORDER BY key_id');const mfaKeyIds=keyRows.map(row=>String(row.key_id));requireMfaKeyIds(mfaKeyIds);
         const [rows] = await c.query<RowDataPacket[]>('SELECT receipt_id,version,storage_reference,file_checksum FROM receipt_versions ORDER BY id');
         assert(rows.length <= 256);
         const zip = new JSZip(), documents: Manifest['documents'] = [];
@@ -192,7 +199,7 @@ export async function createPairedBackup(c: Connection, operator: OperatorContex
             zip.file(name, bytes, { createFolders: false });
             documents.push({ name, storageReference: String(row.storage_reference), fileChecksum: String(row.file_checksum), receiptId: String(row.receipt_id), version: Number(row.version) });
         }
-        const manifest: Manifest = { format: 'fitimi-paired/1', id, createdAt, retainUntil: new Date(Date.parse(createdAt) + 30 * 86400000).toISOString(), sourceIdentity: source, owner, databaseSha256: checksum(sql), ...digest, documents };
+        const manifest: Manifest = { format: 'fitimi-paired/2', mfaKeyIds, id, createdAt, retainUntil: new Date(Date.parse(createdAt) + 30 * 86400000).toISOString(), sourceIdentity: source, owner, databaseSha256: checksum(sql), ...digest, documents };
         zip.file('manifest.json', JSON.stringify(manifest));
         const plain = await zip.generateAsync({ type: 'nodebuffer', compression: 'STORE' }), encrypted = encryptBackup(plain, key);
         await validatePairedArchive(encrypted, key, source);
@@ -258,9 +265,13 @@ export async function restorePairedBackup(c: Connection, operator: OperatorConte
             assert(paired.documents.has(name));
             assert.equal(checksum(paired.documents.get(name)!), String(row.file_checksum));
         }
+        const [factors]=await c.query<RowDataPacket[]>('SELECT * FROM auth_mfa_factors');for(const factor of factors)openMfaSeed({secretCipher:factor.secret_cipher,keyId:factor.key_id},factor.user_id,factor.id);
+        await c.query("UPDATE auth_mfa_challenges SET state='consumed',consumed_at=UTC_TIMESTAMP(3),secret_cipher=NULL,key_id=NULL,recovery_hashes=NULL,updated_at=UTC_TIMESTAMP(3) WHERE state<>'consumed'");
         await c.query('UPDATE auth_sessions SET revoked_at=UTC_TIMESTAMP(3),updated_at=UTC_TIMESTAMP(3) WHERE revoked_at IS NULL');
         await c.query('UPDATE users SET auth_version=auth_version+1');
-        await securityEvent(c, 'restore_completed', paired.manifest.id, null, { status: 'sessions_revoked' });
+        await c.query('UPDATE auth_mfa_factors SET restore_hold=1,updated_at=UTC_TIMESTAMP(3)');
+        await c.query('UPDATE auth_mfa_recovery_codes SET revoked_at=COALESCE(revoked_at,UTC_TIMESTAMP(3)),updated_at=UTC_TIMESTAMP(3) WHERE used_at IS NULL');
+        await securityEvent(c, 'restore_completed', paired.manifest.id, null, { status: 'mfa_operator_recovery_required' });
         const owner = { ...paired.manifest.owner, database: target };
         await fs.writeFile(resolve(root, '.owner.json'), JSON.stringify(owner), { flag: 'wx', mode: 0o600 });
         securitySignal('restore.completed');

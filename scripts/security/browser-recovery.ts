@@ -1,3 +1,4 @@
+import {finishFixtureBrowserLogin} from '../../tests/auth/mfa-browser-fixture';
 import assert from "node:assert/strict";
 import {writeFile} from "node:fs/promises";
 import {chromium,type Page} from "@playwright/test";
@@ -6,11 +7,11 @@ import {projectFixture} from "../../tests/projects/fixtures";
 import {localDatabaseOptions} from "../../src/server/db/config";
 
 async function main(){
- const wp15=process.env.AUTH_TEST_WORK_PACKAGE==='WP-15',evidence=wp15?'artifacts/wp15':'artifacts/wp14';
- const baseline=process.argv[2]==='baseline',o=localDatabaseOptions(process.env.TEST_DATABASE_URL,'test',process.env.DATABASE_DISPOSABLE);assert.equal(o.database,wp15?'fitimi_test_wp15':'fitimi_test_wp14');assert.equal(o.port,3307);assert.equal(process.env.AUTH_ORIGIN,'http://127.0.0.1:3000');
+ const wp16=process.env.AUTH_TEST_WORK_PACKAGE==='WP-16';const wp15=process.env.AUTH_TEST_WORK_PACKAGE==='WP-15',evidence=wp16?'artifacts/wp16':wp15?'artifacts/wp15':'artifacts/wp14';
+ const baseline=process.argv[2]==='baseline',o=localDatabaseOptions(process.env.TEST_DATABASE_URL,'test',process.env.DATABASE_DISPOSABLE);assert.equal(o.database,wp16?'fitimi_test_wp16':wp15?'fitimi_test_wp15':'fitimi_test_wp14');assert.equal(o.port,3307);assert.equal(process.env.AUTH_ORIGIN,'http://127.0.0.1:3000');
  const f=await projectFixture(),browser=await chromium.launch({channel:'msedge',headless:true}),origin=process.env.AUTH_ORIGIN,results:string[]=[];
  try{
-  const context=await browser.newContext(),page=await context.newPage();await page.goto(`${origin}/login`);await page.locator('#email').fill(f.email);await page.locator('#password').fill(f.password);await page.getByRole('button',{name:'Sign in',exact:true}).click();await page.waitForURL(`${origin}/app`);
+  const context=await browser.newContext(),page=await context.newPage();await page.goto(`${origin}/login`);await page.locator('#email').fill(f.email);await page.locator('#password').fill(f.password);await page.getByRole('button',{name:'Sign in',exact:true}).click();await finishFixtureBrowserLogin(page,f.connection,f.userId);await page.waitForURL(`${origin}/app`);
   const fill=async(p:Page,name:string)=>{await p.locator('#expense-project').fill(name);await p.locator('#expense-project').press('Enter');await p.locator('ul[aria-label="Project search results"] button').first().click();await p.getByRole('button',{name:'Load project phases',exact:true}).click();await p.locator('[id^="payment-allocation-"]').first().waitFor();await p.locator('#payment-amount').fill('13.37');await p.locator('#payment-transactionDate').fill('2024-02-29');await p.locator('[id^="payment-allocation-"]').first().fill('13.37');};
   for(const committed of baseline?[false]:[false,true]){
    const d=await f.fresh({name:`Synthetic WP14 recovery ${committed?'committed':'uncommitted'}`});await page.goto(`${origin}/app/payments/new`);await fill(page,d.project.name);

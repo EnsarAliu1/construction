@@ -1,758 +1,890 @@
 # ADORE TECH SOLUTIONS — CODEX IMPLEMENTATION PROMPT
 
-## WP-15: Security Closure, Disaster Recovery, End-to-End QA & Controlled Release Readiness
+## WP-16: Mandatory Multi-Factor Authentication, Secure Enrollment & Account Recovery
 
 **Project:** Fitimi Construction Management System & Corporate Website  
-**Work Package:** WP-15  
+**Package:** WP-16  
 **Version:** 1.0  
 **Date:** 28 October 2026  
 **Developer:** Codex  
 **Technical Lead:** Adore Tech Solutions  
-**Priority:** CRITICAL — DATA CONFIDENTIALITY AND RELEASE SAFETY
+**Priority:** CRITICAL — AUTHENTICATION AND DATA CONFIDENTIALITY
 
-**AUTHORIZED:** Local security hardening, functional verification, isolated backup/restore experiments, synthetic data, browser testing, configuration templates and release documentation.
+### Explicit owner approval
 
-**NOT AUTHORIZED:** Production deployment, real customer data, live infrastructure modifications, production secret rotation, purchase of services, external penetration testing or declaring independent security certification complete.
+The project owner has approved **mandatory MFA for all five business users**.
+
+For WP-16, implement password + TOTP authenticator-app verification as the baseline, along with secure enrollment, single-use recovery codes and a tightly controlled operator-assisted recovery workflow.
+
+Do not interpret this as approval for new business roles, public registration, self-service password recovery, SMS authentication, unlimited MFA resets or production deployment.
+
+**Authorized:** Local implementation, necessary dependencies, additive migrations, disposable MySQL testing, synthetic accounts, genuine Edge/Playwright browser verification and security documentation.
+
+**Not authorized:** Production deployment, real accounts/data, external messaging services, purchases, modifications to owner environments or security-policy changes outside this scope.
 
 ---
 
 ## 1. MISSION
 
-Prepare Fitimi Construction for an evidence-based release decision.
+Integrate mandatory MFA into the existing WP-03 authentication architecture.
 
-The work package must:
+Deliver an actual secure end-to-end login flow:
 
-1. Close security defects and applicable unresolved controls that can be safely addressed in the existing local application.
-2. Perform full end-to-end QA of the internal application and public website.
-3. Implement and test a secure backup/restore reference workflow in isolated infrastructure.
-4. Verify database and immutable receipt PDF restoration together.
-5. Assess deployment feasibility and minimum production infrastructure requirements.
-6. Establish operational monitoring, incident-response and recovery procedures.
-7. Review dependency, authentication, privacy and exfiltration risks.
-8. Produce an explicit GO/NO-GO release dossier with evidence and remaining blockers.
+**Password → MFA verification → Fully authenticated session → Private application access.**
 
-Do not declare the system production-ready simply because tests pass.
+All five active business users must enroll in and use MFA.
 
-Where production hosting, real HTTPS, accountant approval or independent specialists are required, explicitly classify the control as NOT VERIFIED or EXTERNAL DEPENDENCY.
+The implementation must prevent:
 
-The project owner controls the final UI/UX and motion-design work; do not redesign the application.
+- Password-only private access.
+- Partially authenticated sessions entering the application.
+- MFA enrollment or reset without appropriate identity verification.
+- Recovery codes being reused.
+- TOTP replay.
+- MFA brute-force attacks.
+- MFA bypass through direct API or page requests.
+- Session fixation or elevation of pre-MFA credentials.
+- Stolen or revoked sessions retaining access.
+- MFA secrets appearing in logs, client persistence or exports.
+- Operator-assisted recovery silently disabling MFA permanently.
 
-## 2. SECURITY BASELINE FROM WP-14
+Do not replace or duplicate the existing login architecture.
 
-WP-14 reports:
+This is an implementation and security-verification work package.
 
-- 372 passing regression results plus 12 browser scenarios.
-- 410 private access-denial requests.
-- 30 API route patterns, 38 methods and 25 private page patterns inventoried.
-- Two reproduced Medium confidentiality issues corrected.
-- Enforced nonce CSP on private dynamic pages.
-- Actual Windows/Edge/browser tests.
-- Runtime MySQL least-privilege trial.
-- Four remaining moderate development-tool dependency advisories.
-- No confirmed unresolved Critical/High confidentiality issue in the tested scope.
-- No independent penetration test or production security certification.
+## 2. REPOSITORY BASELINE
 
-Most importantly:
+Reported completed work packages:
 
-OWASP ASVS 5.0 Level 2 matrix:
+- WP-01–WP-11: Application and public website foundation.
+- WP-13: Performance engineering.
+- WP-14: Security hardening and ASVS assessment.
+- WP-15: Local end-to-end QA and encrypted recovery implementation.
 
-- 56 PASS.
-- 14 FAIL.
-- 105 NOT VERIFIED.
-- 78 NOT APPLICABLE.
+WP-15 reports:
 
-Treat these findings as an actionable security backlog, not a passing certification.
+- 374 passing automated results plus 25 browser workflow scenarios.
+- Actual MySQL 8.4.13 integration.
+- Nine existing database migrations, 0000–0008.
+- Twenty-one tables in the restored environment according to its schema inspection.
+- Thirteen original integrity/history triggers.
+- Argon2id passwords.
+- Eight-hour absolute session lifetime.
+- Operator-only provisioning/reset/deactivation.
+- No existing MFA implementation.
+- Outstanding security controls and NO-GO for production.
 
-Read the actual delivered WP-14 control matrix and external-audit handoff.
+Before editing:
 
-Preserve the actual WP-14 fixes and regression tests.
+1. Read current AGENTS.md.
+2. Inspect branch, HEAD and working tree.
+3. Preserve owner modifications.
+4. Read existing authentication code and domain guards.
+5. Inspect auth_sessions, auth_account_control, users and authentication middleware/proxy.
+6. Read WP-14 ASVS matrix and WP-15 closure ledger.
+7. Inspect account provisioning/reset CLI.
+8. Inspect database migrations and history protection.
+9. Review existing test and browser infrastructure.
+10. Check actual dependency versions and existing security advisories.
 
-## 3. REPOSITORY & ENVIRONMENT BASELINE
+Preserve README.md and .env.local if current owner instructions require this.
 
-Before implementation:
+Do not assume historical reports are exhaustive.
 
-- Inspect actual Git branch/HEAD.
-- Read AGENTS.md and current owner instructions.
-- Preserve uncommitted work.
-- Preserve owner .env.local and README restrictions.
-- Preserve current development ports, databases, containers and private file stores.
-- Inspect all source-controlled security documents and evidence.
-- Review migrations 0000–0008 and all 13 integrity/history triggers.
-- Verify existing Playwright/Edge and test scripts.
-- Identify current dependencies and advisories.
-- Verify current website/application route inventories.
+## 3. CORE MFA POLICY
 
-Do not assume previous reports perfectly match the present repository.
+Implement MFA for **every active business user**.
 
-Never reset or delete unrelated resources.
+There is no MFA-exempt business user.
 
-## 4. WORKSTREAM A — CLOSE SECURITY GAPS
+Do not add an application superadmin role.
 
-Read every WP-14 ASVS FAIL entry.
+Adore's operator CLI retains its separate secure operator-control boundary.
 
-For each:
+Existing five equal business-user permissions remain unchanged.
 
-- Identify the specific affected code path or policy.
-- Determine whether the issue requires an application change, owner decision, production infrastructure or independent review.
-- Implement a safe fix where requirements and behavior are clear.
-- Add meaningful automated tests.
-- Do not invent business permissions or organizational policies.
-- Do not mark a control PASS without real evidence.
-- Preserve remaining gaps explicitly.
+### Required authentication factors
 
-Prioritize:
+1. Existing password.
+2. Valid enrolled TOTP authenticator.
 
-1. Private-data exposure and access control.
-2. Authentication/session theft resistance.
-3. Export and document exfiltration.
-4. Secret and infrastructure isolation.
-5. Monitoring and incident response.
+Approved emergency recovery mechanisms:
 
-Do not silently convert unresolved requirements into NOT APPLICABLE.
+- Single-use recovery code.
+- Secure, operator-assisted factor reset following documented independent identity verification.
 
-## 5. AUTHENTICATION HARDENING
+A recovery code substitutes for the missing TOTP factor only within a controlled recovery flow after successful password authentication. It must not grant passwordless access.
 
-Evaluate and address:
+Do not implement SMS or email OTP as a fallback.
 
-- Multi-factor authentication readiness and implementation options.
-- Idle-session timeout.
-- Absolute session lifetime.
-- Login rate limiting.
-- Credential stuffing resistance.
-- Breached/common-password screening.
-- Concurrent session controls.
-- Secure session invalidation.
-- Operator-only recovery.
-- Password-change policy.
-- Account disable/revocation behavior.
-- Secure cookies and production HTTPS.
-- Session fixation and CSRF.
+Do not enable a permanent MFA bypass.
 
-### Important owner decisions
+## 4. LOGIN STATE MACHINE — CRITICAL
 
-MFA requirements, idle timeout duration and session-count policy may affect the approved business workflow.
+Model authentication states explicitly:
 
-Do not unilaterally choose disruptive policies without an approved requirement.
+- Anonymous.
+- Password verified but MFA pending.
+- Enrollment required.
+- MFA challenge pending.
+- Fully authenticated.
+- Revoked/expired/disabled.
 
-Where no decision exists:
+The existing session and authentication design must distinguish limited pre-MFA state from a full application session.
 
-- Implement safe, testable supporting architecture where useful.
-- Document the explicit decision needed.
-- Do not claim the corresponding ASVS control has passed.
+**A password-success event must never create a full-access session before MFA completes.**
 
-Keep the existing five equal-permission business users and operator-only account provisioning.
+Suggested approach:
 
-No public registration.
+- Use a short-lived server-held pre-authentication challenge.
+- Bind it to the relevant user and authentication attempt.
+- Store only an opaque, high-entropy challenge identifier in an appropriately secured browser cookie.
+- Persist the challenge state/hash server-side.
+- Expire and consume challenges safely.
+- Issue the normal full session only after successful enrolled-factor verification or approved recovery.
+- Rotate session identity at authentication completion.
 
-No invented administrator role in the application.
+If an alternate architecture is safer within the existing codebase, document and prove it.
 
-## 6. HIGH-RISK FULL EXPORT POLICY
+### Challenge restrictions
 
-The complete business ZIP contains extensive internal records and immutable receipt PDFs.
+A pre-MFA credential may access only narrowly defined authentication endpoints, such as:
 
-Review its security model beyond ordinary login.
+- Challenge status.
+- TOTP verification.
+- MFA enrollment when explicitly permitted.
+- Recovery-code verification.
+- Logout/cancel of incomplete login.
 
-Test:
+It must NOT access:
 
-- Authorization at every layer.
-- Session revocation before delivery.
-- Request confirmation.
-- Anti-CSRF defenses.
-- Record scope and credential exclusion.
-- Secret exclusion inside historical snapshots.
-- Export audit.
-- Download headers.
-- Browser persistence.
-- Filesystem or temporary-storage exposure.
-- Cross-user replay.
-- Repeated-download abuse.
-- Export contention.
-- Sensitive dataset leakage through error reporting.
+- `/app`.
+- Private business APIs.
+- Dashboard.
+- Clients, projects or contracts.
+- Payments and expenses.
+- Receipt PDFs.
+- Financial reports.
+- Business ZIP export.
+- Audit/history data.
+- Authenticated Server Actions.
+- Full account sessions or operator functions.
 
-Propose stronger controls such as:
+The private application must reject pre-MFA state even if the browser has passed password verification.
 
-- Recent reauthentication.
-- Step-up MFA.
-- Per-user export limits.
-- Operator notification.
-- Time-limited approval.
-- Enhanced audit alerts.
+## 5. EXISTING SESSIONS AND MIGRATION
 
-**Do not silently introduce an approval-only permission model that contradicts the five equal user rights.**
+A significant security hazard is deploying MFA while existing password-only sessions remain valid.
 
-Clearly identify which proposals require the owner's approval.
+Implement a deliberate transition policy.
 
-Any confirmed unauthenticated export path is a Critical release blocker.
+When mandatory MFA enforcement is activated:
 
-## 7. END-TO-END BUSINESS QA
+- Existing sessions must not silently remain trusted as MFA-verified.
+- New or upgraded authentication assurance must be represented server-side.
+- Existing sessions must be invalidated or forced through a secure reauthentication transition.
+- Session cookies and existing auth_version semantics must remain consistent.
+- Disabled and revoked users must remain blocked.
+- No active full session may be issued from legacy password-only state.
 
-Use synthetic users, projects, contracts, phases, expenses, payments and documents.
+The rollout must fail closed.
 
-Exercise actual browser interactions where feasible.
+Do not merely add a new MFA UI while leaving old session checks unchanged.
 
-Complete at least the following workflows:
+For development/testing, simulate pre-migration legacy accounts and sessions and prove they cannot bypass MFA after the migration.
 
-### Authentication
+Do not apply any migration to the owner's manual-test or production database without current authorization.
 
-- Login.
-- Invalid password.
-- Logout.
-- Expired session.
-- Revoked session.
-- Disabled user.
+## 6. FIRST-TIME MFA ENROLLMENT
 
-### Clients
+All five users need a secure setup process.
 
-- Create individual/business.
-- Edit.
-- Search.
-- Archive constraints.
-- Audit history.
+For an active user without enrolled MFA:
 
-### Projects and Contracts
+1. User enters valid password.
+2. Server creates a narrowly scoped, short-lived enrollment challenge.
+3. Server generates a strong random TOTP seed.
+4. Present the seed once via a valid authenticator provisioning URI/QR code and a manual-entry alternative.
+5. User configures the authenticator application.
+6. User submits a valid current TOTP code.
+7. Server verifies it under strict attempt limits and freshness checks.
+8. Server atomically activates the factor.
+9. Generate a set of cryptographically random single-use recovery codes.
+10. Display the codes only once through an authenticated, no-store response.
+11. Require explicit user acknowledgement that codes have been saved.
+12. Only then complete the full login or safely continue a full-session issuance flow.
 
-- Create project.
-- Associate client.
-- Save contract.
-- Create phases.
-- Edit phase amounts.
-- Verify contract-phase sum.
-- Reject invalid phase reduction/deletion.
+Do not consider showing a QR code sufficient proof of enrollment.
 
-### References
+Enrollment is complete only after proving possession of the TOTP secret.
 
+If enrollment is abandoned, expired or fails:
+
+- Do not activate an unverified factor.
+- Do not issue a full application session.
+- Clean up expired pending state safely.
+
+Prevent simultaneous enrollment from creating two contradictory primary factors.
+
+Avoid account enumeration through enrollment endpoints.
+
+## 7. TOTP DESIGN AND VERIFICATION
+
+Implement standards-compatible TOTP with appropriate interoperable algorithm, digits and timestep.
+
+Prefer an audited, maintained implementation rather than inventing cryptographic primitives.
+
+Requirements:
+
+- Cryptographically random seed.
+- Secure server-side seed storage.
+- Authenticated encryption at rest, with encryption key outside the database and source control.
+- Key-version identifiers for future rotation.
+- Explicit issuer/account naming without exposing unnecessary company or private information.
+- Strict numeric code validation.
+- Narrow accepted time window.
+- Constant-time comparison where applicable.
+- Account-specific and challenge-specific rate limits.
+- Single-use acceptance of each valid TOTP time step.
+- Atomic replay prevention across concurrent requests.
+- Correct behavior around valid timestep boundaries.
+- No reuse of successful codes within their accepted validity period.
+- No TOTP secret logging, auditing in plaintext, URL query leakage or browser storage persistence.
+
+Database transaction coordination must prevent two simultaneous submissions of the same TOTP code from creating two valid authenticated sessions.
+
+Do not store raw TOTP seeds in audit snapshots.
+
+Do not treat a 6-digit code as sufficient protection without rate limiting and replay defense.
+
+## 8. TOTP SECRET KEY MANAGEMENT
+
+The TOTP seed is a long-lived authentication secret.
+
+Protect it separately from the login password hash.
+
+Implement:
+
+- Authenticated encryption of TOTP secrets.
+- Server-only access.
+- Key separation from database dumps.
+- Key identifiers for future rotation.
+- Explicit refusal to activate MFA if the encryption key is absent or invalid.
+- No permissive default encryption key.
+- No automatic plaintext fallback.
+- No key disclosure in exception responses or diagnostics.
+- Documented operator rotation/recovery process.
+
+A stolen database snapshot alone must not disclose plaintext TOTP seeds.
+
+A compromised application host holding the encryption key remains a separate threat; document this residual risk.
+
+Do not invent a production vault or assume one exists.
+
+For isolated tests, use task-owned synthetic encryption keys outside Git.
+
+## 9. SINGLE-USE RECOVERY CODES
+
+Generate a fixed, documented number of high-entropy recovery codes during successful enrollment.
+
+Use a secure random source.
+
+Properties:
+
+- Human-readable and reasonably transcribable.
+- Sufficient entropy for offline-guessing resistance.
+- Individually stored as nonreversible verifiers.
+- Never stored as plaintext after initial display.
+- Each code usable at most once.
+- Successful consumption is atomic.
+- Concurrent duplicate use has exactly one winner.
+- Strict rate limits and logging without recording the code.
+- Remaining unused-code count may be shown after a fully authenticated security check.
+- Codes may be replaced only after appropriate step-up verification.
+
+On use during login:
+
+- The password must already be verified.
+- The recovery challenge must be valid and user-bound.
+- The code must be consumed atomically.
+- A single fully authenticated session may then be issued.
+- Record a security event.
+- Do not expose the recovery code in URLs, browser storage or logs.
+
+Do not implement unlimited recovery attempts.
+
+Do not permit an expired challenge to become valid merely because the recovery code is correct.
+
+## 10. OPERATOR-ASSISTED FACTOR RECOVERY
+
+Users may lose their authenticator device and all recovery codes.
+
+The current Adore operator model is a privileged recovery boundary.
+
+Implement a narrowly scoped operator-only MFA reset operation through the existing secure CLI.
+
+### Mandatory operator security behavior
+
+- Require the existing operator capability.
+- Require the operator to follow a documented independent identity-verification procedure.
+- Record the target account and reason.
+- Require deliberate explicit confirmation.
+- Revoke the target user's active sessions and pending MFA challenges.
+- Invalidate existing TOTP factor and recovery-code verifiers.
+- Advance the appropriate authentication version.
+- Force secure enrollment on next valid password login.
+- Preserve audit history.
+- Never reveal the old TOTP seed.
+- Never issue a usable session to the operator on behalf of the user.
+- Never silently leave the user permanently password-only.
+
+Implement an auditable recovery state, not a hidden `mfaDisabled=true` escape hatch.
+
+If the operator cannot independently verify the user's identity, the secure answer is to deny/reset later.
+
+Do not create a public MFA reset endpoint.
+
+Do not invent a support email or external notification channel.
+
+Document a future second-person verification option if appropriate, but do not claim it is implemented without an approved operator process.
+
+## 11. FACTOR CHANGE AND RE-ENROLLMENT
+
+An authenticated user who still possesses their MFA factor may need to replace a phone.
+
+Do not allow this based on a valid session cookie alone.
+
+Require recent successful password verification AND current MFA challenge before factor replacement.
+
+For replacement:
+
+1. Authenticate and step up.
+2. Generate a new pending secret.
+3. Prove possession with a fresh TOTP code.
+4. Atomically rotate to the new active factor.
+5. Invalidate prior factor and recovery codes.
+6. Issue new recovery codes.
+7. Revoke or upgrade existing sessions according to a documented safe policy.
+8. Record an audit/security event.
+
+If preserving the old active factor until new confirmation, avoid a period where unverified new credentials bypass MFA.
+
+Do not silently maintain two active factors unless the multi-factor policy explicitly supports that.
+
+## 12. FULL-SESSION ISSUANCE
+
+Only after successful MFA:
+
+- Create a new opaque, high-entropy full session.
+- Preserve secure HttpOnly cookie semantics.
+- Bind the session to the current active user and auth_version.
+- Record the MFA assurance state in trustworthy server-owned data.
+- Ensure disabled-user and revocation checks still apply.
+- Keep absolute session expiration.
+- Prevent pre-authentication tokens from being accepted as session tokens.
+- Revoke or consume the completed MFA challenge.
+- Avoid session fixation and identifier reuse.
+
+No trust decision may rely on browser-controlled `mfaPassed` fields or query parameters.
+
+Avoid setting sensitive credentials in localStorage/sessionStorage.
+
+## 13. API AND PAGE AUTHORIZATION
+
+All business pages, APIs and public domain services must require FULLY AUTHENTICATED state.
+
+Test every private API family:
+
+- Clients.
+- Projects.
+- Contracts/phases.
 - Categories.
 - Persons/suppliers.
 - Vehicles.
-- Deactivate/reactivate.
-- Reject inactive new associations.
+- Expenses.
+- Payments.
+- Operation recovery.
+- Receipts and version downloads.
+- Dashboard.
+- Reports.
+- Complete business export.
+- Audit/history reads.
 
-### Expenses
+Test all sensitive HTTP methods and Server Actions.
 
-- Company-wide expense.
-- Project expense.
-- Inline category creation.
-- Edit.
-- Cancel.
-- Verify audit and correct totals.
+A pre-MFA challenge must never be a business authorization credential.
 
-### Incoming Payments
+Preserve existing live session checks, request-scoped authorization and response no-store policies.
 
-- Register payment.
-- Split across multiple phases.
-- Verify exact allocation sum.
-- Reject overcapacity.
-- Correct payment.
-- Cancel payment.
-- Verify capacity is released.
+Do not weaken existing CSRF Origin/Host verification.
 
-### Receipts
+## 14. LOGIN AND ENROLLMENT UI
 
-- Numbered PDF issuance.
-- Authorized download.
-- Correction creates next immutable version.
-- Old document remains unchanged.
-- Cancelled status is visible.
-- Repeated operation does not duplicate receipt.
+Implement functional UI, without redesigning the owner-controlled visual system.
 
-### Dashboard and Reports
+Required states:
 
-- Actual company totals.
-- Project on-screen summaries.
-- Company PDF/XLSX reports.
-- Full business ZIP export.
-- Exact reconciliation after corrections/cancellations.
+- Enter password.
+- Enter authenticator code.
+- First-time MFA setup.
+- QR/manual secret entry.
+- Enrollment verification.
+- One-time recovery-code display.
+- Recovery-code login.
+- Expired challenge.
+- Invalid code.
+- Too many attempts.
+- Operator reset requires new enrollment.
+- Safe retry and logout.
+- Account disabled.
 
-### Public Website
+Use existing Operational Clarity components/tokens.
 
-- Ten SQ/EN routes.
-- Navigation/language switching.
-- Public/private data isolation.
-- Responsive layouts.
-- Contact behavior.
-- SEO and noindex safeguards.
+Accessibility:
 
-Use real Playwright browser interaction, not just HTTP status checks, for a representative complete transaction flow.
+- Keyboard-operable forms.
+- Correct labels/autocomplete attributes.
+- Visible errors and focus management.
+- Mobile-friendly code inputs.
+- No arbitrary short clipboard restrictions for recovery codes.
+- Screen-reader status messages.
+- No secrets embedded in HTML intended for public caching.
 
-## 8. SECURITY-FOCUSED BROWSER QA
+Do not introduce motion or artistic redesign; the owner handles final UI/UX personally.
 
-Exercise:
+## 15. AUTHENTICATION RATE LIMITING
 
-- Desktop and mobile viewports.
-- Keyboard navigation.
-- Focus and dialogs.
+Preserve existing login throttling.
+
+Add strict limits for:
+
+- TOTP verification.
+- Recovery-code verification.
+- Enrollment attempts.
+- Factor replacement.
+- Operator MFA reset attempts where appropriate.
+
+Rate limits must be enforced server-side, persisted or otherwise coordinated appropriately for the current architecture.
+
+Do not rely solely on a memory counter in one Node.js process.
+
+Avoid login/OTP endpoint enumeration.
+
+Rate-limit failures must not reveal whether a targeted account has MFA.
+
+Use safe operational signals without logging passwords, OTPs, seeds or recovery codes.
+
+## 16. SECURITY EVENTS AND AUDIT
+
+Record meaningful security events for:
+
+- MFA enrollment completed.
+- MFA challenge failed or throttled.
+- Recovery code used.
+- New recovery codes generated.
+- Factor replaced.
+- Operator reset initiated/completed.
+- Sessions invalidated due to factor change.
+- Suspected replay attempt.
+
+Use existing security/audit conventions where compatible.
+
+Security event details may include:
+
+- Actor/target IDs when appropriate.
+- UTC timestamp.
+- Event kind.
+- Correlation ID.
+- Safe outcome/status.
+
+Never record:
+
+- Raw passwords.
+- TOTP seeds.
+- OTP values.
+- Recovery-code plaintext.
+- QR provisioning URI.
+- Session tokens.
+- Encryption keys.
+
+Preserve bounded operational logging.
+
+## 17. DATABASE AND MIGRATIONS
+
+Inspect actual auth schema first.
+
+Add narrowly scoped authentication tables/columns where needed, such as:
+
+- MFA factor records.
+- Pending enrollment/challenge state.
+- Encrypted secret and key ID.
+- Recovery-code verifiers and consumption metadata.
+- Last accepted timestep/replay protection.
+- MFA audit/assurance state.
+
+Use additive migration 0009 or the next actual available migration ID.
+
+Do not modify migrations 0000–0008.
+
+Do not alter or remove the existing thirteen original financial/history triggers.
+
+Do not introduce a second user identity table.
+
+Use database constraints for:
+
+- Appropriate uniqueness.
+- Challenge expiration/status representation.
+- Recovery code identity.
+- Safe one-factor active policy.
+- Referential integrity and cleanup.
+
+Use the existing MySQL 8.4 transaction conventions.
+
+Consider concurrency, double submit, account disable and operator reset races.
+
+The MFA schema must not contain plaintext seeds or recovery codes.
+
+## 18. DEPENDENCIES
+
+Use maintained and security-reviewed dependencies only where justified.
+
+Consider current authoritative guidance from:
+
+- OWASP Multifactor Authentication Cheat Sheet.
+- NIST SP 800-63B-4.
+- OWASP ASVS 5.0.
+- Relevant TOTP specifications.
+
+Document exact dependency versions and any new vulnerabilities.
+
+Do not blindly replace the authentication stack.
+
+Do not introduce a hosted identity provider or external service without owner approval.
+
+Do not run `npm audit fix --force`.
+
+## 19. ATTACK AND REGRESSION TEST MATRIX
+
+### Login and MFA
+
+- Correct password, no MFA: private access denied.
+- Wrong password: denied.
+- Correct password and wrong TOTP: denied.
+- Correct password and correct TOTP: one full session issued.
+- Expired pending challenge: denied.
+- Challenge stolen/reused: denied according to security policy.
+- Direct business API call using pre-MFA credential: denied.
+- Disabled user during MFA challenge: denied.
+- User sessions revoked during challenge: denied.
+- MFA challenge consumed twice: only one completion.
+- Existing legacy password-only session after enforcement: denied.
+
+### Enrollment
+
+- Valid first-time enrollment.
+- TOTP proof required before activation.
+- Abandoned enrollment.
+- Concurrent enrollment.
+- Reused enrollment code.
+- Invalid or expired enrollment challenge.
+- Missing encryption key fails closed.
+- No secret leakage to audit/log/export.
+- Recovery codes appear only at initial secure display.
+- Existing full business session not created until completion.
+
+### TOTP
+
+- Correct code.
+- Invalid code.
+- Previous/future window boundaries.
+- Correct code submitted twice.
+- Concurrent same-timestep replay.
+- Brute-force rate limiting.
+- Clock-drift behavior.
+- Multiple attempts cannot reset limits by requesting new challenges.
+
+### Recovery Codes
+
+- Valid code after password.
+- Wrong/expired/reused code.
+- Two concurrent uses of one code.
+- Recovery without password denied.
+- Recovery after factor reset denied.
+- All codes consumed.
+- Recovery-code regeneration after step-up.
+
+### Factor Reset
+
+- Operator-only authorization.
+- Forged operator capability rejected.
+- Operator target validation.
+- Required reason and explicit confirmation.
+- Old TOTP stops working.
+- Old codes stop working.
+- All sessions and challenges invalidated.
+- Next login requires new enrollment.
+- No permanent password-only access.
+- Account state and audit preserved.
+
+### Factor Replacement
+
+- Existing MFA step-up required.
+- Active session alone insufficient.
+- Old secret valid until safe switch.
+- Unverified replacement never activates.
+- Old code invalid after switch.
+- New recovery codes issued.
+- Appropriate session invalidation.
+
+### Browser and HTTP
+
+- Actual Edge password → TOTP → full session flow.
+- First-time setup.
+- Logout.
+- Browser refresh/back.
+- Invalid MFA.
+- Recovery.
+- Mobile keyboard operation.
+- Protected download while MFA pending.
+- CSP compatibility.
 - Hydration.
-- Console errors.
-- Browser back/refresh.
-- Login/logout session state.
-- Uncertain network responses.
-- Receipt downloads.
-- Export downloads.
-- CSP behavior.
-- Reduced motion.
-- XSS probes using harmless synthetic markers.
-- Disabled-session redirects.
-- Browser data persistence after logout.
+- Rate-limit feedback.
+- No credentials in tab storage.
+- No private cached page access after logout.
 
-Automated axe scans are useful but do not prove full WCAG conformance.
+### Existing Regression
 
-Document manual accessibility checks requiring human verification.
+Retain and re-run:
 
-Do not alter the owner's final design direction.
+- WP-03 authentication.
+- WP-04 clients.
+- WP-05 projects/contracts.
+- WP-06 references.
+- WP-07 expenses.
+- WP-08 payments and idempotency.
+- WP-09 receipts.
+- WP-10 financial reporting/export.
+- WP-11 website and public/private isolation.
+- WP-13 performance checks.
+- WP-14 authorization/security tests.
+- WP-15 business browser and backup/restore.
 
-## 9. BACKUP SYSTEM REQUIREMENTS
+Tests that previously provisioned synthetic users must now enroll those users through an explicitly guarded test fixture.
 
-Approved targets:
+Do not weaken business authorization simply to keep legacy tests passing.
 
-- Daily off-site backup.
-- Thirty-day retention.
-- RPO <= 24 hours.
-- RTO <= 48 hours.
+## 20. BACKUP, EXPORT AND RESTORE COMPATIBILITY
 
-These are targets until measured in the chosen production infrastructure.
+MFA changes affect the authentication and recovery data model.
 
-A backup must include:
+Update the WP-15 paired database/receipt backup and restore tests as necessary.
 
-- MySQL business and authentication state.
-- Required schema/migration consistency.
-- Immutable numbered receipt PDFs.
-- Receipt storage ownership metadata.
-- Necessary configuration identifiers.
-- An appropriate security-controlled restore procedure.
+Verify:
 
-A customer ZIP export is not an adequate replacement for a system backup.
+- MFA encrypted secret metadata is included in a protected system backup.
+- Encryption keys remain separate from backup ciphertext.
+- Restore into a fresh environment does not silently render accounts password-only.
+- Restore without the required key fails closed for MFA.
+- Old sessions are revoked after restoration.
+- Recovery codes retain correct consumed/unused states.
+- Operator-assisted factor reset works after verified restore.
+- Company business ZIP does not expose MFA seeds, recovery verifiers or authentication challenge state.
+- Private receipt PDF snapshots remain unchanged.
+- Financial totals and receipt numbering remain correct.
 
-Do not include plaintext credentials in an unencrypted backup.
+Do not assume the existing business export should include authentication secrets.
 
-## 10. BACKUP CONFIDENTIALITY
+Do not expose TOTP secret ciphertext as ordinary business export data.
 
-Implement a local testable backup design using:
+## 21. PERFORMANCE AND UX REGRESSION
 
-- Authenticated backup operator.
-- Separate backup credentials/permissions.
-- Encryption at rest.
-- Key separation from the backup files.
-- Integrity manifest/checksums.
-- Access restriction.
-- Safe filenames.
-- Reliable retention metadata.
-- No backup output in public assets.
-- No secret exposure through process arguments/logs.
-- Auditable backup/restore operations.
+Measure relevant:
 
-Use a modern maintained encryption method/library available in the environment.
+- Password verification latency.
+- TOTP verification latency.
+- Full session issuance.
+- Login flow completion.
+- Authenticated private navigation.
+- Common business page loading.
 
-Do not invent a custom cryptographic algorithm.
+The added MFA challenge must not create a large new client bundle or an unreasonable delay.
 
-For local tests, use generated synthetic secrets.
+Do not compromise factor verification or rate limiting to improve performance.
 
-Never include private decryption keys in the same backup artifact they protect.
+Preserve the existing public SQ/EN website and motion hooks.
 
-Document safe key loss/recovery and key-rotation requirements.
+Do not change the owner's creative UI/UX direction.
 
-## 11. CONSISTENT MYSQL + RECEIPT RESTORE
+## 22. SECURITY RELEASE GATE
 
-**This is a critical integration requirement.**
+WP-16 must NOT declare production readiness.
 
-Test backup and restoration of the database and private PDF storage as one coherent recovery set.
+A final GO remains blocked by:
 
-Because these are separate persistence systems, a naive copy during an active issuance could yield mismatches.
+- Unverified production hosting.
+- Unverified TLS/proxy and secure cookies.
+- Missing production private storage and offsite backup.
+- Remaining ASVS requirements.
+- Independent security audit.
+- MFA production enrollment/recovery operational validation.
+- Owner policies for session idle timeout and export step-up.
+- Accountant approval and final UI/UX/content signoff.
 
-Design and test a safe coordination protocol such as:
+Successful local MFA tests close a significant authentication gap, not all remaining security gaps.
 
-- Controlled application quiescence or a proven consistent backup boundary.
-- Storage advisory lease coordination where appropriate.
-- Consistent MySQL dump/snapshot.
-- Matching immutable receipt files.
-- Receipt counter state.
-- Receipt identity/version metadata.
-- Storage ownership binding.
-- Reconciliation of referenced PDFs and SHA-256 hashes.
+## 23. ACCEPTANCE CRITERIA
 
-Do not claim atomicity across MySQL and filesystem without a justified mechanism.
+**WP16-AC01:** MFA mandatory for all five active business users.
 
-The restore must preserve:
+**WP16-AC02:** Password-only login cannot access private pages/APIs.
 
-- Payment identities.
-- Original receipt numbers.
-- All receipt versions.
-- PDF contents.
-- Receipt checksums.
-- Audit/version history.
-- Idempotency state where relevant.
-- Cancellation metadata.
-- Current business totals.
+**WP16-AC03:** Pre-MFA challenges are securely isolated and short-lived.
 
-Fail closed on missing or mismatched documents.
+**WP16-AC04:** Normal full sessions are issued only after MFA or approved recovery.
 
-Never silently renumber receipts after a restore.
+**WP16-AC05:** First-time enrollment requires actual authenticator proof.
 
-## 12. ACTUAL RESTORE DRILL
+**WP16-AC06:** TOTP secrets are strongly generated and encrypted server-side.
 
-Execute a complete isolated restore rehearsal:
+**WP16-AC07:** Secrets and encryption keys are absent from business exports and public artifacts.
 
-1. Prepare disposable MySQL and private receipt store.
-2. Create actual synthetic users/projects/payments/receipts.
-3. Record baseline totals and receipt checksums.
-4. Produce a protected paired backup.
-5. Restore into a fresh independent task-owned environment.
-6. Apply any required instance/store rebinding through an explicit operator-authorized step.
-7. Verify the restored database, migrations and triggers.
-8. Verify original receipt PDFs by SHA-256.
-9. Verify current financial totals.
-10. Verify historical receipt versions.
-11. Verify restored sessions cannot bypass revocation or the intended post-restore authentication policy.
-12. Exercise authenticated reads and one valid post-restore payment/receipt operation.
-13. Record actual elapsed backup and restore times.
-14. Confirm no cross-contamination with the source environment.
+**WP16-AC08:** TOTP uses replay protection and strict rate limiting.
 
-Include failure-injection tests:
+**WP16-AC09:** Concurrent MFA challenges cannot create invalid/replayed authentication states.
 
-- Corrupt archive.
-- Missing PDF.
-- Wrong decryption key.
-- Tampered manifest.
-- Incomplete paired backup.
-- Unauthorized restore attempt.
-- Different server/storage identity.
-- Disk-full simulation where safely feasible.
+**WP16-AC10:** Recovery codes are random, single-use and securely verified.
 
-Do not claim production RPO/RTO compliance from a small disposable local drill.
+**WP16-AC11:** Recovery-code reuse and brute-force attempts fail safely.
 
-## 13. PRODUCTION INFRASTRUCTURE FEASIBILITY
+**WP16-AC12:** Operator-assisted MFA reset requires existing operator authorization and audit.
 
-Review actual documented deployment requirements.
+**WP16-AC13:** Operator reset invalidates factors, codes, sessions and pending challenges.
 
-Do not assume the selected hosting tier supports everything.
+**WP16-AC14:** Recovery never leaves the account permanently password-only.
 
-Verify or explicitly mark unknown:
+**WP16-AC15:** Authenticated factor replacement requires fresh step-up verification.
 
-- Persistent Node.js/Next.js server execution.
-- MySQL version and InnoDB.
-- Trigger support and migration privileges.
-- Binary-log restrictions during deployment.
-- Private persistent writable storage.
-- Directory permissions.
-- File synchronization/durability guarantees.
-- Process restart behavior.
-- TLS certificates.
-- Reverse proxy and trusted origin handling.
-- Isolated MySQL network.
-- Off-site backups.
-- Retention and encryption.
-- Scheduled jobs/operator recovery.
-- Resource limits.
-- Monitoring/log shipping.
-- Disaster recovery feasibility.
+**WP16-AC16:** Legacy sessions cannot bypass new mandatory MFA enforcement.
 
-Existing receipt storage relies on a persistent shared filesystem, not a stateless ephemeral serverless filesystem.
+**WP16-AC17:** Disabled/revoked users cannot complete pending MFA challenges.
 
-If the intended hosting cannot support the architecture, classify deployment as NO-GO for that host.
+**WP16-AC18:** Business routes and Server Actions require full authenticated state.
 
-Do not weaken the security or durability requirements to accommodate inexpensive hosting.
+**WP16-AC19:** Login/enrollment/recovery UI works in genuine browser testing.
 
-Prepare a compatibility matrix without purchasing infrastructure.
+**WP16-AC20:** MFA secrets are absent from logs, history snapshots and client storage.
 
-## 14. DEPENDENCY AND BUILD SECURITY
+**WP16-AC21:** Existing private PDF, XLSX and ZIP security remains intact.
 
-Review current `npm audit`.
+**WP16-AC22:** Backup/restore preserves MFA security and requires separate key management.
 
-Track the four remaining moderate advisories.
+**WP16-AC23:** Existing financial, audit, locking and receipt tests pass.
 
-Determine whether safe patched versions have become available.
+**WP16-AC24:** Original migrations and all thirteen integrity triggers remain intact.
 
-Do not force a historical Drizzle migration tool downgrade.
+**WP16-AC25:** TypeScript, lint, build and actual HTTP/browser regressions pass.
 
-Run:
+**WP16-AC26:** No production data, infrastructure or deployment is involved.
 
-- Dependency integrity checks.
-- Runtime versus development dependency exposure review.
-- Lockfile review.
-- Build-output inspection.
-- Source-map/private configuration exposure tests.
-- No-secrets-in-artifacts tests.
+**WP16-AC27:** ASVS MFA-related findings are updated based on actual verification, not assumptions.
 
-Where updates are safe, validate them through full regression tests.
+**WP16-AC28:** Remaining owner/hosting/audit requirements remain classified as release blockers.
 
-Do not claim clean audit if findings remain.
-
-## 15. MONITORING AND INCIDENT RESPONSE
-
-Prepare a practical operational plan for:
-
-- Failed login bursts.
-- Unexpected access denials.
-- Excessive business exports.
-- Receipt corruption.
-- Database downtime.
-- Storage availability failure.
-- Failed backups.
-- Backup restoration alerts.
-- Unusual error rates.
-- Application restarts.
-- Suspected credential compromise.
-
-Specify:
-
-- Which events should be monitored.
-- What must never be logged.
-- Alert thresholds or configurable policies.
-- Operator response.
-- Session revocation.
-- Secret rotation procedure.
-- Evidence preservation.
-- Business communication/escalation.
-- Recovery confirmation.
-
-Implement non-sensitive structured events or instrumentation where safe and useful.
-
-Do not send real financial values, passwords, tokens or raw PDF content into monitoring systems.
-
-Do not configure external alert receivers without approval.
-
-## 16. QA OF FINANCIAL INTEGRITY AFTER RECOVERY
-
-Test that restored data respects:
-
-- Exact EUR decimal values.
-- Contract total equals phase totals.
-- Payment allocations equal payment amount.
-- Phase capacity constraints.
-- Correct active received amounts.
-- Correct active expenses.
-- Cancelled-state exclusions.
-- Receipt number uniqueness.
-- Receipt version immutability.
-- Correct receipt counter continuation.
-- Complete audit/history.
-- Idempotent retry behavior.
-
-After restore, execute real independent-connection financial race tests against the recovered environment where feasible.
-
-No restoration process may suppress existing SQL triggers or rewrite immutable receipt history.
-
-## 17. PERFORMANCE REGRESSION
-
-Re-run critical WP-13 metrics where practical:
-
-- Dashboard API.
-- Company report API.
-- Financial snapshots.
-- Receipt download.
-- Company PDF/XLSX.
-- ZIP export.
-- Public page browser loading.
-- Selected private navigation.
-
-Security changes must not produce severe undocumented performance regressions.
-
-If stronger authentication, encryption or auditing causes overhead, measure it honestly.
-
-Do not weaken security merely to recover benchmark scores.
-
-## 18. CRITICAL RELEASE GATES
-
-A final GO recommendation is prohibited if any of these remain:
-
-- Confirmed unresolved Critical/High confidentiality vulnerability.
-- Unverified authentication bypass on exposed sensitive routes.
-- Public access to private customer records, receipts or exports.
-- Unprotected production secrets.
-- Publicly reachable production database without appropriate isolation.
-- Unsupported or insecure production hosting.
-- No verified private persistent receipt storage.
-- No independently restorable encrypted backup.
-- Financial/receipt integrity failures.
-- Missing appropriate accountant approval for issued business documents.
-- Missing qualified independent penetration test.
-- Missing mandatory owner approvals on security policy.
-- Missing final UI/UX and public-content signoff.
-- No production-environment TLS/reverse-proxy/security verification.
-
-A local implementation cannot alone clear production-dependent gates.
-
-Declare **NO-GO FOR PRODUCTION** until required evidence exists.
-
-## 19. REQUIRED TESTING
-
-Run and preserve all established suites:
-
-- Unit tests.
-- MySQL integration.
-- Security integration.
-- Authentication HTTP.
-- Payments/expenses/receipts HTTP.
-- Reporting/export HTTP.
-- Website isolation.
-- Edge/Playwright website browser.
-- Edge security browser.
-- Payment recovery browser.
-- New complete business-flow browser tests.
-- New backup/restore drills.
-
-Also run:
-
-- `npm.cmd run typecheck`
-- `npm.cmd run lint`
-- `npm.cmd run build`
-- `npm.cmd run db:check`
-- Appropriate migration verification.
-- Relevant route checks.
-- Dependency review.
-
-Use task-owned synthetic resources only.
-
-Do not disable previous tests to achieve a pass.
-
-Separate successful test outcomes from unverified production assumptions.
-
-## 20. ACCEPTANCE CRITERIA
-
-**WP15-AC01:** Every WP-14 ASVS FAIL is mapped to a fix, owner decision or explicit release blocker.
-
-**WP15-AC02:** Applicable high-impact locally remediable security gaps are addressed and retested.
-
-**WP15-AC03:** Full private-route authorization regression passes.
-
-**WP15-AC04:** Receipt/export confidentiality and no-store rules pass.
-
-**WP15-AC05:** Actual browser end-to-end business workflows are tested.
-
-**WP15-AC06:** Financial accuracy and cancellation/correction behavior remain correct.
-
-**WP15-AC07:** Immutable receipt PDFs and version histories remain valid.
-
-**WP15-AC08:** Encrypted paired database/document backup implementation is tested locally.
-
-**WP15-AC09:** Restore into an independent fresh environment succeeds.
-
-**WP15-AC10:** Restored receipt PDFs match stored SHA-256 values.
-
-**WP15-AC11:** Corrupt, missing and unauthorized restore cases fail safely.
-
-**WP15-AC12:** Post-restore payment numbering, allocations and idempotency are valid.
-
-**WP15-AC13:** Backup/restore elapsed time and environment are reported honestly.
-
-**WP15-AC14:** Production RPO/RTO remain NOT VERIFIED until real infrastructure drills.
-
-**WP15-AC15:** Target-host capability matrix identifies verified and unknown prerequisites.
-
-**WP15-AC16:** Dependency advisories and build-secret boundaries are rechecked.
-
-**WP15-AC17:** Monitoring, incident-response and operator recovery documentation are delivered.
-
-**WP15-AC18:** Critical authentication and payment/receipt concurrency regressions pass.
-
-**WP15-AC19:** All original migrations, guards and audit history remain intact.
-
-**WP15-AC20:** TypeScript, lint, production build and existing browser tests pass.
-
-**WP15-AC21:** Core performance regressions are assessed without compromising security.
-
-**WP15-AC22:** No real data or production resources are modified.
-
-**WP15-AC23:** External audit and accountant/owner approval gaps remain accurately documented.
-
-**WP15-AC24:** A complete release GO/NO-GO evidence dossier is delivered.
-
-**WP15-AC25:** The report does not claim production readiness while mandatory gates remain unverified.
-
-Classify each item:
+Report each criterion:
 
 - PASS
 - FAIL
 - NOT VERIFIED
 - BLOCKED BY EXTERNAL DECISION
 
-Do not convert blocked production requirements into artificial PASS results.
+Do not conflate a successful OTP login with complete MFA lifecycle security.
 
-## 21. REQUIRED DELIVERY REPORT
+## 24. REQUIRED DELIVERY REPORT
 
-### A. Executive Result
+### A. Repository Baseline
 
-Security posture and local readiness verdict.
+Actual branch, HEAD, owner changes and available source/security documentation.
 
-### B. ASVS Closure Ledger
+### B. MFA Architecture
 
-Each unresolved WP-14 item, action and remaining risk.
+Login state machine, pre-auth challenges and full-session issuance.
 
-### C. End-to-End QA
+### C. Enrollment
 
-Actual browser business scenarios, results, screenshots and failures.
+Seed creation, encryption, QR setup, TOTP verification and activation.
 
-### D. Backup Architecture
+### D. Recovery
 
-Encryption, keys, storage separation, paired snapshot strategy and retention.
+Single-use codes and operator-assisted identity/factor reset.
 
-### E. Restore Drill
+### E. Factor Replacement
 
-Exact environments, commands, checksums, timing and evidence.
+Step-up verification, concurrency and session invalidation.
 
-### F. Recovery Failure Scenarios
+### F. Database
 
-Tampered/missing/wrong-key/partial/unauthorized behavior.
+Additive schema, migrations, encryption-key references, constraints and replay protection.
 
-### G. Infrastructure Feasibility
+### G. Security Testing
 
-Target-host matrix and deployment limitations.
+Real attacks, code paths, session bypass attempts, rate limiting and leak checks.
 
-### H. Operational Monitoring
+### H. Browser Evidence
 
-Alerts, logs, incident playbooks and operator actions.
+Actual Edge/Playwright login, enrollment, recovery, logout and mobile flows.
 
-### I. Dependency Security
+### I. Existing Regression
 
-Current advisories, patches and unresolved risks.
+Payments, receipts, exports, backup/restore, security and public website.
 
-### J. Performance Regression
+### J. Performance Impact
 
-Critical before/after or baseline comparisons.
+Measured authentication and private-page behavior.
 
 ### K. Files Changed
 
-Exact paths and purpose.
+Exact file manifest and purpose.
 
-### L. Verification
+### L. ASVS Closure
 
-Commands, distinct result counts and integrity checks.
+Precise status changes to the previously reported MFA-related controls.
 
-### M. Acceptance
+### M. Acceptance Checklist
 
-WP15-AC01 through WP15-AC25.
+WP16-AC01 through WP16-AC28.
 
-### N. Release Gate Matrix
+### N. Remaining Risks
 
-Each production prerequisite: VERIFIED / NOT VERIFIED / BLOCKED / FAIL.
+TOTP phishing susceptibility, compromised devices, operator recovery, key management and production dependencies.
 
-### O. Independent Audit Handoff
+### O. Next Work Package
 
-Outstanding security-review scope and safe evidence package.
+Identify the remaining explicit security-policy decisions and infrastructure gates.
 
-### P. Final Recommendation
+Do not start the next package automatically.
 
-Explicit local QA readiness and separate production GO/NO-GO.
+## 25. EXECUTION INSTRUCTION
 
-## 22. EXECUTION
+Proceed with WP-16 implementation locally.
 
-Proceed with WP-15 locally now.
+Use the existing WP-03 authentication system.
 
-Prioritize security gaps and confidentiality first.
+Implement mandatory password + TOTP authentication for all active users, secure first-time enrollment, one-time recovery codes, authenticated factor replacement and operator-controlled emergency reset.
 
-Test actual end-to-end financial workflows.
+Enforce full authentication at every business service/API/page boundary.
 
-Implement and verify encrypted paired backup/restore in isolated infrastructure.
+Prevent legacy password-only sessions from bypassing the new policy.
 
-Preserve the original database/filesystem/receipt security boundaries.
+Preserve all historical financial, receipt, audit and backup guarantees.
 
-Document production infrastructure feasibility and operational readiness.
+Run disposable MySQL, genuine browser and comprehensive security tests.
 
-Never invent positive evidence for work that depends on unavailable production services.
-
-Do not alter the owner's visual/creative design.
+Do not modify the owner's creative UI/UX direction.
 
 Do not deploy.
 
 Commit/push only within the owner's current explicit authorization.
 
-**END OF WP-15**
+Provide a detailed evidence-based report.
+
+**END OF WP-16**

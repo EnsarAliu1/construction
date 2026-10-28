@@ -5,7 +5,7 @@ import { loadLocalEnvironment, localDatabaseOptions, openLocalConnection } from 
 import { applyMigrations } from "../../src/server/db/migrate";
 import { createAccount, setAccountActive } from "../../src/server/auth/accounts";
 import { authenticateOperator } from "../../src/server/auth/operator";
-import { login } from "../../src/server/auth/login";
+import { fixtureLogin as login } from "../auth/mfa-fixture";
 import { tokenDigest } from "../../src/server/auth/security";
 
 loadLocalEnvironment();

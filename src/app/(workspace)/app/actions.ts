@@ -1,5 +1,7 @@
 "use server";
 
+import {challengeCookieSettings} from "@/server/auth/http";
+import {cancelMfa} from "@/server/auth/mfa";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { assertSameOrigin, AuthenticationRequired, sessionCookieSettings } from "@/server/auth/security";
@@ -17,6 +19,7 @@ export async function logoutAction() {
     await withAuthConnection(async connection => {
       await requireSessionUser(connection, token);
       await revokeSession(connection, token);
+      await cancelMfa(connection,store.get(challengeCookieSettings().name)?.value);
     });
   } catch (error) {
     if (error instanceof AuthenticationRequired) anonymous = true;
@@ -26,5 +29,6 @@ export async function logoutAction() {
     const { name, ...attributes } = settings;
     store.set(name, "", { ...attributes, maxAge: 0, expires: new Date(0) });
   }
+  const {name:pendingName,...pendingAttributes}=challengeCookieSettings();store.set(pendingName,"",{...pendingAttributes,maxAge:0,expires:new Date(0)});
   redirect("/login");
 }

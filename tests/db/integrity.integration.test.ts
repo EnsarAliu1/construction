@@ -18,7 +18,7 @@ test("disposable MySQL 8.4 migrations and schema integrity", {
 }, async t => {
   const options = localDatabaseOptions(process.env.TEST_DATABASE_URL, "test", process.env.DATABASE_DISPOSABLE);
   const connection = await openLocalConnection(options);
-  const expectedNames = ["users", "clients", "projects", "contracts", "contract_phases", "payments", "payment_allocations", "expenses", "expense_categories", "persons", "vehicles", "payment_receipts", "receipt_versions", "receipt_counters", "audit_events", "entity_versions", "operation_requests", "auth_sessions", "auth_account_control", "auth_login_limits"];
+  const expectedNames = ["users", "clients", "projects", "contracts", "contract_phases", "payments", "payment_allocations", "expenses", "expense_categories", "persons", "vehicles", "payment_receipts", "receipt_versions", "receipt_counters", "audit_events", "entity_versions", "operation_requests", "auth_sessions", "auth_account_control", "auth_login_limits", "auth_mfa_factors", "auth_mfa_challenges", "auth_mfa_recovery_codes"];
   const fixture = Object.fromEntries(["user", "client", "project", "contract", "phase", "deletedPhase", "payment", "secondPayment", "category", "person", "vehicle", "expense", "allocation", "receipt", "receiptVersion", "audit", "entityVersion", "operation"].map(key => [key, randomUUID()]));
 
   type TestValue = string | number | boolean | null;
@@ -45,7 +45,7 @@ test("disposable MySQL 8.4 migrations and schema integrity", {
       } else t.diagnostic("Applying migrations to the empty dedicated disposable test database.");
       await applyMigrations(connection);
       const [first] = await connection.query<RowDataPacket[]>("SELECT hash, created_at FROM __drizzle_migrations ORDER BY created_at");
-      assert.equal(first.length, 9);
+      assert.equal(first.length, 11);
       assert.deepEqual(first.map(row => row.hash), readMigrationFiles({ migrationsFolder: "drizzle" }).map(migration => migration.hash));
       const beforeRepeat = await verifyDatabaseSchema(connection);
       await applyMigrations(connection);

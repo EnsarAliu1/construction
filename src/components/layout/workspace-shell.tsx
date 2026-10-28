@@ -10,7 +10,7 @@ export function WorkspaceShell({ children, user }: { children: ReactNode; user: 
     <a href="#main-content" className="skip-link">Skip to content</a>
     <aside className="sidebar"><Link href="/app" className="wordmark">Construction<span>MANAGEMENT WORKSPACE</span></Link>
       <p className="eyebrow sidebar-label">Workspace</p><DesktopNavigation items={workspaceNavigation} label="Workspace" className="sidebar-links" />
-      <div className="sidebar-footer"><span className="badge">Private workspace</span><Link href="/sq">Public website ↗</Link></div>
+      <div className="sidebar-footer"><span className="badge">Private workspace</span><Link href="/app/security">Account security</Link><Link href="/sq">Public website ↗</Link></div>
     </aside>
     <div className="workspace-body"><header className="workspace-topbar"><Link href="/app" className="workspace-name">Construction <span className="muted">/ Workspace</span></Link><div className="workspace-user"><span>{user.displayName}</span><LogoutButton /></div>
       <MobileNavigation items={workspaceNavigation} label="Workspace mobile" openLabel="Menu" closeLabel="Close" /></header>

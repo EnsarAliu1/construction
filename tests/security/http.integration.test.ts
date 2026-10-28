@@ -14,7 +14,7 @@ import {setAccountActive} from "../../src/server/auth/accounts";
 import {revokeSession} from "../../src/server/auth/sessions";
 import {tokenDigest,trustedOrigin} from "../../src/server/auth/security";
 
-const evidence=process.env.AUTH_TEST_WORK_PACKAGE==='WP-15'?'artifacts/wp15':'artifacts/wp14',build=process.env.AUTH_TEST_WORK_PACKAGE==='WP-15'?'.next-wp15':'.next-wp14';
+const wp16=process.env.AUTH_TEST_WORK_PACKAGE==='WP-16';const evidence=wp16?'artifacts/wp16':process.env.AUTH_TEST_WORK_PACKAGE==='WP-15'?'artifacts/wp15':'artifacts/wp14',build=wp16?'.next-wp16':process.env.AUTH_TEST_WORK_PACKAGE==='WP-15'?'.next-wp15':'.next-wp14';
 type Endpoint={file:string;path:string;kind:"page"|"api";methods:string[]};
 test("WP14 complete local endpoint denial, canary and export security matrix",{skip:mysqlSkip,timeout:240000},async t=>{
  const f=await paymentFixture(),c=f.connection,origin=trustedOrigin();assert.equal(origin.origin,"http://127.0.0.1:3000");

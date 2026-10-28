@@ -1,0 +1,286 @@
+[
+  {
+    "path": ".env.example",
+    "purpose": "Blank server MFA keyring configuration template."
+  },
+  {
+    "path": ".gitignore",
+    "purpose": "Ignore isolated WP-16 build and generated laboratory resources."
+  },
+  {
+    "path": "AGENTS.md",
+    "purpose": "Owner-provided WP-16 task instructions; working bytes preserved."
+  },
+  {
+    "path": "docs/WP-16-report.md",
+    "purpose": "WP-16 detailed report, operator runbook, dated ASVS delta or sanitized evidence/screenshot."
+  },
+  {
+    "path": "docs/security/endpoint-inventory.json",
+    "purpose": "Actual updated API/page authorization inventory."
+  },
+  {
+    "path": "docs/security/mfa-operations.md",
+    "purpose": "WP-16 detailed report, operator runbook, dated ASVS delta or sanitized evidence/screenshot."
+  },
+  {
+    "path": "docs/security/wp16-asvs-delta.csv",
+    "purpose": "WP-16 detailed report, operator runbook, dated ASVS delta or sanitized evidence/screenshot."
+  },
+  {
+    "path": "docs/security/wp16-evidence.json",
+    "purpose": "WP-16 detailed report, operator runbook, dated ASVS delta or sanitized evidence/screenshot."
+  },
+  {
+    "path": "docs/security/wp16-evidence/mfa-logged-out.png",
+    "purpose": "WP-16 detailed report, operator runbook, dated ASVS delta or sanitized evidence/screenshot."
+  },
+  {
+    "path": "docs/security/wp16-evidence/mfa-security-mobile.png",
+    "purpose": "WP-16 detailed report, operator runbook, dated ASVS delta or sanitized evidence/screenshot."
+  },
+  {
+    "path": "docs/security/wp16-files.json",
+    "purpose": "WP-16 detailed report, operator runbook, dated ASVS delta or sanitized evidence/screenshot."
+  },
+  {
+    "path": "drizzle/0009_wp16_mandatory_mfa.sql",
+    "purpose": "Additive MFA migration or generated schema snapshot; original migrations unchanged."
+  },
+  {
+    "path": "drizzle/0010_wp16_restore_mfa_hold.sql",
+    "purpose": "Additive MFA migration or generated schema snapshot; original migrations unchanged."
+  },
+  {
+    "path": "drizzle/meta/0009_snapshot.json",
+    "purpose": "Additive MFA migration or generated schema snapshot; original migrations unchanged."
+  },
+  {
+    "path": "drizzle/meta/0010_snapshot.json",
+    "purpose": "Additive MFA migration or generated schema snapshot; original migrations unchanged."
+  },
+  {
+    "path": "drizzle/meta/_journal.json",
+    "purpose": "Append only migrations0009/0010."
+  },
+  {
+    "path": "eslint.config.mjs",
+    "purpose": "Exclude isolated generated output."
+  },
+  {
+    "path": "next.config.ts",
+    "purpose": "Isolated WP-16 build output and nested login security headers."
+  },
+  {
+    "path": "package-lock.json",
+    "purpose": "Exact lockfile resolutions for OTPAuth QR and noble dependency."
+  },
+  {
+    "path": "package.json",
+    "purpose": "Pinned MFA libraries and reproducible MFA scripts."
+  },
+  {
+    "path": "playwright.config.ts",
+    "purpose": "WP-16 build/server and original-port browser support."
+  },
+  {
+    "path": "scripts/accounts.ts",
+    "purpose": "Trusted operator MFA reset reason identity target and recovery-password prompts."
+  },
+  {
+    "path": "scripts/mfa/benchmark.ts",
+    "purpose": "Measure genuine password TOTP guard and completion service timings."
+  },
+  {
+    "path": "scripts/mfa/browser.ts",
+    "purpose": "Thirteen real Edge MFA lifecycle and mobile scenarios."
+  },
+  {
+    "path": "scripts/mfa/cleanup.mjs",
+    "purpose": "Validate exact task identities before removing DR resources/keys."
+  },
+  {
+    "path": "scripts/mfa/lab.mjs",
+    "purpose": "Isolated synthetic MySQL/environment on original fixed ports."
+  },
+  {
+    "path": "scripts/mfa/verify.mjs",
+    "purpose": "Sequential fresh-schema HTTP/browser/performance verification."
+  },
+  {
+    "path": "scripts/performance/measure.ts",
+    "purpose": "Preserve existing browser/performance scenarios with explicit WP-16 guards and genuine MFA fixture."
+  },
+  {
+    "path": "scripts/release/business-browser.ts",
+    "purpose": "Preserve existing browser/performance scenarios with explicit WP-16 guards and genuine MFA fixture."
+  },
+  {
+    "path": "scripts/release/paired-backup.ts",
+    "purpose": "Protected MFA-inclusive format2 restore key validation and held authentication state."
+  },
+  {
+    "path": "scripts/release/restore-drill.ts",
+    "purpose": "Real paired MFA/PDF recovery with post-snapshot code and password invalidation."
+  },
+  {
+    "path": "scripts/security/browser-recovery.ts",
+    "purpose": "Preserve existing browser/performance scenarios with explicit WP-16 guards and genuine MFA fixture."
+  },
+  {
+    "path": "scripts/security/browser.ts",
+    "purpose": "Preserve existing browser/performance scenarios with explicit WP-16 guards and genuine MFA fixture."
+  },
+  {
+    "path": "scripts/security/scan.ts",
+    "purpose": "WP-16 source/build/log and separate-key credential sentinels."
+  },
+  {
+    "path": "src/app/(auth)/login/mfa/page.tsx",
+    "purpose": "Existing-foundation MFA login or fully guarded account-security page."
+  },
+  {
+    "path": "src/app/(workspace)/app/actions.ts",
+    "purpose": "Logout cancels and clears pending MFA as well as full session."
+  },
+  {
+    "path": "src/app/(workspace)/app/security/page.tsx",
+    "purpose": "Existing-foundation MFA login or fully guarded account-security page."
+  },
+  {
+    "path": "src/app/api/auth/login/route.ts",
+    "purpose": "Exact-origin no-store MFA login/logout endpoint integration."
+  },
+  {
+    "path": "src/app/api/auth/logout/route.ts",
+    "purpose": "Exact-origin no-store MFA login/logout endpoint integration."
+  },
+  {
+    "path": "src/app/api/auth/mfa/route.ts",
+    "purpose": "Exact-origin no-store MFA login/logout endpoint integration."
+  },
+  {
+    "path": "src/components/auth/mfa-form.tsx",
+    "purpose": "Real enrollment verification recovery acknowledgement and step-up forms."
+  },
+  {
+    "path": "src/components/layout/workspace-shell.tsx",
+    "purpose": "Link existing workspace navigation to account security."
+  },
+  {
+    "path": "src/features/receipts/storage.ts",
+    "purpose": "Protect WP-16 build output from receipt store placement."
+  },
+  {
+    "path": "src/features/reporting/export.ts",
+    "purpose": "Recursively exclude MFA credential metadata from portable business history."
+  },
+  {
+    "path": "src/proxy.ts",
+    "purpose": "Apply private/noindex authentication handling to nested MFA login."
+  },
+  {
+    "path": "src/server/auth/http.ts",
+    "purpose": "Short-lived separate HttpOnly pre-auth cookie helpers."
+  },
+  {
+    "path": "src/server/auth/login.ts",
+    "purpose": "Password success creates limited challenge only."
+  },
+  {
+    "path": "src/server/auth/mfa-crypto.ts",
+    "purpose": "Strict keyring AES-GCM standard TOTP and random recovery verifiers."
+  },
+  {
+    "path": "src/server/auth/mfa.ts",
+    "purpose": "Transactional mandatory MFA lifecycle and operator/disaster recovery."
+  },
+  {
+    "path": "src/server/auth/rate-limit.ts",
+    "purpose": "Shared SQL MFA account/global/operator/step-up budgets."
+  },
+  {
+    "path": "src/server/auth/sessions.ts",
+    "purpose": "Full-assurance live-factor/restore-hold guard and pending revocation."
+  },
+  {
+    "path": "src/server/db/schema/auth.ts",
+    "purpose": "Full-session assurance/timestamp columns and paired checks."
+  },
+  {
+    "path": "src/server/db/schema/index.ts",
+    "purpose": "Export three MFA models."
+  },
+  {
+    "path": "src/server/db/schema/mfa.ts",
+    "purpose": "Factor challenge and one-use recovery models with constraints/indexes."
+  },
+  {
+    "path": "src/styles/globals.css",
+    "purpose": "Existing-foundation QR/code layout and safe wrapping."
+  },
+  {
+    "path": "tests/auth/auth.integration.test.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/auth/http.integration.test.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/auth/mfa-browser-fixture.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/auth/mfa-crypto.test.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/auth/mfa-fixture.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/auth/mfa-http-fixture.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/auth/mfa-http.integration.test.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/auth/mfa.integration.test.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/clients/fixture.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/db/integrity.integration.test.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/db/schema.test.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/reporting/http.integration.test.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/reporting/validation.test.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/security/http.integration.test.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tests/security/runtime-role.integration.test.ts",
+    "purpose": "MFA lifecycle/crypto/HTTP fixture coverage or preserved business/security regression adapted to full authentication."
+  },
+  {
+    "path": "tsconfig.json",
+    "purpose": "Include generated WP-16 route types."
+  }
+]

@@ -15,7 +15,7 @@ import {companyExportInput,reportFilter,ReportingError,limitError} from "./valid
 import {companyPdf,companyXlsx,operationalPdf} from "./documents";
 import {securitySignal} from "@/server/operations/events";
 export function portable(value:unknown):unknown{
- if(Array.isArray(value))return value.map(portable);if(value&&typeof value==="object")return Object.fromEntries(Object.entries(value).filter(([key])=>!/(password|token|secret|operator|storageReference|authVersion|databaseUrl)/i.test(key)).map(([key,v])=>[key,portable(v)]));return value;
+ if(Array.isArray(value))return value.map(portable);if(value&&typeof value==="object")return Object.fromEntries(Object.entries(value).filter(([key])=>!/(password|token|secret|operator|storagereference|authversion|databaseurl|mfa|totp|recoverycode|recoveryhash|verifier|seed|cipher|encryptionkey|keyid|challenge)/i.test(key.replace(/[_-]/g,''))).map(([key,v])=>[key,portable(v)]));return value;
 }
 export function csvCell(value:unknown){let text=typeof value==="object"&&value!==null?JSON.stringify(value):value===null||value===undefined?"":String(value);if(/^[\s\u0000-\u0020]*[=+@-]/u.test(text))text="'"+text;return '"'+text.replaceAll('"','""')+'"';}
 export async function companyReport(c:Connection,token:string|undefined,filters:unknown={}){await requireSessionUser(c,token);const f=reportFilter(filters),report=finances(await materialize(c,token),f);if(report.income.length+report.outgoing.length>1000)throw limitError();return report;}

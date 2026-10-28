@@ -6,3 +6,4 @@ export { paymentReceipts, receiptVersions, receiptCounters } from "./receipts";
 export { auditEvents, entityVersions } from "./history";
 export { operationRequests } from "./operations";
 export { authSessions, authAccountControl, authLoginLimits } from "./auth";
+export {authMfaFactors,authMfaChallenges,authMfaRecoveryCodes} from './mfa';

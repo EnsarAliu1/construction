@@ -64,6 +64,20 @@
       "when": 1793108669304,
       "tag": "0008_wp09_receipt_issuance",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1793191861861,
+      "tag": "0009_wp16_mandatory_mfa",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1793196060415,
+      "tag": "0010_wp16_restore_mfa_hold",
+      "breakpoints": true
     }
   ]
 }

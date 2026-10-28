@@ -12,7 +12,7 @@
     "db:generate": "drizzle-kit generate",
     "db:check": "drizzle-kit check",
     "db:migrate": "tsx scripts/migrate-db.ts",
-    "test": "tsx --test tests/website/content.test.ts tests/security/headers.test.ts tests/security/recovery-key.test.ts tests/security/password.test.ts tests/release/events.test.ts tests/release/password-screen.test.ts && node --conditions=react-server --import tsx --test tests/reporting/validation.test.ts && tsx --test tests/db/config.test.ts tests/db/schema.test.ts tests/db/history.test.ts tests/auth/security.test.ts tests/clients/validation.test.ts tests/projects/validation.test.ts tests/references/validation.test.ts tests/expenses/validation.test.ts tests/payments/validation.test.ts tests/receipts/pdf.test.ts",
+    "test": "tsx --test tests/website/content.test.ts tests/security/headers.test.ts tests/security/recovery-key.test.ts tests/security/password.test.ts tests/release/events.test.ts tests/release/password-screen.test.ts tests/auth/mfa-crypto.test.ts && node --conditions=react-server --import tsx --test tests/reporting/validation.test.ts && tsx --test tests/db/config.test.ts tests/db/schema.test.ts tests/db/history.test.ts tests/auth/security.test.ts tests/clients/validation.test.ts tests/projects/validation.test.ts tests/references/validation.test.ts tests/expenses/validation.test.ts tests/payments/validation.test.ts tests/receipts/pdf.test.ts",
     "test:db": "node --conditions=react-server --import tsx --test tests/reporting/reporting.integration.test.ts && tsx --test --test-concurrency=1 tests/db/integrity.integration.test.ts tests/auth/auth.integration.test.ts tests/clients/clients.integration.test.ts tests/projects/projects.integration.test.ts tests/references/references.integration.test.ts tests/expenses/expenses.integration.test.ts tests/payments/payments.integration.test.ts tests/receipts/receipts.integration.test.ts",
     "test:references": "tsx --test tests/references/validation.test.ts",
     "test:references:db": "tsx --test tests/references/references.integration.test.ts",
@@ -52,7 +52,12 @@
     "test:security:recovery": "node --conditions=react-server --import tsx scripts/security/browser-recovery.ts",
     "test:release:restore": "node --conditions=react-server --import tsx scripts/release/restore-drill.ts",
     "test:release": "tsx --test tests/release/events.test.ts tests/release/password-screen.test.ts",
-    "test:release:browser": "node --conditions=react-server --import tsx scripts/release/business-browser.ts"
+    "test:release:browser": "node --conditions=react-server --import tsx scripts/release/business-browser.ts",
+    "test:mfa": "tsx --test tests/auth/mfa-crypto.test.ts",
+    "test:mfa:db": "tsx --test tests/auth/mfa.integration.test.ts",
+    "test:mfa:browser": "node --conditions=react-server --import tsx scripts/mfa/browser.ts",
+    "test:mfa:http": "node --conditions=react-server --import tsx --test tests/auth/mfa-http.integration.test.ts",
+    "perf:mfa": "node --conditions=react-server --import tsx scripts/mfa/benchmark.ts"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -64,7 +69,9 @@
     "jszip": "3.10.2",
     "mysql2": "3.24.6",
     "next": "16.4.3",
+    "otpauth": "9.5.2",
     "pdfkit": "0.20.2",
+    "qrcode-generator": "2.0.4",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "server-only": "0.0.1"

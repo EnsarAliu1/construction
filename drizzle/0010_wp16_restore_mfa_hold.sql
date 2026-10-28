@@ -1,0 +1,2 @@
+ALTER TABLE `auth_mfa_factors` ADD `restore_hold` int unsigned DEFAULT 0 NOT NULL;--> statement-breakpoint
+ALTER TABLE `auth_mfa_factors` ADD CONSTRAINT `mfa_factor_restore_hold_ck` CHECK (`auth_mfa_factors`.`restore_hold` IN (0,1));

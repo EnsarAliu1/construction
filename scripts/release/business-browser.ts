@@ -1,3 +1,4 @@
+import {finishFixtureBrowserLogin} from '../../tests/auth/mfa-browser-fixture';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs/promises';
@@ -7,9 +8,10 @@ import { checksum, validatePdf } from '../../src/features/receipts/storage';
 import { cents as euroCents, decimal as centsToEuro } from '../../src/features/projects/money';
 import JSZip from 'jszip';
 import { localDatabaseOptions } from '../../src/server/db/config';
+const root=process.env.AUTH_TEST_WORK_PACKAGE==='WP-16'?'artifacts/wp16':'artifacts/wp15';
 async function main() {
     const o = localDatabaseOptions(process.env.TEST_DATABASE_URL, 'test', '1');
-    assert.equal(o.database, 'fitimi_test_wp15');
+    assert.equal(o.database, process.env.AUTH_TEST_WORK_PACKAGE==='WP-16'?'fitimi_test_wp16':'fitimi_test_wp15');
     assert.equal(o.port, 3307);
     assert.equal(process.env.AUTH_ORIGIN, 'http://127.0.0.1:3000');
     const origin = process.env.AUTH_ORIGIN, f = await clientFixture(), browser = await chromium.launch({ channel: 'msedge', headless: true }), context = await browser.newContext({ viewport: { width: 1440, height: 1000 } }), page = await context.newPage(), prefix = 'QA-' + randomUUID().slice(0, 8), steps: string[] = [], errors: string[] = [], downloads: {
@@ -52,6 +54,7 @@ async function main() {
         assert(new URL(page.url()).pathname === '/login');
         await page.locator('#password').fill(f.password);
         await click('Sign in');
+        await finishFixtureBrowserLogin(page,f.connection,f.userId);
         await page.waitForURL(origin + '/app');
         const initialTotals = (await api('/api/dashboard')).dashboard.totals;
         steps.push('Invalid password rejected and real-cookie login succeeds');
@@ -220,28 +223,28 @@ async function main() {
         await page.setViewportSize({ width: 390, height: 844 });
         await goto('/app/clients');
         const mobile = await page.evaluate(() => ({ viewport: innerWidth, width: document.documentElement.scrollWidth, overflow: [...document.querySelectorAll('*')].filter(e => e.getBoundingClientRect().right > innerWidth + 1).map(e => ({ tag: e.tagName, cls: e.className, left: e.getBoundingClientRect().left, right: e.getBoundingClientRect().right, width: e.getBoundingClientRect().width, overflow: getComputedStyle(e).overflowX })).slice(0, 30) }));
-        await fs.writeFile('artifacts/wp15/mobile-overflow.json', JSON.stringify(mobile, null, 2));
+        await fs.writeFile(root+'/mobile-overflow.json', JSON.stringify(mobile, null, 2));
         assert(mobile.width <= mobile.viewport);
         await page.keyboard.press('Tab');
-        await fs.mkdir('artifacts/wp15/screenshots', { recursive: true });
-        await page.screenshot({ path: 'artifacts/wp15/screenshots/business-mobile.png', fullPage: true });
+        await fs.mkdir(root+'/screenshots', { recursive: true });
+        await page.screenshot({ path: root+'/screenshots/business-mobile.png', fullPage: true });
         await page.setViewportSize({ width: 1440, height: 1000 });
         await goto(`/app/projects/${project}`);
-        await page.screenshot({ path: 'artifacts/wp15/screenshots/business-project.png', fullPage: true });
+        await page.screenshot({ path: root+'/screenshots/business-project.png', fullPage: true });
         await click('Sign out');
         await page.waitForURL(origin + '/login');
         assert.equal((await context.request.get(origin + '/api/clients')).status(), 401);
         assert.deepEqual(errors, []);
         steps.push('Mobile navigation/focus/overflow, screenshots and logout');
-        await fs.writeFile('artifacts/wp15/business-browser.json', JSON.stringify({ browser: browser.version(), steps, downloads, unexpectedErrors: errors, initialTotals, totals: report.totals }, null, 2));
+        await fs.writeFile(root+'/business-browser.json', JSON.stringify({ browser: browser.version(), steps, downloads, unexpectedErrors: errors, initialTotals, totals: report.totals }, null, 2));
         console.log(`PASS: ${steps.length} complete business browser scenarios and ${downloads.length} real downloads.`);
     }
     catch (error) {
         let text = error instanceof Error ? error.stack ?? error.message : String(error);
         for (const secret of [f.email, f.password, f.token])
             text = text.replaceAll(secret, '[redacted]');
-        await fs.writeFile('artifacts/wp15/business-failure.txt', text);
-        await page.screenshot({ path: 'artifacts/wp15/business-failure.png', fullPage: true }).catch(() => { });
+        await fs.writeFile(root+'/business-failure.txt', text);
+        await page.screenshot({ path: root+'/business-failure.png', fullPage: true }).catch(() => { });
         throw error;
     }
     finally {

@@ -1,0 +1,12 @@
+Date,Control,WP14Status,WP16LocalStatus,Evidence,ResidualRisk
+2026-10-28,V6.1.3,NOT VERIFIED,PASS,Authentication and recovery paths are documented together in mfa-operations.md.,Production operator identity and enrollment validation outstanding.
+2026-10-28,V6.2.4,FAIL,FAIL,Only 10 distinct entries in the existing 10001-word corpus satisfy the current minimum12-character policy; fewer than3000 eligible entries.,Retain original FAIL; WP-15 local blocklist improvement did not establish literal conformance.
+2026-10-28,V6.3.3,FAIL,PASS,Mandatory password plus TOTP or single-use recovery code; all five synthetic users and full guards exercised.,Local application evidence only; TOTP is phishable and production enrollment is not verified.
+2026-10-28,V6.3.4,NOT VERIFIED,PASS,Login enrollment recovery replacement legacy sessions APIs pages and Server Actions exercised against the same full-assurance guard.,Independent review and production runtime verification remain required.
+2026-10-28,V6.4.3,NOT VERIFIED,PASS,Operator password reset cannot issue a full session or bypass existing factors; auth-version invalidation includes pending challenges.,Operator compromise and human identity verification remain separate risks.
+2026-10-28,V6.4.4,NOT VERIFIED,NOT VERIFIED,Operator reset requires an issued capability identity attestation structured reason and explicit target confirmation; actual human proofing was not executed.,Owner must validate identity proofing at enrollment and recovery; CLI attestation alone is not evidence.
+2026-10-28,V6.5.1,NOT APPLICABLE,PASS,Persisted accepted TOTP step and conditional recovery-code consumption are atomic under independent SQL connections.,Production distributed runtime and clock validation still required.
+2026-10-28,V6.5.2,NOT APPLICABLE,PASS,Recovery codes have128 random bits and generation/user-bound SHA256 verifiers.,Factor seeds are separately AES256GCM encrypted; private keyring required.
+2026-10-28,V6.5.3,NOT APPLICABLE,PASS,Node cryptographic randomness creates160-bit seeds128-bit recovery codes and independent token/IV material; RFC vectors tested.,No independent cryptographic certification.
+2026-10-28,V6.5.4,NOT APPLICABLE,PASS,Recovery codes have128 random bits; no out-of-band channel is implemented.,Codes must be stored securely by each user.
+2026-10-28,V6.5.5,NOT APPLICABLE,FAIL,TOTP period30 seconds with plus/minus1-step validation can accept an unused code over a90-second interval.,Strict literal30-second maximum not established; clock-skew/window review is an explicit release gate.
