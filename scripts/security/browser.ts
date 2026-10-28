@@ -9,8 +9,9 @@ import {localDatabaseOptions} from "../../src/server/db/config";
 import {tokenDigest} from "../../src/server/auth/security";
 
 async function main(){
+ const wp15=process.env.AUTH_TEST_WORK_PACKAGE==='WP-15',evidence=wp15?'artifacts/wp15':'artifacts/wp14';
  const options=localDatabaseOptions(process.env.TEST_DATABASE_URL,"test",process.env.DATABASE_DISPOSABLE);
- assert.equal(options.database,"fitimi_test_wp14");assert.equal(options.port,3307);assert.equal(process.env.AUTH_ORIGIN,"http://127.0.0.1:3000");
+ assert.equal(options.database,wp15?"fitimi_test_wp15":"fitimi_test_wp14");assert.equal(options.port,3307);assert.equal(process.env.AUTH_ORIGIN,"http://127.0.0.1:3000");
  const f=await clientFixture(),browser=await chromium.launch({channel:"msedge",headless:true}),origin=process.env.AUTH_ORIGIN;
  const results:string[]=[],errors:string[]=[],canary=`PRIVATE-BROWSER-${randomUUID()}`,payload=`${canary}<img src=x onerror="window.__storedXSS=1">`;
  try{
@@ -37,8 +38,8 @@ async function main(){
   await f.connection.execute('UPDATE auth_sessions SET expires_at=DATE_SUB(UTC_TIMESTAMP(3),INTERVAL 1 SECOND) WHERE token_hash=?',[tokenDigest(current.value)]);await page.goto(`${origin}/app/clients`);assert(new URL(page.url()).pathname==='/login');results.push('Expired real cookie redirects and cannot retrieve private data');
   await signIn();await setAccountActive(f.connection,f.operator,f.email,false);assert.equal((await context.request.get(`${origin}/api/clients`)).status(),401);await page.goto(`${origin}/app`);assert(new URL(page.url()).pathname==='/login');results.push('Account deactivation invalidates actual browser session');
   await page.goBack();assert(!(await page.locator('body').innerText()).includes(canary));results.push('Back navigation after deactivation exposes no canary');
-  await mkdir('artifacts/wp14',{recursive:true});await page.screenshot({path:'artifacts/wp14/security-browser-login.png',fullPage:true});await context.close();
-  await writeFile('artifacts/wp14/security-browser.json',JSON.stringify({browser:browser.version(),viewport:'1440x1000',results,unexpectedErrors:errors},null,2));console.log(`PASS: ${results.length} genuine cookie/browser security scenarios; ${browser.version()}.`);
- }catch(error){let message=error instanceof Error?error.stack??error.message:String(error);for(const secret of [f.email,f.password,f.token])message=message.replaceAll(secret,"[redacted]");await writeFile('artifacts/wp14/security-browser-failure.txt',message);throw error;}finally{await browser.close();await f.close();}
+  await mkdir(evidence,{recursive:true});await page.screenshot({path:`${evidence}/security-browser-login.png`,fullPage:true});await context.close();
+  await writeFile(`${evidence}/security-browser.json`,JSON.stringify({browser:browser.version(),viewport:'1440x1000',results,unexpectedErrors:errors},null,2));console.log(`PASS: ${results.length} genuine cookie/browser security scenarios; ${browser.version()}.`);
+ }catch(error){let message=error instanceof Error?error.stack??error.message:String(error);for(const secret of [f.email,f.password,f.token])message=message.replaceAll(secret,"[redacted]");await writeFile(`${evidence}/security-browser-failure.txt`,message);throw error;}finally{await browser.close();await f.close();}
 }
 void main().catch(()=>{console.error('Browser security verification failed; sensitive fixture details withheld.');process.exitCode=1;});

@@ -1,746 +1,758 @@
 # ADORE TECH SOLUTIONS — CODEX IMPLEMENTATION PROMPT
 
-## WP-14: Security Hardening, Private Data Leak Prevention & Independent Audit Preparation
+## WP-15: Security Closure, Disaster Recovery, End-to-End QA & Controlled Release Readiness
 
 **Project:** Fitimi Construction Management System & Corporate Website  
-**Package:** WP-14  
+**Work Package:** WP-15  
 **Version:** 1.0  
 **Date:** 28 October 2026  
 **Developer:** Codex  
 **Technical Lead:** Adore Tech Solutions  
-**Priority:** CRITICAL  
-**Authorization:** Local security assessment, scoped hardening, isolated test infrastructure, dependency review, and full regression testing.
+**Priority:** CRITICAL — DATA CONFIDENTIALITY AND RELEASE SAFETY
 
-**NOT AUTHORIZED:** Production access, deployment, real customer data, destructive changes to owner resources, purchases, public penetration testing, or independent-audit certification.
+**AUTHORIZED:** Local security hardening, functional verification, isolated backup/restore experiments, synthetic data, browser testing, configuration templates and release documentation.
+
+**NOT AUTHORIZED:** Production deployment, real customer data, live infrastructure modifications, production secret rotation, purchase of services, external penetration testing or declaring independent security certification complete.
 
 ---
 
-## 1. PRIMARY MISSION
+## 1. MISSION
 
-Perform a rigorous security review and implement necessary hardening of the existing Fitimi Construction application.
+Prepare Fitimi Construction for an evidence-based release decision.
 
-The owner's primary concern is **unauthorized disclosure or leakage of internal business information**.
+The work package must:
 
-Protected data includes:
+1. Close security defects and applicable unresolved controls that can be safely addressed in the existing local application.
+2. Perform full end-to-end QA of the internal application and public website.
+3. Implement and test a secure backup/restore reference workflow in isolated infrastructure.
+4. Verify database and immutable receipt PDF restoration together.
+5. Assess deployment feasibility and minimum production infrastructure requirements.
+6. Establish operational monitoring, incident-response and recovery procedures.
+7. Review dependency, authentication, privacy and exfiltration risks.
+8. Produce an explicit GO/NO-GO release dossier with evidence and remaining blockers.
 
-- Clients and contact records.
-- Private projects and contracts.
-- Contract amounts and financial phases.
-- Incoming payments and allocations.
-- Expenses, suppliers and vehicles.
-- Numbered receipts and immutable PDF versions.
-- Financial reports and XLSX exports.
-- Complete ZIP business exports.
-- Audit trails and historical snapshots.
-- Account, session and operator administration information.
-- Database and storage credentials.
-- Backups and privately stored documents.
+Do not declare the system production-ready simply because tests pass.
 
-This is not a superficial checklist task.
+Where production hosting, real HTTPS, accountant approval or independent specialists are required, explicitly classify the control as NOT VERIFIED or EXTERNAL DEPENDENCY.
 
-You must inspect actual code paths, build an attack-surface inventory, reproduce credible vulnerabilities in an isolated environment, remediate verified weaknesses and execute comprehensive security regressions.
+The project owner controls the final UI/UX and motion-design work; do not redesign the application.
 
-Do not claim the application is perfectly secure.
+## 2. SECURITY BASELINE FROM WP-14
 
-Do not declare independent penetration testing complete; an external qualified reviewer must perform that separately.
+WP-14 reports:
 
-## 2. SOURCE AND BASELINE
+- 372 passing regression results plus 12 browser scenarios.
+- 410 private access-denial requests.
+- 30 API route patterns, 38 methods and 25 private page patterns inventoried.
+- Two reproduced Medium confidentiality issues corrected.
+- Enforced nonce CSP on private dynamic pages.
+- Actual Windows/Edge/browser tests.
+- Runtime MySQL least-privilege trial.
+- Four remaining moderate development-tool dependency advisories.
+- No confirmed unresolved Critical/High confidentiality issue in the tested scope.
+- No independent penetration test or production security certification.
 
-Inspect actual:
+Most importantly:
 
-- Git branch and HEAD.
-- Working tree and owner modifications.
-- AGENTS.md.
-- Next.js 16.4.3 application routes.
-- React and server/client boundaries.
-- Authentication/session implementation.
-- Drizzle/MySQL query and transaction services.
-- PDF storage and recovery infrastructure.
-- Report/ZIP export logic.
-- Public website and SEO routes.
-- Playwright/browser tests.
-- npm dependency tree.
-- Existing HTTP and security tests.
-- Database migrations and original triggers.
+OWASP ASVS 5.0 Level 2 matrix:
 
-Preserve all prior migrations and business invariants.
+- 56 PASS.
+- 14 FAIL.
+- 105 NOT VERIFIED.
+- 78 NOT APPLICABLE.
 
-WP-13 reportedly passed 357 regression results and improved local report/dashboard performance. Its report also identified that the application currently creates database connections per unit of work and has no connection pool.
+Treat these findings as an actionable security backlog, not a passing certification.
 
-Do not change this architecture merely for performance during WP-14.
+Read the actual delivered WP-14 control matrix and external-audit handoff.
 
-Preserve the owner's UI/UX direction, README restrictions and local test environment.
+Preserve the actual WP-14 fixes and regression tests.
 
-No creative redesign.
+## 3. REPOSITORY & ENVIRONMENT BASELINE
 
-## 3. SECURITY TARGET
+Before implementation:
 
-Use:
+- Inspect actual Git branch/HEAD.
+- Read AGENTS.md and current owner instructions.
+- Preserve uncommitted work.
+- Preserve owner .env.local and README restrictions.
+- Preserve current development ports, databases, containers and private file stores.
+- Inspect all source-controlled security documents and evidence.
+- Review migrations 0000–0008 and all 13 integrity/history triggers.
+- Verify existing Playwright/Edge and test scripts.
+- Identify current dependencies and advisories.
+- Verify current website/application route inventories.
 
-- OWASP ASVS Level 2 as the application-verification target.
-- OWASP Top 10 and API Security Top 10 for systematic coverage.
-- Appropriate current Next.js/Node security guidance.
-- Relevant secure-deployment and secret-management principles.
+Do not assume previous reports perfectly match the present repository.
 
-Build a verification matrix.
+Never reset or delete unrelated resources.
 
-For each applicable control, record:
+## 4. WORKSTREAM A — CLOSE SECURITY GAPS
 
-- Control identifier or category.
-- Actual relevant code path.
-- Threat being addressed.
-- Evidence collected.
-- Status: PASS / FAIL / NOT VERIFIED / NOT APPLICABLE.
-- Remediation where necessary.
-- Remaining risk.
+Read every WP-14 ASVS FAIL entry.
 
-Do not claim ASVS conformance solely from automated testing.
+For each:
 
-Do not artificially mark controls not applicable to increase passing percentages.
+- Identify the specific affected code path or policy.
+- Determine whether the issue requires an application change, owner decision, production infrastructure or independent review.
+- Implement a safe fix where requirements and behavior are clear.
+- Add meaningful automated tests.
+- Do not invent business permissions or organizational policies.
+- Do not mark a control PASS without real evidence.
+- Preserve remaining gaps explicitly.
 
-## 4. THREAT MODEL
+Prioritize:
 
-Document:
+1. Private-data exposure and access control.
+2. Authentication/session theft resistance.
+3. Export and document exfiltration.
+4. Secret and infrastructure isolation.
+5. Monitoring and incident response.
 
-### Assets
+Do not silently convert unresolved requirements into NOT APPLICABLE.
 
-Financial data, customer records, immutable receipts, full exports, audit history, sessions, secrets, database and private storage.
+## 5. AUTHENTICATION HARDENING
 
-### Entry points
+Evaluate and address:
 
-Public routes, authenticated pages, APIs, Server Actions where present, document downloads, export endpoints, login/logout, operator CLI, deployment configuration and recovery scripts.
-
-### Potential adversaries
-
-- Anonymous internet attacker.
-- Attacker holding a stolen or expired session.
-- Authenticated user attempting unauthorized operations.
-- Malicious or compromised third-party dependency.
-- Person with access to leaked logs, exports or backups.
-- Attacker exploiting storage or hosting misconfiguration.
-
-### Trust boundaries
-
-- Internet to public website.
-- Browser to authenticated API.
-- API to business service.
-- Application to MySQL.
-- Application to private filesystem.
-- Export generation to downloadable bytes.
-- Operator CLI to account administration.
-- Production host to backup infrastructure.
-
-Identify practical data-exfiltration paths and prioritize by business impact and exploitability.
-
-## 5. AUTHENTICATION AND SESSION SECURITY
-
-Inspect and test the current WP-03 implementation.
-
-Review:
-
-- Argon2id password handling and parameters.
-- Session-token entropy.
-- Token hashing at rest.
-- Session expiration and revocation.
-- Secure cookie flags.
-- SameSite handling.
-- Production HTTPS requirements.
+- Multi-factor authentication readiness and implementation options.
+- Idle-session timeout.
+- Absolute session lifetime.
 - Login rate limiting.
-- Account enumeration.
-- Concurrent login behavior.
-- Logout invalidation.
-- Disabled-user invalidation.
-- Password reset and operator recovery.
-- Session fixation.
-- CSRF protection.
-- Origin/Host checks.
-- Trusted reverse-proxy assumptions.
-- Cookie and session behavior across browser environments.
+- Credential stuffing resistance.
+- Breached/common-password screening.
+- Concurrent session controls.
+- Secure session invalidation.
+- Operator-only recovery.
+- Password-change policy.
+- Account disable/revocation behavior.
+- Secure cookies and production HTTPS.
+- Session fixation and CSRF.
 
-Test real cookies and sessions, not only synthetic injected headers.
+### Important owner decisions
 
-Check whether session tokens or sensitive cookies can appear in URLs, logs, error reports or client bundles.
+MFA requirements, idle timeout duration and session-count policy may affect the approved business workflow.
 
-Do not introduce public self-registration or reset endpoints.
+Do not unilaterally choose disruptive policies without an approved requirement.
 
-The existing operator-only account-management boundary must remain operator-only.
+Where no decision exists:
 
-## 6. AUTHORIZATION AND IDOR
+- Implement safe, testable supporting architecture where useful.
+- Document the explicit decision needed.
+- Do not claim the corresponding ASVS control has passed.
 
-Inventory every private route and API endpoint.
+Keep the existing five equal-permission business users and operator-only account provisioning.
+
+No public registration.
+
+No invented administrator role in the application.
+
+## 6. HIGH-RISK FULL EXPORT POLICY
+
+The complete business ZIP contains extensive internal records and immutable receipt PDFs.
+
+Review its security model beyond ordinary login.
 
 Test:
 
-- Anonymous access.
-- Invalid session.
-- Expired session.
-- Revoked session.
-- Disabled user.
-- Malformed record ID.
-- Unknown record ID.
-- Cross-entity ID substitution.
-- Request payload field injection.
-- Direct API access without loading the page.
-- Alternate HTTP methods.
-- Nested route manipulation.
-- Unauthorized document/version downloads.
-- Access to historical archived and cancelled records.
-- Session revocation during a financial mutation.
-
-All sensitive access decisions must happen on the server.
-
-Do not rely on hidden buttons, client-side routing or navigation visibility.
-
-**Important permission model:**
-
-The five client users currently have equal approved operational permissions.
-
-Do not invent project-level restrictions or new roles.
-
-However, clearly document that any authorized user with full export access may legitimately obtain an extensive copy of business data.
-
-Evaluate stronger export controls as a separately proposed product decision, not a silent permission change.
-
-## 7. HIGHEST-PRIORITY EXFILTRATION REVIEW
-
-Conduct an especially thorough review of:
-
-### Full Business Export
-
-- Authorization and account status.
-- Session rechecks before download.
-- Complete-data scope.
-- Historical records and snapshots.
-- Credential exclusions.
-- Storage path exclusions.
-- Unexpected nested sensitive fields.
-- Export audit events.
-- Resource limits.
-- Rate limiting and abuse.
-- Unauthorized replay or sharing.
-- CDN/cache behavior.
-- Incomplete downloads.
-- Filenames and archive metadata.
-
-### Financial PDF/XLSX Reports
-
-- Authorization.
-- Cross-user leakage.
-- Caching.
-- Formula injection.
-- Unsafe user-controlled strings.
-- Path exposure.
-- Error redaction.
-
-### Receipt PDFs
-
-- Live session required.
-- Version-level access.
-- Immutable storage.
-- Path traversal.
-- Symlinks/junctions.
-- Unsafe storage-root configuration.
-- Checksum verification.
-- No public static exposure.
-- Missing/corrupt file handling.
-- Storage recovery command authorization.
-
-### Public Website
-
-- No private data inside statically generated HTML.
-- No leaking internal project/customer information.
-- No public receipt or export paths.
-- No sensitive metadata in sitemap, robots, source maps or generated build artifacts.
-- No unsafe public-to-private import boundary.
-
-Use actual synthetic canary customer information in the disposable database, then search responses, generated assets and public build outputs for unintended disclosure.
-
-Report any confirmed leak with its exact route, condition and remediation.
-
-## 8. SECRETS AND LOGGING
-
-Inspect:
-
-- Source and Git-tracked files.
-- Next.js public environment variables.
-- Build output and runtime traces.
-- Development and production error handling.
-- Structured or unstructured logs.
-- Stack traces.
-- Database query errors.
-- PDF and ZIP metadata.
-- Operator CLI arguments.
-- Authentication recovery procedures.
-- Generated diagnostic scripts.
-
-Verify that secrets are not included in:
-
-- Client-side JavaScript.
-- Static HTML.
-- Public source maps.
-- HTTP responses.
-- Downloadable exports.
-- Application logs.
-- Audit snapshots.
-- Build artifacts committed to Git.
-
-Do not display real secrets in the delivery report.
-
-Use synthetic sentinel values for leak-detection tests.
-
-If any genuine secret is discovered, do not reproduce its value; describe rotation requirements and affected surfaces.
-
-Never perform production rotation without authorization.
-
-## 9. DATABASE SECURITY
-
-Inspect the current MySQL architecture.
-
-Evaluate:
-
-- Database network exposure.
-- TLS capability.
-- Application-user privilege requirements.
-- Migration versus runtime privileges.
-- Trigger/function creation privileges.
-- Binary logging and the known MySQL trigger-creation constraint.
-- Connection configuration.
-- Prepared queries.
-- Raw SQL safety.
-- SQL injection boundaries.
-- Transaction isolation.
-- Error handling.
-- Database backup confidentiality.
-- History/financial integrity guards.
-
-Design a least-privilege production database role.
-
-Distinguish:
-
-- Runtime application permissions.
-- Migration/deployment permissions.
-- Operator/maintenance permissions.
-- Backup/restore permissions.
-
-Do not run production GRANT or ALTER USER commands.
-
-If changes require an additive migration, verify that old migrations remain byte-identical.
-
-Do not disable triggers, constraints or audit controls to pass security tests.
-
-## 10. FINANCIAL ABUSE AND BUSINESS-LOGIC SECURITY
-
-Re-test high-risk scenarios:
-
-- Duplicate payment confirmation.
-- Reused idempotency key with different payload.
-- Unauthorized operation-status lookup.
-- Cross-project phase allocation.
-- Phase-capacity overrun.
-- Concurrent payment and contract edit.
-- Incorrect receipt number reuse.
-- Immutable document modification.
-- Receipt correction without a corresponding payment change.
-- Cancellation and correction races.
-- Cancelled-payment inclusion in active income.
-- Inline category creation rollback.
-- Incorrect export totals.
-- Audit insertion failure.
-- History mutation or deletion attempts.
-
-All financial operations must preserve established row-lock order and exact DECIMAL/BigInt arithmetic.
-
-Do not modify financial business rules without a confirmed defect.
-
-## 11. HTTP, BROWSER AND PLATFORM HARDENING
-
-Review actual Next.js deployment implications, including:
-
-- Security headers.
-- Content Security Policy design.
-- Trusted script/style requirements.
-- Frame embedding and clickjacking protection.
-- MIME sniffing.
-- Referrer policy.
-- HTTPS/HSTS deployment prerequisites.
-- Cache-Control.
-- Error and not-found responses.
-- CORS.
-- Cross-origin resource exposure.
-- Server Actions where present.
-- File download headers.
-- Source map exposure.
-- Static asset and build artifact leakage.
-
-Use a CSP compatible with the current application.
-
-Do not install a policy that silently breaks React hydration, necessary Next.js scripts, PDF downloads or the owner's future motion code.
-
-Prefer a tested enforcement policy where safe; otherwise document a staged Report-Only rollout.
-
-Do not claim that HSTS works correctly before actual production HTTPS/proxy configuration is tested.
-
-## 12. DEPENDENCY AND SUPPLY-CHAIN REVIEW
-
-Inspect the actual dependency tree and current advisories.
-
-Previous reports identified six moderate advisories involving development tooling and ExcelJS transitive dependencies.
-
-For every current advisory:
-
-- Identify the affected package.
-- Installed version.
-- Patched available version, if any.
-- Whether the vulnerable functionality is reachable.
-- Production versus development scope.
-- Recommended mitigation.
-- Upgrade compatibility and regression risk.
-
-Check currently published authoritative advisories where appropriate.
-
-Do not run blind `npm audit fix --force`.
-
-Apply a minimal, safe upgrade only when justified and supported by full regression evidence.
-
-Record remaining accepted risks and required follow-up.
-
-Also assess:
-
-- Lockfile integrity.
-- Unnecessary dependencies.
-- Dependency scripts.
-- Server-only modules being bundled client-side.
-- Direct and transitive runtime package exposure.
-
-Do not claim a clean audit if advisories remain.
-
-## 13. SECURE CONFIGURATION
-
-Produce a production security configuration checklist covering:
-
-- TLS certificate and proxy.
-- Environment secrets.
-- Secure cookies.
-- Allowed origins.
-- Network isolation.
-- Database least privilege.
-- Private receipt storage.
-- File permissions.
-- Safe deployment directories.
-- Backup encryption.
-- Log retention and access.
-- Monitoring and alerting.
-- Deployment separation.
-- Emergency account/session revocation.
-
-Do not choose or purchase hosting.
-
-Do not deploy the application.
-
-Document which items cannot be tested locally without a real hosting environment.
-
-## 14. BACKUP AND DISASTER-RECOVERY SECURITY
-
-Review current design requirements:
-
-- Daily off-site backups.
-- 30-day retention.
-- RPO ≤24 hours.
-- RTO ≤48 hours.
-- Paired database + immutable receipt document recovery.
-
-Assess:
-
-- Backup encryption.
-- Key management.
-- Access separation.
-- Integrity checks.
-- Retention.
-- Restore authorization.
-- Protection against accidental deletion/ransomware.
-- Handling of receipt-storage instance binding.
-- Private export and backup confidentiality.
-
-WP-14 should deliver the security architecture and risks.
-
-Actual hosting-specific backup/restore drills are part of WP-15.
-
-Do not claim RPO/RTO compliance without completed restore tests.
-
-## 15. LOCAL SECURITY TEST ENVIRONMENT
-
-Use:
-
-- Task-owned disposable official MySQL 8.4.
-- Synthetic users and records.
-- Synthetic financial data.
-- Synthetic receipt PDFs.
-- Private task-owned test storage.
-- Local loopback Next.js server.
-- Edge/Playwright where supported.
-
-Do not access public production targets.
-
-Do not scan unrelated networks, domains or other applications.
-
-Do not inspect the owner's personal browser profile.
-
-Do not modify unrelated containers or databases.
-
-Keep tests bounded and recoverable.
-
-Before cleanup, confirm ownership labels and actual resource identity.
-
-Preserve the owner's `.env.local`, README and existing development resources.
-
-## 16. REQUIRED SECURITY TESTS
-
-Build a repeatable security test suite including:
+- Authorization at every layer.
+- Session revocation before delivery.
+- Request confirmation.
+- Anti-CSRF defenses.
+- Record scope and credential exclusion.
+- Secret exclusion inside historical snapshots.
+- Export audit.
+- Download headers.
+- Browser persistence.
+- Filesystem or temporary-storage exposure.
+- Cross-user replay.
+- Repeated-download abuse.
+- Export contention.
+- Sensitive dataset leakage through error reporting.
+
+Propose stronger controls such as:
+
+- Recent reauthentication.
+- Step-up MFA.
+- Per-user export limits.
+- Operator notification.
+- Time-limited approval.
+- Enhanced audit alerts.
+
+**Do not silently introduce an approval-only permission model that contradicts the five equal user rights.**
+
+Clearly identify which proposals require the owner's approval.
+
+Any confirmed unauthenticated export path is a Critical release blocker.
+
+## 7. END-TO-END BUSINESS QA
+
+Use synthetic users, projects, contracts, phases, expenses, payments and documents.
+
+Exercise actual browser interactions where feasible.
+
+Complete at least the following workflows:
 
 ### Authentication
 
-- Invalid and expired sessions.
+- Login.
+- Invalid password.
+- Logout.
+- Expired session.
+- Revoked session.
+- Disabled user.
+
+### Clients
+
+- Create individual/business.
+- Edit.
+- Search.
+- Archive constraints.
+- Audit history.
+
+### Projects and Contracts
+
+- Create project.
+- Associate client.
+- Save contract.
+- Create phases.
+- Edit phase amounts.
+- Verify contract-phase sum.
+- Reject invalid phase reduction/deletion.
+
+### References
+
+- Categories.
+- Persons/suppliers.
+- Vehicles.
+- Deactivate/reactivate.
+- Reject inactive new associations.
+
+### Expenses
+
+- Company-wide expense.
+- Project expense.
+- Inline category creation.
+- Edit.
+- Cancel.
+- Verify audit and correct totals.
+
+### Incoming Payments
+
+- Register payment.
+- Split across multiple phases.
+- Verify exact allocation sum.
+- Reject overcapacity.
+- Correct payment.
+- Cancel payment.
+- Verify capacity is released.
+
+### Receipts
+
+- Numbered PDF issuance.
+- Authorized download.
+- Correction creates next immutable version.
+- Old document remains unchanged.
+- Cancelled status is visible.
+- Repeated operation does not duplicate receipt.
+
+### Dashboard and Reports
+
+- Actual company totals.
+- Project on-screen summaries.
+- Company PDF/XLSX reports.
+- Full business ZIP export.
+- Exact reconciliation after corrections/cancellations.
+
+### Public Website
+
+- Ten SQ/EN routes.
+- Navigation/language switching.
+- Public/private data isolation.
+- Responsive layouts.
+- Contact behavior.
+- SEO and noindex safeguards.
+
+Use real Playwright browser interaction, not just HTTP status checks, for a representative complete transaction flow.
+
+## 8. SECURITY-FOCUSED BROWSER QA
+
+Exercise:
+
+- Desktop and mobile viewports.
+- Keyboard navigation.
+- Focus and dialogs.
+- Hydration.
+- Console errors.
+- Browser back/refresh.
+- Login/logout session state.
+- Uncertain network responses.
+- Receipt downloads.
+- Export downloads.
+- CSP behavior.
+- Reduced motion.
+- XSS probes using harmless synthetic markers.
+- Disabled-session redirects.
+- Browser data persistence after logout.
+
+Automated axe scans are useful but do not prove full WCAG conformance.
+
+Document manual accessibility checks requiring human verification.
+
+Do not alter the owner's final design direction.
+
+## 9. BACKUP SYSTEM REQUIREMENTS
+
+Approved targets:
+
+- Daily off-site backup.
+- Thirty-day retention.
+- RPO <= 24 hours.
+- RTO <= 48 hours.
+
+These are targets until measured in the chosen production infrastructure.
+
+A backup must include:
+
+- MySQL business and authentication state.
+- Required schema/migration consistency.
+- Immutable numbered receipt PDFs.
+- Receipt storage ownership metadata.
+- Necessary configuration identifiers.
+- An appropriate security-controlled restore procedure.
+
+A customer ZIP export is not an adequate replacement for a system backup.
+
+Do not include plaintext credentials in an unencrypted backup.
+
+## 10. BACKUP CONFIDENTIALITY
+
+Implement a local testable backup design using:
+
+- Authenticated backup operator.
+- Separate backup credentials/permissions.
+- Encryption at rest.
+- Key separation from the backup files.
+- Integrity manifest/checksums.
+- Access restriction.
+- Safe filenames.
+- Reliable retention metadata.
+- No backup output in public assets.
+- No secret exposure through process arguments/logs.
+- Auditable backup/restore operations.
+
+Use a modern maintained encryption method/library available in the environment.
+
+Do not invent a custom cryptographic algorithm.
+
+For local tests, use generated synthetic secrets.
+
+Never include private decryption keys in the same backup artifact they protect.
+
+Document safe key loss/recovery and key-rotation requirements.
+
+## 11. CONSISTENT MYSQL + RECEIPT RESTORE
+
+**This is a critical integration requirement.**
+
+Test backup and restoration of the database and private PDF storage as one coherent recovery set.
+
+Because these are separate persistence systems, a naive copy during an active issuance could yield mismatches.
+
+Design and test a safe coordination protocol such as:
+
+- Controlled application quiescence or a proven consistent backup boundary.
+- Storage advisory lease coordination where appropriate.
+- Consistent MySQL dump/snapshot.
+- Matching immutable receipt files.
+- Receipt counter state.
+- Receipt identity/version metadata.
+- Storage ownership binding.
+- Reconciliation of referenced PDFs and SHA-256 hashes.
+
+Do not claim atomicity across MySQL and filesystem without a justified mechanism.
+
+The restore must preserve:
+
+- Payment identities.
+- Original receipt numbers.
+- All receipt versions.
+- PDF contents.
+- Receipt checksums.
+- Audit/version history.
+- Idempotency state where relevant.
+- Cancellation metadata.
+- Current business totals.
+
+Fail closed on missing or mismatched documents.
+
+Never silently renumber receipts after a restore.
+
+## 12. ACTUAL RESTORE DRILL
+
+Execute a complete isolated restore rehearsal:
+
+1. Prepare disposable MySQL and private receipt store.
+2. Create actual synthetic users/projects/payments/receipts.
+3. Record baseline totals and receipt checksums.
+4. Produce a protected paired backup.
+5. Restore into a fresh independent task-owned environment.
+6. Apply any required instance/store rebinding through an explicit operator-authorized step.
+7. Verify the restored database, migrations and triggers.
+8. Verify original receipt PDFs by SHA-256.
+9. Verify current financial totals.
+10. Verify historical receipt versions.
+11. Verify restored sessions cannot bypass revocation or the intended post-restore authentication policy.
+12. Exercise authenticated reads and one valid post-restore payment/receipt operation.
+13. Record actual elapsed backup and restore times.
+14. Confirm no cross-contamination with the source environment.
+
+Include failure-injection tests:
+
+- Corrupt archive.
+- Missing PDF.
+- Wrong decryption key.
+- Tampered manifest.
+- Incomplete paired backup.
+- Unauthorized restore attempt.
+- Different server/storage identity.
+- Disk-full simulation where safely feasible.
+
+Do not claim production RPO/RTO compliance from a small disposable local drill.
+
+## 13. PRODUCTION INFRASTRUCTURE FEASIBILITY
+
+Review actual documented deployment requirements.
+
+Do not assume the selected hosting tier supports everything.
+
+Verify or explicitly mark unknown:
+
+- Persistent Node.js/Next.js server execution.
+- MySQL version and InnoDB.
+- Trigger support and migration privileges.
+- Binary-log restrictions during deployment.
+- Private persistent writable storage.
+- Directory permissions.
+- File synchronization/durability guarantees.
+- Process restart behavior.
+- TLS certificates.
+- Reverse proxy and trusted origin handling.
+- Isolated MySQL network.
+- Off-site backups.
+- Retention and encryption.
+- Scheduled jobs/operator recovery.
+- Resource limits.
+- Monitoring/log shipping.
+- Disaster recovery feasibility.
+
+Existing receipt storage relies on a persistent shared filesystem, not a stateless ephemeral serverless filesystem.
+
+If the intended hosting cannot support the architecture, classify deployment as NO-GO for that host.
+
+Do not weaken the security or durability requirements to accommodate inexpensive hosting.
+
+Prepare a compatibility matrix without purchasing infrastructure.
+
+## 14. DEPENDENCY AND BUILD SECURITY
+
+Review current `npm audit`.
+
+Track the four remaining moderate advisories.
+
+Determine whether safe patched versions have become available.
+
+Do not force a historical Drizzle migration tool downgrade.
+
+Run:
+
+- Dependency integrity checks.
+- Runtime versus development dependency exposure review.
+- Lockfile review.
+- Build-output inspection.
+- Source-map/private configuration exposure tests.
+- No-secrets-in-artifacts tests.
+
+Where updates are safe, validate them through full regression tests.
+
+Do not claim clean audit if findings remain.
+
+## 15. MONITORING AND INCIDENT RESPONSE
+
+Prepare a practical operational plan for:
+
+- Failed login bursts.
+- Unexpected access denials.
+- Excessive business exports.
+- Receipt corruption.
+- Database downtime.
+- Storage availability failure.
+- Failed backups.
+- Backup restoration alerts.
+- Unusual error rates.
+- Application restarts.
+- Suspected credential compromise.
+
+Specify:
+
+- Which events should be monitored.
+- What must never be logged.
+- Alert thresholds or configurable policies.
+- Operator response.
 - Session revocation.
-- Account deactivation.
-- Session token leakage.
-- Login rate limiting.
-- CSRF/origin rejection.
+- Secret rotation procedure.
+- Evidence preservation.
+- Business communication/escalation.
+- Recovery confirmation.
 
-### API Authorization
+Implement non-sensitive structured events or instrumentation where safe and useful.
 
-- Every private route/API anonymously.
-- Malformed/foreign IDs.
-- Disallowed methods.
-- Unexpected fields.
-- Cross-entity relationship manipulation.
-- Authenticated but unauthorized operation-key lookup.
+Do not send real financial values, passwords, tokens or raw PDF content into monitoring systems.
 
-### Exfiltration
+Do not configure external alert receivers without approval.
 
-- Private-data canary leakage.
-- Static asset leakage.
-- PDF download without session.
-- ZIP export without session.
-- Unauthorized export replay.
-- Metadata and error-based disclosure.
-- Unexpected cache exposure.
+## 16. QA OF FINANCIAL INTEGRITY AFTER RECOVERY
 
-### Input and Browser
+Test that restored data respects:
 
-- Stored and reflected XSS.
-- Spreadsheet injection.
-- Unsafe redirect.
-- Clickjacking protections.
-- Path traversal.
-- Browser cache behavior.
-- CSP compatibility.
+- Exact EUR decimal values.
+- Contract total equals phase totals.
+- Payment allocations equal payment amount.
+- Phase capacity constraints.
+- Correct active received amounts.
+- Correct active expenses.
+- Cancelled-state exclusions.
+- Receipt number uniqueness.
+- Receipt version immutability.
+- Correct receipt counter continuation.
+- Complete audit/history.
+- Idempotent retry behavior.
 
-### Financial Integrity
+After restore, execute real independent-connection financial race tests against the recovered environment where feasible.
 
-- Duplicate logical payment prevention.
-- Financial cross-project isolation.
-- Race conditions.
-- Immutable receipt versions.
-- Historical audit protections.
+No restoration process may suppress existing SQL triggers or rewrite immutable receipt history.
 
-### Operational Security
+## 17. PERFORMANCE REGRESSION
 
-- Secrets in build output.
-- Dependency vulnerabilities.
-- Database least-privilege assumptions.
-- Storage recovery authorization.
-- Backup confidentiality requirements.
+Re-run critical WP-13 metrics where practical:
 
-Use genuine browser/network requests where required.
+- Dashboard API.
+- Company report API.
+- Financial snapshots.
+- Receipt download.
+- Company PDF/XLSX.
+- ZIP export.
+- Public page browser loading.
+- Selected private navigation.
 
-Do not mark a test PASS if the relevant protection was merely inspected rather than exercised; distinguish code review from dynamic verification.
+Security changes must not produce severe undocumented performance regressions.
 
-## 17. REMEDIATION PRINCIPLES
+If stronger authentication, encryption or auditing causes overhead, measure it honestly.
 
-For each confirmed vulnerability:
+Do not weaken security merely to recover benchmark scores.
 
-1. Capture synthetic reproduction evidence.
-2. Assess severity and affected data.
-3. Identify root cause.
-4. Implement the smallest reliable fix.
-5. Add a regression test.
-6. Re-run related existing tests.
-7. Document residual risk.
+## 18. CRITICAL RELEASE GATES
 
-Prioritize confirmed leakage and authorization defects above lower-risk hardening.
+A final GO recommendation is prohibited if any of these remain:
 
-Do not perform broad rewrites.
+- Confirmed unresolved Critical/High confidentiality vulnerability.
+- Unverified authentication bypass on exposed sensitive routes.
+- Public access to private customer records, receipts or exports.
+- Unprotected production secrets.
+- Publicly reachable production database without appropriate isolation.
+- Unsupported or insecure production hosting.
+- No verified private persistent receipt storage.
+- No independently restorable encrypted backup.
+- Financial/receipt integrity failures.
+- Missing appropriate accountant approval for issued business documents.
+- Missing qualified independent penetration test.
+- Missing mandatory owner approvals on security policy.
+- Missing final UI/UX and public-content signoff.
+- No production-environment TLS/reverse-proxy/security verification.
 
-Do not reduce current security to increase performance.
+A local implementation cannot alone clear production-dependent gates.
 
-Do not suppress legitimate validation errors or disable earlier test checks.
+Declare **NO-GO FOR PRODUCTION** until required evidence exists.
 
-Security improvements must preserve usability and business consistency.
+## 19. REQUIRED TESTING
 
-## 18. INDEPENDENT AUDIT HANDOFF
+Run and preserve all established suites:
 
-Prepare an external security-review package containing:
+- Unit tests.
+- MySQL integration.
+- Security integration.
+- Authentication HTTP.
+- Payments/expenses/receipts HTTP.
+- Reporting/export HTTP.
+- Website isolation.
+- Edge/Playwright website browser.
+- Edge security browser.
+- Payment recovery browser.
+- New complete business-flow browser tests.
+- New backup/restore drills.
 
-- Architecture and trust boundaries.
-- Endpoint inventory.
-- Authentication design.
-- Permission model.
-- Financial transaction controls.
-- Document and export security.
-- Storage and backup assumptions.
-- Security test results.
-- Known vulnerabilities and remediations.
-- Open questions.
-- Deployment prerequisites.
-- Test-environment setup instructions.
-- Explicit authorized scope for independent penetration testing.
+Also run:
 
-Never include live secrets.
+- `npm.cmd run typecheck`
+- `npm.cmd run lint`
+- `npm.cmd run build`
+- `npm.cmd run db:check`
+- Appropriate migration verification.
+- Relevant route checks.
+- Dependency review.
 
-Do not claim Codex's self-review is equivalent to an independent penetration test.
+Use task-owned synthetic resources only.
 
-Recommend a qualified external specialist review before production.
+Do not disable previous tests to achieve a pass.
 
-## 19. ACCEPTANCE CRITERIA
+Separate successful test outcomes from unverified production assumptions.
 
-**WP14-AC01:** Complete private-data threat model documented.
+## 20. ACCEPTANCE CRITERIA
 
-**WP14-AC02:** Actual private route and endpoint inventory completed.
+**WP15-AC01:** Every WP-14 ASVS FAIL is mapped to a fix, owner decision or explicit release blocker.
 
-**WP14-AC03:** Authentication/session design reviewed and dynamically tested.
+**WP15-AC02:** Applicable high-impact locally remediable security gaps are addressed and retested.
 
-**WP14-AC04:** Anonymous/expired/disabled session access denied across sensitive endpoints.
+**WP15-AC03:** Full private-route authorization regression passes.
 
-**WP14-AC05:** Object-level authorization and ID manipulation reviewed.
+**WP15-AC04:** Receipt/export confidentiality and no-store rules pass.
 
-**WP14-AC06:** Full export cannot be accessed without current authorization.
+**WP15-AC05:** Actual browser end-to-end business workflows are tested.
 
-**WP14-AC07:** Receipt PDFs and versions cannot be downloaded anonymously.
+**WP15-AC06:** Financial accuracy and cancellation/correction behavior remain correct.
 
-**WP14-AC08:** Public website and assets do not expose synthetic private canary data.
+**WP15-AC07:** Immutable receipt PDFs and version histories remain valid.
 
-**WP14-AC09:** Secrets do not appear in checked public bundles/logging/export boundaries.
+**WP15-AC08:** Encrypted paired database/document backup implementation is tested locally.
 
-**WP14-AC10:** Financial integrity and idempotency abuse tests pass.
+**WP15-AC09:** Restore into an independent fresh environment succeeds.
 
-**WP14-AC11:** PDF storage traversal/overwrite/recovery security tests pass.
+**WP15-AC10:** Restored receipt PDFs match stored SHA-256 values.
 
-**WP14-AC12:** CSRF, Origin/Host and safe request-body validation are verified.
+**WP15-AC11:** Corrupt, missing and unauthorized restore cases fail safely.
 
-**WP14-AC13:** Browser and HTTP security headers are assessed and hardened appropriately.
+**WP15-AC12:** Post-restore payment numbering, allocations and idempotency are valid.
 
-**WP14-AC14:** Dependency advisories are individually analyzed and mitigated or documented.
+**WP15-AC13:** Backup/restore elapsed time and environment are reported honestly.
 
-**WP14-AC15:** Database least-privilege roles and production TLS requirements are documented.
+**WP15-AC14:** Production RPO/RTO remain NOT VERIFIED until real infrastructure drills.
 
-**WP14-AC16:** Export confidentiality and sensitive-field exclusions are tested.
+**WP15-AC15:** Target-host capability matrix identifies verified and unknown prerequisites.
 
-**WP14-AC17:** Backup encryption/access/recovery security design is documented.
+**WP15-AC16:** Dependency advisories and build-secret boundaries are rechecked.
 
-**WP14-AC18:** No confirmed unresolved Critical/High data-exposure vulnerability remains in the tested scope.
+**WP15-AC17:** Monitoring, incident-response and operator recovery documentation are delivered.
 
-**WP14-AC19:** Prior business, financial, receipt and export regressions pass.
+**WP15-AC18:** Critical authentication and payment/receipt concurrency regressions pass.
 
-**WP14-AC20:** MySQL migrations, original triggers and financial locking remain intact.
+**WP15-AC19:** All original migrations, guards and audit history remain intact.
 
-**WP14-AC21:** TypeScript, lint, production build and browser checks pass.
+**WP15-AC20:** TypeScript, lint, production build and existing browser tests pass.
 
-**WP14-AC22:** External independent-audit handoff package is delivered.
+**WP15-AC21:** Core performance regressions are assessed without compromising security.
 
-**WP14-AC23:** Tests use only isolated synthetic local data and owned resources.
+**WP15-AC22:** No real data or production resources are modified.
 
-**WP14-AC24:** No deployment, real data or unauthorized external scanning occurs.
+**WP15-AC23:** External audit and accountant/owner approval gaps remain accurately documented.
 
-**WP14-AC25:** Findings clearly distinguish verified controls, assumptions, residual risk and release blockers.
+**WP15-AC24:** A complete release GO/NO-GO evidence dossier is delivered.
 
-Report each as PASS, FAIL or NOT VERIFIED.
+**WP15-AC25:** The report does not claim production readiness while mandatory gates remain unverified.
 
-Do not interpret WP14-AC18 as a guarantee that undiscovered vulnerabilities do not exist.
+Classify each item:
 
-## 20. REQUIRED DELIVERABLES
+- PASS
+- FAIL
+- NOT VERIFIED
+- BLOCKED BY EXTERNAL DECISION
 
-### A. Executive Security Assessment
+Do not convert blocked production requirements into artificial PASS results.
 
-Overall risk posture and highest-priority findings.
+## 21. REQUIRED DELIVERY REPORT
 
-### B. Threat Model
+### A. Executive Result
 
-Assets, entry points, adversaries, trust boundaries and data-exfiltration scenarios.
+Security posture and local readiness verdict.
 
-### C. Endpoint Matrix
+### B. ASVS Closure Ledger
 
-Every private route/API, required authentication and dynamic test outcome.
+Each unresolved WP-14 item, action and remaining risk.
 
-### D. Findings
+### C. End-to-End QA
 
-Severity, root cause, evidence, fix and residual risk.
+Actual browser business scenarios, results, screenshots and failures.
 
-### E. Implemented Hardening
+### D. Backup Architecture
 
-Exact changed file paths and purpose.
+Encryption, keys, storage separation, paired snapshot strategy and retention.
 
-### F. Authentication & Authorization
+### E. Restore Drill
 
-Session/cookie/account and object-access test evidence.
+Exact environments, commands, checksums, timing and evidence.
 
-### G. Document & Export Security
+### F. Recovery Failure Scenarios
 
-Private receipt, report, XLSX, ZIP and historical-data leak review.
+Tampered/missing/wrong-key/partial/unauthorized behavior.
 
-### H. Database & Infrastructure
+### G. Infrastructure Feasibility
 
-Least privilege, TLS, storage, secrets and deployment hardening.
+Target-host matrix and deployment limitations.
 
-### I. Supply Chain
+### H. Operational Monitoring
 
-Exact advisory review, fixes, reachable risks and remaining findings.
+Alerts, logs, incident playbooks and operator actions.
 
-### J. Backup Security
+### I. Dependency Security
 
-Encryption, storage separation, retention and restore prerequisites.
+Current advisories, patches and unresolved risks.
 
-### K. Tests
+### J. Performance Regression
 
-Commands, outcomes, genuine browser/HTTP tests and regressions.
+Critical before/after or baseline comparisons.
 
-### L. ASVS Verification Matrix
+### K. Files Changed
 
-Applicable controls and evidence, without unsupported certification.
+Exact paths and purpose.
+
+### L. Verification
+
+Commands, distinct result counts and integrity checks.
 
 ### M. Acceptance
 
-WP14-AC01 through WP14-AC25.
+WP15-AC01 through WP15-AC25.
 
-### N. Independent Audit Handoff
+### N. Release Gate Matrix
 
-Safe scope and instructions for a qualified external reviewer.
+Each production prerequisite: VERIFIED / NOT VERIFIED / BLOCKED / FAIL.
 
-### O. Final Release Risk Register
+### O. Independent Audit Handoff
 
-Unresolved blockers, owner decisions and required WP-15 actions.
+Outstanding security-review scope and safe evidence package.
 
-### P. Next Package
+### P. Final Recommendation
 
-Assess readiness for WP-15 — Final QA, Backup/Restore and Controlled Release Readiness.
+Explicit local QA readiness and separate production GO/NO-GO.
 
-Do not start WP-15 automatically.
+## 22. EXECUTION
 
-## 21. EXECUTION
+Proceed with WP-15 locally now.
 
-Implement WP-14 locally now.
+Prioritize security gaps and confidentiality first.
 
-Inventory the attack surface, investigate actual data-leak risks, dynamically test security boundaries, fix confirmed vulnerabilities and provide a comprehensive evidence-based report.
+Test actual end-to-end financial workflows.
 
-Prioritize the confidentiality of the internal company system.
+Implement and verify encrypted paired backup/restore in isolated infrastructure.
 
-Preserve all existing financial, historical, receipt and authentication guarantees.
+Preserve the original database/filesystem/receipt security boundaries.
 
-Do not alter the owner's creative UI/UX direction.
+Document production infrastructure feasibility and operational readiness.
 
-Do not claim independent security certification.
+Never invent positive evidence for work that depends on unavailable production services.
+
+Do not alter the owner's visual/creative design.
 
 Do not deploy.
 
-Commit/push only under the owner's current explicit authorization.
+Commit/push only within the owner's current explicit authorization.
 
-**END OF WP-14**
+**END OF WP-15**

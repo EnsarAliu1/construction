@@ -18,10 +18,10 @@ import {finances} from "../../src/features/reporting/finance";
 import {reportFilter} from "../../src/features/reporting/validation";
 
 async function main(){
-const root="artifacts/wp13",mode=process.argv[2],label=process.argv[3]??"baseline";
+const release=process.env.AUTH_TEST_WORK_PACKAGE==="WP-15",root=release?"artifacts/wp15/performance":"artifacts/wp13",mode=process.argv[2],label=process.argv[3]??"baseline";
 assert(["seed","db","browser","races"].includes(mode));assert(["baseline","optimized"].includes(label));
 const options=localDatabaseOptions(process.env.TEST_DATABASE_URL,"test",process.env.DATABASE_DISPOSABLE);
-assert(options.database==="fitimi_test_wp13"&&options.port===3307&&process.env.TEST_DATABASE_URL===process.env.DATABASE_URL);
+assert(options.database===(release?"fitimi_test_wp15":"fitimi_test_wp13")&&options.port===3307&&process.env.TEST_DATABASE_URL===process.env.DATABASE_URL);
 const origin=new URL(process.env.AUTH_ORIGIN!);assert.equal(origin.origin,"http://127.0.0.1:3000");
 await mkdir(root,{recursive:true});
 const summary=(values:number[])=>{const v=[...values].sort((a,b)=>a-b);return {n:v.length,medianMs:v[Math.floor(v.length/2)],p95Ms:v[Math.min(v.length-1,Math.ceil(v.length*.95)-1)],minMs:v[0],maxMs:v.at(-1)};};

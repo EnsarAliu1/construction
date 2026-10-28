@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { LOGIN_FAILURE, sessionCookieSettings } from "./security";
+import {securitySignal} from "../operations/events";
 
 export function authJson(body: object, status = 200) {
+  if(status===401||status===403)securitySignal('access.denied',status);
+  else if(status===429)securitySignal('request.throttled',status);
+  else if(status>=500)securitySignal('service.unavailable',status);
   return NextResponse.json(body, { status, headers: { "Cache-Control": "no-store", "Pragma": "no-cache" } });
 }
 export function loginFailure(status = 401) { return authJson({ ok: false, message: LOGIN_FAILURE }, status); }

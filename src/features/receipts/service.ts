@@ -11,6 +11,7 @@ import {escapedSearch} from "@/features/clients/validation";
 import {text} from "@/features/expenses/validation";
 import {cancelPayment,confirmPayment,correctPayment,type PaymentTx,type ReceiptBoundary,type ReceiptContext} from "@/features/payments/service";
 import {PrivateReceiptStore,type ReceiptFault} from "./storage";
+import {securitySignal} from "@/server/operations/events";
 import {renderReceiptPdf} from "./pdf";
 
 export const documentUnavailable=()=>new ReferenceError("DOCUMENT_UNAVAILABLE","The receipt document is unavailable or failed integrity checks. No new payment should be submitted; check the original operation and contact your operator.",503);
@@ -109,7 +110,7 @@ export async function downloadReceipt(c:Connection,token:string|undefined,id:str
   const [row]=await drizzle(c).select({receipt:paymentReceipts,document:receiptVersions}).from(paymentReceipts).innerJoin(receiptVersions,eq(receiptVersions.receiptId,paymentReceipts.id)).where(and(eq(paymentReceipts.id,id),eq(receiptVersions.version,version))).limit(1);
   if(!row)throw new ReferenceError("NOT_FOUND","Receipt version not found.",404);
   let bytes:Buffer;
-  try{const store=await storeFor(c);await store.initialize();bytes=await store.read(row.document.storageReference,row.document.fileChecksum);}catch{throw documentUnavailable();}
+  try{const store=await storeFor(c);await store.initialize();bytes=await store.read(row.document.storageReference,row.document.fileChecksum);}catch{securitySignal('receipt.integrity_failed',503);throw documentUnavailable();}
   // Filesystem/checksum work can outlive revocation. Recheck before releasing bytes.
   await requireSessionUser(c,token);
   return {bytes,number:row.receipt.receiptNumber,version,status:row.receipt.status};

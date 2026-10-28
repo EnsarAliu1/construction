@@ -14,6 +14,7 @@ import {setAccountActive} from "../../src/server/auth/accounts";
 import {revokeSession} from "../../src/server/auth/sessions";
 import {tokenDigest,trustedOrigin} from "../../src/server/auth/security";
 
+const evidence=process.env.AUTH_TEST_WORK_PACKAGE==='WP-15'?'artifacts/wp15':'artifacts/wp14',build=process.env.AUTH_TEST_WORK_PACKAGE==='WP-15'?'.next-wp15':'.next-wp14';
 type Endpoint={file:string;path:string;kind:"page"|"api";methods:string[]};
 test("WP14 complete local endpoint denial, canary and export security matrix",{skip:mysqlSkip,timeout:240000},async t=>{
  const f=await paymentFixture(),c=f.connection,origin=trustedOrigin();assert.equal(origin.origin,"http://127.0.0.1:3000");
@@ -38,7 +39,7 @@ test("WP14 complete local endpoint denial, canary and export security matrix",{s
     for(const state of states)for(const method of endpoint.methods){const r=await fetch(new URL(path,origin),{method,redirect:"manual",headers:{...cookie(state.token),Origin:origin.origin,"Content-Type":"application/json"},body:["GET","HEAD"].includes(method)?undefined:"{}"});const text=await r.text();assert.equal(r.status,endpoint.kind==="page"?307:401,`${state.name} ${method} ${path}`);assert(!text.includes(canary));assert.match(r.headers.get("cache-control")??"",/no-store/);matrix.push({pattern:endpoint.path,path,method,state:state.name,status:r.status});}
    }
   }
-  await writeFile("artifacts/wp14/endpoint-results.json",JSON.stringify(matrix,null,2));
+  await writeFile(`${evidence}/endpoint-results.json`,JSON.stringify(matrix,null,2));
  });
  await t.test("equal peers retain company access but cannot recover another user's confirmation operation",async()=>{
   assert.equal((await get(`/api/clients/${f.client.id}`,peer.token)).status,200);
@@ -60,11 +61,11 @@ test("WP14 complete local endpoint denial, canary and export security matrix",{s
  });
  await t.test("public HTML, RSC, metadata, assets and direct filesystem probes exclude private canaries and secrets",async()=>{
   const forbidden=[canary,f.token,tokenDigest(f.token),f.password,process.env.ADORE_OPERATOR_KEY!,process.env.DATABASE_URL!];
-  for(const path of ["/sq","/en",...['sq','en'].flatMap(l=>['about','services','projects','contact'].map(p=>`/${l}/${p}`)),"/sitemap.xml","/robots.txt","/icon.svg","/.env.local","/.git/config","/artifacts/wp14/test.env","/.private/receipts/.owner.json","/.next-wp14/server/server-reference-manifest.json"]){const r=await get(path);const body=await r.text();for(const value of forbidden)assert(!body.includes(value),path);assert(r.status===200||r.status===404);if(path.startsWith('/sq')||path.startsWith('/en')){const rr=await fetch(new URL(path,origin),{headers:{RSC:"1"}});for(const value of forbidden)assert(!(await rr.clone().text()).includes(value));}}
+  for(const path of ["/sq","/en",...['sq','en'].flatMap(l=>['about','services','projects','contact'].map(p=>`/${l}/${p}`)),"/sitemap.xml","/robots.txt","/icon.svg","/.env.local","/.git/config","/artifacts/wp14/test.env","/artifacts/wp15/test.env","/.private/receipts/.owner.json","/.next-wp14/server/server-reference-manifest.json","/.next-wp15/server/server-reference-manifest.json"]){const r=await get(path);const body=await r.text();for(const value of forbidden)assert(!body.includes(value),path);assert(r.status===200||r.status===404);if(path.startsWith('/sq')||path.startsWith('/en')){const rr=await fetch(new URL(path,origin),{headers:{RSC:"1"}});for(const value of forbidden)assert(!(await rr.clone().text()).includes(value));}}
   let files=0;async function scan(dir:string){for(const name of await readdir(dir)){const path=join(dir,name),stat=await lstat(path);if(stat.isDirectory())await scan(path);else if(/\.(js|css|html|rsc|map|svg|json)$/.test(name)){const data=await readFile(path);for(const value of forbidden)assert(!data.includes(Buffer.from(value)),path);files++;}}}
-  await scan(".next-wp14/static");await scan(".next-wp14/server/app/sq");await scan(".next-wp14/server/app/en");
+  await scan(`${build}/static`);await scan(`${build}/server/app/sq`);await scan(`${build}/server/app/en`);
   const publicResponse=await get("/sq"),html=await publicResponse.text(),scripts=[...html.matchAll(/src="([^\"]+\.js[^\"]*)"/g)].map(m=>m[1]);for(const path of scripts){const r=await get(path);assert.equal(r.status,200);const data=await r.text();for(const value of forbidden)assert(!data.includes(value));assert.equal((await get(path+".map")).status,404);}
-  await writeFile("artifacts/wp14/leak-scan.json",JSON.stringify({files,syntheticSentinels:forbidden.length,publicScriptRequests:scripts.length,leaks:0}));
+  await writeFile(`${evidence}/leak-scan.json`,JSON.stringify({files,syntheticSentinels:forbidden.length,publicScriptRequests:scripts.length,leaks:0}));
  });
  await t.test("browser policy, private nonces, no-store and safe escaping survive actual HTTP rendering",async()=>{
   for(const path of ["/sq","/login","/app",`/app/clients/${xssClient.id}`]){const r=await get(path,f.token),html=await r.text();assert.equal(r.headers.get("x-frame-options"),"DENY");assert.equal(r.headers.get("x-content-type-options"),"nosniff");assert.equal(r.headers.get("cross-origin-resource-policy"),"same-origin");if(path.startsWith('/app')){const csp=r.headers.get("content-security-policy")!;assert.match(csp,/'nonce-[A-Za-z0-9+/=]+'/);assert(!csp.split(';').find(s=>s.trim().startsWith('script-src'))!.includes("'unsafe-inline'"));assert.match(r.headers.get("cache-control")!,/no-store/);}assert(!html.includes('<img src=x onerror='));}

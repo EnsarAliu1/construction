@@ -6,7 +6,8 @@ import {projectFixture} from "../../tests/projects/fixtures";
 import {localDatabaseOptions} from "../../src/server/db/config";
 
 async function main(){
- const baseline=process.argv[2]==='baseline',o=localDatabaseOptions(process.env.TEST_DATABASE_URL,'test',process.env.DATABASE_DISPOSABLE);assert.equal(o.database,'fitimi_test_wp14');assert.equal(o.port,3307);assert.equal(process.env.AUTH_ORIGIN,'http://127.0.0.1:3000');
+ const wp15=process.env.AUTH_TEST_WORK_PACKAGE==='WP-15',evidence=wp15?'artifacts/wp15':'artifacts/wp14';
+ const baseline=process.argv[2]==='baseline',o=localDatabaseOptions(process.env.TEST_DATABASE_URL,'test',process.env.DATABASE_DISPOSABLE);assert.equal(o.database,wp15?'fitimi_test_wp15':'fitimi_test_wp14');assert.equal(o.port,3307);assert.equal(process.env.AUTH_ORIGIN,'http://127.0.0.1:3000');
  const f=await projectFixture(),browser=await chromium.launch({channel:'msedge',headless:true}),origin=process.env.AUTH_ORIGIN,results:string[]=[];
  try{
   const context=await browser.newContext(),page=await context.newPage();await page.goto(`${origin}/login`);await page.locator('#email').fill(f.email);await page.locator('#password').fill(f.password);await page.getByRole('button',{name:'Sign in',exact:true}).click();await page.waitForURL(`${origin}/app`);
@@ -16,7 +17,7 @@ async function main(){
    await page.route(`${origin}/api/payments`,async route=>{if(route.request().method()==='POST'){if(committed)await route.fetch();await route.abort('failed');}else await route.continue();});
    await page.getByRole('button',{name:'Confirm payment & issue receipt',exact:true}).click();await page.waitForFunction(()=>Object.keys(sessionStorage).some(k=>k.startsWith('fitimi.payment.pending.')));await page.getByRole('button',{name:'Confirm payment & issue receipt',exact:true}).waitFor({state:'visible'});await page.waitForFunction(()=>!(document.querySelector('button[value="confirm"]') as HTMLButtonElement)?.disabled);
    const key=`fitimi.payment.pending.${f.userId}`,pending=await page.evaluate(key=>JSON.parse(sessionStorage.getItem(key)!),key);
-   if(baseline){assert(pending.payment);await writeFile('artifacts/wp14/recovery-before.json',JSON.stringify({confirmed:true,persistedFields:Object.keys(pending),financialPayloadPresent:true,condition:'Interrupted confirmation leaves financial draft readable in tab storage after page change.'},null,2));console.log('Confirmed baseline financial payload in sessionStorage; values withheld.');break;}
+   if(baseline){assert(pending.payment);await writeFile(`${evidence}/recovery-before.json`,JSON.stringify({confirmed:true,persistedFields:Object.keys(pending),financialPayloadPresent:true,condition:'Interrupted confirmation leaves financial draft readable in tab storage after page change.'},null,2));console.log('Confirmed baseline financial payload in sessionStorage; values withheld.');break;}
    assert.deepEqual(Object.keys(pending),['idempotencyKey']);const retained=pending.idempotencyKey;
    await page.unroute(`${origin}/api/payments`);await page.reload();await page.getByRole('button',{name:'Recover / retry last confirmation',exact:true}).click();
    if(committed){await page.waitForURL(/\/app\/payments\/[a-f0-9-]+$/);results.push('Lost committed response: key-only reload recovery returns existing payment/receipt');}
@@ -27,9 +28,9 @@ async function main(){
   if(!baseline){
    const key=`fitimi.payment.pending.${f.userId}`;await page.evaluate(key=>sessionStorage.setItem(key,JSON.stringify({idempotencyKey:crypto.randomUUID(),payment:{amount:'13.37',projectName:'PRIVATE-LEGACY-DRAFT'}})),key);
    await page.getByRole('button',{name:'Sign out',exact:true}).click();await page.waitForURL(`${origin}/login`);await page.waitForFunction(key=>!sessionStorage.getItem(key)?.includes('payment'),key);const retained=await page.evaluate(key=>JSON.parse(sessionStorage.getItem(key)!),key);assert.deepEqual(Object.keys(retained),['idempotencyKey']);results.push('Login/logout migration removes legacy financial drafts and retains opaque recovery keys');
-   await writeFile('artifacts/wp14/recovery-after.json',JSON.stringify({browser:browser.version(),financialPayloadPresent:false,results},null,2));console.log(`PASS: ${results.length} browser recovery/storage scenarios preserve one logical payment and no persisted financial payload.`);
+   await writeFile(`${evidence}/recovery-after.json`,JSON.stringify({browser:browser.version(),financialPayloadPresent:false,results},null,2));console.log(`PASS: ${results.length} browser recovery/storage scenarios preserve one logical payment and no persisted financial payload.`);
   }
   await context.close();
- }catch(error){let message=error instanceof Error?error.stack??error.message:String(error);for(const value of [f.email,f.password,f.token])message=message.replaceAll(value,'[redacted]');await writeFile('artifacts/wp14/recovery-failure.txt',message);throw error;}finally{await browser.close();await f.close();}
+ }catch(error){let message=error instanceof Error?error.stack??error.message:String(error);for(const value of [f.email,f.password,f.token])message=message.replaceAll(value,'[redacted]');await writeFile(`${evidence}/recovery-failure.txt`,message);throw error;}finally{await browser.close();await f.close();}
 }
 void main().catch(()=>{console.error('Recovery browser test failed; sensitive fixture details withheld.');process.exitCode=1;});

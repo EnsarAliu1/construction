@@ -13,6 +13,7 @@ import {materialize,exportTables,type Snapshot} from "./snapshot";
 import {finances} from "./finance";
 import {companyExportInput,reportFilter,ReportingError,limitError} from "./validation";
 import {companyPdf,companyXlsx,operationalPdf} from "./documents";
+import {securitySignal} from "@/server/operations/events";
 export function portable(value:unknown):unknown{
  if(Array.isArray(value))return value.map(portable);if(value&&typeof value==="object")return Object.fromEntries(Object.entries(value).filter(([key])=>!/(password|token|secret|operator|storageReference|authVersion|databaseUrl)/i.test(key)).map(([key,v])=>[key,portable(v)]));return value;
 }
@@ -20,7 +21,7 @@ export function csvCell(value:unknown){let text=typeof value==="object"&&value!=
 export async function companyReport(c:Connection,token:string|undefined,filters:unknown={}){await requireSessionUser(c,token);const f=reportFilter(filters),report=finances(await materialize(c,token),f);if(report.income.length+report.outgoing.length>1000)throw limitError();return report;}
 export async function dashboard(c:Connection,token:string|undefined){await requireSessionUser(c,token);return finances(await materialize(c,token),reportFilter());}
 async function exported(c:Connection,token:string|undefined,id:string,kind:string){
- const actor=await requireSessionUser(c,token);await drizzle(c).transaction(async tx=>{await tx.select({id:users.id}).from(users).where(eq(users.id,actor.id)).for("share");await requireSessionUser(c,token);await tx.insert(auditEvents).values({id:randomUUID(),actorId:actor.id,entityType:"export",entityId:id,operationId:id,action:"export_prepared",afterSnapshot:{resultType:kind,resultId:id,status:"prepared",version:1}});},{isolationLevel:"read committed"});
+ const actor=await requireSessionUser(c,token);await drizzle(c).transaction(async tx=>{await tx.select({id:users.id}).from(users).where(eq(users.id,actor.id)).for("share");await requireSessionUser(c,token);await tx.insert(auditEvents).values({id:randomUUID(),actorId:actor.id,entityType:"export",entityId:id,operationId:id,action:"export_prepared",afterSnapshot:{resultType:kind,resultId:id,status:"prepared",version:1}});},{isolationLevel:"read committed"});securitySignal('export.prepared');
 }
 async function exclusive<T>(c:Connection,token:string|undefined,work:()=>Promise<T>){
  await requireSessionUser(c,token);const [rows]=await c.query<RowDataPacket[]>("SELECT GET_LOCK(CONCAT('fitimi_export_',LEFT(SHA2(DATABASE(),256),48)),0) AS acquired");if(Number(rows[0].acquired)!==1)throw new ReportingError("BUSY","Another export is running. Retry shortly.",429);

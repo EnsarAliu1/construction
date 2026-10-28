@@ -1,0 +1,2255 @@
+{
+  "package": "WP-15",
+  "date": "2026-10-28",
+  "baselineCommit": "ed6d807b5a53fc67bee2c611bbb84608cb28e6e7",
+  "scope": "Synthetic local production-build lab only; NO-GO FOR PRODUCTION. No production CWV/RPO/RTO claim.",
+  "environment": {
+    "at": "2026-10-28T11:21:01.124Z",
+    "node": "v24.18.0",
+    "mysql": "8.4.13",
+    "platform": "win32",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "logicalCpus": 12,
+    "ramBytes": 8247566336,
+    "dataset": {
+      "clients": 1001,
+      "projects": 1001,
+      "contracts": 1001,
+      "contract_phases": 2002,
+      "payments": 301,
+      "payment_allocations": 301,
+      "expenses": 300,
+      "audit_events": 12013,
+      "entity_versions": 11,
+      "receipt_versions": 1,
+      "persons": 1,
+      "vehicles": 1
+    },
+    "label": "baseline",
+    "mode": "db"
+  },
+  "browser": "156.0.4314.50",
+  "originalPorts": {
+    "mysql": 3307,
+    "application": 3000
+  },
+  "frameworkResultCounts": {
+    "unit": {
+      "pass": 71,
+      "fail": 0,
+      "skipped": 0
+    },
+    "db-tests": {
+      "pass": 169,
+      "fail": 0,
+      "skipped": 0
+    },
+    "test-security-db": {
+      "pass": 2,
+      "fail": 0,
+      "skipped": 0
+    },
+    "test-website-db": {
+      "pass": 7,
+      "fail": 0,
+      "skipped": 0
+    },
+    "test-auth-http": {
+      "pass": 9,
+      "fail": 0,
+      "skipped": 0
+    },
+    "test-clients-http": {
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0
+    },
+    "test-projects-http": {
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0
+    },
+    "test-references-http": {
+      "pass": 19,
+      "fail": 0,
+      "skipped": 0
+    },
+    "test-expenses-http": {
+      "pass": 10,
+      "fail": 0,
+      "skipped": 0
+    },
+    "test-payments-http": {
+      "pass": 10,
+      "fail": 0,
+      "skipped": 0
+    },
+    "test-receipts-http": {
+      "pass": 9,
+      "fail": 0,
+      "skipped": 0
+    },
+    "test-reports-http": {
+      "pass": 12,
+      "fail": 0,
+      "skipped": 0
+    },
+    "test-security-http": {
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0
+    },
+    "test-website-browser": {
+      "pass": 32,
+      "fail": 0,
+      "skipped": 0
+    }
+  },
+  "frameworkTotal": 374,
+  "additionalBrowserScenarios": {
+    "security": 9,
+    "paymentRecovery": 3,
+    "business": 13
+  },
+  "businessBrowser": {
+    "browser": "156.0.4314.50",
+    "steps": [
+      "Invalid password rejected and real-cookie login succeeds",
+      "Create individual/business, edit, search and persisted audit history",
+      "Create linked project/contract/phases; reject unequal sum",
+      "Contract edits and client archive constraints/retention",
+      "Create categories/suppliers/vehicles and exercise reference lifecycle",
+      "Inactive/stale reference rejected; linked project/supplier/vehicle expense saved after fresh selection",
+      "Inline company category, expense correction/cancellation and audit",
+      "Reject overcapacity and issue split-allocation payment with actual PDF download",
+      "Paid phase removal disabled and reduction below allocation rejected",
+      "Payment correction appends immutable v2; v1 unchanged; cancellation visible",
+      "Released capacity reused; exact dashboard/project reconciliation after correction/cancellation",
+      "Actual browser PDF/XLSX/ZIP downloads",
+      "Mobile navigation/focus/overflow, screenshots and logout"
+    ],
+    "downloads": [
+      {
+        "kind": "receipt-v1",
+        "bytes": 19306,
+        "sha256": "1e43bf1742189e135366f6e901d66d6975b1511ad0cfbed74e77b5ae38e16ca4"
+      },
+      {
+        "kind": "receipt-v2",
+        "bytes": 19445,
+        "sha256": "e03d09fe8a67bedd088055be796073fb38e100bb66cd35965af043565fba0350"
+      },
+      {
+        "kind": "historical-v1",
+        "bytes": 19306,
+        "sha256": "1e43bf1742189e135366f6e901d66d6975b1511ad0cfbed74e77b5ae38e16ca4"
+      },
+      {
+        "kind": "company-pdf",
+        "bytes": 20820,
+        "sha256": "c58644895a69a8378e9a324fce64bb1418e39f360a335d0ed7ad8b76cd004cc1"
+      },
+      {
+        "kind": "company-xlsx",
+        "bytes": 12760,
+        "sha256": "6ee7cbc971b4dd06c75d944d8ee0193be1fa48f68a7c7b015f4db29d5945cd01"
+      },
+      {
+        "kind": "complete-zip",
+        "bytes": 235944,
+        "sha256": "f27f7db6a0fbdb3aec6e90c840bc2db8df03fe9bd22b63235a58f2fd29bf427c"
+      }
+    ],
+    "unexpectedErrors": [],
+    "initialTotals": {
+      "income": "0.00",
+      "expenses": "0.00",
+      "difference": "0.00",
+      "companyExpenses": "0.00",
+      "contractValue": "0.00",
+      "outstanding": "0.00"
+    },
+    "totals": {
+      "income": "70.00",
+      "expenses": "4.00",
+      "difference": "66.00",
+      "companyExpenses": "4.00",
+      "contractValue": "100.00",
+      "outstanding": "30.00"
+    }
+  },
+  "restore": {
+    "mysql": "8.4",
+    "backupMs": 765.1411999999982,
+    "restoreMs": 3069.4783000000025,
+    "encryptedBytes": 173526,
+    "documentVersions": 3,
+    "checksums": [
+      {
+        "version": 1,
+        "sha256": "c20a551e6b9171ed31e61ca9fc0d90d8a9d4a4d410864f00ff1ad7c95ff251d9"
+      },
+      {
+        "version": 1,
+        "sha256": "148c2a2241bd0ea6763ff81a089b061c4a096c4a952c3b69d680ba90a6007765"
+      },
+      {
+        "version": 2,
+        "sha256": "cf3c2ff2c42af451d31688cab8fef2123592e5c0944502092e1946c28bcc4a78"
+      }
+    ],
+    "sourceIdentity": "03200110-d2c3-11f1-adb5-82cc883b5652/fitimi_test_wp15",
+    "targetIdentity": "207621b5-d2c3-11f1-a47d-e26b23e8b7e1/fitimi_test_wp15",
+    "tables": 21,
+    "triggers": 13,
+    "migrations": 9,
+    "baselineTotals": {
+      "income": "12.00",
+      "expenses": "5.00",
+      "difference": "7.00",
+      "companyExpenses": "3.00",
+      "contractValue": "100.00",
+      "outstanding": "88.00"
+    },
+    "restoredTotals": {
+      "income": "12.00",
+      "expenses": "5.00",
+      "difference": "7.00",
+      "companyExpenses": "3.00",
+      "contractValue": "100.00",
+      "outstanding": "88.00"
+    },
+    "sessionRevocation": true,
+    "idempotentReplay": true,
+    "continuedReceiptNumber": "DEV-00000003",
+    "postRestoreRace": {
+      "success": 1,
+      "capacityConflict": 1
+    },
+    "sourceUnchanged": true,
+    "failures": [
+      "corrupt archive",
+      "wrong key",
+      "wrong source identity",
+      "unauthorized operator",
+      "missing PDF",
+      "tampered manifest",
+      "incomplete pair",
+      "same server/identity not approved",
+      "simulated ENOSPC before publication"
+    ],
+    "productionRPO": "NOT VERIFIED",
+    "productionRTO": "NOT VERIFIED"
+  },
+  "performance": {
+    "databaseApiExports": {
+      "environment": {
+        "at": "2026-10-28T11:21:01.124Z",
+        "node": "v24.18.0",
+        "mysql": "8.4.13",
+        "platform": "win32",
+        "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+        "logicalCpus": 12,
+        "ramBytes": 8247566336,
+        "dataset": {
+          "clients": 1001,
+          "projects": 1001,
+          "contracts": 1001,
+          "contract_phases": 2002,
+          "payments": 301,
+          "payment_allocations": 301,
+          "expenses": 300,
+          "audit_events": 12013,
+          "entity_versions": 11,
+          "receipt_versions": 1,
+          "persons": 1,
+          "vehicles": 1
+        },
+        "label": "baseline",
+        "mode": "db"
+      },
+      "results": {
+        "finance": {
+          "n": 30,
+          "medianMs": 8.945699999999988,
+          "p95Ms": 13.6092000000001,
+          "minMs": 7.3991000000000895,
+          "maxMs": 15.08770000000004
+        },
+        "snapshot": {
+          "n": 12,
+          "medianMs": 65.57279999999992,
+          "p95Ms": 79.60930000000008,
+          "minMs": 56.840400000000045,
+          "maxMs": 79.60930000000008
+        },
+        "fullSnapshot": {
+          "n": 6,
+          "medianMs": 164.3752000000004,
+          "p95Ms": 177.79320000000007,
+          "minMs": 154.89069999999992,
+          "maxMs": 177.79320000000007
+        },
+        "/api/dashboard": {
+          "n": 7,
+          "medianMs": 119.33359999999993,
+          "p95Ms": 140.36389999999938,
+          "minMs": 102.61020000000008,
+          "maxMs": 140.36389999999938,
+          "bytes": 847680
+        },
+        "/api/clients?q=Synthetic": {
+          "n": 7,
+          "medianMs": 28.91870000000017,
+          "p95Ms": 31.55580000000009,
+          "minMs": 15.578199999999924,
+          "maxMs": 31.55580000000009,
+          "bytes": 8335
+        },
+        "/api/projects?q=Synthetic": {
+          "n": 7,
+          "medianMs": 33.15810000000056,
+          "p95Ms": 37.582900000000336,
+          "minMs": 22.1858000000002,
+          "maxMs": 37.582900000000336,
+          "bytes": 5027
+        },
+        "/api/expenses": {
+          "n": 7,
+          "medianMs": 34.40910000000076,
+          "p95Ms": 39.32719999999972,
+          "minMs": 24.119700000000194,
+          "maxMs": 39.32719999999972,
+          "bytes": 18142
+        },
+        "/api/payments": {
+          "n": 7,
+          "medianMs": 28.0632999999998,
+          "p95Ms": 37.83129999999983,
+          "minMs": 21.238099999999577,
+          "maxMs": 37.83129999999983,
+          "bytes": 10493
+        },
+        "/api/receipts": {
+          "n": 7,
+          "medianMs": 18.9411999999993,
+          "p95Ms": 31.60189999999966,
+          "minMs": 16.750499999999192,
+          "maxMs": 31.60189999999966,
+          "bytes": 643
+        },
+        "/api/reports/company": {
+          "n": 7,
+          "medianMs": 99.7483000000002,
+          "p95Ms": 120.70930000000044,
+          "minMs": 87.83109999999942,
+          "maxMs": 120.70930000000044,
+          "bytes": 847677
+        },
+        "/api/receipts/5d555d5b-bb9d-44d1-a785-90c6fc93cffc/versions/1/pdf": {
+          "n": 7,
+          "medianMs": 28.74409999999989,
+          "p95Ms": 36.81540000000041,
+          "minMs": 17.52719999999863,
+          "maxMs": 36.81540000000041,
+          "bytes": 19562
+        },
+        "pdf": {
+          "n": 3,
+          "medianMs": 476.3134000000009,
+          "p95Ms": 493.4461999999985,
+          "minMs": 464.2443999999996,
+          "maxMs": 493.4461999999985,
+          "bytes": 108103
+        },
+        "xlsx": {
+          "n": 3,
+          "medianMs": 176.85180000000037,
+          "p95Ms": 192.79339999999866,
+          "minMs": 151.52180000000044,
+          "maxMs": 192.79339999999866,
+          "bytes": 57560
+        },
+        "zip": {
+          "n": 3,
+          "medianMs": 514.1895999999997,
+          "p95Ms": 529.0965000000015,
+          "minMs": 507.66589999999997,
+          "maxMs": 529.0965000000015,
+          "bytes": 10640084
+        },
+        "concurrentReads": {
+          "n": 32,
+          "medianMs": 53.33339999999953,
+          "p95Ms": 135.83879999999954,
+          "minMs": 29.908000000001266,
+          "maxMs": 152.71390000000065,
+          "concurrency": 4,
+          "requests": 32,
+          "elapsedMs": 1060.6466999999993,
+          "unexpectedErrors": 0
+        },
+        "exportWithReads": [
+          {
+            "ms": 576.7800000000007,
+            "bytes": 10640874
+          },
+          {
+            "ms": 153.69750000000022,
+            "bytes": 847680
+          },
+          {
+            "ms": 34.91539999999986,
+            "bytes": 8335
+          },
+          {
+            "ms": 41.57020000000011,
+            "bytes": 5027
+          },
+          {
+            "ms": 46.043400000000474,
+            "bytes": 18142
+          }
+        ]
+      },
+      "plans": {
+        "lateOffset": [
+          {
+            "EXPLAIN": "-> Limit/Offset: 100/11900 row(s)  (cost=1199 rows=100) (actual time=3.72..3.73 rows=100 loops=1)\n    -> Covering index scan on audit_events using PRIMARY  (cost=1199 rows=12000) (actual time=0.911..2.43 rows=12000 loops=1)\n"
+          }
+        ],
+        "keyset": [
+          {
+            "EXPLAIN": "-> Limit: 100 row(s)  (cost=22.9 rows=100) (actual time=0.0418..0.0678 rows=100 loops=1)\n    -> Filter: (audit_events.id > (select #2))  (cost=22.9 rows=113) (actual time=0.0243..0.0455 rows=100 loops=1)\n        -> Covering index range scan on audit_events using PRIMARY over ('fdb15881-461a-4d5c-9d4a-1e5794f298a9' < id)  (cost=22.9 rows=113) (actual time=0.0092..0.022 rows=100 loops=1)\n        -> Select #2 (subquery in condition; run only once)\n            -> Limit/Offset: 1/11899 row(s)  (cost=1179 rows=1) (actual time=2.19..2.19 rows=1 loops=1)\n                -> Covering index scan on audit_events using PRIMARY  (cost=1179 rows=11900) (actual time=0.123..1.86 rows=11900 loops=1)\n"
+          }
+        ],
+        "client": [
+          {
+            "EXPLAIN": "-> Limit: 20 row(s)  (cost=0.045 rows=20) (actual time=0.0261..0.0773 rows=20 loops=1)\n    -> Filter: (clients.deleted_at is null)  (cost=0.045 rows=20) (actual time=0.0255..0.0756 rows=20 loops=1)\n        -> Index scan on clients using clients_name_idx  (cost=0.045 rows=20) (actual time=0.0244..0.0732 rows=20 loops=1)\n"
+          }
+        ],
+        "project": [
+          {
+            "EXPLAIN": "-> Limit: 20 row(s)  (cost=0.35 rows=1) (actual time=0.00887..0.00998 rows=1 loops=1)\n    -> Filter: (projects.client_id = '0013e352-0c3b-4558-97cb-37b014753521')  (cost=0.35 rows=1) (actual time=0.00845..0.00947 rows=1 loops=1)\n        -> Covering index lookup on projects using projects_client_idx (client_id='0013e352-0c3b-4558-97cb-37b014753521')  (cost=0.35 rows=1) (actual time=0.00717..0.00809 rows=1 loops=1)\n"
+          }
+        ],
+        "allocation": [
+          {
+            "EXPLAIN": "-> Filter: (payment_allocations.deleted_at is null)  (cost=0.26 rows=0.1) (actual time=0.0159..0.0167 rows=1 loops=1)\n    -> Index lookup on payment_allocations using allocations_phase_payment_idx (phase_id='00034e90-5812-41ec-8f46-b1567018c8c4'), with index condition: (payment_allocations.phase_id = '00034e90-5812-41ec-8f46-b1567018c8c4')  (cost=0.26 rows=1) (actual time=0.0152..0.0159 rows=1 loops=1)\n"
+          }
+        ],
+        "expense": [
+          {
+            "EXPLAIN": "-> Limit: 20 row(s)  (cost=30.2 rows=20) (actual time=0.014..0.0191 rows=20 loops=1)\n    -> Filter: ((expenses.`status` = 'recorded') and (expenses.transaction_date >= DATE'2024-01-01'))  (cost=30.2 rows=150) (actual time=0.0135..0.0176 rows=20 loops=1)\n        -> Covering index scan on expenses using expenses_date_status_idx  (cost=30.2 rows=300) (actual time=0.0108..0.0126 rows=20 loops=1)\n"
+          }
+        ],
+        "payment": [
+          {
+            "EXPLAIN": "-> Limit: 20 row(s)  (cost=31.7 rows=20) (actual time=0.0109..0.0154 rows=20 loops=1)\n    -> Filter: (payments.`status` = 'received')  (cost=31.7 rows=301) (actual time=0.0104..0.0139 rows=20 loops=1)\n        -> Covering index lookup on payments using payments_status_date_idx (status='received')  (cost=31.7 rows=301) (actual time=0.00938..0.011 rows=20 loops=1)\n"
+          }
+        ],
+        "history": [
+          {
+            "EXPLAIN": "-> Limit: 20 row(s)  (cost=1.63 rows=12) (actual time=0.0542..0.0655 rows=12 loops=1)\n    -> Filter: (audit_events.entity_id = '0013e352-0c3b-4558-97cb-37b014753521')  (cost=1.63 rows=12) (actual time=0.0536..0.0643 rows=12 loops=1)\n        -> Covering index lookup on audit_events using audit_entity_recorded_idx (entity_type='client', entity_id='0013e352-0c3b-4558-97cb-37b014753521') (reverse)  (cost=1.63 rows=12) (actual time=0.0219..0.0298 rows=12 loops=1)\n"
+          }
+        ]
+      },
+      "statusBefore": [
+        {
+          "Variable_name": "Created_tmp_disk_tables",
+          "Value": "0"
+        },
+        {
+          "Variable_name": "Innodb_row_lock_time",
+          "Value": "1004"
+        },
+        {
+          "Variable_name": "Innodb_row_lock_waits",
+          "Value": "44"
+        },
+        {
+          "Variable_name": "Threads_connected",
+          "Value": "1"
+        },
+        {
+          "Variable_name": "Threads_running",
+          "Value": "2"
+        }
+      ],
+      "statusAfter": [
+        {
+          "Variable_name": "Created_tmp_disk_tables",
+          "Value": "0"
+        },
+        {
+          "Variable_name": "Innodb_row_lock_time",
+          "Value": "1004"
+        },
+        {
+          "Variable_name": "Innodb_row_lock_waits",
+          "Value": "44"
+        },
+        {
+          "Variable_name": "Threads_connected",
+          "Value": "1"
+        },
+        {
+          "Variable_name": "Threads_running",
+          "Value": "2"
+        }
+      ],
+      "measurementProcessMemory": {
+        "rss": 186777600,
+        "heapTotal": 81989632,
+        "heapUsed": 67318368,
+        "external": 69096190,
+        "arrayBuffers": 49207198
+      },
+      "financeSHA256": "127bcdc3dc79e2d0611827d74da232709dbc9a25c1df06cf65c05d7746b3a451"
+    },
+    "browser": {
+      "environment": {
+        "at": "2026-10-28T11:21:14.687Z",
+        "node": "v24.18.0",
+        "mysql": "8.4.13",
+        "platform": "win32",
+        "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+        "logicalCpus": 12,
+        "ramBytes": 8247566336,
+        "dataset": {
+          "clients": 1001,
+          "projects": 1001,
+          "contracts": 1001,
+          "contract_phases": 2002,
+          "payments": 301,
+          "payment_allocations": 301,
+          "expenses": 300,
+          "audit_events": 12013,
+          "entity_versions": 11,
+          "receipt_versions": 1,
+          "persons": 1,
+          "vehicles": 1
+        },
+        "label": "baseline",
+        "mode": "browser"
+      },
+      "browser": "156.0.4314.50",
+      "mobileSimulation": "390x844 viewport only; no CPU/network throttling",
+      "measurements": [
+        {
+          "route": "/sq",
+          "mobile": false,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 488,
+          "cls": 0,
+          "longTasks": 31,
+          "ttfb": 16.09999999962747,
+          "domContentLoaded": 352.59999999962747,
+          "fcp": 488,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 186027,
+          "overflow": false
+        },
+        {
+          "route": "/sq",
+          "mobile": false,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 200,
+          "cls": 0,
+          "longTasks": 47,
+          "ttfb": 16.100000000558794,
+          "domContentLoaded": 74.90000000037253,
+          "fcp": 200,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 186027,
+          "overflow": false
+        },
+        {
+          "route": "/sq",
+          "mobile": false,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 100,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.900000000372529,
+          "domContentLoaded": 37.09999999962747,
+          "fcp": 100,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 186027,
+          "overflow": false
+        },
+        {
+          "route": "/sq/about",
+          "mobile": false,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 104,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 9.200000000186265,
+          "domContentLoaded": 41.299999999813735,
+          "fcp": 104,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 186022,
+          "overflow": false
+        },
+        {
+          "route": "/sq/about",
+          "mobile": false,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 228,
+          "cls": 0,
+          "longTasks": 45,
+          "ttfb": 17.800000000745058,
+          "domContentLoaded": 95,
+          "fcp": 228,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 186022,
+          "overflow": false
+        },
+        {
+          "route": "/sq/about",
+          "mobile": false,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 116,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.900000000372529,
+          "domContentLoaded": 89.79999999981374,
+          "fcp": 116,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 186022,
+          "overflow": false
+        },
+        {
+          "route": "/sq/services",
+          "mobile": false,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 108,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.400000000372529,
+          "domContentLoaded": 44.90000000037253,
+          "fcp": 108,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 185067,
+          "overflow": false
+        },
+        {
+          "route": "/sq/services",
+          "mobile": false,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 104,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 7.400000000372529,
+          "domContentLoaded": 39.5,
+          "fcp": 104,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 185067,
+          "overflow": false
+        },
+        {
+          "route": "/sq/services",
+          "mobile": false,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 124,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 10.200000000186265,
+          "domContentLoaded": 101.90000000037253,
+          "fcp": 124,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 185067,
+          "overflow": false
+        },
+        {
+          "route": "/sq/projects",
+          "mobile": false,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 204,
+          "cls": 0,
+          "longTasks": 15,
+          "ttfb": 17.59999999962747,
+          "domContentLoaded": 159.29999999981374,
+          "fcp": 204,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184777,
+          "overflow": false
+        },
+        {
+          "route": "/sq/projects",
+          "mobile": false,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 124,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.5,
+          "domContentLoaded": 103.8999999994412,
+          "fcp": 124,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184777,
+          "overflow": false
+        },
+        {
+          "route": "/sq/projects",
+          "mobile": false,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 104,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 10.399999999441206,
+          "domContentLoaded": 92.8999999994412,
+          "fcp": 104,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184777,
+          "overflow": false
+        },
+        {
+          "route": "/sq/contact",
+          "mobile": false,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 108,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 5.400000000372529,
+          "domContentLoaded": 45.90000000037253,
+          "fcp": 108,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184844,
+          "overflow": false
+        },
+        {
+          "route": "/sq/contact",
+          "mobile": false,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 84,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 4.7999999998137355,
+          "domContentLoaded": 63,
+          "fcp": 84,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184844,
+          "overflow": false
+        },
+        {
+          "route": "/sq/contact",
+          "mobile": false,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 84,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6,
+          "domContentLoaded": 35.89999999944121,
+          "fcp": 84,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184844,
+          "overflow": false
+        },
+        {
+          "route": "/en",
+          "mobile": false,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 96,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 4.599999999627471,
+          "domContentLoaded": 82,
+          "fcp": 96,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 185627,
+          "overflow": false
+        },
+        {
+          "route": "/en",
+          "mobile": false,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 160,
+          "cls": 0,
+          "longTasks": 8,
+          "ttfb": 10.5,
+          "domContentLoaded": 71.69999999925494,
+          "fcp": 160,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 185627,
+          "overflow": false
+        },
+        {
+          "route": "/en",
+          "mobile": false,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 144,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 7.400000000372529,
+          "domContentLoaded": 108.79999999981374,
+          "fcp": 144,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 185627,
+          "overflow": false
+        },
+        {
+          "route": "/en/about",
+          "mobile": false,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 92,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.599999999627471,
+          "domContentLoaded": 76.3999999994412,
+          "fcp": 92,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 185655,
+          "overflow": false
+        },
+        {
+          "route": "/en/about",
+          "mobile": false,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 88,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 7.599999999627471,
+          "domContentLoaded": 77.29999999981374,
+          "fcp": 88,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 185655,
+          "overflow": false
+        },
+        {
+          "route": "/en/about",
+          "mobile": false,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 88,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.8999999994412065,
+          "domContentLoaded": 74.69999999925494,
+          "fcp": 88,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 185655,
+          "overflow": false
+        },
+        {
+          "route": "/en/services",
+          "mobile": false,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 92,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 4.599999999627471,
+          "domContentLoaded": 77.90000000037253,
+          "fcp": 92,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184626,
+          "overflow": false
+        },
+        {
+          "route": "/en/services",
+          "mobile": false,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 96,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.6000000005587935,
+          "domContentLoaded": 40.799999999813735,
+          "fcp": 96,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184626,
+          "overflow": false
+        },
+        {
+          "route": "/en/services",
+          "mobile": false,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 88,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.3999999994412065,
+          "domContentLoaded": 70.5,
+          "fcp": 88,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184626,
+          "overflow": false
+        },
+        {
+          "route": "/en/projects",
+          "mobile": false,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 100,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 4.2000000001862645,
+          "domContentLoaded": 32.200000000186265,
+          "fcp": 100,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184306,
+          "overflow": false
+        },
+        {
+          "route": "/en/projects",
+          "mobile": false,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 104,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 10.299999999813735,
+          "domContentLoaded": 49.59999999962747,
+          "fcp": 104,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184306,
+          "overflow": false
+        },
+        {
+          "route": "/en/projects",
+          "mobile": false,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 80,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 5.300000000745058,
+          "domContentLoaded": 35.80000000074506,
+          "fcp": 80,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184306,
+          "overflow": false
+        },
+        {
+          "route": "/en/contact",
+          "mobile": false,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 80,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 5.2999999998137355,
+          "domContentLoaded": 66.5,
+          "fcp": 80,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184399,
+          "overflow": false
+        },
+        {
+          "route": "/en/contact",
+          "mobile": false,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 88,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.5,
+          "domContentLoaded": 68.29999999981374,
+          "fcp": 88,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184399,
+          "overflow": false
+        },
+        {
+          "route": "/en/contact",
+          "mobile": false,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 76,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 4.5,
+          "domContentLoaded": 64.70000000018626,
+          "fcp": 76,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 184399,
+          "overflow": false
+        },
+        {
+          "route": "/sq",
+          "mobile": true,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 92,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 5.099999999627471,
+          "domContentLoaded": 85.79999999981374,
+          "fcp": 92,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 178001,
+          "overflow": false
+        },
+        {
+          "route": "/sq",
+          "mobile": true,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 104,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 7.099999999627471,
+          "domContentLoaded": 44.90000000037253,
+          "fcp": 104,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 178001,
+          "overflow": false
+        },
+        {
+          "route": "/sq",
+          "mobile": true,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 96,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 8.199999999254942,
+          "domContentLoaded": 87.09999999962747,
+          "fcp": 96,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 178001,
+          "overflow": false
+        },
+        {
+          "route": "/sq/about",
+          "mobile": true,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 96,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 5.7999999998137355,
+          "domContentLoaded": 75.5,
+          "fcp": 96,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 174050,
+          "overflow": false
+        },
+        {
+          "route": "/sq/about",
+          "mobile": true,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 104,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 9.099999999627471,
+          "domContentLoaded": 41.700000000186265,
+          "fcp": 104,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 174050,
+          "overflow": false
+        },
+        {
+          "route": "/sq/about",
+          "mobile": true,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 96,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 5.2999999998137355,
+          "domContentLoaded": 39.799999999813735,
+          "fcp": 96,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 174050,
+          "overflow": false
+        },
+        {
+          "route": "/sq/services",
+          "mobile": true,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 92,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 4.300000000745058,
+          "domContentLoaded": 76.70000000018626,
+          "fcp": 92,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 176012,
+          "overflow": false
+        },
+        {
+          "route": "/sq/services",
+          "mobile": true,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 88,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 5.5,
+          "domContentLoaded": 73.5,
+          "fcp": 88,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 176012,
+          "overflow": false
+        },
+        {
+          "route": "/sq/services",
+          "mobile": true,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 92,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 3.7999999998137355,
+          "domContentLoaded": 74.79999999981374,
+          "fcp": 92,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 176012,
+          "overflow": false
+        },
+        {
+          "route": "/sq/projects",
+          "mobile": true,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 92,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 4.5,
+          "domContentLoaded": 69.79999999981374,
+          "fcp": 92,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 171456,
+          "overflow": false
+        },
+        {
+          "route": "/sq/projects",
+          "mobile": true,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 168,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.7999999998137355,
+          "domContentLoaded": 37.60000000055879,
+          "fcp": 168,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 171456,
+          "overflow": false
+        },
+        {
+          "route": "/sq/projects",
+          "mobile": true,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 76,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 4.7000000001862645,
+          "domContentLoaded": 68.5,
+          "fcp": 76,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 171456,
+          "overflow": false
+        },
+        {
+          "route": "/sq/contact",
+          "mobile": true,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 136,
+          "cls": 0,
+          "longTasks": 29,
+          "ttfb": 8.099999999627471,
+          "domContentLoaded": 58.299999999813735,
+          "fcp": 136,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 171616,
+          "overflow": false
+        },
+        {
+          "route": "/sq/contact",
+          "mobile": true,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 140,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 13,
+          "domContentLoaded": 76.20000000018626,
+          "fcp": 140,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 171616,
+          "overflow": false
+        },
+        {
+          "route": "/sq/contact",
+          "mobile": true,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 148,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 7.900000000372529,
+          "domContentLoaded": 118.5,
+          "fcp": 148,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 171616,
+          "overflow": false
+        },
+        {
+          "route": "/en",
+          "mobile": true,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 104,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.900000000372529,
+          "domContentLoaded": 41,
+          "fcp": 104,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 177751,
+          "overflow": false
+        },
+        {
+          "route": "/en",
+          "mobile": true,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 124,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 8.799999999813735,
+          "domContentLoaded": 98.79999999981374,
+          "fcp": 124,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 177751,
+          "overflow": false
+        },
+        {
+          "route": "/en",
+          "mobile": true,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 188,
+          "cls": 0,
+          "longTasks": 1,
+          "ttfb": 10,
+          "domContentLoaded": 57.5,
+          "fcp": 188,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 177751,
+          "overflow": false
+        },
+        {
+          "route": "/en/about",
+          "mobile": true,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 100,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.3999999994412065,
+          "domContentLoaded": 87.09999999962747,
+          "fcp": 100,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 173919,
+          "overflow": false
+        },
+        {
+          "route": "/en/about",
+          "mobile": true,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 104,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.7999999998137355,
+          "domContentLoaded": 86.90000000037253,
+          "fcp": 104,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 173919,
+          "overflow": false
+        },
+        {
+          "route": "/en/about",
+          "mobile": true,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 104,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.5,
+          "domContentLoaded": 36.700000000186265,
+          "fcp": 104,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 173919,
+          "overflow": false
+        },
+        {
+          "route": "/en/services",
+          "mobile": true,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 88,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 7,
+          "domContentLoaded": 75.79999999981374,
+          "fcp": 88,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 175795,
+          "overflow": false
+        },
+        {
+          "route": "/en/services",
+          "mobile": true,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 92,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 4,
+          "domContentLoaded": 75.59999999962747,
+          "fcp": 92,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 175795,
+          "overflow": false
+        },
+        {
+          "route": "/en/services",
+          "mobile": true,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 88,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 5.2000000001862645,
+          "domContentLoaded": 73.40000000037253,
+          "fcp": 88,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 175795,
+          "overflow": false
+        },
+        {
+          "route": "/en/projects",
+          "mobile": true,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 88,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 5.7000000001862645,
+          "domContentLoaded": 73,
+          "fcp": 88,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 171325,
+          "overflow": false
+        },
+        {
+          "route": "/en/projects",
+          "mobile": true,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 92,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 4.400000000372529,
+          "domContentLoaded": 76,
+          "fcp": 92,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 171325,
+          "overflow": false
+        },
+        {
+          "route": "/en/projects",
+          "mobile": true,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 84,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.400000000372529,
+          "domContentLoaded": 67.80000000074506,
+          "fcp": 84,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 171325,
+          "overflow": false
+        },
+        {
+          "route": "/en/contact",
+          "mobile": true,
+          "run": 0,
+          "cache": "cold-context/warm-server",
+          "lcp": 80,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 6.8999999994412065,
+          "domContentLoaded": 35,
+          "fcp": 80,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 171485,
+          "overflow": false
+        },
+        {
+          "route": "/en/contact",
+          "mobile": true,
+          "run": 1,
+          "cache": "cold-context/warm-server",
+          "lcp": 76,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 4,
+          "domContentLoaded": 66,
+          "fcp": 76,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 171485,
+          "overflow": false
+        },
+        {
+          "route": "/en/contact",
+          "mobile": true,
+          "run": 2,
+          "cache": "cold-context/warm-server",
+          "lcp": 76,
+          "cls": 0,
+          "longTasks": 0,
+          "ttfb": 4.2999999998137355,
+          "domContentLoaded": 66.6000000005588,
+          "fcp": 76,
+          "jsTransfer": 148223,
+          "jsResources": 8,
+          "totalTransfer": 171485,
+          "overflow": false
+        }
+      ],
+      "privateMeasurements": [
+        {
+          "route": "/app",
+          "run": 0,
+          "navigationMs": 1127.2704999999987
+        },
+        {
+          "route": "/app",
+          "run": 1,
+          "navigationMs": 933.4313000000038
+        },
+        {
+          "route": "/app",
+          "run": 2,
+          "navigationMs": 846.3265000000029
+        },
+        {
+          "route": "/app/clients",
+          "run": 0,
+          "navigationMs": 835.5462999999945
+        },
+        {
+          "route": "/app/clients",
+          "run": 1,
+          "navigationMs": 798.3649000000005
+        },
+        {
+          "route": "/app/clients",
+          "run": 2,
+          "navigationMs": 782.5574000000051
+        },
+        {
+          "route": "/app/projects",
+          "run": 0,
+          "navigationMs": 815.575499999999
+        },
+        {
+          "route": "/app/projects",
+          "run": 1,
+          "navigationMs": 831.2073000000019
+        },
+        {
+          "route": "/app/projects",
+          "run": 2,
+          "navigationMs": 783.8617000000013
+        },
+        {
+          "route": "/app/projects/3652ecd5-20a5-43e6-abeb-577790c56445",
+          "run": 0,
+          "navigationMs": 832.4046999999991
+        },
+        {
+          "route": "/app/projects/3652ecd5-20a5-43e6-abeb-577790c56445",
+          "run": 1,
+          "navigationMs": 832.7140999999974
+        },
+        {
+          "route": "/app/projects/3652ecd5-20a5-43e6-abeb-577790c56445",
+          "run": 2,
+          "navigationMs": 782.1557999999932
+        },
+        {
+          "route": "/app/projects/3652ecd5-20a5-43e6-abeb-577790c56445/contract",
+          "run": 0,
+          "navigationMs": 916.0262999999977
+        },
+        {
+          "route": "/app/projects/3652ecd5-20a5-43e6-abeb-577790c56445/contract",
+          "run": 1,
+          "navigationMs": 799.3138000000035
+        },
+        {
+          "route": "/app/projects/3652ecd5-20a5-43e6-abeb-577790c56445/contract",
+          "run": 2,
+          "navigationMs": 832.7926000000007
+        },
+        {
+          "route": "/app/categories",
+          "run": 0,
+          "navigationMs": 799.1906000000017
+        },
+        {
+          "route": "/app/categories",
+          "run": 1,
+          "navigationMs": 832.4196999999986
+        },
+        {
+          "route": "/app/categories",
+          "run": 2,
+          "navigationMs": 816.184699999998
+        },
+        {
+          "route": "/app/persons",
+          "run": 0,
+          "navigationMs": 764.9943000000058
+        },
+        {
+          "route": "/app/persons",
+          "run": 1,
+          "navigationMs": 883.7630999999965
+        },
+        {
+          "route": "/app/persons",
+          "run": 2,
+          "navigationMs": 832.159599999999
+        },
+        {
+          "route": "/app/vehicles",
+          "run": 0,
+          "navigationMs": 765.9551000000065
+        },
+        {
+          "route": "/app/vehicles",
+          "run": 1,
+          "navigationMs": 783.2116999999998
+        },
+        {
+          "route": "/app/vehicles",
+          "run": 2,
+          "navigationMs": 766.0446999999986
+        },
+        {
+          "route": "/app/expenses",
+          "run": 0,
+          "navigationMs": 815.2448000000004
+        },
+        {
+          "route": "/app/expenses",
+          "run": 1,
+          "navigationMs": 932.3116000000009
+        },
+        {
+          "route": "/app/expenses",
+          "run": 2,
+          "navigationMs": 800.1524000000063
+        },
+        {
+          "route": "/app/payments",
+          "run": 0,
+          "navigationMs": 814.8459000000003
+        },
+        {
+          "route": "/app/payments",
+          "run": 1,
+          "navigationMs": 817.3502000000008
+        },
+        {
+          "route": "/app/payments",
+          "run": 2,
+          "navigationMs": 914.3205999999918
+        },
+        {
+          "route": "/app/receipts",
+          "run": 0,
+          "navigationMs": 833.0482000000047
+        },
+        {
+          "route": "/app/receipts",
+          "run": 1,
+          "navigationMs": 816.3386000000028
+        },
+        {
+          "route": "/app/receipts",
+          "run": 2,
+          "navigationMs": 799.6394
+        },
+        {
+          "route": "/app/reports",
+          "run": 0,
+          "navigationMs": 882.1855999999971
+        },
+        {
+          "route": "/app/reports",
+          "run": 1,
+          "navigationMs": 866.4872000000032
+        },
+        {
+          "route": "/app/reports",
+          "run": 2,
+          "navigationMs": 881.0265999999974
+        }
+      ],
+      "searchMs": 860.2023000000045,
+      "warmPublicNavigationMs": 128.40230000000156,
+      "errors": []
+    },
+    "concurrency": {
+      "environment": {
+        "at": "2026-10-28T11:22:45.306Z",
+        "node": "v24.18.0",
+        "mysql": "8.4.13",
+        "platform": "win32",
+        "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+        "logicalCpus": 12,
+        "ramBytes": 8247566336,
+        "dataset": {
+          "clients": 1001,
+          "projects": 1001,
+          "contracts": 1001,
+          "contract_phases": 2002,
+          "payments": 301,
+          "payment_allocations": 301,
+          "expenses": 300,
+          "audit_events": 12013,
+          "entity_versions": 11,
+          "receipt_versions": 1,
+          "persons": 1,
+          "vehicles": 1
+        },
+        "label": "baseline",
+        "mode": "races"
+      },
+      "previews": {
+        "n": 8,
+        "medianMs": 251.4547,
+        "p95Ms": 329.1513,
+        "minMs": 147.1201000000001,
+        "maxMs": 329.1513
+      },
+      "idempotentRetries": {
+        "n": 4,
+        "medianMs": 538.2498999999998,
+        "p95Ms": 559.1731999999997,
+        "minMs": 463.7473,
+        "maxMs": 559.1731999999997,
+        "uniquePaymentIds": 1
+      },
+      "competing": {
+        "n": 2,
+        "medianMs": 255.6911,
+        "p95Ms": 255.6911,
+        "minMs": 249.67509999999993,
+        "maxMs": 255.6911,
+        "statuses": [
+          201,
+          409
+        ]
+      },
+      "verified": true,
+      "locks": [
+        {
+          "Variable_name": "Innodb_row_lock_time",
+          "Value": "1715"
+        },
+        {
+          "Variable_name": "Innodb_row_lock_waits",
+          "Value": "51"
+        },
+        {
+          "Variable_name": "Threads_connected",
+          "Value": "1"
+        },
+        {
+          "Variable_name": "Threads_running",
+          "Value": "2"
+        }
+      ]
+    }
+  },
+  "mobileCandidate": {
+    "viewport": 390,
+    "before": 525,
+    "after": 390,
+    "candidate": "position: relative on existing table scroll container; scoped containing block for sr-only absolute live regions"
+  },
+  "finalMobile": {
+    "viewport": 390,
+    "width": 390,
+    "overflow": [
+      {
+        "tag": "TABLE",
+        "cls": "clients-table",
+        "left": 21,
+        "right": 641,
+        "width": 620,
+        "overflow": "visible"
+      },
+      {
+        "tag": "THEAD",
+        "cls": "",
+        "left": 21,
+        "right": 641,
+        "width": 620,
+        "overflow": "visible"
+      },
+      {
+        "tag": "TR",
+        "cls": "",
+        "left": 21,
+        "right": 641,
+        "width": 620,
+        "overflow": "visible"
+      },
+      {
+        "tag": "TH",
+        "cls": "",
+        "left": 360.1875,
+        "right": 501,
+        "width": 140.8125,
+        "overflow": "visible"
+      },
+      {
+        "tag": "TH",
+        "cls": "",
+        "left": 501,
+        "right": 641,
+        "width": 140,
+        "overflow": "visible"
+      },
+      {
+        "tag": "TBODY",
+        "cls": "",
+        "left": 21,
+        "right": 641,
+        "width": 620,
+        "overflow": "visible"
+      },
+      {
+        "tag": "TR",
+        "cls": "",
+        "left": 21,
+        "right": 641,
+        "width": 620,
+        "overflow": "visible"
+      },
+      {
+        "tag": "TD",
+        "cls": "",
+        "left": 360.1875,
+        "right": 501,
+        "width": 140.8125,
+        "overflow": "visible"
+      },
+      {
+        "tag": "SPAN",
+        "cls": "muted",
+        "left": 384.1875,
+        "right": 477,
+        "width": 92.8125,
+        "overflow": "visible"
+      },
+      {
+        "tag": "TD",
+        "cls": "",
+        "left": 501,
+        "right": 641,
+        "width": 140,
+        "overflow": "visible"
+      },
+      {
+        "tag": "A",
+        "cls": "text-link",
+        "left": 525,
+        "right": 617,
+        "width": 92,
+        "overflow": "visible"
+      },
+      {
+        "tag": "SPAN",
+        "cls": "client-link-indicator",
+        "left": 603.40625,
+        "right": 617,
+        "width": 13.59375,
+        "overflow": "visible"
+      },
+      {
+        "tag": "SPAN",
+        "cls": "sr-only",
+        "left": 524,
+        "right": 525,
+        "width": 1,
+        "overflow": "hidden"
+      }
+    ]
+  },
+  "dependencies": {
+    "all": {
+      "info": 0,
+      "low": 0,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0,
+      "total": 4
+    },
+    "runtime": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "changes": "No dependencies installed or changed; four moderate dev nodes remain."
+  },
+  "passwordCorpus": {
+    "entries": 10001,
+    "sha256": "68782d6a4a19a4768d5f15dd66bd534e7a33055cc755411e33f16d18c50fdcce",
+    "source": "https://github.com/danielmiessler/SecLists/blob/master/Passwords/Common-Credentials/10k-most-common.txt",
+    "license": "MIT; vendored license included"
+  },
+  "preserved": {
+    "READMEsha256": "915105d49441af288ecbd02a3ba423a85c12cb245ae9d8d27b3ba1694c837569",
+    "ownerEnvironmentUnchanged": true,
+    "ownerAGENTSSuppliedBytesUnchanged": true,
+    "oldMigrationsChanged": false,
+    "originalTriggers": 13
+  },
+  "commands": [
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 306.2012,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3198.8316,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:security:db",
+      "exit": 0,
+      "ms": 4069.3256,
+      "log": "test-security-db.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 501.4371000000001,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3223.284600000001,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:website:db",
+      "exit": 0,
+      "ms": 3089.4241,
+      "log": "test-website-db.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 295.03510000000097,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3082.2123999999985,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:release:browser",
+      "exit": 0,
+      "ms": 26214.2204,
+      "log": "test-release-browser.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 365.5616000000009,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3817.8979000000036,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:security:browser",
+      "exit": 0,
+      "ms": 10578.999499999998,
+      "log": "test-security-browser.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 526.898000000001,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3783.9663999999975,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:security:recovery",
+      "exit": 0,
+      "ms": 8298.582599999994,
+      "log": "test-security-recovery.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 351.49950000000536,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3317.1630000000005,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:auth:http",
+      "exit": 0,
+      "ms": 26150.330100000006,
+      "log": "test-auth-http.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 630.0774999999994,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3948.6003000000055,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:clients:http",
+      "exit": 0,
+      "ms": 3524.2494000000006,
+      "log": "test-clients-http.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 420.45500000000175,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 6046.455800000011,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:projects:http",
+      "exit": 0,
+      "ms": 3446.2130000000034,
+      "log": "test-projects-http.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 314.59309999999823,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3323.641499999998,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:references:http",
+      "exit": 0,
+      "ms": 5426.909199999995,
+      "log": "test-references-http.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 348.34030000001076,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3331.239099999977,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:expenses:http",
+      "exit": 0,
+      "ms": 3152.5282000000007,
+      "log": "test-expenses-http.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 316.7919000000111,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3539.571100000001,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:payments:http",
+      "exit": 0,
+      "ms": 5175.935999999987,
+      "log": "test-payments-http.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 310.20369999998366,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3473.314699999988,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:receipts:http",
+      "exit": 0,
+      "ms": 9020.442100000015,
+      "log": "test-receipts-http.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 304.4275000000198,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3086.5997999999963,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:reports:http",
+      "exit": 0,
+      "ms": 10173.085399999982,
+      "log": "test-reports-http.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 291.2288000000117,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 2945.7719000000216,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:security:http",
+      "exit": 0,
+      "ms": 19419.82210000002,
+      "log": "test-security-http.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 300.5034999999916,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3157.501399999979,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run test:website:browser",
+      "exit": 0,
+      "ms": 36463.042000000016,
+      "log": "test-website-browser.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs reset",
+      "exit": 0,
+      "ms": 426.1773000000103,
+      "log": "reset.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run db:migrate",
+      "exit": 0,
+      "ms": 3560.7082999999984,
+      "log": "migrate.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run perf:lab seed baseline",
+      "exit": 0,
+      "ms": 3280.892599999992,
+      "log": "performance-seed.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run perf:lab db baseline",
+      "exit": 0,
+      "ms": 13633.285000000033,
+      "log": "performance-db.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run perf:lab browser baseline",
+      "exit": 0,
+      "ms": 90151.62659999996,
+      "log": "performance-browser.log"
+    },
+    {
+      "command": "node scripts/release/lab.mjs run perf:lab races baseline",
+      "exit": 0,
+      "ms": 3103.2496999999858,
+      "log": "performance-races.log"
+    }
+  ],
+  "secretBoundaryScan": {
+    "trackedFiles": 303,
+    "publicBuildFiles": 35,
+    "logs": 36,
+    "traces": 65,
+    "knownCredentialSentinels": 19,
+    "findings": [],
+    "historySensitiveFiles": [],
+    "scope": "Known owner/test credential values and key formats; history filename scan only, not exhaustive historical blob/entropy analysis. Server action encryption manifests are private build assets, not public bundles."
+  },
+  "historicalMigrationSHA256": {
+    "drizzle/0000_wp02_integrity_foundation.sql": "5f972707b506644f976f71bd139f74c72f9e269bfeaba63ff3ca7165572ef16c",
+    "drizzle/0001_wp02_history_guards.sql": "21a7d78e4846ea6b53224593eca961dc92edd7bc7d48a42db8b14ed1c1ce9205",
+    "drizzle/0002_wp03_authentication.sql": "023ff3b046a78f33ad4c7fa799804be11254f86a46f31847279d952cceb8eb9a",
+    "drizzle/0003_wp04_clients.sql": "a2c5cdad7751945aa77a8eef88b94efec28eab9857c63763e0e40dc677d15797",
+    "drizzle/0004_wp05_project_aggregates.sql": "ad18f5a53f4e45790395d2e6db18972658d53f9fee92a33efac2f60bbccef8dc",
+    "drizzle/0005_wp06_reference_lifecycle.sql": "a90f76f7149e6737dcef9be33f6f00db4218fb35fd4fd83c743dbb3863b85bb4",
+    "drizzle/0006_wp07_expenses.sql": "5a784ca21c0ab0c7f0878381f68a6599c3bfa52a407c70cbecf2c37688da6a7e",
+    "drizzle/0007_wp08_payment_allocations.sql": "cb0a5a2770ee7b2b107982a7ff17e7787002f9d092374732d7944c12416e94bc",
+    "drizzle/0008_wp09_receipt_issuance.sql": "cd85620b9068367085e3d0590bef2b0166cc41cee09ff0b9d9f27998709e76f7"
+  },
+  "staticChecks": {
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "productionBuild": "PASS",
+    "dbCheck": "PASS",
+    "freshMigrations": "PASS",
+    "routeSmoke": "PASS",
+    "ownerREADMEEnvironmentAndAGENTS": "Unchanged original bytes",
+    "ASVSHistoricalFailsMapped": 14,
+    "acceptanceCriteriaReported": 25
+  },
+  "cleanup": {
+    "ownedContainersRemoved": 6,
+    "ownedVolumesRemoved": 6,
+    "backupKeysRemoved": true,
+    "syntheticCredentialFilesRemoved": true,
+    "ownerResourcesModified": false,
+    "regressionContainerAndPrivateStoresRemoved": true
+  }
+}
