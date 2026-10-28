@@ -1,5 +1,5 @@
 import "server-only";
-import {asc,count,getTableColumns,inArray,type SQL} from "drizzle-orm";
+import {and,asc,count,getTableColumns,gt,inArray,type SQL} from "drizzle-orm";
 import {drizzle} from "drizzle-orm/mysql2";
 import type {AnyMySqlTable} from "drizzle-orm/mysql-core";
 import type {Connection} from "mysql2/promise";
@@ -23,9 +23,12 @@ export async function materialize(c:Connection,token:string|undefined,full=false
    // Credentials are not even selected into a full-export snapshot.
    const selected=name==="business_users"?{id:schema.users.id,displayName:schema.users.displayName,email:schema.users.email,status:schema.users.status,createdAt:schema.users.createdAt,updatedAt:schema.users.updatedAt,deactivatedAt:schema.users.deactivatedAt}:columns;
    data[name]=[];
-   for(let offset=0;offset<Number(n);offset+=100){
-    const batch=await tx.select(selected).from(table).where(where).orderBy(asc(columns.id)).limit(100).offset(offset) as DataRow[];
-    if(!batch.length)throw new Error("Snapshot completeness failure.");bytes+=Buffer.byteLength(JSON.stringify(batch));if(bytes>16*1024*1024||Date.now()-start>15000)throw limitError();data[name].push(...batch);
+   // A stable primary-key cursor avoids rescanning earlier rows on every batch.
+   // Count, cursor reads and completeness checks retain the same read-only MVCC snapshot.
+   let cursor:string|undefined;
+   while(data[name].length<Number(n)){
+    const batch=await tx.select(selected).from(table).where(and(where,cursor?gt(columns.id,cursor):undefined)).orderBy(asc(columns.id)).limit(500) as DataRow[];
+    if(!batch.length)throw new Error("Snapshot completeness failure.");bytes+=Buffer.byteLength(JSON.stringify(batch));if(bytes>16*1024*1024||Date.now()-start>15000)throw limitError();data[name].push(...batch);cursor=String(batch.at(-1)!.id);
    }
    if(data[name].length!==counts[name])throw new Error("Snapshot count mismatch.");await observe(name);
   }

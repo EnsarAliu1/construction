@@ -1,597 +1,676 @@
 # ADORE TECH SOLUTIONS — CODEX IMPLEMENTATION PROMPT
 
-## WP-11: Corporate Website Foundation, Content Architecture & Premium Experience Preparation
+## WP-13: Performance Engineering, Measurement & Optimization
 
 **Project:** Fitimi Construction Management System & Corporate Website  
-**Work Package:** WP-11  
+**Package:** WP-13  
 **Version:** 1.0  
-**Date:** 27 October 2026  
 **Developer:** Codex  
 **Technical Lead:** Adore Tech Solutions  
-**Authorization:** Local implementation, justified dependencies, local tests and verified corrections. No production deployment.
+**Status:** Authorized for local implementation and verification  
+**Deployment:** NOT AUTHORIZED
 
 ---
 
 ## 1. MISSION
 
-Turn the existing bilingual SQ/EN corporate website from an initial foundation into a complete, polished, structurally production-oriented public website.
+Optimize the real performance of Fitimi Construction across its public bilingual website and authenticated construction-management application.
 
-Build a credible, responsive and accessible construction-company website that provides an excellent foundation for the later advanced visual and motion-design package.
+The project owner will personally direct the premium UI/UX, visual identity and motion-design work.
 
-Required routes:
+**Do not perform a creative redesign.**
 
-- Home
-- About
-- Services
-- Projects
-- Contact
+Your responsibilities are:
 
-Each route must exist in Albanian and English.
+1. Establish real performance baselines.
+2. Identify measured bottlenecks.
+3. Improve website loading and responsiveness.
+4. Improve authenticated application responsiveness.
+5. Optimize database queries and critical financial read paths.
+6. Reduce unnecessary client-side JavaScript and rendering.
+7. Improve performance under realistic concurrent activity.
+8. Preserve authentication, financial integrity, receipts, history and data privacy.
+9. Deliver reproducible before/after benchmarks.
+10. Document performance budgets for the owner's upcoming visual and animation work.
 
-This package focuses on complete website functionality, content architecture, interaction quality, responsive behavior, SEO foundations and preparation for premium motion.
+This is an implementation and engineering package.
 
-Do not treat this package as permission to invent real company facts, projects, testimonials or credentials.
-
-Do not rebuild the internal Construction Management System.
+Do not return only performance advice.
 
 ## 2. PROJECT BASELINE
 
-Reported completed packages WP-01 through WP-10.
+Reported completed packages:
 
-WP-10 reports:
+- WP-01 through WP-10: Main application and financial functionality.
+- WP-11: Corporate website foundation, bilingual content architecture and real browser tests.
 
-- Working authenticated construction-management modules.
-- Real financial dashboard and company reports.
-- Full business-data export.
-- Actual receipt PDFs.
-- 309 passing Node test results.
-- MySQL 8.4.13 integration evidence.
-- No browser interaction verification.
-- Missing original approved visual design assets.
+WP-11 reports:
+
+- Next.js 16.4.3.
+- React 19.3.1.
+- TypeScript 6.0.3.
+- Drizzle ORM 0.45.4.
+- MySQL 8.4.13.
+- 9 database migrations.
+- 13 original integrity/history triggers.
+- 356 passing automated test results.
+- 32 actual Microsoft Edge/Playwright browser tests.
+- Working SQ/EN public routes.
+- Authenticated business modules.
+- Actual PDF receipt generation and private storage.
+- Financial PDF/XLSX reports and complete ZIP export.
+
+Verify the actual repository state rather than trusting historical figures.
 
 Before implementation:
 
-1. Inspect current Git branch and working tree.
-2. Read AGENTS.md and all current owner instructions.
-3. Preserve existing uncommitted work.
-4. Inspect actual public pages, route architecture, translations and design tokens.
-5. Inspect public/private layout separation.
-6. Inspect metadata, image handling and current contact behavior.
-7. Review any accessible approved UX, branding and copywriting resources.
-8. Preserve all financial/authentication/reporting behavior.
+- Read AGENTS.md.
+- Inspect Git branch, HEAD and working tree.
+- Preserve existing owner files and configuration.
+- Review current package scripts.
+- Review Next.js route and component structure.
+- Inspect database queries and indexes.
+- Inspect existing Playwright tests.
+- Review previous delivery reports.
+- Check current source and dependency versions.
 
-Follow existing README restrictions if still active.
+Preserve README.md if the owner's current instructions prohibit editing it.
 
-Do not silently replace approved design decisions.
+Do not modify old migrations in place.
 
-## 3. CREATIVE DIRECTION
+## 3. OWNER'S UI/UX AUTHORITY
 
-The website represents a professional construction company.
+The owner personally controls:
 
-Its desired brand experience is:
+- Final website visual direction.
+- Typography and brand identity.
+- Motion language.
+- Building/brick/crane/truck animation concepts.
+- Page compositions.
+- Internal application visual polish.
+- Interaction and animation approval.
 
-- Premium and credible.
-- Modern architectural composition.
-- Strong typography.
-- Excellent hierarchy.
-- Confident but restrained copy.
-- Refined interactions.
-- Clear service storytelling.
-- A memorable construction-inspired visual language.
+You may improve implementation efficiency without changing the intended design.
 
-The owner has explicitly requested later extraordinary animations inspired by real construction activities, including:
+Do not:
 
-- Bricks assembling into structures.
-- Construction vehicles and trucks.
-- Cranes and machinery.
-- Buildings being assembled progressively.
-- Scroll-driven architectural storytelling.
-- Cinematic transitions and subtle depth.
+- Redesign pages.
+- Change brand colors.
+- Replace typography for aesthetic reasons.
+- Remove visual sections because they could become animated later.
+- Implement cinematic animations.
+- Add visual effects unrelated to measured performance.
+- Invent company content.
+- Alter navigation semantics without demonstrated necessity.
 
-**These are creative directions for WP-12, not authorization to invent approved final designs.**
+Preserve existing WP-11 motion hooks and server-rendered content.
 
-WP-11 must create clean component boundaries and section structures that allow WP-12 to introduce these effects without rewriting the website.
+If a performance optimization conflicts with future premium motion design, document the tradeoff and provide a technical recommendation. Do not make the creative decision yourself.
 
-Do not install a heavyweight 3D engine merely to prepare for future animations.
+## 4. MEASUREMENT-FIRST RULE
 
-## 4. CONTENT INTEGRITY
+No unsupported claims such as:
 
-Do not invent:
+- "The app is 10x faster."
+- "Instant loading."
+- "Lighthouse 100."
+- "All pages load in under one second."
 
-- Completed construction projects.
-- Client testimonials.
-- Years of experience.
-- Number of employees.
-- Awards or certifications.
-- Exact company address.
-- Company registration or tax numbers.
-- Telephone numbers or emails.
-- Named leadership.
-- Real project photographs or ownership rights.
-- Quantified construction achievements.
+First measure the actual baseline.
 
-Inspect available sources for real company facts.
+Measure again after changes under comparable conditions.
 
-Use only verified information.
+Distinguish:
 
-Where approved content is missing:
+- Local laboratory measurements.
+- Browser interaction measurements.
+- Database microbenchmarks.
+- API latency measurements.
+- Production user experience, which cannot yet be confirmed.
 
-- Implement a clear typed content model.
-- Maintain an explicit missing-content inventory.
-- Use neutral, nonfactual wording where possible.
-- Keep unverified claims out of the public-facing experience.
-- Use appropriately labeled development placeholders only in nonproduction preview contexts.
-- Avoid visually presenting fictitious portfolio projects as real completed work.
+Record test environment, sample sizes, machine/browser conditions and measurement limitations.
 
-Do not copy material from other construction businesses.
+Do not present synthetic benchmarks as real-user production metrics.
 
-Do not publish stock imagery as actual Fitimi Construction work.
+## 5. TARGET PERFORMANCE METRICS
 
-## 5. BILINGUAL SQ/EN QUALITY
+Use the following as targets, not guaranteed results.
 
-Maintain equivalent Albanian and English experiences.
+### Public website
 
-Implement:
+Core Web Vitals targets at the 75th percentile of real-user measurements when available:
 
-- Real translations for UI labels and verified content.
-- Correct route-preserving language switching.
-- Correct language-specific document lang metadata.
-- SEO canonical and hreflang handling.
-- Appropriate localized page titles and descriptions.
-- Correct fallback behavior.
-- No mixed-language UI.
-- No missing translation keys.
-- No broken direct-link navigation.
-- Correct Albanian special characters.
+- LCP ≤ 2.5 seconds.
+- INP ≤ 200 milliseconds.
+- CLS ≤ 0.1.
 
-English should read naturally, not as literal awkward translation.
+For local lab evaluation, use appropriate Lighthouse/Playwright measurements and clearly distinguish those from field p75 data.
 
-Do not add unsupported languages.
+Evaluate:
 
-## 6. HOME PAGE
+- First Contentful Paint.
+- Largest Contentful Paint.
+- Layout shifts.
+- Main-thread blocking.
+- JavaScript size.
+- Image loading.
+- Font loading.
+- Navigation timing.
+- Mobile simulation.
 
-Implement a clear premium page structure:
+### Private application
 
-1. Strong hero section.
-2. Concise company positioning.
-3. Services overview.
-4. Construction process or working philosophy.
-5. Projects section only where authentic project information is available.
-6. Differentiators based on verifiable facts or neutral service approach.
-7. Clear contact CTA.
-8. Consistent footer.
+Measure:
 
-The hero should be architecturally composed to support a future building-assembly animation.
+- Authenticated page navigation.
+- Dashboard time to useful data.
+- Clients/projects/expenses/payments listing.
+- Search and filter responsiveness.
+- Contract/phase editor responsiveness.
+- Form loading and submit feedback.
+- Receipt PDF downloads.
+- Company report generation.
+- Full business export.
 
-Use progressive enhancement so the future animation is not required for the content to be readable.
+Define realistic performance budgets from actual baselines.
 
-Avoid fabricated metrics, testimonials or project galleries.
+Financial correctness and data security always take priority over shaving milliseconds.
 
-## 7. ABOUT PAGE
+## 6. BROWSER PERFORMANCE ENVIRONMENT
 
-Create a well-structured company presentation with:
+WP-11 successfully used local Microsoft Edge with Playwright.
 
-- Company introduction.
-- Working approach.
-- Values expressed without unverified factual claims.
-- Construction expertise/service positioning when supported.
-- Clear CTA.
+Reuse the approved browser-testing setup.
 
-Do not invent a founding story, founder identity or company history.
+Preserve the owner's browser profile and settings.
 
-If real business history is unavailable, keep the presentation factual and restrained.
+Use:
 
-## 8. SERVICES PAGE
+- A temporary Playwright profile.
+- Reproducible viewport sizes.
+- Representative desktop and mobile configurations.
+- A controlled production build.
+- Local loopback services.
+- Explicit synthetic fixtures for authenticated paths.
 
-Create an extensible service-data model.
+Measure multiple runs per scenario.
 
-Each approved service should support:
+Record median and a useful tail-latency metric where sample sizes justify it.
 
-- Localized title.
-- Localized description.
-- Appropriate visual treatment.
-- Optional supporting details.
-- Clear CTA.
+Separate cold-start measurements from warm-navigation measurements.
 
-Do not assume the company offers every possible construction service.
+Do not mix development-mode measurements with production-build measurements without labeling the difference.
 
-Use only services confirmed by available sources.
+Collect console, network and hydration errors.
 
-If the specific service catalog is incomplete, provide a maintainable content structure without claiming unsupported offerings.
+Avoid screenshots containing private or real customer data.
 
-Prepare components so WP-12 can add construction-specific animations to individual service sections.
+## 7. PUBLIC WEBSITE OPTIMIZATION
 
-## 9. PROJECTS PAGE
+Audit all ten SQ/EN public pages.
 
-The public project portfolio must be separate from the internal authenticated projects database.
+Optimize:
 
-Never expose private customer/project records publicly by default.
+- Server rendering/static generation.
+- Unnecessary client components.
+- JavaScript bundle size.
+- Shared dependencies.
+- Route prefetching behavior.
+- Font loading.
+- Image loading and dimensions.
+- CSS delivery.
+- Above-the-fold content.
+- Layout stability.
+- Responsive navigation performance.
+- Reduced-motion fallback efficiency.
+- Hydration and event listeners.
 
-Implement a curated public project-data source or equivalent secure publishing boundary.
+Keep the public content fully understandable without animation.
 
-Do not create a public endpoint that queries private projects simply because they exist in the management application.
+Do not remove metadata, canonical/hreflang, language switching, accessibility or security protections.
 
-Real public projects require explicitly approved content and image rights.
+Do not add a heavy client-side framework where a lightweight solution is sufficient.
 
-If no such entries exist:
+## 8. AUTHENTICATED APPLICATION PERFORMANCE
 
-- Show a carefully designed empty/introductory project presentation.
-- Avoid fictitious portfolio cards.
-- Keep a clean path for later authorized content entry.
+Profile the existing business modules:
 
-Do not introduce a full CMS unless justified and authorized.
+- Dashboard.
+- Clients.
+- Projects.
+- Contract/phase editor.
+- Expense categories.
+- Persons/suppliers.
+- Vehicles.
+- Expenses.
+- Payments.
+- Receipts.
+- Reports and exports.
 
-## 10. CONTACT PAGE
+Investigate:
 
-Implement a polished contact experience using only real verified company contact details.
+- Unnecessary rerenders.
+- Oversized client components.
+- Repeated server fetches.
+- Duplicate queries.
+- Excessive sequential requests.
+- Search typing behavior.
+- List pagination.
+- Selector responsiveness.
+- Large financial forms.
+- Expensive serialization.
+- Slow loading and error boundaries.
 
-If actual delivery infrastructure exists and is configured, a working contact form may be implemented with:
+Use React/Next.js-compatible optimizations when justified.
 
-- Server-side validation.
-- Abuse protection.
-- Appropriate privacy handling.
-- Reliable delivery or storage.
-- Honest success and failure responses.
+Do not introduce speculative memoization everywhere.
 
-If no delivery destination/service has been approved, **do not enable a fake contact submission workflow**.
+Do not move sensitive database state into public client bundles.
 
-Instead, keep a transparent contact presentation and document the required configuration.
+Keep forms correct under slow network, stale data, concurrent writes and session expiration.
 
-Do not silently discard visitor messages while showing "Message sent".
+## 9. DATABASE QUERY PERFORMANCE
 
-Do not invent contact email addresses or phone numbers.
+Use MySQL 8.4 with representative synthetic data.
 
-## 11. DESIGN SYSTEM PREPARATION
+Inspect and benchmark relevant queries:
 
-Reuse the existing Operational Clarity foundation where appropriate, but recognize that the public marketing website can have its own expressive visual layer.
+- Dashboard summaries.
+- Project financial aggregates.
+- Active allocation capacity.
+- Client/project searches.
+- Expense searches and filters.
+- Payment and receipt lists.
+- Audit/history reads.
+- Company report snapshots.
+- Full export batching.
 
-Maintain shared brand coherence without forcing operational dashboard density onto the public site.
+Use appropriate:
 
-Prepare reusable:
+- EXPLAIN / EXPLAIN ANALYZE where safe.
+- Actual row counts.
+- Query latency.
+- Index inspection.
+- Connection-pool measurements.
+- Query-plan analysis.
 
-- Page containers and spacing.
-- Display/headline typography.
-- Responsive grids.
-- Service cards.
-- Project presentation components.
-- Section transitions.
-- CTA patterns.
-- Interactive navigation.
-- Footer.
-- Accessible mobile menu.
-- Motion-ready visual slots.
+Avoid creating indexes blindly.
 
-Use design tokens rather than hard-coded inconsistent styling.
+Any new index must have a demonstrated query benefit and an analysis of write/storage cost.
 
-Do not alter authenticated business-module styling unnecessarily.
+If a database index or schema adjustment is warranted:
 
-## 12. MOTION ARCHITECTURE FOR WP-12
+- Generate an additive migration after the existing latest migration.
+- Preserve all historical migration hashes.
+- Verify on a fresh disposable database.
+- Test expected query behavior and regression.
 
-Prepare future animation components as progressive enhancements.
+Do not change transaction isolation, foreign keys, triggers, versioning or locking solely to improve benchmark numbers.
 
-Recommended concepts:
+## 10. FINANCIAL TRANSACTION SAFETY
 
-- `ConstructionHeroScene`
-- `BrickAssemblySequence`
-- `CraneMotionScene`
-- `VehicleScrollSequence`
-- `ArchitecturalReveal`
+The following invariants must remain untouched:
 
-These are conceptual names, not mandatory implementation artifacts.
+- Exact DECIMAL/BigInt EUR arithmetic.
+- Contract total equals active phase values.
+- Active allocation capacity cannot be exceeded.
+- Payment allocations sum exactly to the payment.
+- Shared deterministic financial lock ordering.
+- Idempotent payment confirmation.
+- No duplicate receipts.
+- Immutable receipt versions.
+- Cancellation history preservation.
+- Full audit trails.
+- Correct active income/expense totals.
 
-WP-11 should establish where scenes attach and what content they support.
+Do not cache mutable financial capacity as an authorization or validation source.
 
-Do not implement costly elaborate animations in this package just to increase visual complexity.
+Do not replace locking reads with stale cached values.
 
-Future motion must support:
+A fast stale preview may be allowed when transparently identified as a preview, but final mutations must always revalidate inside the authoritative transaction.
 
-- Reduced-motion preferences.
-- Mobile performance fallbacks.
-- Keyboard and screen-reader accessibility.
-- Pause/visibility considerations where relevant.
-- No motion-dependent access to essential content.
-- Graceful failure without JavaScript animation.
+Performance work must not relax SQL consistency or financial guards.
 
-Content must remain understandable if every animation is disabled.
+## 11. CACHING AND DATA PRIVACY
 
-## 13. ACCESSIBILITY
+Develop a documented caching policy.
 
-Use WCAG 2.2 AA as the accessibility target.
+### Public website
 
-Implement or verify:
+Use safe static/server caching where appropriate.
 
-- Semantic headings.
-- Landmark navigation.
-- Keyboard-accessible menus.
-- Visible focus indicators.
-- Correct link/button semantics.
-- Meaningful image alt text.
-- Adequate contrast.
-- Form labels and error associations.
-- Reduced-motion behavior.
-- No hidden essential content.
-- Responsive text and zoom.
-- No keyboard traps.
+### Authenticated application
 
-Do not claim full conformance from static checks alone.
+Preserve privacy:
 
-## 14. SEO AND DISCOVERABILITY
+- No shared CDN caching of customer data.
+- No public caching of receipts.
+- No public caching of audit records.
+- No public caching of financial reports.
+- No cross-user leakage.
+- Appropriate private/no-store responses.
+- Correct session invalidation.
+- No cached authorization decisions that survive deactivation.
 
-Implement accurate:
+Do not cache raw receipt storage URLs or private filesystem paths in client state.
 
-- Localized metadata.
-- Title/description per public route.
-- Canonical URLs when the public domain is configured.
-- Hreflang alternates.
-- Robots handling.
-- Sitemap for public website routes only.
-- Open Graph metadata.
-- Appropriate social preview defaults if real assets exist.
-- Appropriate semantic structured data only when supported by verified facts.
+Never optimize performance by weakening authentication checks.
 
-Do not include authenticated app pages in the public sitemap.
+## 12. PDF AND EXPORT PERFORMANCE
 
-Do not invent a production domain.
+Benchmark:
 
-Do not leak private app data into page metadata or structured data.
+- Receipt PDF rendering.
+- Receipt document retrieval.
+- Private checksum verification.
+- Company financial PDF generation.
+- XLSX generation.
+- Full ZIP data export.
+- Export materialization and memory use.
 
-## 15. IMAGE AND ASSET POLICY
+Do not change the immutable receipt content of previously issued documents.
 
-Prioritize authentic company imagery and approved brand assets when available.
+Do not skip checksum validation merely to accelerate downloads.
 
-Do not assume such assets are present.
+Avoid loading unbounded customer records into memory.
 
-For missing assets:
+Maintain current explicit export limits unless a measured, safely tested change is justified.
 
-- Provide a clear asset requirements inventory.
-- Use properly identified temporary development imagery where permitted.
-- Do not disguise generated/stock images as real construction work.
-- Avoid images whose rights are unknown.
+If an export fails its limits, return a clear failure rather than a silently truncated download.
 
-Optimize delivered assets through appropriate responsive formats and dimensions.
+Keep authentication and export audit controls operational.
 
-Do not place sensitive company documents, receipts or internal application files in public assets.
+Production persistent storage and paired database/PDF backup remain separate release prerequisites.
 
-## 16. PERFORMANCE FOUNDATION
+## 13. LOAD AND CONCURRENCY TESTS
 
-Performance matters even before WP-13.
+Use disposable MySQL and synthetic data only.
 
-Implement:
+Design representative scenarios:
 
-- Sensible server/client component boundaries.
-- Minimal client-side JavaScript.
-- Correct image sizing.
-- Lazy loading where appropriate.
-- Reduced layout shifts.
-- Deferred nonessential visual effects.
-- Avoidance of unnecessary animation packages.
-- Efficient navigation.
-- Reasonable caching for genuinely public static content.
+- Multiple users reading the dashboard.
+- Concurrent project/client searches.
+- Concurrent payment allocation previews.
+- Concurrent valid payment confirmations.
+- Contract-phase edits competing with payments.
+- Expense creation and reference deactivation.
+- Receipt PDF downloads.
+- Report generation while reads continue.
+- Full export resource contention.
 
-Do not weaken privacy/authentication caching rules of internal application pages.
+Observe:
 
-Do not sacrifice content visibility or accessibility for performance scores.
+- Request latency.
+- Error rates.
+- Database connection utilization.
+- Lock waits.
+- CPU/memory use.
+- Timeouts.
+- Deadlocks.
+- Document generation load.
 
-## 17. BROWSER TESTING — PRIORITY
+Avoid excessively destructive or uncontrolled stress testing.
 
-WP-01 through WP-10 repeatedly reported browser interaction as NOT VERIFIED.
+Do not load-test production or unrelated local services.
 
-Do not repeat this gap automatically.
+Financial races must preserve all existing invariants.
 
-First inspect whether Playwright, Chromium, Edge or another supported browser-testing setup is available in the owner's local Windows environment.
+Do not suppress safe conflicts/409 responses merely to improve throughput statistics.
 
-You are authorized to install necessary **local development-only browser-testing dependencies and browser binaries** if supported and safe, while preserving the existing environment.
+## 14. REALISTIC TEST DATA
 
-Use an isolated test setup and synthetic/local content.
+Create synthetic datasets large enough to reveal query and rendering bottlenecks.
 
-Do not change global browser defaults or modify the owner's personal browser profile.
+Include representative:
 
-If a real browser can be used, test:
+- Clients and businesses.
+- Projects and contracts.
+- Contract phases.
+- Payments and allocations.
+- Expenses.
+- Categories/persons/vehicles.
+- Receipt versions.
+- Audit/history rows.
 
-- Desktop navigation.
-- Mobile navigation.
-- SQ/EN switching.
-- Direct-route loading.
-- Responsive breakpoints.
-- Keyboard focus and menus.
-- Contact states.
-- Console errors.
-- Hydration.
-- Layout overflow.
-- Screenshot evidence.
+Do not invent real Fitimi Construction business data.
 
-If browser automation is unavailable after bounded setup attempts, document the actual blocker and mark browser acceptance NOT VERIFIED.
+Do not add synthetic production dashboard content.
 
-Do not treat successful HTTP markup as proof of visual behavior.
+Keep fixtures isolated and removable.
 
-## 18. SECURITY
+Test both:
 
-Keep public website routes isolated from all private application data.
+- Small/empty datasets.
+- Moderate realistic datasets approaching existing pagination/export limits.
 
-Verify:
+Record dataset sizes explicitly.
 
-- No unauthenticated data leakage.
-- No public receipt/document exposure.
-- No private project/customer information in website payloads.
-- No accidental exposure through search metadata or static assets.
-- Safe contact form behavior.
-- Appropriate response headers.
-- No secrets embedded in client bundles.
-- Safe external links.
-- No unsafe HTML injection.
-- No unnecessary tracking of visitor data.
+## 15. PERFORMANCE BUDGET FOR FUTURE ANIMATIONS
 
-Do not modify or weaken WP-03 through WP-10 authorization boundaries.
+Prepare a technical budget to help the project owner build premium motion.
 
-## 19. AUTOMATED TESTS
+Provide recommendations for:
 
-Implement relevant unit, route, HTML and browser tests.
+- Maximum reasonable animation JavaScript overhead.
+- Appropriate SVG/CSS/Canvas/WebGL tradeoffs.
+- Motion loading after critical content.
+- GPU/compositing-friendly properties.
+- Avoiding forced synchronous layout.
+- Offscreen animation pausing.
+- Reduced-motion support.
+- Mobile quality tiers.
+- Scroll listener design.
+- Event cleanup.
+- Memory and battery considerations.
 
-Test:
+Do not pick final artistic concepts or implement the owner-controlled motion package.
 
-- All ten public content routes.
-- Locale-preserving navigation.
-- Translation completeness.
-- Correct metadata/hreflang.
-- Sitemap exclusion of `/app`.
-- Invalid route handling.
-- Public portfolio isolation from private records.
-- Contact form never reports false delivery.
-- Keyboard/navigation behavior where browser tooling exists.
-- No hydration warnings.
-- Mobile responsive layout.
-- Reduced-motion fallback structure.
-- Asset and image loading.
-- No authentication regression.
+Recommend graceful enhancement rather than turning the website into a heavy animation runtime.
 
-Run the earlier project tests as appropriate:
+The owner must be able to introduce premium animations without breaking accessible content or the target loading budget.
+
+## 16. CODE CHANGES
+
+Make only evidence-backed changes.
+
+For each meaningful optimization document:
+
+1. Baseline measurement.
+2. Diagnosed bottleneck.
+3. Source change.
+4. New measurement.
+5. Regression impact.
+6. Relevant tradeoffs.
+
+Preserve existing behavior and public/private boundaries.
+
+Prefer focused changes over broad rewrites.
+
+Do not install dependencies unless their measurable value justifies their operational cost.
+
+Do not introduce an additional caching server or external infrastructure without authorization.
+
+## 17. SECURITY PRESERVATION
+
+Performance work must preserve:
+
+- Live authorization and account deactivation.
+- Authentication rate limiting.
+- Session revocation.
+- CSRF/Origin/Host validation.
+- Financial row locks.
+- Exact amounts.
+- Audit integrity.
+- Receipt immutability.
+- Private PDF storage/downloads.
+- Safe exports.
+- Input validation.
+- No-store privacy.
+- Database least-privilege assumptions.
+
+No benchmark result justifies bypassing these protections.
+
+Run relevant security regressions after optimizations.
+
+Do not claim this package replaces the dedicated WP-14 security audit.
+
+## 18. TESTING
+
+Run applicable project checks:
 
 - `npm.cmd test`
 - `npm.cmd run db:check`
+- `npm.cmd run db:migrate` against disposable MySQL.
 - `npm.cmd run test:db`
 - `npm.cmd run typecheck`
 - `npm.cmd run lint`
 - `npm.cmd run build`
 - `npm.cmd run check:routes`
+- `npm.cmd run test:website:browser`
 
-Use the project's established isolated local testing strategy.
+Run existing authenticated HTTP tests and add measured performance/browser tests where justified.
 
-Do not touch production or real customer records.
+Capture:
 
-Do not disable prior tests to obtain a passing build.
+- Baseline and optimized browser measurements.
+- Database query plans.
+- Representative server/API latency.
+- Memory and bundle size.
+- Load-test results.
+- All regression results.
 
-## 20. ACCEPTANCE CRITERIA
+Do not weaken prior tests.
 
-**WP11-AC01:** Five public pages function in both SQ and EN.
+Use reproducible local tooling.
 
-**WP11-AC02:** Locale navigation and route preservation work.
+If a metric is not measured, mark it NOT VERIFIED.
 
-**WP11-AC03:** No unverified company fact or fictitious portfolio item is published as real.
+## 19. ACCEPTANCE CRITERIA
 
-**WP11-AC04:** Website structure supports approved future premium visual storytelling.
+**WP13-AC01:** Actual baseline performance evidence is recorded.
 
-**WP11-AC05:** Shared public components and design tokens are consistent.
+**WP13-AC02:** Public website performance is measured in real browser tests.
 
-**WP11-AC06:** Public projects remain isolated from private application project records.
+**WP13-AC03:** Authenticated application performance is measured with synthetic sessions/data.
 
-**WP11-AC07:** Contact workflow does not falsely acknowledge undelivered messages.
+**WP13-AC04:** Relevant database query bottlenecks are profiled.
 
-**WP11-AC08:** Public metadata and technical SEO are correct.
+**WP13-AC05:** Improvements are supported by comparable before/after measurements.
 
-**WP11-AC09:** Authenticated application pages are excluded from public sitemap/indexing.
+**WP13-AC06:** Public SQ/EN navigation and SEO remain intact.
 
-**WP11-AC10:** Appropriate accessibility and reduced-motion foundations exist.
+**WP13-AC07:** Existing UI appearance and owner motion hooks are preserved.
 
-**WP11-AC11:** Desktop/mobile navigation works when browser testing is available.
+**WP13-AC08:** Financial transaction semantics and locks are unchanged or rigorously proven equivalent.
 
-**WP11-AC12:** Real browser/hydration testing is attempted with evidence; unverified cases are explicitly reported.
+**WP13-AC09:** Receipt numbering, immutability and checksum validation remain correct.
 
-**WP11-AC13:** Performance-oriented component and image loading boundaries are established.
+**WP13-AC10:** Authenticated/private responses preserve safe caching rules.
 
-**WP11-AC14:** Public/private security separation remains intact.
+**WP13-AC11:** Dashboard and project financial values remain exact.
 
-**WP11-AC15:** Public routes and translations pass automated regression tests.
+**WP13-AC12:** PDF/XLSX/ZIP exports remain complete and secure within documented bounds.
 
-**WP11-AC16:** Existing business modules, financial rules and receipt/download protections remain valid.
+**WP13-AC13:** Realistic synthetic data and concurrent-request tests are executed.
 
-**WP11-AC17:** TypeScript, lint and production build pass.
+**WP13-AC14:** Performance optimizations introduce no unauthorized access or data leakage.
 
-**WP11-AC18:** No real customer data, production infrastructure or deployment is involved.
+**WP13-AC15:** Database migrations and integrity tests pass.
 
-**WP11-AC19:** Missing content, photography and branding approvals are documented clearly.
+**WP13-AC16:** All original 13 triggers remain intact.
 
-**WP11-AC20:** A concrete WP-12 motion/visual implementation map is delivered.
+**WP13-AC17:** TypeScript, lint, production build and prior module regressions pass.
 
-Classify each PASS, FAIL or NOT VERIFIED with evidence.
+**WP13-AC18:** Real Edge/Playwright navigation, hydration and browser tests pass.
 
-## 21. DELIVERY REPORT
+**WP13-AC19:** Future premium-motion performance guidelines are documented.
 
-Return:
+**WP13-AC20:** No creative redesign, production deployment or real business data is involved.
 
-### A. Repository Baseline
+**WP13-AC21:** Remaining bottlenecks and performance risks are accurately reported.
 
-Branch, HEAD, working-tree state and sources actually available.
+**WP13-AC22:** Before/after results distinguish lab measurements from production Core Web Vitals.
 
-### B. Website Architecture
+Report PASS, FAIL or NOT VERIFIED for each criterion.
 
-Routes, locale handling, content structure and public/private separation.
+Do not award a PASS solely because code compiles.
 
-### C. Content and Assets
+## 20. DELIVERABLES
 
-Verified content, unavailable information and approvals needed.
+### A. Initial Baseline
 
-### D. UI/UX Foundation
+Environment, browser, device settings, dataset sizes and original performance metrics.
 
-Components, tokens, responsive behavior and interaction patterns.
+### B. Diagnosed Bottlenecks
 
-### E. SEO & Accessibility
+Measured page, API, database and export issues.
 
-Localized metadata, semantics and audit results.
+### C. Implemented Optimizations
 
-### F. Browser Verification
+Exact file changes and reasons.
 
-Actual browser/tool versions, routes tested, viewport sizes, screenshots, hydration and errors.
+### D. Before/After Results
 
-### G. Security
+Comparable measurements and honest improvement calculations.
 
-Private-data isolation, safe contact handling and public assets.
+### E. Database Performance
 
-### H. Testing
+Query plans, indexes, lock waits and data sizes.
 
-Exact commands, results, regression counts and limitations.
+### F. Browser Performance
 
-### I. Acceptance Checklist
+Public and authenticated routes, hydration, responsiveness and resource use.
 
-WP11-AC01 through WP11-AC20.
+### G. Load Testing
 
-### J. WP-12 Creative Map
+Concurrency, throughput, errors and financial integrity.
 
-Specific website sections suited to:
+### H. Motion Performance Handoff
 
-- Brick-by-brick animation.
-- Crane/building assembly.
-- Vehicle/truck motion.
-- Architectural scroll storytelling.
-- Microinteraction polish.
+Technical budgets and constraints for the owner's custom UI/UX work.
 
-Separate feasible ideas from approved final visuals.
+### I. Security & Privacy Regression
 
-### K. Remaining Risks
+No-cache/session/authorization/receipt/export protection results.
 
-Missing content/assets, browser QA, production release prerequisites.
+### J. Automated Verification
 
-## 22. SCOPE RESTRICTIONS
+Commands, actual output and test counts.
 
-Do not:
+### K. Acceptance
 
-- Implement WP-12's complete cinematic animation system.
-- Implement WP-13's full performance overhaul.
-- Change financial business rules.
-- Change receipt numbering or immutable PDFs.
-- Relax authentication or access controls.
-- Add unsupported company claims.
-- Publish private projects.
-- Create fake contact success.
-- Introduce unrelated CRM/CMS systems.
-- Deploy.
-- Purchase infrastructure.
+WP13-AC01 through WP13-AC22.
 
-## 23. EXECUTION
+### L. Remaining Risks
 
-Implement WP-11 locally.
+Unresolved slow paths, production-hosting uncertainty and future validation needs.
 
-Complete the bilingual public website architecture, factual content handling, reusable components, SEO, accessibility foundations and browser-testing setup where possible.
+### M. Next Package Readiness
 
-Preserve the internal application's verified behavior.
+Assess readiness for WP-14 — Security Hardening & Independent Security Audit Preparation.
 
-Deliver real implementation and test evidence.
+Do not implement WP-14 automatically.
 
-Prepare a concrete technical/creative handoff for WP-12.
+## 21. EXECUTION
 
-Do not begin WP-12 automatically.
+Proceed with WP-13 implementation locally.
+
+Measure first.
+
+Fix proven performance bottlenecks.
+
+Preserve all existing financial and security guarantees.
+
+Run production-build browser tests and realistic synthetic MySQL benchmarks.
+
+Provide concrete before/after evidence.
+
+Keep the project owner's visual/UI/UX direction untouched.
+
+Do not begin WP-14 automatically.
 
 Do not deploy.
 
-Commit/push only if the current owner's authorization covers the action.
+Commit/push only under the owner's current explicit authorization.
 
-**END OF WP-11**
+**END OF WP-13**

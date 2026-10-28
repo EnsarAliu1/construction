@@ -26,7 +26,7 @@ export class PrivateReceiptStore{
   constructor(private database:string,private fault:ReceiptFault=async()=>{}){
     this.root=resolve(/* turbopackIgnore: true */ process.env.RECEIPT_STORAGE_DIR?.trim()||".private/receipts");
     const segments=this.root.split(/[\\/]/).map(value=>value.toLowerCase());
-    if(this.root===resolve(/* turbopackIgnore: true */ ".")||segments.some(part=>["public",".next",".next-wp09",".next-wp10",".next-wp11",".git","node_modules"].includes(part)))throw new Error("Receipt storage must use a dedicated private directory.");
+    if(this.root===resolve(/* turbopackIgnore: true */ ".")||segments.some(part=>["public",".next",".next-wp09",".next-wp10",".next-wp11",".next-wp13",".git","node_modules"].includes(part)))throw new Error("Receipt storage must use a dedicated private directory.");
   }
   lockName(){return `fitimi_files_${checksum(Buffer.from(`${this.database}|${this.root.toLowerCase()}`)).slice(0,48)}`;}
   async initialize(){

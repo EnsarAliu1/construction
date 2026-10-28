@@ -41,7 +41,8 @@
     "test:reports:http": "node --conditions=react-server --import tsx --test tests/reporting/http.integration.test.ts",
     "test:website": "tsx --test tests/website/content.test.ts",
     "test:website:db": "tsx --test tests/website/isolation.integration.test.ts",
-    "test:website:browser": "playwright test"
+    "test:website:browser": "playwright test",
+    "perf:lab": "node --conditions=react-server --import tsx scripts/performance/measure.ts"
   },
   "engines": {
     "node": ">=22.0.0"

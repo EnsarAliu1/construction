@@ -1,0 +1,870 @@
+{
+  "scope": "Local production-build Windows laboratory with synthetic data. No field Core Web Vitals.",
+  "baselineCommit": "9f6586c987a90a5fe81c4222abd684836c466136",
+  "environment": {
+    "at": "2026-10-28T09:16:26.454Z",
+    "node": "v24.18.0",
+    "mysql": "8.4.13",
+    "platform": "win32",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "logicalCpus": 12,
+    "ramBytes": 8247566336
+  },
+  "browser": "156.0.4314.50",
+  "dataset": {
+    "clients": 1002,
+    "projects": 1002,
+    "contracts": 1002,
+    "phases": 2004,
+    "payments": 301,
+    "allocations": 301,
+    "expenses": 300,
+    "bulkSyntheticAuditRows": 12000,
+    "receiptVersions": 1,
+    "note": "Recorded timing fixture includes one retained setup client/project. Before/after financial rows are identical. Export audit grows after downloads; fresh seed generates 1001 projects."
+  },
+  "financialEquivalence": {
+    "pass": true,
+    "projects": 1002,
+    "phases": 2004,
+    "incomeRows": 301,
+    "expenseRows": 300,
+    "totals": {
+      "income": "310.00",
+      "expenses": "90.00",
+      "difference": "220.00",
+      "companyExpenses": "0.00",
+      "contractValue": "100200.00",
+      "outstanding": "99890.00"
+    },
+    "scope": "All finance fields and ordering identical excluding generation timestamp."
+  },
+  "apiAndDatabase": {
+    "finance": {
+      "before": {
+        "n": 30,
+        "medianMs": 49.87649999999985,
+        "p95Ms": 82.4991,
+        "minMs": 38.2806999999998,
+        "maxMs": 83.89699999999993
+      },
+      "after": {
+        "n": 30,
+        "medianMs": 15.616799999999785,
+        "p95Ms": 25.29619999999977,
+        "minMs": 12.297700000000077,
+        "maxMs": 38.82880000000023
+      },
+      "medianChangePercent": -68.69
+    },
+    "snapshot": {
+      "before": {
+        "n": 12,
+        "medianMs": 192.77719999999954,
+        "p95Ms": 275.9212999999995,
+        "minMs": 152.47520000000077,
+        "maxMs": 275.9212999999995
+      },
+      "after": {
+        "n": 12,
+        "medianMs": 109.0006000000003,
+        "p95Ms": 125.99689999999919,
+        "minMs": 90.69040000000041,
+        "maxMs": 125.99689999999919
+      },
+      "medianChangePercent": -43.46
+    },
+    "fullSnapshot": {
+      "before": {
+        "n": 6,
+        "medianMs": 965.3427999999994,
+        "p95Ms": 1196.1149999999998,
+        "minMs": 935.5058000000008,
+        "maxMs": 1196.1149999999998
+      },
+      "after": {
+        "n": 6,
+        "medianMs": 326.45380000000023,
+        "p95Ms": 382.08919999999944,
+        "minMs": 241.683,
+        "maxMs": 382.08919999999944
+      },
+      "medianChangePercent": -66.18
+    },
+    "/api/dashboard": {
+      "before": {
+        "n": 7,
+        "medianMs": 544.3133999999991,
+        "p95Ms": 628.4092000000019,
+        "minMs": 460.5933999999979,
+        "maxMs": 628.4092000000019,
+        "bytes": 848157
+      },
+      "after": {
+        "n": 7,
+        "medianMs": 173.3703000000005,
+        "p95Ms": 194.89040000000023,
+        "minMs": 145.5002000000004,
+        "maxMs": 194.89040000000023,
+        "bytes": 848157
+      },
+      "medianChangePercent": -68.15
+    },
+    "/api/clients?q=Synthetic": {
+      "before": {
+        "n": 7,
+        "medianMs": 45.78700000000026,
+        "p95Ms": 56.42130000000179,
+        "minMs": 32.78190000000177,
+        "maxMs": 56.42130000000179,
+        "bytes": 8335
+      },
+      "after": {
+        "n": 7,
+        "medianMs": 29.83890000000065,
+        "p95Ms": 32.111399999999776,
+        "minMs": 22.40310000000136,
+        "maxMs": 32.111399999999776,
+        "bytes": 8335
+      },
+      "medianChangePercent": -34.83
+    },
+    "/api/projects?q=Synthetic": {
+      "before": {
+        "n": 7,
+        "medianMs": 54.492999999998574,
+        "p95Ms": 61.54060000000027,
+        "minMs": 49.63440000000264,
+        "maxMs": 61.54060000000027,
+        "bytes": 5027
+      },
+      "after": {
+        "n": 7,
+        "medianMs": 34.96759999999995,
+        "p95Ms": 44.322799999999916,
+        "minMs": 26.054200000000492,
+        "maxMs": 44.322799999999916,
+        "bytes": 5027
+      },
+      "medianChangePercent": -35.83
+    },
+    "/api/expenses": {
+      "before": {
+        "n": 7,
+        "medianMs": 53.463700000000244,
+        "p95Ms": 58.539700000001176,
+        "minMs": 48.678799999997864,
+        "maxMs": 58.539700000001176,
+        "bytes": 18144
+      },
+      "after": {
+        "n": 7,
+        "medianMs": 59.81880000000092,
+        "p95Ms": 66.22879999999896,
+        "minMs": 50.0637999999999,
+        "maxMs": 66.22879999999896,
+        "bytes": 18144
+      },
+      "medianChangePercent": 11.89
+    },
+    "/api/payments": {
+      "before": {
+        "n": 7,
+        "medianMs": 54.79070000000138,
+        "p95Ms": 69.03269999999975,
+        "minMs": 43.532899999998335,
+        "maxMs": 69.03269999999975,
+        "bytes": 10496
+      },
+      "after": {
+        "n": 7,
+        "medianMs": 54.99609999999848,
+        "p95Ms": 72.27599999999984,
+        "minMs": 44.10960000000159,
+        "maxMs": 72.27599999999984,
+        "bytes": 10496
+      },
+      "medianChangePercent": 0.37
+    },
+    "/api/receipts": {
+      "before": {
+        "n": 7,
+        "medianMs": 48.39249999999811,
+        "p95Ms": 57.263599999998405,
+        "minMs": 36.49460000000181,
+        "maxMs": 57.263599999998405,
+        "bytes": 643
+      },
+      "after": {
+        "n": 7,
+        "medianMs": 46.66979999999967,
+        "p95Ms": 58.89609999999993,
+        "minMs": 36.1836000000003,
+        "maxMs": 58.89609999999993,
+        "bytes": 643
+      },
+      "medianChangePercent": -3.56
+    },
+    "/api/reports/company": {
+      "before": {
+        "n": 7,
+        "medianMs": 443.26140000000305,
+        "p95Ms": 624.3057000000008,
+        "minMs": 362.9991999999984,
+        "maxMs": 624.3057000000008,
+        "bytes": 848154
+      },
+      "after": {
+        "n": 7,
+        "medianMs": 188.7451000000001,
+        "p95Ms": 208.53809999999976,
+        "minMs": 151.67159999999967,
+        "maxMs": 208.53809999999976,
+        "bytes": 848154
+      },
+      "medianChangePercent": -57.42
+    },
+    "receiptDownload": {
+      "before": {
+        "n": 7,
+        "medianMs": 49.5580000000009,
+        "p95Ms": 58.71390000000247,
+        "minMs": 39.436799999999494,
+        "maxMs": 58.71390000000247,
+        "bytes": 19549
+      },
+      "after": {
+        "n": 7,
+        "medianMs": 45.48689999999988,
+        "p95Ms": 47.47909999999865,
+        "minMs": 33.34610000000066,
+        "maxMs": 47.47909999999865,
+        "bytes": 19549
+      },
+      "medianChangePercent": -8.21
+    },
+    "pdf": {
+      "before": {
+        "n": 3,
+        "medianMs": 795.4451000000008,
+        "p95Ms": 1319.6412999999993,
+        "minMs": 767.3172999999988,
+        "maxMs": 1319.6412999999993,
+        "bytes": 107849
+      },
+      "after": {
+        "n": 3,
+        "medianMs": 868.2534999999989,
+        "p95Ms": 1021.4241000000002,
+        "minMs": 767.859199999999,
+        "maxMs": 1021.4241000000002,
+        "bytes": 108193
+      },
+      "medianChangePercent": 9.15
+    },
+    "xlsx": {
+      "before": {
+        "n": 3,
+        "medianMs": 494.66460000000006,
+        "p95Ms": 501.9220999999998,
+        "minMs": 385.57570000000123,
+        "maxMs": 501.9220999999998,
+        "bytes": 57580
+      },
+      "after": {
+        "n": 3,
+        "medianMs": 261.386599999998,
+        "p95Ms": 346.4411,
+        "minMs": 236.689699999999,
+        "maxMs": 346.4411,
+        "bytes": 57579
+      },
+      "medianChangePercent": -47.16
+    },
+    "zip": {
+      "before": {
+        "n": 3,
+        "medianMs": 1456.4320999999982,
+        "p95Ms": 1797.8658000000032,
+        "minMs": 1455.1853999999985,
+        "maxMs": 1797.8658000000032,
+        "bytes": 10657254
+      },
+      "after": {
+        "n": 3,
+        "medianMs": 750.4395000000004,
+        "p95Ms": 812.4293999999973,
+        "minMs": 706.8469000000005,
+        "maxMs": 812.4293999999973,
+        "bytes": 10665014
+      },
+      "medianChangePercent": -48.47
+    },
+    "concurrentReads": {
+      "before": {
+        "n": 32,
+        "medianMs": 78.95449999999983,
+        "p95Ms": 539.4614999999976,
+        "minMs": 46.09889999999723,
+        "maxMs": 600.4712999999974,
+        "concurrency": 4,
+        "requests": 32,
+        "elapsedMs": 3765.4672999999966,
+        "unexpectedErrors": 0
+      },
+      "after": {
+        "n": 32,
+        "medianMs": 67.15610000000015,
+        "p95Ms": 208.27019999999902,
+        "minMs": 37.29999999999927,
+        "maxMs": 214.62980000000243,
+        "concurrency": 4,
+        "requests": 32,
+        "elapsedMs": 1518.447400000001,
+        "unexpectedErrors": 0
+      },
+      "medianChangePercent": -14.94
+    },
+    "exportWithReads": {
+      "before": [
+        {
+          "ms": 2077.3745999999956,
+          "bytes": 10658034
+        },
+        {
+          "ms": 467.6406999999963,
+          "bytes": 848157
+        },
+        {
+          "ms": 52.22799999999552,
+          "bytes": 8335
+        },
+        {
+          "ms": 58.128399999994144,
+          "bytes": 5027
+        },
+        {
+          "ms": 66.35889999999927,
+          "bytes": 18144
+        }
+      ],
+      "after": [
+        {
+          "ms": 820.0539000000026,
+          "bytes": 10665791
+        },
+        {
+          "ms": 213.8615000000027,
+          "bytes": 848157
+        },
+        {
+          "ms": 41.66790000000037,
+          "bytes": 8335
+        },
+        {
+          "ms": 46.50180000000182,
+          "bytes": 5027
+        },
+        {
+          "ms": 73.79190000000017,
+          "bytes": 18144
+        }
+      ]
+    }
+  },
+  "publicBrowser": {
+    "desktop": {
+      "before": {
+        "samples": 30,
+        "viewport": "1440x1000",
+        "metrics": {
+          "lcp": {
+            "validSamples": 29,
+            "median": 108
+          },
+          "fcp": {
+            "validSamples": 29,
+            "median": 108
+          },
+          "ttfb": {
+            "validSamples": 30,
+            "median": 8.800000000046566
+          },
+          "domContentLoaded": {
+            "validSamples": 30,
+            "median": 65.60000000009313
+          },
+          "longTasks": {
+            "validSamples": 30,
+            "median": 0
+          },
+          "jsTransfer": {
+            "validSamples": 30,
+            "median": 148223
+          },
+          "totalTransfer": {
+            "validSamples": 30,
+            "median": 184709
+          }
+        },
+        "maxCLS": 0,
+        "errors": []
+      },
+      "after": {
+        "samples": 30,
+        "viewport": "1440x1000",
+        "metrics": {
+          "lcp": {
+            "validSamples": 30,
+            "median": 136
+          },
+          "fcp": {
+            "validSamples": 30,
+            "median": 136
+          },
+          "ttfb": {
+            "validSamples": 30,
+            "median": 10.399999999906868
+          },
+          "domContentLoaded": {
+            "validSamples": 30,
+            "median": 65.69999999995343
+          },
+          "longTasks": {
+            "validSamples": 30,
+            "median": 0
+          },
+          "jsTransfer": {
+            "validSamples": 30,
+            "median": 148223
+          },
+          "totalTransfer": {
+            "validSamples": 30,
+            "median": 184721
+          }
+        },
+        "maxCLS": 0,
+        "errors": []
+      }
+    },
+    "mobile": {
+      "before": {
+        "samples": 30,
+        "viewport": "390x844",
+        "metrics": {
+          "lcp": {
+            "validSamples": 30,
+            "median": 136
+          },
+          "fcp": {
+            "validSamples": 30,
+            "median": 136
+          },
+          "ttfb": {
+            "validSamples": 30,
+            "median": 8.900000000139698
+          },
+          "domContentLoaded": {
+            "validSamples": 30,
+            "median": 86.9000000001397
+          },
+          "longTasks": {
+            "validSamples": 30,
+            "median": 0
+          },
+          "jsTransfer": {
+            "validSamples": 30,
+            "median": 148223
+          },
+          "totalTransfer": {
+            "validSamples": 30,
+            "median": 173707
+          }
+        },
+        "maxCLS": 0,
+        "errors": []
+      },
+      "after": {
+        "samples": 30,
+        "viewport": "390x844",
+        "metrics": {
+          "lcp": {
+            "validSamples": 30,
+            "median": 140
+          },
+          "fcp": {
+            "validSamples": 30,
+            "median": 140
+          },
+          "ttfb": {
+            "validSamples": 30,
+            "median": 10
+          },
+          "domContentLoaded": {
+            "validSamples": 30,
+            "median": 66.19999999995343
+          },
+          "longTasks": {
+            "validSamples": 30,
+            "median": 0
+          },
+          "jsTransfer": {
+            "validSamples": 30,
+            "median": 148223
+          },
+          "totalTransfer": {
+            "validSamples": 30,
+            "median": 173714
+          }
+        },
+        "maxCLS": 0,
+        "errors": []
+      }
+    }
+  },
+  "privateBrowser": {
+    "/app": {
+      "before": {
+        "n": 3,
+        "medianNavigationMs": 1147.8631000000023
+      },
+      "after": {
+        "n": 3,
+        "medianNavigationMs": 901.0794999999925
+      }
+    },
+    "/app/clients": {
+      "before": {
+        "n": 3,
+        "medianNavigationMs": 782.5287000000098
+      },
+      "after": {
+        "n": 3,
+        "medianNavigationMs": 783.3781999999919
+      }
+    },
+    "/app/projects": {
+      "before": {
+        "n": 3,
+        "medianNavigationMs": 751.0981999999931
+      },
+      "after": {
+        "n": 3,
+        "medianNavigationMs": 750.7525000000023
+      }
+    },
+    "/app/projects/ea377812-587b-4bbd-801e-76f50f8bc2e7": {
+      "before": {
+        "n": 3,
+        "medianNavigationMs": 848.2351999999955
+      },
+      "after": {
+        "n": 3,
+        "medianNavigationMs": 715.4363000000012
+      }
+    },
+    "/app/projects/ea377812-587b-4bbd-801e-76f50f8bc2e7/contract": {
+      "before": {
+        "n": 3,
+        "medianNavigationMs": 800.034599999999
+      },
+      "after": {
+        "n": 3,
+        "medianNavigationMs": 738.0847000000067
+      }
+    },
+    "/app/categories": {
+      "before": {
+        "n": 3,
+        "medianNavigationMs": 762.8616000000038
+      },
+      "after": {
+        "n": 3,
+        "medianNavigationMs": 701.1719999999914
+      }
+    },
+    "/app/persons": {
+      "before": {
+        "n": 3,
+        "medianNavigationMs": 733.0552999999927
+      },
+      "after": {
+        "n": 3,
+        "medianNavigationMs": 697.5472000000009
+      }
+    },
+    "/app/vehicles": {
+      "before": {
+        "n": 3,
+        "medianNavigationMs": 750.2012000000104
+      },
+      "after": {
+        "n": 3,
+        "medianNavigationMs": 699.4167000000016
+      }
+    },
+    "/app/expenses": {
+      "before": {
+        "n": 3,
+        "medianNavigationMs": 783.7386000000115
+      },
+      "after": {
+        "n": 3,
+        "medianNavigationMs": 1025.6404000000039
+      }
+    },
+    "/app/payments": {
+      "before": {
+        "n": 3,
+        "medianNavigationMs": 749.1169000000082
+      },
+      "after": {
+        "n": 3,
+        "medianNavigationMs": 767.3991999999998
+      }
+    },
+    "/app/receipts": {
+      "before": {
+        "n": 3,
+        "medianNavigationMs": 830.3580999999976
+      },
+      "after": {
+        "n": 3,
+        "medianNavigationMs": 748.8383000000031
+      }
+    },
+    "/app/reports": {
+      "before": {
+        "n": 3,
+        "medianNavigationMs": 1161.1696999999986
+      },
+      "after": {
+        "n": 3,
+        "medianNavigationMs": 949.9324000000051
+      }
+    }
+  },
+  "plans": {
+    "before": {
+      "lateOffset": [
+        {
+          "EXPLAIN": "-> Limit/Offset: 100/11900 row(s)  (cost=1261 rows=0) (actual time=4.62..4.65 rows=100 loops=1)\n    -> Covering index scan on audit_events using PRIMARY  (cost=1261 rows=11891) (actual time=0.318..2.51 rows=12000 loops=1)\n"
+        }
+      ],
+      "keyset": [
+        {
+          "EXPLAIN": "-> Limit: 100 row(s)  (cost=24.3 rows=100) (actual time=0.0671..0.0965 rows=100 loops=1)\n    -> Filter: (audit_events.id > (select #2))  (cost=24.3 rows=120) (actual time=0.0354..0.0599 rows=100 loops=1)\n        -> Covering index range scan on audit_events using PRIMARY over ('fcfa7924-6c35-4ca1-a241-fdd4d277802c' < id)  (cost=24.3 rows=120) (actual time=0.0191..0.0347 rows=100 loops=1)\n        -> Select #2 (subquery in condition; run only once)\n            -> Limit/Offset: 1/11899 row(s)  (cost=1261 rows=0) (actual time=2.77..2.77 rows=1 loops=1)\n                -> Covering index scan on audit_events using PRIMARY  (cost=1261 rows=11891) (actual time=0.128..2.27 rows=11900 loops=1)\n"
+        }
+      ],
+      "client": [
+        {
+          "EXPLAIN": "-> Limit: 20 row(s)  (cost=0.0449 rows=20) (actual time=0.0362..0.118 rows=20 loops=1)\n    -> Filter: (clients.deleted_at is null)  (cost=0.0449 rows=20) (actual time=0.0352..0.116 rows=20 loops=1)\n        -> Index scan on clients using clients_name_idx  (cost=0.0449 rows=20) (actual time=0.0338..0.113 rows=20 loops=1)\n"
+        }
+      ],
+      "project": [
+        {
+          "EXPLAIN": "-> Limit: 20 row(s)  (cost=0.35 rows=1) (actual time=0.0134..0.0155 rows=1 loops=1)\n    -> Filter: (projects.client_id = '0008e89c-1535-4ffc-96d5-b8708e448422')  (cost=0.35 rows=1) (actual time=0.0122..0.0142 rows=1 loops=1)\n        -> Covering index lookup on projects using projects_client_idx (client_id='0008e89c-1535-4ffc-96d5-b8708e448422')  (cost=0.35 rows=1) (actual time=0.0105..0.0123 rows=1 loops=1)\n"
+        }
+      ],
+      "allocation": [
+        {
+          "EXPLAIN": "-> Filter: (payment_allocations.deleted_at is null)  (cost=0.26 rows=0.1) (actual time=0.017..0.017 rows=0 loops=1)\n    -> Index lookup on payment_allocations using allocations_phase_payment_idx (phase_id='0007f4b2-4c61-4301-b5fe-5c235a4b7132'), with index condition: (payment_allocations.phase_id = '0007f4b2-4c61-4301-b5fe-5c235a4b7132')  (cost=0.26 rows=1) (actual time=0.0161..0.0161 rows=0 loops=1)\n"
+        }
+      ],
+      "expense": [
+        {
+          "EXPLAIN": "-> Limit: 20 row(s)  (cost=30.2 rows=20) (actual time=0.0245..0.0325 rows=20 loops=1)\n    -> Filter: ((expenses.`status` = 'recorded') and (expenses.transaction_date >= DATE'2024-01-01'))  (cost=30.2 rows=150) (actual time=0.0235..0.0301 rows=20 loops=1)\n        -> Covering index scan on expenses using expenses_date_status_idx  (cost=30.2 rows=300) (actual time=0.0195..0.0224 rows=20 loops=1)\n"
+        }
+      ],
+      "payment": [
+        {
+          "EXPLAIN": "-> Limit: 20 row(s)  (cost=31.7 rows=20) (actual time=0.0147..0.0197 rows=20 loops=1)\n    -> Filter: (payments.`status` = 'received')  (cost=31.7 rows=301) (actual time=0.0139..0.0178 rows=20 loops=1)\n        -> Covering index lookup on payments using payments_status_date_idx (status='received')  (cost=31.7 rows=301) (actual time=0.0121..0.0141 rows=20 loops=1)\n"
+        }
+      ],
+      "history": [
+        {
+          "EXPLAIN": "-> Limit: 20 row(s)  (cost=1.63 rows=12) (actual time=0.725..0.755 rows=12 loops=1)\n    -> Filter: (audit_events.entity_id = '0008e89c-1535-4ffc-96d5-b8708e448422')  (cost=1.63 rows=12) (actual time=0.722..0.751 rows=12 loops=1)\n        -> Covering index lookup on audit_events using audit_entity_recorded_idx (entity_type='client', entity_id='0008e89c-1535-4ffc-96d5-b8708e448422') (reverse)  (cost=1.63 rows=12) (actual time=0.0912..0.115 rows=12 loops=1)\n"
+        }
+      ]
+    },
+    "after": {
+      "lateOffset": [
+        {
+          "EXPLAIN": "-> Limit/Offset: 100/11900 row(s)  (cost=1262 rows=1) (actual time=2.59..2.6 rows=100 loops=1)\n    -> Covering index scan on audit_events using PRIMARY  (cost=1262 rows=11901) (actual time=0.132..1.68 rows=12000 loops=1)\n"
+        }
+      ],
+      "keyset": [
+        {
+          "EXPLAIN": "-> Limit: 100 row(s)  (cost=26.3 rows=100) (actual time=0.364..0.39 rows=100 loops=1)\n    -> Filter: (audit_events.id > (select #2))  (cost=26.3 rows=130) (actual time=0.336..0.358 rows=100 loops=1)\n        -> Covering index range scan on audit_events using PRIMARY over ('fcd03097-bce0-40b7-b95f-4fa2493d9420' < id)  (cost=26.3 rows=130) (actual time=0.024..0.0377 rows=100 loops=1)\n        -> Select #2 (subquery in condition; run only once)\n            -> Limit/Offset: 1/11899 row(s)  (cost=1262 rows=1) (actual time=2.46..2.46 rows=1 loops=1)\n                -> Covering index scan on audit_events using PRIMARY  (cost=1262 rows=11900) (actual time=0.576..2.14 rows=11900 loops=1)\n"
+        }
+      ],
+      "client": [
+        {
+          "EXPLAIN": "-> Limit: 20 row(s)  (cost=0.115 rows=20) (actual time=0.0664..0.119 rows=20 loops=1)\n    -> Filter: (clients.deleted_at is null)  (cost=0.115 rows=20) (actual time=0.0654..0.117 rows=20 loops=1)\n        -> Index scan on clients using clients_name_idx  (cost=0.115 rows=20) (actual time=0.0639..0.114 rows=20 loops=1)\n"
+        }
+      ],
+      "project": [
+        {
+          "EXPLAIN": "-> Limit: 20 row(s)  (cost=0.35 rows=1) (actual time=0.0283..0.0301 rows=1 loops=1)\n    -> Filter: (projects.client_id = '0008e89c-1535-4ffc-96d5-b8708e448422')  (cost=0.35 rows=1) (actual time=0.0275..0.0293 rows=1 loops=1)\n        -> Covering index lookup on projects using projects_client_idx (client_id='0008e89c-1535-4ffc-96d5-b8708e448422')  (cost=0.35 rows=1) (actual time=0.0262..0.0279 rows=1 loops=1)\n"
+        }
+      ],
+      "allocation": [
+        {
+          "EXPLAIN": "-> Filter: (payment_allocations.deleted_at is null)  (cost=0.26 rows=0.1) (actual time=0.0251..0.0251 rows=0 loops=1)\n    -> Index lookup on payment_allocations using allocations_phase_payment_idx (phase_id='0007f4b2-4c61-4301-b5fe-5c235a4b7132'), with index condition: (payment_allocations.phase_id = '0007f4b2-4c61-4301-b5fe-5c235a4b7132')  (cost=0.26 rows=1) (actual time=0.0246..0.0246 rows=0 loops=1)\n"
+        }
+      ],
+      "expense": [
+        {
+          "EXPLAIN": "-> Limit: 20 row(s)  (cost=31.8 rows=20) (actual time=0.0156..0.0205 rows=20 loops=1)\n    -> Filter: ((expenses.`status` = 'recorded') and (expenses.transaction_date >= DATE'2024-01-01'))  (cost=31.8 rows=150) (actual time=0.0149..0.0189 rows=20 loops=1)\n        -> Covering index scan on expenses using expenses_date_status_idx  (cost=31.8 rows=300) (actual time=0.0123..0.0141 rows=20 loops=1)\n"
+        }
+      ],
+      "payment": [
+        {
+          "EXPLAIN": "-> Limit: 20 row(s)  (cost=31.7 rows=20) (actual time=0.0138..0.0182 rows=20 loops=1)\n    -> Filter: (payments.`status` = 'received')  (cost=31.7 rows=301) (actual time=0.013..0.0164 rows=20 loops=1)\n        -> Covering index lookup on payments using payments_status_date_idx (status='received')  (cost=31.7 rows=301) (actual time=0.0111..0.0128 rows=20 loops=1)\n"
+        }
+      ],
+      "history": [
+        {
+          "EXPLAIN": "-> Limit: 20 row(s)  (cost=1.63 rows=12) (actual time=0.0729..0.148 rows=12 loops=1)\n    -> Filter: (audit_events.entity_id = '0008e89c-1535-4ffc-96d5-b8708e448422')  (cost=1.63 rows=12) (actual time=0.0722..0.146 rows=12 loops=1)\n        -> Covering index lookup on audit_events using audit_entity_recorded_idx (entity_type='client', entity_id='0008e89c-1535-4ffc-96d5-b8708e448422') (reverse)  (cost=1.63 rows=12) (actual time=0.0557..0.127 rows=12 loops=1)\n"
+        }
+      ]
+    }
+  },
+  "status": {
+    "before": [
+      {
+        "Variable_name": "Created_tmp_disk_tables",
+        "Value": "0"
+      },
+      {
+        "Variable_name": "Innodb_row_lock_time",
+        "Value": "0"
+      },
+      {
+        "Variable_name": "Innodb_row_lock_waits",
+        "Value": "0"
+      },
+      {
+        "Variable_name": "Threads_connected",
+        "Value": "1"
+      },
+      {
+        "Variable_name": "Threads_running",
+        "Value": "2"
+      }
+    ],
+    "after": [
+      {
+        "Variable_name": "Created_tmp_disk_tables",
+        "Value": "0"
+      },
+      {
+        "Variable_name": "Innodb_row_lock_time",
+        "Value": "0"
+      },
+      {
+        "Variable_name": "Innodb_row_lock_waits",
+        "Value": "0"
+      },
+      {
+        "Variable_name": "Threads_connected",
+        "Value": "1"
+      },
+      {
+        "Variable_name": "Threads_running",
+        "Value": "2"
+      }
+    ]
+  },
+  "measurementProcessMemory": {
+    "before": {
+      "rss": 185053184,
+      "heapTotal": 77275136,
+      "heapUsed": 67191696,
+      "external": 55161539,
+      "arrayBuffers": 50717622
+    },
+    "after": {
+      "rss": 363167744,
+      "heapTotal": 213852160,
+      "heapUsed": 70116968,
+      "external": 69197752,
+      "arrayBuffers": 64753835
+    }
+  },
+  "limitations": [
+    "No CPU/network throttling; mobile viewport simulation only.",
+    "Small-sample nearest-rank p95 is close to maximum, not a production percentile.",
+    "Optimized database run partly overlapped lint startup; workstation scheduling and cache state vary.",
+    "Navigation measurements include networkidle settlement of at least 500 ms.",
+    "True process-cold distributions, INP and field p75 NOT VERIFIED."
+  ],
+  "interactions": {
+    "before": {
+      "searchMs": 835.9662000000098,
+      "warmPublicNavigationMs": 164.982600000003
+    },
+    "after": {
+      "searchMs": 905.8996999999945,
+      "warmPublicNavigationMs": 293.732600000003
+    }
+  },
+  "concurrency": {
+    "environment": {
+      "at": "2026-10-28T09:34:24.769Z",
+      "node": "v24.18.0",
+      "mysql": "8.4.13",
+      "platform": "win32",
+      "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+      "logicalCpus": 12,
+      "ramBytes": 8247566336,
+      "label": "optimized",
+      "mode": "races"
+    },
+    "previews": {
+      "n": 8,
+      "medianMs": 436.67499999999995,
+      "p95Ms": 478.0626,
+      "minMs": 374.8017,
+      "maxMs": 478.0626
+    },
+    "idempotentRetries": {
+      "n": 4,
+      "medianMs": 1357.4445,
+      "p95Ms": 1378.4421,
+      "minMs": 1305.1121000000003,
+      "maxMs": 1378.4421,
+      "uniquePaymentIds": 1
+    },
+    "competing": {
+      "n": 2,
+      "medianMs": 319.17830000000004,
+      "p95Ms": 319.17830000000004,
+      "minMs": 310.35030000000006,
+      "maxMs": 319.17830000000004,
+      "statuses": [
+        201,
+        409
+      ]
+    },
+    "verified": true,
+    "locks": [
+      {
+        "Variable_name": "Innodb_row_lock_time",
+        "Value": "589"
+      },
+      {
+        "Variable_name": "Innodb_row_lock_waits",
+        "Value": "7"
+      },
+      {
+        "Variable_name": "Threads_connected",
+        "Value": "1"
+      },
+      {
+        "Variable_name": "Threads_running",
+        "Value": "2"
+      }
+    ]
+  }
+}

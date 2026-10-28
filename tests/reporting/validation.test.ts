@@ -10,6 +10,19 @@ import {portable,csvCell} from "../../src/features/reporting/export";
 import {companyPdf,companyXlsx} from "../../src/features/reporting/documents";
 import type {Snapshot} from "../../src/features/reporting/snapshot";
 const id=(n:number)=>`${String(n).padStart(8,"0")}-1111-4111-8111-111111111111`;
+test("snapshot grouping keeps filtered breakdowns separate from all-date project balances",()=>{
+ const s=sample();
+ s.data.projects.push({id:id(20),clientId:id(1),name:"Archived synthetic project",status:"completed",deletedAt:"2026-01-01"});
+ s.data.expense_categories.push({id:id(21),name:"Other category"});
+ s.data.expenses.push({id:id(22),projectId:id(20),categoryId:id(21),amount:"5.67",transactionDate:"2025-01-01",status:"recorded"});
+ s.data.expenses.push({id:id(23),projectId:id(20),categoryId:id(21),amount:"8.00",transactionDate:"2025-01-01",status:"cancelled"});
+ const r=finances(s,reportFilter({from:"2025-01-01",categoryId:id(21)}));
+ assert.equal(r.totals.income,"0.00");assert.equal(r.totals.expenses,"5.67");assert.equal(r.totals.companyExpenses,"0.00");
+ assert.equal(r.projects[0].income,"9007199254740993.01");assert.equal(r.projects[0].expenses,"0.01");
+ assert.equal(r.projects[1].expenses,"5.67");assert.equal(r.activeProjects,1);
+ assert.deepEqual(r.breakdowns,[{id:id(20),name:"Archived synthetic project",income:"0.00",expenses:"5.67"}]);
+ assert.deepEqual(r.categories,[{id:id(21),name:"Other category",amount:"5.67"}]);
+});
 function sample():Snapshot{return {generatedAt:"2026-10-27T12:00:00.000Z",counts:{},data:{clients:[{id:id(1),name:"Çlirim Ëndrra"}],projects:[{id:id(2),clientId:id(1),name:"=2+3",status:"active",deletedAt:null}],contracts:[{id:id(3),projectId:id(2),status:"active",totalValue:"99999999999999999.99"}],contract_phases:[{id:id(4),contractId:id(3),name:"Themelet",value:"99999999999999999.99",deletedAt:null}],payments:[{id:id(5),projectId:id(2),amount:"9007199254740993.01",method:"cash",transactionDate:"2024-02-29",status:"received"}],payment_allocations:[{id:id(6),paymentId:id(5),phaseId:id(4),amount:"9007199254740993.01",deletedAt:null}],expense_categories:[{id:id(7),name:"Çati"}],expenses:[{id:id(8),projectId:id(2),categoryId:id(7),amount:"0.01",transactionDate:"2024-02-29",description:"=HYPERLINK(\"https://example.invalid\")",status:"recorded"},{id:id(9),projectId:null,categoryId:id(7),amount:"0.02",transactionDate:"2024-02-29",description:"Company-wide TEST",status:"recorded"}]}};}
 test("report filters use strict real calendar dates, scoped methods/categories and no project export",()=>{assert.equal(reportFilter({from:"2024-02-29",to:"2024-03-01",method:"bank"}).method,"bank");for(const input of [{from:"2023-02-29"},{from:"2025-01-02",to:"2025-01-01"},{from:[]},{method:["cash"]},{categoryId:"../"},{projectId:id(2)},{format:"pdf"}])assert.throws(()=>reportFilter(input));for(const value of [{format:"csv"},{format:"pdf",projectId:id(2)},{format:"xlsx",filters:{projectId:id(2)}}])assert.throws(()=>companyExportInput(value));});
 test("EUR sums/difference exceed Number and individual DECIMAL bounds without rounding",()=>{assert.equal(sumMoney(["99999999999999999.99","99999999999999999.99"]).toString(),"19999999999999999998");assert.equal(operationalTotals(BigInt(1),BigInt(3)).difference,"-0.02");const r=finances(sample(),reportFilter());assert.equal(r.totals.income,"9007199254740993.01");assert.equal(r.totals.difference,"9007199254740992.98");assert.equal(r.projects[0].expenses,"0.01");assert.equal(r.totals.companyExpenses,"0.02");});

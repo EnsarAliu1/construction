@@ -17,3 +17,5 @@ next-env.d.ts
 .next-wp11/
 playwright-report/
 test-results/
+
+.next-wp13/
