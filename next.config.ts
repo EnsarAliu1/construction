@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["pdfkit", "exceljs", "jszip"],
   outputFileTracingExcludes: {"/*":["./artifacts/**/*","./.private/**/*","./.env*"]},
   outputFileTracingIncludes: {"/*":["./assets/security/*.txt"],"/api/payments":["./assets/fonts/*.ttf"],"/api/payments/*":["./assets/fonts/*.ttf"],"/api/reports/**":["./assets/fonts/*.ttf"],"/api/exports/**":["./assets/fonts/*.ttf"]},
-  async redirects(){return [{source:"/en/:path*",destination:"/sq/:path*",permanent:true}];},
+  async redirects(){return [{source:"/sq/about",destination:"/sq#rreth-nesh",permanent:true},{source:"/en/:path*",destination:"/sq/:path*",permanent:true}];},
   async headers(){return [
     {source:"/:path*",headers:browserSecurityHeaders},
     ...["/sq/:path*","/"].map(source=>({source,headers:[{key:"Content-Security-Policy",value:contentSecurityPolicy(process.env.NODE_ENV==="production")}]})),

@@ -22,4 +22,4 @@ export const dictionaries:Record<Locale,Dictionary>={
  },
 };
 export const publicPath=(locale:Locale,page:PublicPage)=>`/${locale}${page==="home"?"":"/"+page}`;
-export function publicNavigation(locale:Locale){return (["home",...publicPages] as const).map(page=>({href:publicPath(locale,page),label:dictionaries[locale].nav[page]}));}
+export function publicNavigation(locale:Locale){return (["home",...publicPages] as const).map(page=>({href:page==="about"?`/${locale}#rreth-nesh`:publicPath(locale,page),label:dictionaries[locale].nav[page]}));}

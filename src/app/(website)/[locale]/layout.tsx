@@ -21,5 +21,5 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function WebsiteLayout({ children, params }: { children: ReactNode; params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return <html lang={locale}><body><PublicShell locale={locale}>{children}</PublicShell></body></html>;
+  return <html lang={locale} data-scroll-behavior="smooth"><body><PublicShell locale={locale}>{children}</PublicShell></body></html>;
 }
