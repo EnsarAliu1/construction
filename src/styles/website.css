@@ -19,3 +19,42 @@
 @media(max-width:400px){.public-layout .public-header-inner{width:calc(100% - 32px);gap:8px;}.public-layout .header-controls{gap:6px;}.site-mobile-menu summary{padding:8px;}.site-mobile-menu summary .menu-closed-label,.site-mobile-menu summary .menu-open-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);}.public-layout .language-switcher a{min-width:36px;}.site-hero h1{font-size:2.5rem;}.site-hero .hero-actions{align-items:start;flex-direction:column;gap:12px;}}
 .public-layout h1,.public-layout h2,.public-layout h3,.public-layout p,.public-layout a{overflow-wrap:break-word;}.public-layout img{max-width:100%;}
 @media(prefers-reduced-motion:reduce){.public-layout *,.public-layout *::before,.public-layout *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
+
+/* Owner's video reference: transparent navigation, architectural photograph and crane. */
+.public-layout{position:relative;}
+.public-layout .site-logo{display:block;flex-shrink:0;width:185px;line-height:0;}
+.site-logo img{width:100%;height:auto;filter:url(#site-logo-brand);}
+.site-logo-filters{position:absolute;pointer-events:none;}
+.public-layout .public-header-inner{width:87%;max-width:1680px;min-height:108px;}
+.public-layout .header-quote{display:inline-flex;justify-content:center;align-items:center;padding:12px 24px;border:1px solid currentColor;min-height:46px;text-transform:uppercase;letter-spacing:.07em;font-size:.75rem;font-weight:600;text-decoration:none;white-space:nowrap;transition:background .2s,color .2s;}
+.public-layout:has(.site-reference-hero)>.public-header{position:absolute;z-index:20;inset:0 0 auto;background:transparent;border:0;color:#f5f2e9;}
+.public-layout:has(.site-reference-hero) .public-header .site-logo img{filter:url(#site-logo-light);}
+.public-layout:has(.site-reference-hero) .public-header .nav-item{color:#f5f2e9;font-size:.95rem;font-weight:400;padding:12px 18px;border-radius:0;}
+.public-layout:has(.site-reference-hero) .public-header .nav-item:hover{background:#ffffff14;}
+.public-layout:has(.site-reference-hero) .public-header .nav-item.active{box-shadow:none;}
+.public-layout:has(.site-reference-hero) .header-quote:hover{background:#f5f2e9;color:#25292b;}
+.public-layout:has(.site-reference-hero) .public-header :focus-visible,.site-reference-hero :focus-visible{outline-color:#f5c28e;}
+.site-reference-hero{position:relative;isolation:isolate;min-height:max(760px,100svh);overflow:hidden;background:#4d5155;color:#f5f2e9;}
+.site-reference-hero .hero-photograph{object-fit:cover;object-position:center 22%;z-index:-3;}
+.hero-shade{position:absolute;inset:0;z-index:-2;background:linear-gradient(0deg,rgba(12,13,14,.93),rgba(29,32,35,.55) 42%,rgba(28,33,39,.6)),linear-gradient(90deg,#1e26352b,transparent 70%);}
+.hero-reference-content{width:87%;max-width:1680px;margin-inline:auto;padding-top:clamp(230px,31.8svh,365px);padding-bottom:clamp(76px,14.5svh,155px);}
+.public-layout .hero-reference-eyebrow{display:flex;align-items:center;gap:14px;max-width:none;font-size:.75rem;letter-spacing:.2em;font-weight:600;color:#eeeae4;margin-bottom:28px;}
+.hero-reference-eyebrow>span{width:50px;height:1px;background:#c57649;}
+.public-layout .site-reference-hero h1{font-family:Arial,Helvetica,sans-serif;font-size:clamp(72px,7.95vw,158px);font-weight:750;line-height:1.02;letter-spacing:-.055em;margin:0;max-width:none;}
+.site-reference-hero h1>span{display:block;text-transform:uppercase;}
+.hero-reference-bottom{display:flex;align-items:center;justify-content:space-between;gap:32px;margin-top:clamp(42px,6.5svh,78px);}
+.public-layout .hero-reference-tagline{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:clamp(22px,2vw,37px);line-height:1.3;letter-spacing:-.045em;max-width:none;}
+.hero-reference-actions{display:flex;gap:16px;flex-shrink:0;}
+.hero-reference-actions a{display:inline-flex;align-items:center;justify-content:center;gap:32px;padding:21px 32px;min-height:68px;font-size:.95rem;text-decoration:none;transition:background .2s,color .2s;}
+.hero-project-link{background:#f5f2e9;color:#1d2224;border:1px solid #f5f2e9;}
+.hero-project-link:hover{background:#fff;}
+.hero-quote-link{border:1px solid #ffffff70;color:#f5f2e9;}
+.hero-quote-link:hover{background:#f5f2e9;color:#1d2224;}
+.hero-crane{position:absolute;z-index:-1;width:26vw;max-width:520px;min-width:310px;height:auto;right:3.7%;bottom:0;color:#f5f2e9;opacity:.7;pointer-events:none;}
+.crane-hook{animation:crane-lift 12s ease-in-out infinite;}
+@keyframes crane-lift{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+@media(max-width:1100px){.hero-reference-bottom{align-items:flex-start;flex-direction:column;gap:28px;}.hero-reference-content{padding-bottom:80px;}.hero-crane{right:2%;opacity:.5;}.public-layout:has(.site-reference-hero) .site-mobile-menu summary{border-color:#ffffff70;}.public-layout:has(.site-reference-hero) .site-mobile-menu nav .nav-item{color:var(--site-dark);}.public-layout:has(.site-reference-hero) .site-mobile-menu nav .nav-item:hover{background:#17333b0c;}}
+@media(max-width:767px){.public-layout .site-logo{width:145px;}.public-layout .header-quote{padding:9px 12px;font-size:.6rem;min-height:42px;}.site-reference-hero{min-height:100svh;}.hero-reference-content{width:calc(100% - 40px);padding-top:clamp(190px,28svh,260px);padding-bottom:64px;}.public-layout .site-reference-hero h1{font-size:clamp(43px,10.1vw,78px);letter-spacing:-.055em;line-height:1.08;}.public-layout .hero-reference-eyebrow{font-size:.6rem;letter-spacing:.14em;gap:10px;margin-bottom:24px;}.hero-reference-eyebrow>span{width:28px;}.hero-reference-bottom{margin-top:36px;gap:30px;}.public-layout .hero-reference-tagline{font-size:24px;max-width:23ch;}.hero-reference-actions{gap:10px;flex-wrap:wrap;}.hero-reference-actions a{padding:16px 18px;min-height:55px;font-size:.8rem;gap:16px;}.hero-crane{width:60vw;min-width:240px;right:-5%;bottom:-18%;opacity:.32;}.site-reference-hero .hero-photograph{object-position:62% center;}.hero-shade{background:linear-gradient(0deg,#101214e8,#20242b80 70%,#1c212780);}}
+
+@media(max-width:767px){.public-layout .public-header-inner{width:calc(100% - 40px);}}
+@media(max-width:400px){.public-layout .header-quote{display:none;}.hero-reference-actions a{padding:16px 14px;font-size:.75rem;gap:12px;}}

@@ -1,10 +1,10 @@
-import Link from "next/link";
-import {dictionaries,publicPath,type Locale,type PublicPage} from "@/i18n/dictionaries";
+import {HomeHero} from "./home-hero";
+import {dictionaries,type Locale,type PublicPage} from "@/i18n/dictionaries";
 import {publishedServices,publishedProjects,publishedContacts} from "./content";
 import {ArchitecturalScene,Approach,Preparation,ServiceCards,ProjectGallery,ContactCta} from "./sections";
 export function PublicScreen({locale,page}:{locale:Locale;page:PublicPage}){
  const c=dictionaries[locale],content=c.pages[page],services=publishedServices(),projects=publishedProjects(),contacts=publishedContacts();
- return <><section className={`public-container site-hero ${page==="home"||page==="about"?"site-hero-split":"site-hero-inner"}`}><div className="site-hero-copy"><p className="eyebrow">{c.eyebrow} <span aria-hidden="true">/</span> {c.nav[page]}</p><h1>{content.title}</h1><p className="site-hero-description">{content.description}</p>{page==="home"&&<div className="hero-actions"><Link className="button" href={publicPath(locale,"about")}>{c.approach}<span aria-hidden="true">↗</span></Link><Link className="text-link" href={publicPath(locale,"contact")}>{c.contact}</Link></div>}</div>{(page==="home"||page==="about")&&<ArchitecturalScene locale={locale}/>}</section>
+ return <>{page==="home"?<HomeHero locale={locale}/>:<section className={`public-container site-hero ${page==="about"?"site-hero-split":"site-hero-inner"}`}><div className="site-hero-copy"><p className="eyebrow">{c.eyebrow} <span aria-hidden="true">/</span> {c.nav[page]}</p><h1>{content.title}</h1><p className="site-hero-description">{content.description}</p></div>{page==="about"&&<ArchitecturalScene locale={locale}/>}</section>}
   {page==="home"?<><Approach locale={locale}/><Preparation locale={locale}/><ServiceCards locale={locale} services={services}/>{projects.length>0&&<ProjectGallery locale={locale} projects={projects}/>}<ContactCta locale={locale}/></>:<>
    {(page==="about"||page==="contact")&&<section className="site-section site-section-paper"><div className="public-container site-section-heading"><p className="eyebrow">{c.nav[page]}</p><div><h2>{content.bodyTitle}</h2><p>{content.body}</p></div></div></section>}
    {page==="about"&&<><Approach locale={locale} showLink={false}/><Preparation locale={locale}/></>}
