@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button, FormField, Input } from '@/components/ui';
+import {markLoginWelcome} from './login-welcome';
 type Data = {
     state: 'enroll' | 'verify' | 'ack' | 'complete';
     seed?: string;
@@ -39,6 +40,7 @@ export function MfaForm({ returnTo, change = false }: {
                 return;
             }
             if (value.state === 'complete') {
+                if(!change)markLoginWelcome();
                 setData(null);
                 setStarted(!change);
                 router.replace(value.returnTo);

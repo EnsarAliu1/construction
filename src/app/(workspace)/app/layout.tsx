@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { WorkspaceShell } from "@/components/layout/workspace-shell";
 import "@/styles/globals.css";
+import "@/styles/login-welcome.css";
+import {LoginWelcome} from '@/components/auth/login-welcome';
 import { currentUser } from "@/server/auth/web";
 
 export const dynamic = "force-dynamic";
@@ -15,5 +17,5 @@ export const metadata: Metadata = {
 export default async function WorkspaceLayout({ children }: { children: ReactNode }) {
   const user = await currentUser().catch(() => null);
   // Each page checks its own authorization before rendering; preserve its return URL.
-  return <html lang="sq"><body>{user ? <WorkspaceShell user={user}>{children}</WorkspaceShell> : children}</body></html>;
+  return <html lang="sq"><body>{user ? <WorkspaceShell user={user}><LoginWelcome/>{children}</WorkspaceShell> : children}</body></html>;
 }
