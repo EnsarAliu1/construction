@@ -3,7 +3,11 @@ import { loadEnvFile } from "node:process";
 import { createConnection, type Connection, type ConnectionOptions, type RowDataPacket } from "mysql2/promise";
 
 export function loadLocalEnvironment() {
-  if (existsSync(".env.local")) loadEnvFile(".env.local");
+  // Match Next's priority outside Next (CLI/migrations), preserving explicit process values.
+  const mode=process.env.NODE_ENV??"development";
+  for(const file of [`.env.${mode}.local`,...(mode==="test"?[]:[".env.local"]),`.env.${mode}`,".env"]){
+    if(existsSync(file))loadEnvFile(file);
+  }
 }
 
 export function localDatabaseOptions(value: string | undefined, purpose: "development" | "test", disposable: string | undefined): ConnectionOptions {

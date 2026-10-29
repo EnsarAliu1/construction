@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --hostname 127.0.0.1",
+    "dev": "node --import tsx scripts/development/dev.ts",
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
     "lint": "eslint . --max-warnings=0",
@@ -57,7 +57,8 @@
     "test:mfa:db": "tsx --test tests/auth/mfa.integration.test.ts",
     "test:mfa:browser": "node --conditions=react-server --import tsx scripts/mfa/browser.ts",
     "test:mfa:http": "node --conditions=react-server --import tsx --test tests/auth/mfa-http.integration.test.ts",
-    "perf:mfa": "node --conditions=react-server --import tsx scripts/mfa/benchmark.ts"
+    "perf:mfa": "node --conditions=react-server --import tsx scripts/mfa/benchmark.ts",
+    "dev:setup": "node scripts/development/setup.mjs"
   },
   "engines": {
     "node": ">=22.0.0"

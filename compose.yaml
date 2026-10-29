@@ -1,0 +1,36 @@
+name: fitimiconstruction
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: fitimiconstruction-mysql
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3307:3306"
+    environment:
+      MYSQL_DATABASE: fitimi_dev_local
+      MYSQL_USER: fitimi_dev
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+    secrets:
+      - mysql_password
+      - mysql_root_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: ["--skip-log-bin"]
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=$$(cat /run/secrets/mysql_password) mysql --protocol=TCP --host=127.0.0.1 --user=fitimi_dev --database=fitimi_dev_local --execute='SELECT 1' --silent >/dev/null 2>&1"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+      start_period: 15s
+
+secrets:
+  mysql_password:
+    file: ./.private/development/mysql-password
+  mysql_root_password:
+    file: ./.private/development/mysql-root-password
+
+volumes:
+  mysql_data:
+    name: fitimiconstruction_mysql_data
