@@ -9,7 +9,8 @@ test('logo returns to the top and hero controls stay clear of the crane load',as
   await page.setViewportSize({width,height:1000});await page.goto('/sq#kontakti');await page.locator('.site-logo').click();
   await expect(page).toHaveURL(/\/sq#krye$/);await expect.poll(()=>page.evaluate(()=>scrollY)).toBe(0);
   const buttons=await page.locator('.hero-reference-actions').boundingBox(),load=await page.locator('.crane-hook').boundingBox();
-  expect(buttons!.x+buttons!.width).toBeLessThan(load!.x);
+  const clearance=load!.x-(buttons!.x+buttons!.width);expect(clearance).toBeGreaterThanOrEqual(16);expect(clearance).toBeLessThanOrEqual(80);
+  await expect(page).toHaveTitle("Fitimi Construction");await expect(page.locator('link[rel="icon"]')).toHaveAttribute("href",/icon\.svg/);
  }
 });
 test('brand polish stays within narrow screens and mobile navigation remains accessible',async({page})=>{

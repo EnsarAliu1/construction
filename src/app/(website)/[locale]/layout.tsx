@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   return {
-    title: { default: dictionaries[locale].nav.home, template: "%s | Fitimi Construction" },
+    title: { absolute: "Fitimi Construction" },
     description: dictionaries[locale].pages.home.description,
     robots: { index: false, follow: false },
   };
