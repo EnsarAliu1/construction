@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {dictionaries,publicPath,type Locale} from "@/i18n/dictionaries";
+import {dictionaries,type Locale} from "@/i18n/dictionaries";
 
 function Crane(){
  return <svg className="hero-crane" viewBox="0 0 500 720" fill="none" aria-hidden="true" focusable="false">
@@ -28,7 +28,7 @@ export function HomeHero({locale}:{locale:Locale}){
    <h1 id="home-hero-title"><span>{first}{" "}</span><span>{rest.join(" ")}</span></h1>
    <div className="hero-reference-bottom">
     <p className="hero-reference-tagline">Hapësira që frymëzojnë. Ndërtime që zgjasin.</p>
-    <div className="hero-reference-actions"><Link className="hero-project-link" href={`/${locale}#projektet`}>Eksploro projektet<span aria-hidden="true">→</span></Link><Link className="hero-quote-link" href={publicPath(locale,"contact")}>Kërko ofertë</Link></div>
+    <div className="hero-reference-actions"><Link className="hero-project-link" href={`/${locale}#projektet`}>Eksploro projektet<span aria-hidden="true">→</span></Link><Link className="hero-quote-link" href={`/${locale}#kontakti`}>Kërko ofertë</Link></div>
    </div>
   </div>
  </section>;
