@@ -28,7 +28,7 @@ export function HomeHero({locale}:{locale:Locale}){
    <h1 id="home-hero-title"><span>{first}{" "}</span><span>{rest.join(" ")}</span></h1>
    <div className="hero-reference-bottom">
     <p className="hero-reference-tagline">Hapësira që frymëzojnë. Ndërtime që zgjasin.</p>
-    <div className="hero-reference-actions"><Link className="hero-project-link" href={publicPath(locale,"projects")}>Eksploro projektet<span aria-hidden="true">→</span></Link><Link className="hero-quote-link" href={publicPath(locale,"contact")}>Kërko ofertë</Link></div>
+    <div className="hero-reference-actions"><Link className="hero-project-link" href={`/${locale}#projektet`}>Eksploro projektet<span aria-hidden="true">→</span></Link><Link className="hero-quote-link" href={publicPath(locale,"contact")}>Kërko ofertë</Link></div>
    </div>
   </div>
  </section>;
