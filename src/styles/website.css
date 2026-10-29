@@ -377,3 +377,9 @@ html:has(.public-layout){scroll-behavior:smooth;}
  .site-footer-bottom{padding-inline:16px;}.footer-bricks{opacity:.13;}
 }
 @media(max-width:360px){.hero-reference-actions{flex-direction:column;}.hero-reference-actions a{width:100%;}.public-layout .hero-reference-tagline{font-size:23px;}.quality-values{grid-template-columns:1fr;}.showcase-project-caption h3{font-size:22px;}.about-stat,.about-stat:first-child{gap:14px;padding-inline:18px;}}
+
+/* Keep the hero controls clear of the moving crane load. */
+@media(min-width:1101px){.hero-reference-bottom{padding-right:24vw;}.hero-reference-tagline{min-width:0;}}
+.contact-submit{cursor:pointer;}
+.contact-submit:hover{background:var(--brand-ink);box-shadow:inset 7px 0 var(--brand-turquoise);}
+.contact-submit-status:not(:empty){margin-top:20px;padding:14px 16px;border-left:3px solid var(--site-accent);background:var(--brand-tint);color:var(--brand-ink);font-size:.9rem;line-height:1.6;}

@@ -3,6 +3,15 @@ import AxeBuilder from "@axe-core/playwright";
 import {mkdir} from "node:fs/promises";
 import {dictionaries,locales,publicPages,publicPath} from "../../../src/i18n/dictionaries";
 const issues=new WeakMap<Page,string[]>();
+test('logo returns to the top and hero controls stay clear of the crane load',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
+ for(const width of [1280,1440,1920]){
+  await page.setViewportSize({width,height:1000});await page.goto('/sq#kontakti');await page.locator('.site-logo').click();
+  await expect(page).toHaveURL(/\/sq#krye$/);await expect.poll(()=>page.evaluate(()=>scrollY)).toBe(0);
+  const buttons=await page.locator('.hero-reference-actions').boundingBox(),load=await page.locator('.crane-hook').boundingBox();
+  expect(buttons!.x+buttons!.width).toBeLessThan(load!.x);
+ }
+});
 test('brand polish stays within narrow screens and mobile navigation remains accessible',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});
  for(const width of [320,375,390,768]){
@@ -22,12 +31,14 @@ test('brand polish stays within narrow screens and mobile navigation remains acc
  expect(await page.locator('.showcase-project-open').first().evaluate(e=>getComputedStyle(e).aspectRatio)).toBe('6 / 5');
  expect(await page.locator('.public-layout').evaluate(e=>getComputedStyle(e).getPropertyValue('--site-accent').trim())).toBe('#087e89');
 });
-test("contact anchors show the full inactive form and footer uses clearly labelled sample details",async({page})=>{
+test("contact anchors show the editable form and footer uses clearly labelled sample details",async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/sq');await page.locator('.header-quote').click();
  await expect(page).toHaveURL(/\/sq#kontakti$/);await expect(page.locator('#contact-heading')).toBeInViewport();
  await expect(page.locator('.contact-field')).toHaveCount(5);
- for(const field of await page.locator('.contact-field input,.contact-field select,.contact-field textarea').all())await expect(field).toBeDisabled();
- await expect(page.getByRole('button',{name:'Dërgo kërkesën',exact:true})).toBeDisabled();
+ await page.locator('#contact-name').fill('Testuesi Sintetik');await page.locator('#contact-email').fill('demo@example.test');await page.locator('#contact-message').fill('Kërkesë ilustruese për testim.');
+ await expect(page.locator('#contact-project-type option')).toHaveText(['Zgjidhni...','Biznes','Individual']);await page.locator('#contact-project-type').selectOption('business');await page.locator('.contact-submit').click();await expect(page.getByRole('status')).toContainText('Kërkesa nuk u dërgua');await expect(page.locator('#contact-name')).toHaveValue('Testuesi Sintetik');
+ for(const field of await page.locator('.contact-field input,.contact-field select,.contact-field textarea').all())await expect(field).toBeEnabled();
+ await expect(page.getByRole('button',{name:'Dërgo kërkesën',exact:true})).toBeEnabled();
  await expect(page.locator('#contact-note')).toContainText(dictionaries.sq.contactNote);
  await page.locator('.site-footer').scrollIntoViewIfNeeded();await expect(page.locator('.site-footer-column')).toHaveCount(4);
  await expect(page.locator('.site-footer')).toContainText('Adresë ilustruese');await expect(page.locator('.site-footer-social a')).toHaveCount(0);
@@ -124,7 +135,7 @@ for(const width of [1440,390])for(const locale of locales)for(const route of ["h
 });}
 for(const pageName of ["home",...publicPages] as const)test(`old English route redirects to Albanian: ${pageName}`,async({page})=>{const suffix=pageName==="home"?"":"/"+pageName;await page.goto('/en'+suffix);await expect(page).toHaveURL(new RegExp(pageName==="about"?"/sq#rreth-nesh$":pageName==="services"?"/sq#sherbimet$":pageName==="projects"?"/sq#projektet$":pageName==="contact"?"/sq#kontakti$":"/sq"+suffix+"$"));await expect(page.locator('html')).toHaveAttribute('lang','sq');await expect(page.getByRole('link',{name:'English',exact:true})).toHaveCount(0);});
 for(const locale of locales){test(`${locale} mobile keyboard, Escape, outside click and navigation`,async({page})=>{await page.setViewportSize({width:390,height:844});await page.goto(`/${locale}`);const menu=page.locator(".site-mobile-menu"),summary=menu.locator("summary");await summary.focus();await page.keyboard.press("Enter");await expect(menu).toHaveAttribute("open","");await page.keyboard.press("Tab");await expect(menu.locator("a").first()).toBeFocused();await page.keyboard.press("Escape");await expect(menu).not.toHaveAttribute("open","");await expect(summary).toBeFocused();await summary.click();await menu.getByRole("link",{name:dictionaries[locale].nav.services,exact:true}).click();await expect(page).toHaveURL(new RegExp(`/${locale}#sherbimet$`));await expect(menu).not.toHaveAttribute("open","");await summary.click();await page.mouse.click(8,800);await expect(menu).not.toHaveAttribute("open","");});
- test(`${locale} skip link and contact non-delivery state`,async({page})=>{await page.goto(`/${locale}`);await page.keyboard.press("Tab");await expect(page.locator(".skip-link")).toBeFocused();await page.keyboard.press("Enter");await expect(page.locator("main")).toBeFocused();await page.goto(`/${locale}/contact`);await expect(page.getByRole("textbox",{name:dictionaries[locale].email,exact:true})).toBeDisabled();await expect(page.getByRole("button",{name:dictionaries[locale].submit,exact:true})).toBeDisabled();await expect(page.locator("#contact-note")).toContainText(dictionaries[locale].contactNote);expect((await page.request.post("/api/contact",{data:{message:"Synthetic no-delivery check"}})).status()).toBe(404);});}
+ test(`${locale} skip link and contact non-delivery state`,async({page})=>{await page.goto(`/${locale}`);await page.keyboard.press("Tab");await expect(page.locator(".skip-link")).toBeFocused();await page.keyboard.press("Enter");await expect(page.locator("main")).toBeFocused();await page.goto(`/${locale}/contact`);await expect(page.getByRole("textbox",{name:dictionaries[locale].email,exact:true})).toBeEnabled();await expect(page.getByRole("button",{name:dictionaries[locale].submit,exact:true})).toBeEnabled();await expect(page.locator("#contact-note")).toContainText(dictionaries[locale].contactNote);expect((await page.request.post("/api/contact",{data:{message:"Synthetic no-delivery check"}})).status()).toBe(404);});}
 test("reduced motion and 200 percent root text resize preserve essential content",async({page})=>{await page.emulateMedia({reducedMotion:"reduce"});await page.setViewportSize({width:640,height:900});await page.goto("/sq");await page.evaluate(()=>{const sheet=new CSSStyleSheet();sheet.replaceSync("html{font-size:200%}");document.adoptedStyleSheets=[...document.adoptedStyleSheets,sheet];});expect(await page.locator("html").evaluate(e=>getComputedStyle(e).fontSize)).toBe("32px");await expect(page.locator("h1")).toBeVisible();await expect(page.locator(".hero-crane")).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);expect(await page.locator(".crane-hook").evaluate(e=>getComputedStyle(e).animationName)).toBe("none");expect(await page.locator(".hero-project-link").evaluate(e=>getComputedStyle(e).transitionDuration)).toBe("0s");});
 test("mobile navigation and content work without JavaScript",async({browser,baseURL})=>{const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844},baseURL});const page=await context.newPage();try{await page.goto("/sq");await expect(page.locator("h1")).toBeVisible();await page.locator(".site-mobile-menu summary").click();await page.locator(".site-mobile-menu").getByRole("link",{name:dictionaries.sq.nav.services,exact:true}).click();await expect(page).toHaveURL(/\/sq#sherbimet$/);await expect(page.locator("h1")).toHaveText(dictionaries.sq.pages.home.title);}finally{await context.close();}});
 test("320/768/1024/1280 responsive breakpoints retain content and the correct navigation",async({page})=>{for(const width of [320,768,1024,1280])for(const route of ["/sq","/sq/contact"]){await page.setViewportSize({width,height:1000});await page.goto(route);await expect(page.locator("h1")).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);await expect(page.locator(".site-mobile-menu")).toBeVisible({visible:width<1101});await expect(page.locator(".public-links")).toBeVisible({visible:width>=1101});}});
