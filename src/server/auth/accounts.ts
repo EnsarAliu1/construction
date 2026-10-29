@@ -8,7 +8,7 @@ import { revokeUserSessions } from "./sessions";
 
 async function lockAccountControl(connection: Connection) {
   const [rows] = await connection.query<RowDataPacket[]>("SELECT scope FROM auth_account_control WHERE scope = 'company' FOR UPDATE");
-  if (rows.length !== 1) throw new Error("Account administration is unavailable");
+  if (rows.length !== 1) throw new Error("Administrimi i llogarive është i padisponueshëm");
 }
 
 async function requireFreeSlot(connection: Connection) {
@@ -20,7 +20,7 @@ export async function createAccount(connection: Connection, operator: OperatorCo
   requireOperator(operator);
   const email = normalizeEmail(input.email);
   const name = input.displayName.trim();
-  if (!validEmail(email) || !name || name.length > 200) throw new Error("Provide a valid email and display name");
+  if (!validEmail(email) || !name || name.length > 200) throw new Error("Jepni email dhe emër të vlefshëm");
   const passwordHash = await hashPassword(input.password);
   return transaction(connection, async () => {
     await lockAccountControl(connection);
@@ -37,7 +37,7 @@ export async function setAccountActive(connection: Connection, operator: Operato
   return transaction(connection, async () => {
     await lockAccountControl(connection);
     const [rows] = await connection.execute<RowDataPacket[]>("SELECT id, status FROM users WHERE email = ? FOR UPDATE", [normalizeEmail(rawEmail)]);
-    if (!rows.length) throw new Error("Account not found");
+    if (!rows.length) throw new Error("Llogaria nuk u gjet");
     const userId = String(rows[0].id);
     if ((rows[0].status === "active") === active) return userId;
     if (active) await requireFreeSlot(connection);
@@ -53,7 +53,7 @@ export async function resetAccountPassword(connection: Connection, operator: Ope
   const passwordHash = await hashPassword(password);
   return transaction(connection, async () => {
     const [rows] = await connection.execute<RowDataPacket[]>("SELECT id FROM users WHERE email = ? FOR UPDATE", [normalizeEmail(rawEmail)]);
-    if (!rows.length) throw new Error("Account not found");
+    if (!rows.length) throw new Error("Llogaria nuk u gjet");
     const userId = String(rows[0].id);
     await connection.execute("UPDATE users SET password_hash = ?, auth_version = auth_version + 1, updated_at = UTC_TIMESTAMP(3) WHERE id = ?", [passwordHash, userId]);
     await revokeUserSessions(connection, userId);
@@ -65,7 +65,7 @@ export async function revokeAccountSessions(connection: Connection, operator: Op
   requireOperator(operator);
   return transaction(connection, async () => {
     const [rows] = await connection.execute<RowDataPacket[]>("SELECT id FROM users WHERE email = ? FOR UPDATE", [normalizeEmail(rawEmail)]);
-    if (!rows.length) throw new Error("Account not found");
+    if (!rows.length) throw new Error("Llogaria nuk u gjet");
     const userId = String(rows[0].id);
     await connection.execute("UPDATE users SET auth_version = auth_version + 1, updated_at = UTC_TIMESTAMP(3) WHERE id = ?", [userId]);
     await revokeUserSessions(connection, userId);

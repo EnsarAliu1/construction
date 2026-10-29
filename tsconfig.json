@@ -47,9 +47,12 @@
     ".next-wp15/types/**/*.ts",
     ".next-wp15/dev/types/**/*.ts",
     ".next-wp16/types/**/*.ts",
-    ".next-wp16/dev/types/**/*.ts"
+    ".next-wp16/dev/types/**/*.ts",
+    ".next-sq/types/**/*.ts",
+    ".next-sq/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "artifacts"
   ]
 }

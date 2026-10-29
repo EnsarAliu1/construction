@@ -21,7 +21,7 @@ function search(kind: ReferenceKind, q: string) {
 async function find(db: Pick<Db, "select">, kind: ReferenceKind, id: string, lock = false) {
   const table = tableFor(kind), query = db.select().from(table).where(eq(table.id, id)).limit(1);
   const [row] = await (lock ? query.for("update") : query);
-  if (!row) throw new ReferenceError("NOT_FOUND", "Record not found.", 404);
+  if (!row) throw new ReferenceError("NOT_FOUND", "Të dhënat nuk u gjetën.", 404);
   return normalized(row);
 }
 async function writeAudit(tx: Tx, kind: ReferenceKind, actorId: string, action: string, before: ReferenceRecord | null, after: ReferenceRecord) {
@@ -46,7 +46,7 @@ async function mutation<P, R>(connection: Connection, token: string | undefined,
   } catch (error) {
     if (kind !== "persons" && duplicate(error, kind === "categories" ? "expense_categories_name_uq" : "vehicles_identifier_uq")) {
       const field = kind === "categories" ? "name" : "identifier";
-      throw new ReferenceError("DUPLICATE", "This name or identifier already belongs to an existing record, including inactive records. Find the original record instead of creating a duplicate.", 409, { [field]: "Already registered. Case and accent differences do not create a separate identity." });
+      throw new ReferenceError("DUPLICATE", "Ky emër ose identifikues i përket të dhënave ekzistuese, përfshirë ato joaktive. Gjeni regjistrimin fillestar në vend që të krijoni dublikatë.", 409, { [field]: "Është regjistruar më parë. Ndryshimet e shkronjave të mëdha ose thekseve nuk krijojnë identitet të veçantë." });
     }
     throw error;
   }
@@ -68,7 +68,7 @@ export async function insertCategoryInTransaction(tx: Tx, name: string, actor: s
   const id = randomUUID();
   try { await insert(tx, "categories", id, value, actor); }
   catch (error) {
-    if (duplicate(error, "expense_categories_name_uq")) throw new ReferenceError("DUPLICATE", "This category already exists, including inactive categories.", 409, { newCategoryName: "Choose the existing category or use a different name." });
+    if (duplicate(error, "expense_categories_name_uq")) throw new ReferenceError("DUPLICATE", "Kjo kategori ekziston, përfshirë kategoritë joaktive.", 409, { newCategoryName: "Zgjidhni kategorinë ekzistuese ose përdorni emër tjetër." });
     throw error;
   }
   const after = await find(tx, "categories", id);
@@ -83,7 +83,7 @@ export async function createReference(connection: Connection, token: string | un
     if (kind === "categories") {
       try { return await insertCategoryInTransaction(tx, input.name!, actor); }
       catch (error) {
-        if (error instanceof ReferenceError && error.code === "DUPLICATE") throw new ReferenceError("DUPLICATE", error.message, 409, { name: "Already registered. Case and accent differences do not create a separate identity." });
+        if (error instanceof ReferenceError && error.code === "DUPLICATE") throw new ReferenceError("DUPLICATE", error.message, 409, { name: "Është regjistruar më parë. Ndryshimet e shkronjave të mëdha ose thekseve nuk krijojnë identitet të veçantë." });
         throw error;
       }
     }
@@ -94,7 +94,7 @@ export async function createReference(connection: Connection, token: string | un
 export async function updateReference(connection: Connection, token: string | undefined, kind: ReferenceKind, id: string, value: unknown) {
   return mutation(connection, token, kind, () => { referenceId(id); const body = referenceObject(value, ["version", "record"]); return { version: referenceVersion(body.version), record: parseReference(kind, body.record) }; }, async (tx, input, actor) => {
     const before = await find(tx, kind, id, true);
-    if (before.version !== input.version) throw new ReferenceError("CONFLICT", "This record has changed. Reload its latest version before saving again.", 409);
+    if (before.version !== input.version) throw new ReferenceError("CONFLICT", "Të dhënat janë ndryshuar. Ringarkoni versionin e fundit para ruajtjes.", 409);
     // Corrections to inactive records are allowed; ordinary edits never change status.
     await edit(tx, kind, id, input.record, { version: before.version + 1, updatedBy: actor }); const after = await find(tx, kind, id);
     await writeAudit(tx, kind, actor, "reference_updated", before, after); return after;
@@ -103,12 +103,12 @@ export async function updateReference(connection: Connection, token: string | un
 export async function changeReferenceLifecycle(connection: Connection, token: string | undefined, kind: ReferenceKind, id: string, value: unknown) {
   return mutation(connection, token, kind, () => {
     referenceId(id); const body = referenceObject(value, ["version", "action", "confirmation"]);
-    if ((body.action !== "deactivate" && body.action !== "reactivate") || body.confirmation !== body.action) throw new ReferenceError("CONFIRMATION", "Explicitly confirm Deactivate or Reactivate.");
+    if ((body.action !== "deactivate" && body.action !== "reactivate") || body.confirmation !== body.action) throw new ReferenceError("CONFIRMATION", "Konfirmoni shprehimisht çaktivizimin ose riaktivizimin.");
     return { version: referenceVersion(body.version), active: body.action === "reactivate" };
   }, async (tx, input, actor) => {
     const before = await find(tx, kind, id, true);
-    if (before.version !== input.version) throw new ReferenceError("CONFLICT", "This record has changed. Reload its latest version before changing status.", 409);
-    if (before.isActive === input.active) throw new ReferenceError("LIFECYCLE", `This record is already ${input.active ? "active" : "inactive"}.`, 409);
+    if (before.version !== input.version) throw new ReferenceError("CONFLICT", "Të dhënat janë ndryshuar. Ringarkoni versionin e fundit para ndryshimit të gjendjes.", 409);
+    if (before.isActive === input.active) throw new ReferenceError("LIFECYCLE", `Këto të dhëna janë tashmë ${input.active ? "active" : "inactive"}.`, 409);
     const table = tableFor(kind);
     await tx.update(table).set({ isActive: input.active, version: before.version + 1, updatedBy: actor, deactivatedBy: input.active ? null : actor, deactivatedAt: input.active ? null : sql`UTC_TIMESTAMP(3)`, updatedAt: sql`UTC_TIMESTAMP(3)` }).where(eq(table.id, id));
     const after = await find(tx, kind, id); await writeAudit(tx, kind, actor, input.active ? "reference_reactivated" : "reference_deactivated", before, after); return after;

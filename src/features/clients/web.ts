@@ -15,6 +15,6 @@ export async function clientPageData<T>(returnTo: string, work: (connection: Con
     if (error instanceof AuthenticationRequired) redirect(`/login?returnTo=${encodeURIComponent(returnTo)}`);
     if (error instanceof ClientNotFound) notFound();
     // Keep raw database exceptions, including search parameters, out of RSC logs.
-    throw new Error("Client records are temporarily unavailable. Please retry.");
+    throw new Error("Të dhënat e klientëve janë përkohësisht të padisponueshme. Provoni përsëri.");
   }
 }

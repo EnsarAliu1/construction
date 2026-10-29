@@ -7,7 +7,7 @@ import { startEnrollment, proveEnrollment, acknowledgeCodes, verifyMfa } from '.
 import { authenticator, recoveryVerifier } from '../../src/server/auth/mfa-crypto';
 const recovery = new Map<string, string[]>();
 export function rememberFixtureCodes(user: string, codes: string[]) { assertMfaFixture(); recovery.set(user, [...codes]); }
-export function assertMfaFixture() { const options = localDatabaseOptions(process.env.TEST_DATABASE_URL, 'test', process.env.DATABASE_DISPOSABLE); assert(process.env.DATABASE_DISPOSABLE === '1' && options.host === '127.0.0.1' && options.port === 3307 && /^fitimi_test_wp(?:0[3-9]|1[0-6])$/.test(options.database ?? ''), 'MFA fixtures require an explicitly disposable task database.'); }
+export function assertMfaFixture() { const options = localDatabaseOptions(process.env.TEST_DATABASE_URL, 'test', process.env.DATABASE_DISPOSABLE); assert(process.env.DATABASE_DISPOSABLE === '1' && options.host === '127.0.0.1' && options.port === 3307 && (/^fitimi_test_wp(?:0[3-9]|1[0-6])$/.test(options.database ?? '') || process.env.AUTH_LOCALIZATION_TEST==='1'&&options.database==='fitimi_test_sq'), 'MFA fixtures require an explicitly disposable task database.'); }
 export async function fixtureRecoveryCode(c: Connection, user: string) {
     assertMfaFixture();
     const [f] = await c.query<RowDataPacket[]>('SELECT id FROM auth_mfa_factors WHERE user_id=?', [user]);

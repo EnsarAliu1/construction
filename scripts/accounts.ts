@@ -7,7 +7,7 @@ import { withAuthConnection } from "../src/server/auth/store";
 import { createAccount, resetAccountPassword, revokeAccountSessions, setAccountActive } from "../src/server/auth/accounts";
 function secret(prompt: string): Promise<string> {
     if (!stdin.isTTY || !stdin.setRawMode)
-        throw new Error("Use an interactive operator terminal");
+        throw new Error("Përdorni terminal ndërveprues të operatorit");
     stdout.write(prompt);
     stdin.setRawMode(true);
     stdin.resume();
@@ -26,7 +26,7 @@ function secret(prompt: string): Promise<string> {
         function read(chunk: Buffer) {
             for (const character of chunk.toString("utf8")) {
                 if (character === "\u0003") {
-                    finish(new Error("Cancelled"));
+                    finish(new Error("Anuluar"));
                     return;
                 }
                 if (character === "\r" || character === "\n") {
@@ -45,26 +45,27 @@ function secret(prompt: string): Promise<string> {
 async function main() {
     const args = process.argv.slice(2);
     if (args[0] === "--help") {
-        console.log("npm run accounts -- --operator <create|activate|deactivate|reset-password|revoke-sessions|reset-mfa>\nUse a trusted local terminal. Secrets are prompted without echo; no password/key arguments are accepted.");
+        console.log("npm run accounts -- --operator <create|activate|deactivate|reset-password|revoke-sessions|reset-mfa>\nPërdorni terminal lokal të besuar. Sekretet kërkohen pa u shfaqur; fjalëkalimet dhe çelësat nuk pranohen si argumente.");
         return;
     }
     if (args.length !== 2 || args[0] !== "--operator" || !["create", "activate", "deactivate", "reset-password", "revoke-sessions", "reset-mfa"].includes(args[1]))
-        throw new Error("Explicit operator command required");
+        throw new Error("Kërkohet komandë e qartë e operatorit");
     loadLocalEnvironment();
-    const operator = authenticateOperator(await secret("Adore operator key: "));
+    const operator = authenticateOperator(await secret("Çelësi i operatorit Adore: "));
     const prompt = createInterface({ input: stdin, output: stdout });
-    const email = await prompt.question("Account email: ");
-    const displayName = args[1] === "create" ? await prompt.question("Display name: ") : "";
-    const active = args[1] === "create" && (await prompt.question("Activate now? [y/N]: ")).toLowerCase() === "y";
-    const mfaReason = args[1] === "reset-mfa" ? await prompt.question("Recovery reason (lost-authenticator-and-codes / suspected-factor-compromise / verified-device-replacement / verified-disaster-recovery): ") : "";
-    const mfaIdentity = args[1] === "reset-mfa" && (await prompt.question("Identity independently verified using the approved recovery procedure? [y/N]: ")).toLowerCase() === "y";
-    const mfaConfirmation = args[1] === "reset-mfa" ? await prompt.question(`Type reset-mfa ${email} to invalidate all factors, codes and sessions: `) : "";
+    const email = await prompt.question("Emaili i llogarisë: ");
+    const displayName = args[1] === "create" ? await prompt.question("Emri i përdoruesit: ") : "";
+    const active = args[1] === "create" && (await prompt.question("Të aktivizohet tani? [p/J]: ")).toLowerCase() === "p";
+    const recoveryReasons:Record<string,string>={"1":"lost-authenticator-and-codes","2":"suspected-factor-compromise","3":"verified-device-replacement","4":"verified-disaster-recovery"};
+    const mfaReason = args[1] === "reset-mfa" ? recoveryReasons[await prompt.question("Arsyeja e rikuperimit (1: humbje e pajisjes dhe kodeve; 2: dyshim për komprometim; 3: zëvendësim i verifikuar i pajisjes; 4: rikuperim i verifikuar pas incidentit): ")]??"" : "";
+    const mfaIdentity = args[1] === "reset-mfa" && (await prompt.question("A është verifikuar identiteti në mënyrë të pavarur sipas procedurës së miratuar? [p/J]: ")).toLowerCase() === "p";
+    const mfaConfirmation = args[1] === "reset-mfa" ? await prompt.question(`Shkruani reset-mfa ${email} për të zhvlerësuar të gjithë faktorët, kodet dhe sesionet: `) : "";
     prompt.close();
     let password = "";
     if (["create", "reset-password"].includes(args[1]) || args[1] === "reset-mfa" && mfaReason === "verified-disaster-recovery") {
-        password = await secret("New password (minimum 12 characters): ");
-        if (password !== await secret("Confirm new password: "))
-            throw new Error("Passwords do not match");
+        password = await secret("Fjalëkalimi i ri (të paktën 12 karaktere): ");
+        if (password !== await secret("Konfirmoni fjalëkalimin e ri: "))
+            throw new Error("Fjalëkalimet nuk përputhen");
     }
     await withAuthConnection(async (connection) => {
         switch (args[1]) {
@@ -82,7 +83,7 @@ async function main() {
                 break;
             case "reset-mfa":
                 if (mfaConfirmation !== `reset-mfa ${email}`)
-                    throw new Error("Explicit target confirmation required");
+                    throw new Error("Kërkohet konfirmim i qartë i llogarisë së synuar");
                 await resetMfa(connection, operator, email, { reason: mfaReason, identityVerified: mfaIdentity, confirmation: "reset-mfa", ...(mfaReason === "verified-disaster-recovery" ? { newPassword: password } : {}) });
                 break;
             case "revoke-sessions":
@@ -91,9 +92,9 @@ async function main() {
         }
     });
     password = "";
-    console.log("Operator action completed. A security audit event was recorded.");
+    console.log("Veprimi i operatorit përfundoi. U regjistrua veprimi në historikun e sigurisë.");
 }
 main().catch(() => {
-    console.error("Operator action failed. Verify authorization, account details, password requirements and the five-active-account limit. No secrets are displayed.");
+    console.error("Veprimi i operatorit dështoi. Kontrolloni autorizimin, të dhënat e llogarisë, kërkesat e fjalëkalimit dhe kufirin prej pesë llogarish aktive. Sekretet nuk shfaqen.");
     process.exitCode = 1;
 });

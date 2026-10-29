@@ -3,5 +3,5 @@ import "@/styles/globals.css";
 
 export const metadata={robots:{index:false,follow:false}};
 export default function AuthLayout({ children }: { children: ReactNode }) {
-  return <html lang="en"><body>{children}</body></html>;
+  return <html lang="sq"><body>{children}</body></html>;
 }

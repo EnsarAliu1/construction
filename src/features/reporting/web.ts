@@ -8,5 +8,5 @@ import {withAuthConnection} from "@/server/auth/store";
 import {ReferenceError} from "@/features/references/validation";
 export async function reportingPage<T>(path:string,work:(c:Connection,t:string|undefined)=>Promise<T>){
  await requirePageUser(path);const token=(await cookies()).get(sessionCookieSettings().name)?.value;
- try{return {data:await withAuthConnection(c=>work(c,token)),error:null};}catch(error){if(error instanceof AuthenticationRequired)redirect(`/login?returnTo=${encodeURIComponent(path)}`);return {data:null,error:error instanceof ReferenceError?error.message:"Financial data is temporarily unavailable. Retry or contact your operator."};}
+ try{return {data:await withAuthConnection(c=>work(c,token)),error:null};}catch(error){if(error instanceof AuthenticationRequired)redirect(`/login?returnTo=${encodeURIComponent(path)}`);return {data:null,error:error instanceof ReferenceError?error.message:"Të dhënat financiare janë përkohësisht të padisponueshme. Provoni përsëri ose kontaktoni operatorin."};}
 }

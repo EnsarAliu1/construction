@@ -49,7 +49,7 @@ test('real HTTP pre-MFA denial, request controls, full assurance and secret-free
             assert.equal((await request('/api/auth/session', 'GET', pending + '; mfaPassed=true')).status, 401);
         });
         await t.test('pending tokens cannot run the actual protected logout Server Action as fully authenticated', async () => {
-            const manifest = JSON.parse(await readFile('.next-wp16/server/server-reference-manifest.json', 'utf8')), action = Object.entries(manifest.node as Record<string, {
+            const manifest = JSON.parse(await readFile(process.env.FITIMI_TEST_BUILD==='sq'?'.next-sq/server/server-reference-manifest.json':'.next-wp16/server/server-reference-manifest.json', 'utf8')), action = Object.entries(manifest.node as Record<string, {
                 exportedName?: string;
             }>).find(([, v]) => v.exportedName === 'logoutAction');
             assert(action);

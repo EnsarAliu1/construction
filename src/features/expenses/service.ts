@@ -13,11 +13,11 @@ import { ExpenseError, parseCancellation, parseCorrection, parseExpense, parseEx
 type Db = MySql2Database<Record<string, never>>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 export type ExpenseRecord = typeof expenses.$inferSelect;
-const conflict = () => new ExpenseError("CONFLICT", "This expense or a selected record has changed. Reload the latest values before saving.", 409);
+const conflict = () => new ExpenseError("CONFLICT", "Shpenzimi ose një e dhënë e përzgjedhur ka ndryshuar. Ringarkoni vlerat e fundit para ruajtjes.", 409);
 async function find(db: Pick<Db,"select">, id: string, lock = false) {
   const query = db.select().from(expenses).where(eq(expenses.id, id)).limit(1);
   const [row] = await (lock ? query.for("update") : query);
-  if (!row) throw new ExpenseError("NOT_FOUND", "Expense not found.", 404);
+  if (!row) throw new ExpenseError("NOT_FOUND", "Shpenzimi nuk u gjet.", 404);
   return row;
 }
 async function audit(tx: Tx, actorId: string, operationId: string, action: string, before: ExpenseRecord | null, after: ExpenseRecord) {
@@ -38,7 +38,7 @@ async function lockAssociations(tx: Tx, before: ExpenseRecord | null, input: Exp
   const projectIds = [...new Set([before?.projectId, input?.project?.id].filter((id): id is string => Boolean(id)))].sort();
   if (projectIds.length) {
     const hints = await tx.select().from(projects).where(inArray(projects.id, projectIds));
-    if (hints.length !== projectIds.length) throw new ExpenseError("PROJECT", "Selected project is unavailable.", 409, { project: "Choose an eligible project." });
+    if (hints.length !== projectIds.length) throw new ExpenseError("PROJECT", "Projekti i përzgjedhur është i padisponueshëm.", 409, { project: "Zgjidhni një projekt të lejuar." });
     const parentIds = [...new Set(hints.map(row => row.clientId))].sort();
     const parents = await tx.select().from(clients).where(inArray(clients.id, parentIds)).orderBy(asc(clients.id)).for("update");
     const locked = await tx.select().from(projects).where(inArray(projects.id, projectIds)).orderBy(asc(projects.id)).for("update");
@@ -47,7 +47,7 @@ async function lockAssociations(tx: Tx, before: ExpenseRecord | null, input: Exp
       const row = locked.find(row => row.id === input.project!.id);
       if (!row || row.version !== input.project.version) throw conflict();
       // Retaining a historical association is permitted; new associations require active parents/project.
-      if (before?.projectId !== row.id && (row.deletedAt || row.status !== "active" || parents.find(parent => parent.id === row.clientId)?.deletedAt)) throw new ExpenseError("PROJECT", "New associations require an active project and client.", 409, { project: "Select an active project with an active client." });
+      if (before?.projectId !== row.id && (row.deletedAt || row.status !== "active" || parents.find(parent => parent.id === row.clientId)?.deletedAt)) throw new ExpenseError("PROJECT", "Lidhjet e reja kërkojnë projekt dhe klient aktiv.", 409, { project: "Zgjidhni projekt aktiv me klient aktiv." });
     }
   }
   for (const [table, oldId, selected, field] of [
@@ -58,11 +58,11 @@ async function lockAssociations(tx: Tx, before: ExpenseRecord | null, input: Exp
     const ids = [...new Set([oldId, selected?.id].filter((id): id is string => Boolean(id)))].sort();
     if (!ids.length) continue;
     const rows = await tx.select({ id: table.id, version: table.version, isActive: table.isActive }).from(table).where(inArray(table.id, ids)).orderBy(asc(table.id)).for("update");
-    if (rows.length !== ids.length) throw new ExpenseError("REFERENCE", "A selected reference no longer exists.", 409, { [field]: "Select an existing record." });
+    if (rows.length !== ids.length) throw new ExpenseError("REFERENCE", "Një e dhënë e përzgjedhur nuk ekziston më.", 409, { [field]: "Zgjidhni të dhëna ekzistuese." });
     if (selected) {
       const row = rows.find(row => row.id === selected.id)!;
       if (row.version !== selected.version) throw conflict();
-      if (oldId !== row.id && !row.isActive) throw new ExpenseError("INACTIVE", "New associations require active reference records.", 409, { [field]: "Select an active record." });
+      if (oldId !== row.id && !row.isActive) throw new ExpenseError("INACTIVE", "Lidhjet e reja kërkojnë të dhëna referuese aktive.", 409, { [field]: "Zgjidhni të dhëna aktive." });
     }
   }
 }
@@ -91,7 +91,7 @@ export async function correctExpense(c: Connection, token: string | undefined, i
     await lockAssociations(tx, hint, input.expense);
     const before = await find(tx, id, true);
     if (before.version !== input.version || hint.version !== before.version) throw conflict();
-    if (before.status !== "recorded") throw new ExpenseError("CANCELLED", "Cancelled expenses are retained read-only.", 409);
+    if (before.status !== "recorded") throw new ExpenseError("CANCELLED", "Shpenzimet e anuluara ruhen vetëm për shikim.", 409);
     await tx.update(expenses).set({ ...fields(input.expense, input.expense.category!.id), updatedBy: actor, version: before.version + 1, updatedAt: sql`UTC_TIMESTAMP(3)` }).where(eq(expenses.id, id));
     const after = await find(tx, id); await audit(tx, actor, operation, "expense_corrected", before, after); return after;
   });
@@ -101,7 +101,7 @@ export async function cancelExpense(c: Connection, token: string | undefined, id
     const hint = await find(tx, id); await lockAssociations(tx, hint, null);
     const before = await find(tx, id, true);
     if (before.version !== input.version || hint.version !== before.version) throw conflict();
-    if (before.status !== "recorded") throw new ExpenseError("CANCELLED", "This expense is already cancelled.", 409);
+    if (before.status !== "recorded") throw new ExpenseError("CANCELLED", "Ky shpenzim është anuluar më parë.", 409);
     await tx.update(expenses).set({ status: "cancelled", cancelledBy: actor, updatedBy: actor, cancelledAt: sql`UTC_TIMESTAMP(3)`, cancellationReason: input.reason, version: before.version + 1, updatedAt: sql`UTC_TIMESTAMP(3)` }).where(eq(expenses.id, id));
     const after = await find(tx, id); await audit(tx, actor, operation, "expense_cancelled", before, after); return after;
   });
@@ -111,7 +111,7 @@ export async function getExpense(c: Connection, token: string | undefined, id: s
   await requireSessionUser(c, token); referenceId(id);
   return drizzle(c).transaction(async tx => {
     const [data] = await joined(tx).where(eq(expenses.id, id)).limit(1);
-    if (!data) throw new ExpenseError("NOT_FOUND", "Expense not found.", 404);
+    if (!data) throw new ExpenseError("NOT_FOUND", "Shpenzimi nuk u gjet.", 404);
     const history = await tx.select({ id: auditEvents.id, action: auditEvents.action, actorName: users.displayName, recordedAt: auditEvents.recordedAt, before: auditEvents.beforeSnapshot, after: auditEvents.afterSnapshot }).from(auditEvents).leftJoin(users, eq(users.id, auditEvents.actorId)).where(and(eq(auditEvents.entityType,"expense"),eq(auditEvents.entityId,id))).orderBy(desc(auditEvents.recordedAt),desc(auditEvents.id)).limit(20);
     return { ...data, history };
   }, { isolationLevel: "repeatable read", accessMode: "read only" });

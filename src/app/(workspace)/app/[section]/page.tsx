@@ -7,7 +7,7 @@ import { ReferenceList } from "@/features/references/screens";
 
 export async function generateMetadata({ params }: { params: Promise<{ section: string }> }) {
   const { section } = await params;
-  return { title: isSection(section) ? sections[section].title : "Not found" };
+  return { title: isSection(section) ? sections[section].title : "Nuk u gjet" };
 }
 export default async function SectionPage({ params, searchParams }: { params: Promise<{ section: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const { section } = await params;

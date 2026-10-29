@@ -5,7 +5,7 @@ import {financialStates,operationalTotals} from "./money";
 export const received=(r:DataRow)=>r.status===financialStates.income;
 export const recorded=(r:DataRow)=>r.status===financialStates.expense;
 const sum=(rows:DataRow[],field="amount")=>rows.reduce((n,r)=>n+euroCents(String(r[field])),BigInt(0));
-const invalid=()=>new ReportingError("INCONSISTENT","Financial relationships or phase balances require operator review. This summary has not been verified.",409);
+const invalid=()=>new ReportingError("INCONSISTENT","Lidhjet financiare ose bilancet e fazave kërkojnë kontroll nga operatori. Kjo përmbledhje nuk është verifikuar.",409);
 export function finances(s:Snapshot,filter:ReportFilter){
  const d=s.data,projectById=new Map(d.projects.map(r=>[r.id,r])),clientById=new Map(d.clients.map(r=>[r.id,r])),phaseById=new Map(d.contract_phases.map(r=>[r.id,r])),contractById=new Map(d.contracts.map(r=>[r.id,r]));
  // Snapshot-local indexes only: never shared caches or authoritative capacity previews.
@@ -19,7 +19,7 @@ export function finances(s:Snapshot,filter:ReportFilter){
  for(const a of activeAlloc){const p=paymentById.get(a.paymentId)!,phase=phaseById.get(a.phaseId),contract=phase&&contractById.get(phase.contractId);if(!phase||phase.deletedAt||!contract||contract.projectId!==p.projectId||contract.status!=="active")throw invalid();const amount=euroCents(String(a.amount));if(amount<=BigInt(0))throw invalid();allocated.set(p.id,(allocated.get(p.id)??BigInt(0))+amount);paid.set(a.phaseId,(paid.get(a.phaseId)??BigInt(0))+amount);}
  for(const p of allIncome)if(!projectById.has(p.projectId)||allocated.get(p.id)!==euroCents(String(p.amount)))throw invalid();
  const inDate=(r:DataRow)=>(!filter.from||String(r.transactionDate)>=filter.from)&&(!filter.to||String(r.transactionDate)<=filter.to);
- const label=(r:DataRow):DataRow=>{const p=projectById.get(r.projectId),client=p&&clientById.get(p.clientId);if(r.projectId&&(!p||!client))throw invalid();return {...r,projectName:p?.name??"Company-wide",clientName:client?.name??""};};
+ const label=(r:DataRow):DataRow=>{const p=projectById.get(r.projectId),client=p&&clientById.get(p.clientId);if(r.projectId&&(!p||!client))throw invalid();return {...r,projectName:p?.name??"Për kompaninë",clientName:client?.name??""};};
  const ordered=(a:DataRow,b:DataRow)=>String(b.transactionDate).localeCompare(String(a.transactionDate))||String(b.id).localeCompare(String(a.id));
  const income=allIncome.filter(r=>inDate(r)&&(filter.method==="all"||r.method===filter.method)).map(label).sort(ordered);
  const outgoing=allExpenses.filter(r=>inDate(r)&&(!filter.categoryId||r.categoryId===filter.categoryId)).map((r):DataRow=>{const category=categoryById.get(r.categoryId);if(!category)throw invalid();return {...label(r),categoryName:category.name};}).sort(ordered);

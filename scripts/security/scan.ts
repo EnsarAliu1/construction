@@ -5,8 +5,8 @@ import {parseEnv} from "node:util";
 import {join} from "node:path";
 
 async function main(){
- const wp16=process.env.AUTH_TEST_WORK_PACKAGE==='WP-16';const wp15=process.env.AUTH_TEST_WORK_PACKAGE==='WP-15',evidence=wp16?'artifacts/wp16':wp15?'artifacts/wp15':'artifacts/wp14',build=wp16?'.next-wp16':wp15?'.next-wp15':'.next-wp14';
- assert(["WP-14","WP-15","WP-16"].includes(process.env.AUTH_TEST_WORK_PACKAGE!));const url=new URL(process.env.DATABASE_URL!);assert.equal(url.pathname,wp16?"/fitimi_test_wp16":wp15?"/fitimi_test_wp15":"/fitimi_test_wp14");assert.equal(url.port,"3307");
+ const sq=process.env.AUTH_LOCALIZATION_TEST==='1';const wp16=process.env.AUTH_TEST_WORK_PACKAGE==='WP-16';const wp15=process.env.AUTH_TEST_WORK_PACKAGE==='WP-15',evidence=sq?'artifacts/sq':wp16?'artifacts/wp16':wp15?'artifacts/wp15':'artifacts/wp14',build=sq?'.next-sq':wp16?'.next-wp16':wp15?'.next-wp15':'.next-wp14';
+ assert(["WP-14","WP-15","WP-16"].includes(process.env.AUTH_TEST_WORK_PACKAGE!));const url=new URL(process.env.DATABASE_URL!);assert.equal(url.pathname,sq?"/fitimi_test_sq":wp16?"/fitimi_test_wp16":wp15?"/fitimi_test_wp15":"/fitimi_test_wp14");assert.equal(url.port,"3307");
  const safe=`safe.directory=${process.cwd().replaceAll('\\','/')}`;
  const git=(args:string[])=>{const r=spawnSync('git',['-c',safe,...args],{maxBuffer:50*1024*1024,windowsHide:true});assert.equal(r.status,0);return r.stdout;};
  const secrets=new Set<string>();for(const file of ['.env.local',`${evidence}/test.env`,`${evidence}/mysql.env`,...((wp15||wp16)?[`${evidence}/source-dr.env`,`${evidence}/target-dr.env`]:[])]){const contents=await readFile(file,'utf8').catch(error=>{if((wp15||wp16)&&file.includes('-dr.env')&&error.code==='ENOENT')return '';throw error;});const env=parseEnv(contents);for(const [key,value]of Object.entries(env))if(value&&/PASSWORD|SECRET|TOKEN|OPERATOR|DATABASE_URL|MFA_ENCRYPTION/.test(key)&&value.length>=16){secrets.add(value);if(/DATABASE_URL/.test(key))secrets.add(decodeURIComponent(new URL(value).password));}}

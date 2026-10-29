@@ -8,7 +8,7 @@ import {redactLegacyRecoveryDrafts} from "@/features/payments/recovery-key";
 export function LoginForm({ returnTo, unavailable }: { returnTo: string; unavailable: boolean }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [message, setMessage] = useState(unavailable ? "Sign-in is temporarily unavailable. Please try again later." : "");
+  const [message, setMessage] = useState(unavailable ? "Hyrja është përkohësisht e padisponueshme. Provoni më vonë." : "");
   const error = useRef<HTMLParagraphElement>(null);
   useEffect(()=>{try{redactLegacyRecoveryDrafts(sessionStorage);}catch{/* Browser storage may be disabled. */}},[]);
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -19,19 +19,19 @@ export function LoginForm({ returnTo, unavailable }: { returnTo: string; unavail
       const response = await fetch("/api/auth/login", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: data.get("email"), password: data.get("password"), returnTo }) });
       const result = await response.json();
       if (response.ok && result.ok) { router.replace(result.returnTo); router.refresh(); return; }
-      setMessage("Unable to sign in. Check your details or try again later.");
-    } catch { setMessage("Unable to sign in. Check your details or try again later."); }
+      setMessage("Hyrja dështoi. Kontrolloni të dhënat ose provoni më vonë.");
+    } catch { setMessage("Hyrja dështoi. Kontrolloni të dhënat ose provoni më vonë."); }
     setPending(false);
     requestAnimationFrame(() => error.current?.focus());
   }
   return <form onSubmit={submit} aria-busy={pending}>
     <fieldset disabled={pending}>
-      <legend className="sr-only">Sign in with your individual account</legend>
-      <FormField label="Email" htmlFor="email"><Input id="email" name="email" type="email" autoComplete="username" required maxLength={254} /></FormField>
-      <FormField label="Password" htmlFor="password"><Input id="password" name="password" type="password" autoComplete="current-password" required maxLength={1024} /></FormField>
+      <legend className="sr-only">Hyni me llogarinë tuaj personale</legend>
+      <FormField label="Emaili" htmlFor="email"><Input id="email" name="email" type="email" autoComplete="username" required maxLength={254} /></FormField>
+      <FormField label="Fjalëkalimi" htmlFor="password"><Input id="password" name="password" type="password" autoComplete="current-password" required maxLength={1024} /></FormField>
       {message && <p ref={error} role="alert" tabIndex={-1} className="login-error">{message}</p>}
-      <Button type="submit" className="login-submit">{pending ? "Signing in…" : "Sign in"}</Button>
+      <Button type="submit" className="login-submit">{pending ? "Duke hyrë…" : "Hyni"}</Button>
     </fieldset>
-    <p className="muted login-help">Accounts and password recovery are managed by Adore. Contact your authorized operator for assistance.</p>
+    <p className="muted login-help">Llogaritë dhe rikuperimi i fjalëkalimit menaxhohen nga Adore. Kontaktoni operatorin e autorizuar për ndihmë.</p>
   </form>;
 }

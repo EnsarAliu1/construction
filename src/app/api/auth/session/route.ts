@@ -6,5 +6,5 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function GET() {
   try { return authJson({ user: await requireOperationUser() }); }
-  catch (error) { return authJson({ message: "Authentication required." }, error instanceof AuthenticationRequired ? 401 : 503); }
+  catch (error) { return authJson({ message: "Kërkohet autentikim." }, error instanceof AuthenticationRequired ? 401 : 503); }
 }

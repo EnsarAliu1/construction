@@ -22,7 +22,7 @@ const root = await fetch(new URL("/", base), { redirect: "manual" });
 assert.equal(root.status, 307, "Root should redirect");
 assert.equal(root.headers.get("location"), "/sq", "Default locale should be Albanian");
 console.log("PASS / → /sq (307)");
-for (const language of ["sq", "en"]) {
+for (const language of ["sq"]) {
   for (const route of publicRoutes) await check(`/${language}${route}`, language);
 }
 async function checkProtectedRedirect(path) {
@@ -34,7 +34,7 @@ async function checkProtectedRedirect(path) {
   console.log(`PASS ${path} (anonymous login redirect)`);
 }
 for (const route of appRoutes) {
-  if (sessionCookie) await check(`/app${route}`, "en", true);
+  if (sessionCookie) await check(`/app${route}`, "sq", true);
   else await checkProtectedRedirect(`/app${route}`);
 }
 const loginPage = await fetch(new URL("/login", base));
@@ -45,14 +45,16 @@ assert.match(loginHtml, /autoComplete="current-password"/i);
 console.log("PASS /login (accessible login form)");
 for (const path of ["/fr", "/sq/missing", ...(sessionCookie ? ["/app/missing"] : [])]) {
   const response = await fetch(new URL(path, base), { headers: sessionCookie ? { Cookie: sessionCookie } : {} });
-  assert.equal(response.status, 404, `${path}: expected HTTP 404`);
+  assert.equal(response.status, 404, `${path}: expected HTTP 404`);const missing=await response.text();assert.match(missing,/<html[^>]*lang="sq"/);assert(missing.includes("Faqja nuk u gjet"));
   console.log(`PASS ${path} (404)`);
 }
 if (!sessionCookie) await checkProtectedRedirect("/app/missing");
-for (const language of ["sq", "en"]) {
+for (const language of ["sq"]) {
   const html = await (await fetch(new URL(`/${language}/contact`, base))).text();
   assert.match(html, /<fieldset[^>]*disabled/, "Contact form must be disabled");
   assert.match(html, /<button[^>]*disabled/, "Submission must be disabled");
 }
 console.log(`Verified ${checked} content routes, ${sessionCookie ? "authenticated" : "anonymous"} private-route behavior, login, invalid routes and disabled contact previews.`);
 console.log("HTTP checks do not verify hydration, visual layout or menu interaction.");
+
+for(const route of publicRoutes){const r=await fetch(new URL(`/en${route}`,base),{redirect:"manual"});assert.equal(r.status,308);assert.equal(new URL(r.headers.get("location"),base).pathname,`/sq${route}`);}

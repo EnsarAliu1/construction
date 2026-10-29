@@ -65,7 +65,7 @@ export async function updateClient(connection: Connection, token: string | undef
 
 export async function archiveClient(connection: Connection, token: string | undefined, id: string, version: unknown, confirmation: unknown) {
   return authorizedMutation(connection, token, async (tx, actorId) => {
-    if (confirmation !== "archive") throw new ClientValidationError({ form: "Confirm that this client should be archived." });
+    if (confirmation !== "archive") throw new ClientValidationError({ form: "Konfirmoni arkivimin e këtij klienti." });
     const before = await lockedClient(tx, id, version);
     const linked = await tx.select({ id: projects.id }).from(projects)
       .where(and(eq(projects.clientId, id), isNull(projects.deletedAt), inArray(projects.status, ["active", "suspended"]))).limit(1).for("update");

@@ -7,13 +7,13 @@ import { currentUser } from "@/server/auth/web";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: { default: "Workspace preview", template: "%s | Construction workspace" },
-  description: "Local construction management interface preview.",
+  title: { default: "Pamja e sistemit", template: "%s | Sistemi i ndërtimit" },
+  description: "Sistemi lokal për menaxhimin e ndërtimit.",
   robots: { index: false, follow: false },
 };
 
 export default async function WorkspaceLayout({ children }: { children: ReactNode }) {
   const user = await currentUser().catch(() => null);
   // Each page checks its own authorization before rendering; preserve its return URL.
-  return <html lang="en"><body>{user ? <WorkspaceShell user={user}>{children}</WorkspaceShell> : children}</body></html>;
+  return <html lang="sq"><body>{user ? <WorkspaceShell user={user}>{children}</WorkspaceShell> : children}</body></html>;
 }

@@ -12,6 +12,6 @@ export async function expensePageData<T>(path: string, work: (c: Connection, tok
   catch(error) {
     if (error instanceof AuthenticationRequired) redirect(`/login?returnTo=${encodeURIComponent(path)}`);
     if (error instanceof ExpenseError && error.status === 404) notFound();
-    throw new Error("Expense records are temporarily unavailable. Please retry.");
+    throw new Error("Shpenzimet janë përkohësisht të padisponueshme. Provoni përsëri.");
   }
 }

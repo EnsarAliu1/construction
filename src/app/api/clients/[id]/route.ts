@@ -17,7 +17,7 @@ export async function PUT(request: NextRequest, { params }: Context) {
 }
 export async function DELETE(request: NextRequest, { params }: Context) {
   return clientRequest(request, async (connection, token, body) => {
-    if (Object.keys(body).some(key => !["version", "confirmation"].includes(key))) throw new ClientValidationError({ form: "Unsupported archive fields." });
+    if (Object.keys(body).some(key => !["version", "confirmation"].includes(key))) throw new ClientValidationError({ form: "Fusha të palejuara për arkivim." });
     return { client: await archiveClient(connection, token, (await params).id, body.version, body.confirmation) };
   }, true);
 }

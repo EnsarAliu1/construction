@@ -22,7 +22,7 @@ test("strict whitelists, byte bounds, required category and optional versioned s
 test("correction and cancellation require explicit confirmation, version and cancellation reason",()=>{
   assert.equal(parseCorrection({version:1,confirmation:"correct",expense:valid()}).version,1);
   assert.throws(()=>parseCorrection({version:1,expense:valid()}),ExpenseError);
-  assert.throws(()=>parseCorrection({version:1,confirmation:"correct",expense:{...valid(),category:null,newCategoryName:"New"}}),ExpenseError);
+  assert.throws(()=>parseCorrection({version:1,confirmation:"correct",expense:{...valid(),category:null,newCategoryName:"E re"}}),ExpenseError);
   assert.throws(()=>parseCancellation({version:1,confirmation:"cancel",reason:" "}),ExpenseError);
   assert.equal(parseCancellation({version:1,confirmation:"cancel",reason:" Synthetic correction "}).reason,"Synthetic correction");
 });

@@ -10,7 +10,7 @@ import { requireSessionUser, revokeSession } from "@/server/auth/sessions";
 
 export async function logoutAction() {
   try { assertSameOrigin(await headers()); }
-  catch { return { message: "Request rejected." }; }
+  catch { return { message: "Kërkesa u refuzua." }; }
   const store = await cookies();
   const settings = sessionCookieSettings();
   const token = store.get(settings.name)?.value;
@@ -23,7 +23,7 @@ export async function logoutAction() {
     });
   } catch (error) {
     if (error instanceof AuthenticationRequired) anonymous = true;
-    else return { message: "Sign out is temporarily unavailable. Please retry." };
+    else return { message: "Dalja është përkohësisht e padisponueshme. Provoni përsëri." };
   }
   if (!anonymous) {
     const { name, ...attributes } = settings;

@@ -15,6 +15,6 @@ export async function referencePageData<T>(path: string, value: string, work: (c
   catch (error) {
     if (error instanceof AuthenticationRequired) redirect(`/login?returnTo=${encodeURIComponent(path)}`);
     if (error instanceof ReferenceError && error.status === 404) notFound();
-    throw new Error("Reference records are temporarily unavailable. Please retry.");
+    throw new Error("Të dhënat referuese janë përkohësisht të padisponueshme. Provoni përsëri.");
   }
 }

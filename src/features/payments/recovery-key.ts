@@ -7,7 +7,7 @@ export function readRecoveryKey(storage:Storage,key:string):RecoveryKey|null{
  catch{storage.removeItem(key);return null;}
 }
 export function retainRecoveryKey(storage:Storage,key:string,idempotencyKey:string){
- if(!uuid.test(idempotencyKey))throw new Error('Invalid recovery identity.');storage.setItem(key,JSON.stringify({idempotencyKey}));
+ if(!uuid.test(idempotencyKey))throw new Error("Identifikues i pavlefshëm rikuperimi.");storage.setItem(key,JSON.stringify({idempotencyKey}));
 }
 export function redactLegacyRecoveryDrafts(storage:Storage){
  const keys=Array.from({length:storage.length},(_,i)=>storage.key(i)).filter((key):key is string=>Boolean(key?.startsWith('fitimi.payment.pending.')));

@@ -12,14 +12,14 @@ export async function paymentRequest(request: NextRequest, work: (c: Connection,
     return await withAuthConnection(async c => {
       await requireSessionUser(c, token); let body = {};
       if (mutation) {
-        try { assertSameOrigin(request.headers); } catch { return authJson({ok:false,message:"Request origin rejected. Reload and try again."},403); }
-        try { body = await limitedJson(request,128*1024); } catch { throw new PaymentError("BODY","Provide valid JSON within the 128 KiB limit."); }
+        try { assertSameOrigin(request.headers); } catch { return authJson({ok:false,message:"Origjina e kërkesës u refuzua. Ringarkoni faqen dhe provoni përsëri."},403); }
+        try { body = await limitedJson(request,128*1024); } catch { throw new PaymentError("BODY","Dërgoni të dhëna JSON të vlefshme brenda kufirit 128 KiB."); }
       }
       return authJson({ok:true,...await work(c,token,body)},request.method === "POST" && request.nextUrl.pathname === "/api/payments" ? 201 : 200);
     });
   } catch(error) {
-    if (error instanceof AuthenticationRequired) return authJson({ok:false,message:"Your session has ended. Sign in again."},401);
+    if (error instanceof AuthenticationRequired) return authJson({ok:false,message:"Sesioni juaj ka përfunduar. Hyni përsëri."},401);
     if (error instanceof PaymentError) return authJson({ok:false,code:error.code,message:error.message,fields:error.fields},error.status);
-    return authJson({ok:false,message:"Payment records are temporarily unavailable. Please try again."},503);
+    return authJson({ok:false,message:"Pagesat janë përkohësisht të padisponueshme. Provoni përsëri."},503);
   }
 }

@@ -12,6 +12,6 @@ export async function paymentPageData<T>(path: string, work: (c: Connection, tok
   catch(error) {
     if (error instanceof AuthenticationRequired) redirect(`/login?returnTo=${encodeURIComponent(path)}`);
     if (error instanceof PaymentError && error.status === 404) notFound();
-    throw new Error("Payment records are temporarily unavailable. Please retry.");
+    throw new Error("Pagesat janë përkohësisht të padisponueshme. Provoni përsëri.");
   }
 }

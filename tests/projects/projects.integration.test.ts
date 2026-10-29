@@ -24,7 +24,7 @@ test("real MySQL project/contract aggregates, allocation capacity, concurrency a
       assert.ok(detail.history.every(event=>event.actorName==="Synthetic Clients User"));
     });
     await t.test("archived, invalid and stale client references and unequal initial totals write nothing", async () => {
-      const client = await createClient(c,f.token,f.input({name:`${f.prefix} Archived`})); await archiveClient(c,f.token,client.id,1,"archive");
+      const client = await createClient(c,f.token,f.input({name:`${f.prefix} Arkivuar`})); await archiveClient(c,f.token,client.id,1,"archive");
       for (const extra of [{clientId:client.id,clientVersion:2},{clientId:randomUUID()},{clientVersion:99}]) await assert.rejects(createProject(c,f.token,f.initial(extra)));
       const [before]=await c.query<RowDataPacket[]>("SELECT COUNT(*) AS total FROM projects"); const payload=f.initial(); payload.contract.totalValue="101.00";
       await assert.rejects(createProject(c,f.token,payload),fails("TOTAL")); const [after]=await c.query<RowDataPacket[]>("SELECT COUNT(*) AS total FROM projects"); assert.equal(after[0].total,before[0].total);
@@ -32,7 +32,7 @@ test("real MySQL project/contract aggregates, allocation capacity, concurrency a
     });
     await t.test("project edits/status/date validation and stale versions are enforced", async () => {
       const detail=await f.fresh();
-      const updated=await updateProject(c,f.token,detail.project.id,{version:1,project:f.projectInput({status:"suspended",name:`${f.prefix} Suspended`})}); assert.equal(updated.version,2); assert.equal(updated.status,"suspended");
+      const updated=await updateProject(c,f.token,detail.project.id,{version:1,project:f.projectInput({status:"suspended",name:`${f.prefix} Pezulluar`})}); assert.equal(updated.version,2); assert.equal(updated.status,"suspended");
       await assert.rejects(updateProject(c,f.token,updated.id,{version:1,project:f.projectInput()}),fails("CONFLICT"));
       for(const extra of [{status:"other"},{startDate:"2023-02-29"},{endDate:"2025-01-01"}]) await assert.rejects(updateProject(c,f.token,updated.id,{version:2,project:f.projectInput(extra)}));
       assert.ok((await getProject(c,f.token,updated.id)).history.some(row=>row.action==="project_updated"));

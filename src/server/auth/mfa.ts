@@ -111,7 +111,7 @@ export async function startEnrollment(c: Connection, token: string | undefined):
             return denied();
         const seed = newMfaSeed(), sealed = sealMfaSeed(seed, u.id, ch.id);
         await c.execute('UPDATE auth_mfa_challenges SET secret_cipher=?,key_id=? WHERE id=?', [sealed.secretCipher, sealed.keyId, ch.id]);
-        return { ok: true, state: 'enroll', seed, uri: authenticator(seed, 'Workspace ' + String(u.id).slice(0, 8)).toString() };
+        return { ok: true, state: 'enroll', seed, uri: authenticator(seed, "Hapësira e punës " + String(u.id).slice(0, 8)).toString() };
     }, false);
 }
 export async function proveEnrollment(c: Connection, token: string | undefined, code: unknown): Promise<MfaResult> {
@@ -233,22 +233,22 @@ export async function resetMfa(c: Connection, operator: OperatorContext, email: 
     requireOperator(operator);
     const reasons = ['lost-authenticator-and-codes', 'suspected-factor-compromise', 'verified-device-replacement', 'verified-disaster-recovery'];
     if (input.identityVerified !== true || input.confirmation !== 'reset-mfa' || !reasons.includes(input.reason))
-        throw new Error('Independently verified identity, an approved non-sensitive reason and explicit reset confirmation required.');
+        throw new Error("Kërkohet identitet i verifikuar në mënyrë të pavarur, arsye e miratuar pa të dhëna të ndjeshme dhe konfirmim i qartë i rivendosjes.");
     if (input.reason === 'verified-disaster-recovery' && typeof input.newPassword !== 'string')
-        throw new Error('Disaster recovery requires a fresh password and new MFA enrollment.');
+        throw new Error("Rikuperimi pas incidentit kërkon fjalëkalim të ri dhe regjistrim të ri MFA.");
     if (!(await admitMfa(c, tokenDigest(normalizeEmail(email)), 'operator-reset')).allowed)
-        throw new Error('Operator recovery temporarily limited.');
+        throw new Error("Rikuperimi nga operatori është përkohësisht i kufizuar.");
     const replacementHash = typeof input.newPassword === 'string' ? await hashPassword(input.newPassword) : null;
     return transaction(c, async () => {
         const [rows] = await c.execute<RowDataPacket[]>('SELECT id,password_hash FROM users WHERE email=? FOR UPDATE', [normalizeEmail(email)]);
         if (!rows.length)
-            throw new Error('Account unavailable.');
+            throw new Error("Llogaria është e padisponueshme.");
         const user = String(rows[0].id);
         const [factors] = await c.execute<RowDataPacket[]>('SELECT restore_hold FROM auth_mfa_factors WHERE user_id=? FOR UPDATE', [user]);
         if (factors.length && Number(factors[0].restore_hold) !== 0 && input.reason !== 'verified-disaster-recovery')
-            throw new Error('Restore hold requires verified disaster recovery.');
+            throw new Error("Bllokimi pas rikthimit kërkon rikuperim të verifikuar nga operatori.");
         if (replacementHash && await verifyPassword(input.newPassword!, rows[0].password_hash))
-            throw new Error('Use a new password after recovery.');
+            throw new Error("Përdorni fjalëkalim të ri pas rikuperimit.");
         await securityEvent(c, 'mfa_operator_reset_initiated', user, null, { description: input.reason.trim(), status: 'identity_verified' });
         if (replacementHash) {
             await c.execute('UPDATE users SET password_hash=? WHERE id=?', [replacementHash, user]);

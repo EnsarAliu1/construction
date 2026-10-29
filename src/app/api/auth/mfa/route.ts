@@ -11,14 +11,14 @@ export async function GET(r: NextRequest) { try {
     return authJson(result, result.ok ? 200 : 401);
 }
 catch {
-    return authJson({ ok: false, message: 'Authentication temporarily unavailable.' }, 503);
+    return authJson({ ok: false, message: "Autentikimi është përkohësisht i padisponueshëm." }, 503);
 } }
 export async function POST(r: NextRequest) {
     try {
         assertSameOrigin(r.headers);
     }
     catch {
-        return authJson({ ok: false, message: 'Request rejected.' }, 403);
+        return authJson({ ok: false, message: "Kërkesa u refuzua." }, 403);
     }
     let body: Record<string, unknown>;
     try {
@@ -27,7 +27,7 @@ export async function POST(r: NextRequest) {
             throw new Error();
     }
     catch {
-        return authJson({ ok: false, message: 'Provide a valid bounded authentication request.' }, 400);
+        return authJson({ ok: false, message: "Dërgoni kërkesë të vlefshme autentikimi brenda kufirit të lejuar." }, 400);
     }
     try {
         const result: MfaResult = await withAuthConnection(async (c) => {
@@ -46,7 +46,7 @@ export async function POST(r: NextRequest) {
             }
         });
         if (!result.ok)
-            return authJson({ ok: false, message: result.limited ? 'Too many verification attempts. Wait before restarting sign-in.' : 'Verification failed or expired. Check your code or restart sign-in.' }, result.limited ? 429 : 401);
+            return authJson({ ok: false, message: result.limited ? "Shumë përpjekje verifikimi. Prisni para se të provoni hyrjen përsëri." : "Verifikimi dështoi ose skadoi. Kontrolloni kodin ose nisni hyrjen përsëri." }, result.limited ? 429 : 401);
         const { token, ...safe } = result;
         let qr: string | undefined;
         if (result.uri) {
@@ -67,7 +67,7 @@ export async function POST(r: NextRequest) {
     }
     catch (error) {
         if (error instanceof AuthenticationRequired)
-            return authJson({ ok: false, message: 'Sign in fully before changing security settings.' }, 401);
-        return authJson({ ok: false, message: 'Authentication temporarily unavailable. Check this step before retrying; restart sign-in or contact your operator.' }, 503);
+            return authJson({ ok: false, message: "Përfundoni hyrjen para se të ndryshoni cilësimet e sigurisë." }, 401);
+        return authJson({ ok: false, message: "Autentikimi është përkohësisht i padisponueshëm. Kontrolloni hapin aktual para se të provoni përsëri; nisni hyrjen nga fillimi ose kontaktoni operatorin." }, 503);
     }
 }

@@ -33,18 +33,18 @@ async function lockClients(tx: Tx, ids: string[]) {
 }
 function activeClient(rows: Awaited<ReturnType<typeof lockClients>>, id: string, version: number) {
   const client = rows.find(row => row.id === id);
-  if (!client) throw new ProjectError("CLIENT", "Select an existing active client.");
-  if (client.deletedAt) throw new ProjectError("ARCHIVED_CLIENT", "This client is archived. Select an active client.", 409);
+  if (!client) throw new ProjectError("CLIENT", "Zgjidhni klient aktiv ekzistues.");
+  if (client.deletedAt) throw new ProjectError("ARCHIVED_CLIENT", "Ky klient është arkivuar. Zgjidhni klient aktiv.", 409);
   if (client.version !== version) throw conflict();
 }
 async function lockProject(tx: Tx, id: string, version: number, targetClientId?: string) {
   // Preflight discovers lock targets only. Recheck under locks; never acquire a
   // missing parent after locking its child. Matches WP-04 client -> project order.
   const [hint] = await tx.select({ clientId: projects.clientId }).from(projects).where(eq(projects.id, id)).limit(1);
-  if (!hint) throw new ProjectError("NOT_FOUND", "Project not found.", 404);
+  if (!hint) throw new ProjectError("NOT_FOUND", "Projekti nuk u gjet.", 404);
   const parents = await lockClients(tx, [hint.clientId, ...(targetClientId ? [targetClientId] : [])]);
   const [project] = await tx.select().from(projects).where(eq(projects.id, id)).for("update");
-  if (!project || project.deletedAt) throw new ProjectError("NOT_FOUND", "Project not found.", 404);
+  if (!project || project.deletedAt) throw new ProjectError("NOT_FOUND", "Projekti nuk u gjet.", 404);
   if (project.clientId !== hint.clientId || project.version !== version) throw conflict();
   return { project, parents };
 }
@@ -58,12 +58,12 @@ async function allocations(db: Pick<Db, "select">, phaseIds: string[], projectId
     invalid: sql<number>`SUM(CASE WHEN ${payments.projectId} <> ${projectId} THEN 1 ELSE 0 END)`,
   }).from(paymentAllocations).innerJoin(payments, eq(payments.id, paymentAllocations.paymentId))
     .where(and(inArray(paymentAllocations.phaseId, phaseIds), isNull(paymentAllocations.deletedAt))).groupBy(paymentAllocations.phaseId).limit(MAX_PHASES);
-  if (rows.some(row => Number(row.invalid) > 0)) throw new ProjectError("ALLOCATION_RELATIONSHIP", "Stored allocations have an invalid project relationship and require correction.", 409);
+  if (rows.some(row => Number(row.invalid) > 0)) throw new ProjectError("ALLOCATION_RELATIONSHIP", "Ndarjet e ruajtura kanë lidhje të pavlefshme me projektin dhe kërkojnë korrigjim.", 409);
   return new Map(rows.map(row => [row.phaseId, BigInt(String(row.paid).replace(".", ""))]));
 }
 
 async function insertContract(tx: Tx, projectId: string, plan: ContractPlan, actor: string, operation: string) {
-  if (plan.phases.some(phase => phase.id) || plan.deletedPhases.length || plan.contractId || plan.version !== null) throw new ProjectError("PHASE_ID", "A new contract accepts only new phases and no existing identities.");
+  if (plan.phases.some(phase => phase.id) || plan.deletedPhases.length || plan.contractId || plan.version !== null) throw new ProjectError("PHASE_ID", "Kontrata e re pranon vetëm faza të reja, pa identifikues ekzistues.");
   const id = randomUUID();
   await tx.insert(contracts).values({ id, projectId, totalValue: plan.totalValue, status: "active", activatedAt: sql`UTC_TIMESTAMP(3)`, createdBy: actor, updatedBy: actor });
   const [contract] = await tx.select().from(contracts).where(eq(contracts.id, id));
@@ -112,17 +112,17 @@ export async function saveContract(connection: Connection, token: string | undef
     const [before] = await tx.select().from(contracts).where(eq(contracts.projectId, projectId)).for("update");
     if (!before) return insertContract(tx, projectId, plan, actor, operation);
     if (plan.contractId === null) throw conflict();
-    if (before.id !== plan.contractId) throw new ProjectError("CONTRACT", "The contract does not belong to this project.");
-    if (before.status === "cancelled") throw new ProjectError("CANCELLED", "Cancelled contracts are retained read-only; restoration is outside this workflow.", 409);
+    if (before.id !== plan.contractId) throw new ProjectError("CONTRACT", "Kontrata nuk i përket këtij projekti.");
+    if (before.status === "cancelled") throw new ProjectError("CANCELLED", "Kontratat e anuluara ruhen vetëm për shikim; rikthimi nuk përfshihet në këtë proces.", 409);
     if (before.version !== plan.version) throw conflict();
     const current = await tx.select().from(contractPhases).where(and(eq(contractPhases.contractId, before.id), isNull(contractPhases.deletedAt))).orderBy(asc(contractPhases.id)).limit(MAX_PHASES + 1).for("update");
-    if (current.length > MAX_PHASES) throw new ProjectError("PHASE_LIMIT", "This historical contract exceeds the editor's supported phase limit.", 409);
+    if (current.length > MAX_PHASES) throw new ProjectError("PHASE_LIMIT", "Kontrata historike tejkalon kufirin e fazave të mbështetura nga formulari.", 409);
     const submitted = [...plan.phases.filter(phase => phase.id), ...plan.deletedPhases];
-    if (submitted.length !== current.length || current.some(row => !submitted.some(phase => phase.id === row.id))) throw new ProjectError("PHASE_SET", "Include every active phase exactly once, either retained or explicitly removed. Foreign, unknown or archived phases cannot be changed.");
+    if (submitted.length !== current.length || current.some(row => !submitted.some(phase => phase.id === row.id))) throw new ProjectError("PHASE_SET", "Përfshini çdo fazë aktive saktësisht një herë, të ruajtur ose të shënuar për heqje. Fazat e huaja, të panjohura ose të arkivuara nuk mund të ndryshohen.");
     for (const phase of submitted) if (current.find(row => row.id === phase.id)?.version !== phase.version) throw conflict();
     const paid = await allocations(tx, current.map(row => row.id), projectId);
-    for (const phase of plan.phases) if (phase.id && cents(phase.value) < (paid.get(phase.id) ?? BigInt(0))) throw new ProjectError("CAPACITY", `Phase '${phase.name}' cannot be reduced below its active paid amount of ${decimal(paid.get(phase.id)!)} EUR.`, 409);
-    for (const phase of plan.deletedPhases) if ((paid.get(phase.id) ?? BigInt(0)) > BigInt(0)) throw new ProjectError("PAID_PHASE", "A phase with active allocations cannot be archived. Cancelled-payment history alone does not block removal.", 409);
+    for (const phase of plan.phases) if (phase.id && cents(phase.value) < (paid.get(phase.id) ?? BigInt(0))) throw new ProjectError("CAPACITY", `Faza '${phase.name}' nuk mund të ulet nën shumën e pagesave aktive prej ${decimal(paid.get(phase.id)!)} EUR.`, 409);
+    for (const phase of plan.deletedPhases) if ((paid.get(phase.id) ?? BigInt(0)) > BigInt(0)) throw new ProjectError("PAID_PHASE", "Faza me ndarje aktive nuk mund të arkivohet. Vetëm historiku i pagesave të anuluara nuk pengon heqjen.", 409);
     for (const phase of plan.phases) {
       const old = current.find(row => row.id === phase.id);
       if (old) {
@@ -151,7 +151,7 @@ export async function saveContract(connection: Connection, token: string | undef
 }
 export async function chooseClients(connection: Connection, token: string | undefined, q: unknown = ""): Promise<ClientChoice[]> {
   await requireSessionUser(connection, token);
-  if (typeof q !== "string" || q.length > 100) throw new ProjectError("SEARCH", "Client search must be at most 100 characters.");
+  if (typeof q !== "string" || q.length > 100) throw new ProjectError("SEARCH", "Kërkimi i klientëve mund të përmbajë deri në 100 karaktere.");
   return drizzle(connection).select({ id: clients.id, name: clients.name, version: clients.version }).from(clients).where(and(isNull(clients.deletedAt), q.trim() ? sql`${clients.name} LIKE ${escapedSearch(q.trim())} ESCAPE '='` : undefined)).orderBy(asc(clients.name), asc(clients.id)).limit(20);
 }
 export async function listProjects(connection: Connection, token: string | undefined, value: Record<string, unknown> = {}) {
@@ -167,10 +167,10 @@ export async function getProject(connection: Connection, token: string | undefin
   await requireSessionUser(connection, token); uuid(id);
   return drizzle(connection).transaction(async tx => {
     const [joined] = await tx.select({ project: projects, client: { id: clients.id, name: clients.name, version: clients.version, deletedAt: clients.deletedAt } }).from(projects).innerJoin(clients, eq(clients.id, projects.clientId)).where(and(eq(projects.id, id), isNull(projects.deletedAt))).limit(1);
-    if (!joined) throw new ProjectError("NOT_FOUND", "Project not found.", 404);
+    if (!joined) throw new ProjectError("NOT_FOUND", "Projekti nuk u gjet.", 404);
     const [contract] = await tx.select().from(contracts).where(eq(contracts.projectId, id)).limit(1);
     const phaseRows = contract ? await tx.select().from(contractPhases).where(and(eq(contractPhases.contractId, contract.id), isNull(contractPhases.deletedAt))).orderBy(asc(contractPhases.sortOrder), asc(contractPhases.id)).limit(MAX_PHASES + 1) : [];
-    if (phaseRows.length > MAX_PHASES) throw new ProjectError("PHASE_LIMIT", "This historical contract exceeds the supported phase limit.", 409);
+    if (phaseRows.length > MAX_PHASES) throw new ProjectError("PHASE_LIMIT", "Kontrata historike tejkalon kufirin e fazave të mbështetura.", 409);
     const paid = await allocations(tx, phaseRows.map(row => row.id), id);
     const phases = phaseRows.map(phase => ({ ...phase, paid: decimal(paid.get(phase.id) ?? BigInt(0)), remaining: decimal(cents(phase.value) - (paid.get(phase.id) ?? BigInt(0))) }));
     const phaseIds = tx.select({ id: contractPhases.id }).from(contractPhases).where(eq(contractPhases.contractId, contract?.id ?? ""));

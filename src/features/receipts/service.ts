@@ -14,15 +14,15 @@ import {PrivateReceiptStore,type ReceiptFault} from "./storage";
 import {securitySignal} from "@/server/operations/events";
 import {renderReceiptPdf} from "./pdf";
 
-export const documentUnavailable=()=>new ReferenceError("DOCUMENT_UNAVAILABLE","The receipt document is unavailable or failed integrity checks. No new payment should be submitted; check the original operation and contact your operator.",503);
+export const documentUnavailable=()=>new ReferenceError("DOCUMENT_UNAVAILABLE","Dokumenti i dëftesës është i padisponueshëm ose nuk kaloi kontrollin e integritetit. Mos dërgoni pagesë të re; kontrolloni veprimin fillestar dhe kontaktoni operatorin.",503);
 export function formatReceiptNumber(sequence:bigint,prefix=process.env.RECEIPT_NUMBER_PREFIX??"DEV"){
-  if(!/^[A-Z0-9]{1,16}$/.test(prefix)||sequence<BigInt(1)||sequence>=BigInt("18446744073709551615"))throw new Error("Invalid development receipt numbering configuration.");
+  if(!/^[A-Z0-9]{1,16}$/.test(prefix)||sequence<BigInt(1)||sequence>=BigInt("18446744073709551615"))throw new Error("Konfigurimi i numërimit të dëftesave për zhvillim është i pavlefshëm.");
   return `${prefix}-${sequence.toString().padStart(8,"0")}`;
 }
 async function storeFor(c:Connection,fault:ReceiptFault=async()=>{}){const [rows]=await c.query<RowDataPacket[]>("SELECT CONCAT(@@server_uuid,'/',DATABASE()) AS identity");return new PrivateReceiptStore(String(rows[0].identity),fault);}
 async function withStore<R>(c:Connection,fault:ReceiptFault,work:(store:PrivateReceiptStore)=>Promise<R>){
   const store=await storeFor(c,fault),lock=store.lockName();
-  const [acquired]=await c.execute<RowDataPacket[]>("SELECT GET_LOCK(?,10) AS acquired",[lock]);if(Number(acquired[0].acquired)!==1)throw new Error("Receipt storage is busy. Retry the same operation key.");
+  const [acquired]=await c.execute<RowDataPacket[]>("SELECT GET_LOCK(?,10) AS acquired",[lock]);if(Number(acquired[0].acquired)!==1)throw new Error("Ruajtja e dëftesave është e zënë. Provoni përsëri me të njëjtin çelës veprimi.");
   try{await store.initialize();return await work(store);}finally{await c.execute("SELECT RELEASE_LOCK(?)",[lock]).catch(()=>{});}
 }
 async function receiptAudit(tx:PaymentTx,context:ReceiptContext,before:typeof paymentReceipts.$inferSelect|null,after:typeof paymentReceipts.$inferSelect,snapshot?:HistorySnapshot){
@@ -32,14 +32,14 @@ async function receiptAudit(tx:PaymentTx,context:ReceiptContext,before:typeof pa
 }
 function boundary(store:PrivateReceiptStore,fault:ReceiptFault):ReceiptBoundary{return {mode:"wp09",async apply(tx,context){
   const [before]=await tx.select().from(paymentReceipts).where(eq(paymentReceipts.paymentId,context.after.id)).for("update");
-  if(context.action!=="confirm"&&!before)throw new ReferenceError("RECEIPT_LEGACY","This historical payment has no receipt identity. Automatic retroactive issuance is unavailable.",409);
-  if(context.action==="confirm"&&before)throw new ReferenceError("RECEIPT_EXISTS","A receipt already exists for this payment.",409);
+  if(context.action!=="confirm"&&!before)throw new ReferenceError("RECEIPT_LEGACY","Kjo pagesë historike nuk ka identifikues dëftese. Lëshimi prapaveprues automatik nuk është i disponueshëm.",409);
+  if(context.action==="confirm"&&before)throw new ReferenceError("RECEIPT_EXISTS","Për këtë pagesë ekziston tashmë një dëftesë.",409);
   let id=before?.id,number=before?.receiptNumber,documentVersion=1;
   if(before){
-    if(before.status!=="issued")throw new ReferenceError("RECEIPT_STATE","Only issued receipts can be corrected or cancelled.",409);
+    if(before.status!=="issued")throw new ReferenceError("RECEIPT_STATE","Vetëm dëftesat e lëshuara mund të korrigjohen ose anulohen.",409);
     const [latest]=await tx.select().from(receiptVersions).where(eq(receiptVersions.receiptId,before.id)).orderBy(desc(receiptVersions.version)).limit(1);
     if(!latest)throw documentUnavailable();await store.read(latest.storageReference,latest.fileChecksum);
-    if(latest.contentSnapshot.paymentId!==context.after.id||latest.contentSnapshot.version!==context.before?.version)throw new ReferenceError("RECEIPT_CONFLICT","The current receipt does not match the payment revision.",409);
+    if(latest.contentSnapshot.paymentId!==context.after.id||latest.contentSnapshot.version!==context.before?.version)throw new ReferenceError("RECEIPT_CONFLICT","Dëftesa aktuale nuk përputhet me rishikimin e pagesës.",409);
     documentVersion=latest.version+1;
   }
   if(context.action==="cancel"){
@@ -56,10 +56,10 @@ function boundary(store:PrivateReceiptStore,fault:ReceiptFault):ReceiptBoundary{
   const [actor]=await tx.select({name:users.displayName}).from(users).where(eq(users.id,context.actorId)).limit(1);
   const active=context.allocations.filter(row=>row.deletedAt===null),phaseIds=active.map(row=>row.phaseId);
   const names=phaseIds.length?await tx.select({id:contractPhases.id,name:contractPhases.name}).from(contractPhases).where(or(...phaseIds.map(id=>eq(contractPhases.id,id)))).orderBy(asc(contractPhases.id)).limit(100):[];
-  const company=process.env.RECEIPT_COMPANY_NAME?.trim()||"Company name not configured - DEVELOPMENT ONLY";
-  if(!company||company.length>200||/[\u0000-\u001f\u007f-\u009f]/u.test(company))throw new Error("Configure a valid receipt company display name.");
+  const company=process.env.RECEIPT_COMPANY_NAME?.trim()||"Emri i kompanisë nuk është konfiguruar - VETËM PËR ZHVILLIM";
+  if(!company||company.length>200||/[\u0000-\u001f\u007f-\u009f]/u.test(company))throw new Error("Konfiguroni emër të vlefshëm të kompanisë për dëftesat.");
   const issuedAt=new Date().toISOString().replace("T"," ").slice(0,23);
-  const snapshot=safeHistorySnapshot({receiptId:id!,receiptNumber:number!,documentVersion,companyName:company,paymentId:context.after.id,paymentVersion:context.after.version,version:context.after.version,projectId:context.after.projectId,...joined,amount:context.after.amount,method:context.after.method,transactionDate:context.after.transactionDate,issuedAt,issuerName:actor.name,status:"issued",allocationsText:active.map(row=>`${names.find(phase=>phase.id===row.phaseId)?.name??"Phase"}: ${row.amount} EUR`).join("\n")});
+  const snapshot=safeHistorySnapshot({receiptId:id!,receiptNumber:number!,documentVersion,companyName:company,paymentId:context.after.id,paymentVersion:context.after.version,version:context.after.version,projectId:context.after.projectId,...joined,amount:context.after.amount,method:context.after.method,transactionDate:context.after.transactionDate,issuedAt,issuerName:actor.name,status:"issued",allocationsText:active.map(row=>`${names.find(phase=>phase.id===row.phaseId)?.name??"Faza"}: ${row.amount} EUR`).join("\n")});
   await fault("beforeRender");const bytes=await renderReceiptPdf(snapshot);await fault("afterRender");
   const stored=await store.put(bytes);await fault("beforeMetadata");
   if(before)await tx.update(paymentReceipts).set({version:before.version+1,updatedBy:context.actorId,updatedAt:sql`UTC_TIMESTAMP(3)`}).where(eq(paymentReceipts.id,id!));
@@ -87,11 +87,11 @@ export async function confirmPaymentWithReceipt(c:Connection,token:string|undefi
 export const correctPaymentWithReceipt=(c:Connection,t:string|undefined,id:string,value:unknown)=>withReceiptWorkflow(c,t,b=>correctPayment(c,t,id,value,b));
 export const cancelPaymentWithReceipt=(c:Connection,t:string|undefined,id:string,value:unknown)=>withReceiptWorkflow(c,t,b=>cancelPayment(c,t,id,value,b));
 
-function versionNumber(value:unknown){const n=typeof value==="string"&&/^\d{1,10}$/.test(value)?Number(value):value;if(typeof n!=="number"||!Number.isInteger(n)||n<1||n>4294967295)throw new ReferenceError("NOT_FOUND","Receipt version not found.",404);return n;}
+function versionNumber(value:unknown){const n=typeof value==="string"&&/^\d{1,10}$/.test(value)?Number(value):value;if(typeof n!=="number"||!Number.isInteger(n)||n<1||n>4294967295)throw new ReferenceError("NOT_FOUND","Versioni i dëftesës nuk u gjet.",404);return n;}
 export async function getReceipt(c:Connection,token:string|undefined,id:string,page=1){
-  await requireSessionUser(c,token);referenceId(id);if(!Number.isInteger(page)||page<1||page>10000)throw new ReferenceError("PAGE","Invalid version page.");
+  await requireSessionUser(c,token);referenceId(id);if(!Number.isInteger(page)||page<1||page>10000)throw new ReferenceError("PAGE","Faqe e pavlefshme e versioneve.");
   const data=await drizzle(c).transaction(async tx=>{
-    const [receipt]=await tx.select().from(paymentReceipts).where(eq(paymentReceipts.id,id)).limit(1);if(!receipt)throw new ReferenceError("NOT_FOUND","Receipt not found.",404);
+    const [receipt]=await tx.select().from(paymentReceipts).where(eq(paymentReceipts.id,id)).limit(1);if(!receipt)throw new ReferenceError("NOT_FOUND","Dëftesa nuk u gjet.",404);
     const [current]=await tx.select().from(receiptVersions).where(eq(receiptVersions.receiptId,id)).orderBy(desc(receiptVersions.version)).limit(1);
     const versions=await tx.select({id:receiptVersions.id,version:receiptVersions.version,issuedAt:receiptVersions.issuedAt,issuedBy:receiptVersions.issuedBy,fileChecksum:receiptVersions.fileChecksum,contentSnapshot:receiptVersions.contentSnapshot}).from(receiptVersions).where(eq(receiptVersions.receiptId,id)).orderBy(desc(receiptVersions.version)).limit(20).offset((page-1)*20);
     const [{total}]=await tx.select({total:count()}).from(receiptVersions).where(eq(receiptVersions.receiptId,id));
@@ -108,7 +108,7 @@ export async function getPaymentReceipt(c:Connection,token:string|undefined,paym
 export async function downloadReceipt(c:Connection,token:string|undefined,id:string,value:unknown){
   await requireSessionUser(c,token);referenceId(id);const version=versionNumber(value);
   const [row]=await drizzle(c).select({receipt:paymentReceipts,document:receiptVersions}).from(paymentReceipts).innerJoin(receiptVersions,eq(receiptVersions.receiptId,paymentReceipts.id)).where(and(eq(paymentReceipts.id,id),eq(receiptVersions.version,version))).limit(1);
-  if(!row)throw new ReferenceError("NOT_FOUND","Receipt version not found.",404);
+  if(!row)throw new ReferenceError("NOT_FOUND","Versioni i dëftesës nuk u gjet.",404);
   let bytes:Buffer;
   try{const store=await storeFor(c);await store.initialize();bytes=await store.read(row.document.storageReference,row.document.fileChecksum);}catch{securitySignal('receipt.integrity_failed',503);throw documentUnavailable();}
   // Filesystem/checksum work can outlive revocation. Recheck before releasing bytes.
@@ -120,9 +120,9 @@ export async function recoverReceiptFiles(c:Connection,operator:OperatorContext,
 }
 export function parseReceiptQuery(value:Record<string,unknown>){
   referenceObject(value,["q","status","page"]);const q=value.q===undefined?"":text(value.q,"q",100,false),status=value.status??"all";
-  if(status!=="all"&&status!=="issued"&&status!=="void"&&status!=="draft")throw new ReferenceError("STATUS","Invalid receipt status.");
-  if(value.page!==undefined&&typeof value.page!=="number"&&typeof value.page!=="string")throw new ReferenceError("PAGE","Invalid page.");
-  const page=value.page===undefined||value.page===""?1:Number(value.page);if(!Number.isInteger(page)||page<1||page>10000)throw new ReferenceError("PAGE","Invalid page.");
+  if(status!=="all"&&status!=="issued"&&status!=="void"&&status!=="draft")throw new ReferenceError("STATUS","Gjendje e pavlefshme e dëftesës.");
+  if(value.page!==undefined&&typeof value.page!=="number"&&typeof value.page!=="string")throw new ReferenceError("PAGE","Faqe e pavlefshme.");
+  const page=value.page===undefined||value.page===""?1:Number(value.page);if(!Number.isInteger(page)||page<1||page>10000)throw new ReferenceError("PAGE","Faqe e pavlefshme.");
   return {q,status:status as "all"|"issued"|"void"|"draft",page};
 }
 export async function listReceipts(c:Connection,token:string|undefined,value:Record<string,unknown>={}){

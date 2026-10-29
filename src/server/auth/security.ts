@@ -1,11 +1,11 @@
 import { createHash, randomBytes } from "node:crypto";
 
 export const SESSION_SECONDS = 8 * 60 * 60;
-export const LOGIN_FAILURE = "Unable to sign in. Check your details or try again later.";
+export const LOGIN_FAILURE = "Hyrja dështoi. Kontrolloni të dhënat ose provoni më vonë.";
 export type AuthenticatedUser = { id: string; displayName: string; email: string };
-export class AuthenticationRequired extends Error { constructor() { super("Authentication required"); } }
-export class OperatorRequired extends Error { constructor() { super("Adore operator authorization required"); } }
-export class ActiveAccountLimit extends Error { constructor() { super("Maximum five active client accounts"); } }
+export class AuthenticationRequired extends Error { constructor() { super("Kërkohet autentikim"); } }
+export class OperatorRequired extends Error { constructor() { super("Kërkohet autorizimi i operatorit Adore"); } }
+export class ActiveAccountLimit extends Error { constructor() { super("Lejohen deri në pesë llogari aktive përdoruesish"); } }
 
 export function normalizeEmail(email: string) { return email.trim().toLowerCase(); }
 export function validEmail(email: string) { return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
@@ -36,5 +36,5 @@ export function trustedOrigin() {
 
 export function assertSameOrigin(headers: Headers) {
   const origin = trustedOrigin();
-  if (headers.get("origin") !== origin.origin || headers.get("host") !== origin.host) throw new Error("Request origin rejected");
+  if (headers.get("origin") !== origin.origin || headers.get("host") !== origin.host) throw new Error("Origjina e kërkesës u refuzua");
 }

@@ -1,19 +1,19 @@
 export const sections = {
-  clients: { title: "Clients", description: "A central place for client profiles and their construction projects.", columns: ["Client", "Contact", "Projects"], empty: "No clients yet" },
-  projects: { title: "Projects", description: "Project records will bring together contracts, financial phases and payments. Project statuses: Active, Suspended and Completed.", columns: ["Project", "Client", "Status"], empty: "No projects yet" },
-  payments: { title: "Income / Payments", description: "Received payments and exact financial phase allocations in EUR. Confirmed payments issue NON-FISCAL operational receipts.", columns: ["Payment", "Project", "Date", "Amount (EUR)"], empty: "No received payments" },
-  expenses: { title: "Daljet Financiare", description: "Actual outgoing payments in EUR, company-wide or optionally linked to a project, supplier and vehicle.", columns: ["Expense", "Supplier / Recipient", "Project", "Amount (EUR)"], empty: "No outgoing payments" },
-  receipts: { title: "Receipts", description: "Numbered NON-FISCAL operational receipts, immutable PDF versions and cancellation history.", columns: ["Receipt", "Payment", "Date"], empty: "No receipts yet" },
-  reports: { title: "Reports", description: "Company-wide operational reports in PDF/XLSX, on-screen project summaries and complete business data export.", columns: ["Report", "Period", "Availability"], empty: "No matching company transactions" },
-  categories: { title: "Categories", description: "Organize outgoing payments using consistent expense categories.", columns: ["Category", "Description"], empty: "No categories yet" },
-  persons: { title: "Persons / Suppliers", description: "Manage the suppliers and payment recipients associated with expenses.", columns: ["Name", "Contact", "Type"], empty: "No suppliers or recipients yet" },
-  vehicles: { title: "Vehicles", description: "A place for company vehicle records and their related expenses.", columns: ["Vehicle", "Registration", "Notes"], empty: "No vehicles yet" },
-  accounts: { title: "User Accounts", description: "Client users share operational access. Account creation, activation and recovery are managed by Adore through the authorized operator workflow.", columns: ["Account access", "Administration"], empty: "Contact your authorized Adore operator for account changes" },
+  clients: { title: "Klientët", description: "Vend i përbashkët për të dhënat e klientëve dhe projektet e tyre të ndërtimit.", columns: ["Klienti", "Kontakti", "Projektet"], empty: "Ende nuk ka klientë" },
+  projects: { title: "Projektet", description: "Projektet përfshijnë kontratat, fazat financiare dhe pagesat. Gjendjet e projektit: Aktiv, Pezulluar dhe Përfunduar.", columns: ["Projekti", "Klienti", "Gjendja"], empty: "Ende nuk ka projekte" },
+  payments: { title: "Të hyrat / Pagesat", description: "Pagesat e pranuara dhe ndarja e saktë në faza financiare në EUR. Pagesat e konfirmuara lëshojnë dëftesa operative JO-FISKALE.", columns: ["Pagesa", "Projekti", "Data", "Shuma (EUR)"], empty: "Nuk ka pagesa të pranuara" },
+  expenses: { title: "Daljet Financiare", description: "Pagesat dalëse reale në EUR, për kompaninë ose të lidhura me projekt, furnitor dhe automjet.", columns: ["Shpenzimi", "Furnitori / Përfituesi", "Projekti", "Shuma (EUR)"], empty: "Nuk ka pagesa dalëse" },
+  receipts: { title: "Dëftesat", description: "Dëftesa operative JO-FISKALE me numër, versione PDF të pandryshueshme dhe historik anulimesh.", columns: ["Receipt", "Pagesa", "Data"], empty: "Ende nuk ka dëftesa" },
+  reports: { title: "Raportet", description: "Raporte operative të kompanisë në PDF/XLSX, përmbledhje të projekteve në ekran dhe eksport i plotë i të dhënave të biznesit.", columns: ["Raporti", "Periudha", "Disponueshmëria"], empty: "Nuk u gjetën transaksione të kompanisë sipas filtrave" },
+  categories: { title: "Kategoritë", description: "Organizoni pagesat dalëse me kategori të qëndrueshme shpenzimesh.", columns: ["Kategoria", "Përshkrimi"], empty: "Ende nuk ka kategori" },
+  persons: { title: "Personat / Furnitorët", description: "Menaxhoni furnitorët dhe përfituesit e pagesave të lidhur me shpenzimet.", columns: ["Emri", "Kontakti", "Lloji"], empty: "Ende nuk ka furnitorë ose përfitues" },
+  vehicles: { title: "Automjetet", description: "Të dhënat e automjeteve të kompanisë dhe shpenzimet e lidhura me to.", columns: ["Automjeti", "Regjistrimi", "Shënimet"], empty: "Ende nuk ka automjete" },
+  accounts: { title: "Llogaritë e përdoruesve", description: "Përdoruesit kanë qasje operative të barabartë. Krijimi, aktivizimi dhe rikuperimi i llogarive menaxhohen nga Adore përmes operatorit të autorizuar.", columns: ["Qasja në llogari", "Administrimi"], empty: "Kontaktoni operatorin e autorizuar Adore për ndryshimet e llogarive" },
 } as const;
 
 export type SectionKey = keyof typeof sections;
 export function isSection(value: string): value is SectionKey { return Object.hasOwn(sections, value); }
 export const workspaceNavigation = [
-  { href: "/app", label: "Dashboard" },
+  { href: "/app", label: "Përmbledhja" },
   ...Object.entries(sections).map(([key, value]) => ({ href: `/app/${key}`, label: value.title })),
 ];

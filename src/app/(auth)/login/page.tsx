@@ -5,7 +5,7 @@ import { currentUser } from "@/server/auth/web";
 import { safeReturnPath } from "@/server/auth/security";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Sign in | Construction workspace", robots: { index: false, follow: false } };
+export const metadata = { title: "Hyrja | Sistemi i ndërtimit", robots: { index: false, follow: false } };
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ returnTo?: string; unavailable?: string }> }) {
   const params = await searchParams;
@@ -15,9 +15,9 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   try { signedIn = Boolean(await currentUser()); } catch { unavailable = true; }
   if (signedIn) redirect(returnTo);
   return <main className="login-layout"><section className="login-card card" aria-labelledby="login-title">
-    <Link className="wordmark" href="/sq">Construction<span>MANAGEMENT WORKSPACE</span></Link>
-    <p className="eyebrow">Your workspace</p><h1 id="login-title">Welcome back.</h1><p className="muted login-description">Sign in to access your construction workspace.</p>
+    <Link className="wordmark" href="/sq">Ndërtim<span>SISTEMI I MENAXHIMIT</span></Link>
+    <p className="eyebrow">Hapësira juaj e punës</p><h1 id="login-title">Mirë se vini përsëri.</h1><p className="muted login-description">Hyni për të përdorur sistemin e menaxhimit të ndërtimit.</p>
     <LoginForm returnTo={returnTo} unavailable={unavailable} />
-    <Link href="/sq" className="text-link">← Public website</Link>
+    <Link href="/sq" className="text-link">← Faqja publike</Link>
   </section></main>;
 }

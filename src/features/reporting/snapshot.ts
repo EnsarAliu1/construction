@@ -28,9 +28,9 @@ export async function materialize(c:Connection,token:string|undefined,full=false
    let cursor:string|undefined;
    while(data[name].length<Number(n)){
     const batch=await tx.select(selected).from(table).where(and(where,cursor?gt(columns.id,cursor):undefined)).orderBy(asc(columns.id)).limit(500) as DataRow[];
-    if(!batch.length)throw new Error("Snapshot completeness failure.");bytes+=Buffer.byteLength(JSON.stringify(batch));if(bytes>16*1024*1024||Date.now()-start>15000)throw limitError();data[name].push(...batch);cursor=String(batch.at(-1)!.id);
+    if(!batch.length)throw new Error("Kontrolli i plotësisë së gjendjes së ruajtur dështoi.");bytes+=Buffer.byteLength(JSON.stringify(batch));if(bytes>16*1024*1024||Date.now()-start>15000)throw limitError();data[name].push(...batch);cursor=String(batch.at(-1)!.id);
    }
-   if(data[name].length!==counts[name])throw new Error("Snapshot count mismatch.");await observe(name);
+   if(data[name].length!==counts[name])throw new Error("Numri i të dhënave nuk përputhet me gjendjen e ruajtur.");await observe(name);
   }
   return {data,counts,generatedAt:new Date().toISOString()};
  },{isolationLevel:"repeatable read",accessMode:"read only"});

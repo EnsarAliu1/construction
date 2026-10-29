@@ -3,8 +3,8 @@ import { PageHeading } from "@/components/ui";
 import { ClientForm } from "@/features/clients/client-form";
 import { requirePageUser } from "@/server/auth/web";
 
-export const metadata = { title: "New client" };
+export const metadata = { title: "Klient i ri" };
 export default async function NewClientPage() {
   await requirePageUser("/app/clients/new");
-  return <><Link href="/app/clients" className="text-link client-back">← Clients</Link><PageHeading eyebrow="Clients" title="New client" description="Create an individual or business client. Contact and address details can be added later." /><ClientForm /></>;
+  return <><Link href="/app/clients" className="text-link client-back">← Klientët</Link><PageHeading eyebrow="Klientët" title="Klient i ri" description="Krijoni klient individual ose biznes. Kontakti dhe adresa mund të shtohen më vonë." /><ClientForm /></>;
 }

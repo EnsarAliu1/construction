@@ -13,6 +13,6 @@ export async function projectPageData<T>(path: string, work: (connection: Connec
   catch (error) {
     if (error instanceof AuthenticationRequired) redirect(`/login?returnTo=${encodeURIComponent(path)}`);
     if (error instanceof ProjectError && ["ID", "NOT_FOUND"].includes(error.code)) notFound();
-    throw new Error("Project records are temporarily unavailable. Please retry.");
+    throw new Error("Projektet janë përkohësisht të padisponueshme. Provoni përsëri.");
   }
 }

@@ -7,7 +7,7 @@ import { revokeSession } from "@/server/auth/sessions";
 
 export const runtime = "nodejs";
 export async function POST(request: NextRequest) {
-  try { assertSameOrigin(request.headers); } catch { return authJson({ ok: false, message: "Request rejected." }, 403); }
+  try { assertSameOrigin(request.headers); } catch { return authJson({ ok: false, message: "Kërkesa u refuzua." }, 403); }
   const token = request.cookies.get(sessionCookieSettings().name)?.value;
   try {
     if (validSessionToken(token)) await withAuthConnection(connection => revokeSession(connection, token));
@@ -16,5 +16,5 @@ export async function POST(request: NextRequest) {
     clearSessionCookie(response);
     clearChallengeCookie(response);
     return response;
-  } catch { return authJson({ ok: false, message: "Sign out is temporarily unavailable. Please retry." }, 503); }
+  } catch { return authJson({ ok: false, message: "Dalja është përkohësisht e padisponueshme. Provoni përsëri." }, 503); }
 }
