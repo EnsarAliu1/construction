@@ -12,7 +12,7 @@ function Crane(){
    <path fill="currentColor" fillOpacity=".38" d="M20 160h54v44H20z" stroke="none"/>
    <path className="crane-rope" d="M416 202v264"/>
    <g className="crane-hook"><path d="m416 466-39 29m39-29 40 29"/><path d="M376 495h80v58h-80z" fill="currentColor" fillOpacity=".38"/><path d="M402 495v58m28-58v58M376 516h80" opacity=".45"/></g>
-  </g><path fill="#c57649" d="M402 158h28v9h-28z"/>
+  </g><path fill="var(--brand-turquoise)" d="M402 158h28v9h-28z"/>
  </svg>;
 }
 

@@ -8,7 +8,7 @@ const exampleContact={street:'Rruga Shembull 12',city:'10000 Qyteti, Shteti',ema
 
 export function PublicFooter({items}:{items:NavigationItem[]}){
  const contacts=publishedContacts(),addresses=contacts.filter(entry=>entry.kind==='address'),channels=contacts.filter(entry=>entry.kind!=='address');
- return <footer className="site-footer"><AboutMotion><div className="showcase-container">
+ return <footer className="site-footer"><div className="footer-bricks footer-bricks-left" aria-hidden="true"><i/><i/><i/></div><div className="footer-bricks footer-bricks-right" aria-hidden="true"><i/><i/><i/></div><AboutMotion><div className="showcase-container">
   <div className="site-footer-brand" data-about-reveal aria-hidden="true"><svg viewBox="0 0 1650 210" focusable="false"><text x="0" y="190" fontFamily="Arial, Helvetica, sans-serif" fontWeight="750" fontSize="240" letterSpacing="-14" textLength="1650" lengthAdjust="spacingAndGlyphs">FITIMI</text></svg></div>
   <div className="site-footer-columns">
    <div className="site-footer-column" data-about-reveal><h2>Adresa</h2>{addresses.length?addresses.map(entry=><address key={entry.value}>{entry.value}</address>):<><address>{exampleContact.street}<br/>{exampleContact.city}</address><p className="site-footer-pending">Adresë ilustruese</p></>}</div>
