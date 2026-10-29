@@ -10,7 +10,8 @@ function Crane(){
    {Array.from({length:14},(_,i)=><path key={i} d={`m${12+i*32} 157 32-20`}/>)}
    <path d="M416 161v20"/>
    <path fill="currentColor" fillOpacity=".38" d="M20 160h54v44H20z" stroke="none"/>
-   <g className="crane-hook"><path d="M416 202v264m0 0-39 29m39-29 40 29"/><path d="M376 495h80v58h-80z" fill="currentColor" fillOpacity=".38"/><path d="M402 495v58m28-58v58M376 516h80" opacity=".45"/></g>
+   <path className="crane-rope" d="M416 202v264"/>
+   <g className="crane-hook"><path d="m416 466-39 29m39-29 40 29"/><path d="M376 495h80v58h-80z" fill="currentColor" fillOpacity=".38"/><path d="M402 495v58m28-58v58M376 516h80" opacity=".45"/></g>
   </g><path fill="#c57649" d="M402 158h28v9h-28z"/>
  </svg>;
 }

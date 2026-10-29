@@ -23,7 +23,7 @@
 /* Owner's video reference: transparent navigation, architectural photograph and crane. */
 .public-layout{position:relative;}
 .public-layout .site-logo{display:block;flex-shrink:0;width:185px;line-height:0;}
-.site-logo img{width:100%;height:auto;filter:url(#site-logo-brand);}
+.site-logo img{width:100%;height:auto;}
 .site-logo-filters{position:absolute;pointer-events:none;}
 .public-layout .public-header-inner{width:87%;max-width:1680px;min-height:108px;}
 .public-layout .header-quote{display:inline-flex;justify-content:center;align-items:center;padding:12px 24px;border:1px solid currentColor;min-height:46px;text-transform:uppercase;letter-spacing:.07em;font-size:.75rem;font-weight:600;text-decoration:none;white-space:nowrap;transition:background .2s,color .2s;}
@@ -51,10 +51,26 @@
 .hero-quote-link{border:1px solid #ffffff70;color:#f5f2e9;}
 .hero-quote-link:hover{background:#f5f2e9;color:#1d2224;}
 .hero-crane{position:absolute;z-index:-1;width:26vw;max-width:520px;min-width:310px;height:auto;right:3.7%;bottom:0;color:#f5f2e9;opacity:.7;pointer-events:none;}
-.crane-hook{animation:crane-lift 12s ease-in-out infinite;}
-@keyframes crane-lift{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+.crane-hook{animation:crane-lift 8s ease-in-out infinite;}
+.crane-rope{transform-origin:416px 202px;animation:crane-cable 8s ease-in-out infinite;}
+@keyframes crane-lift{0%,100%{transform:translateY(0);}50%{transform:translateY(-40px);}}
+@keyframes crane-cable{0%,100%{transform:scaleY(1);}50%{transform:scaleY(.84848485);}}
 @media(max-width:1100px){.hero-reference-bottom{align-items:flex-start;flex-direction:column;gap:28px;}.hero-reference-content{padding-bottom:80px;}.hero-crane{right:2%;opacity:.5;}.public-layout:has(.site-reference-hero) .site-mobile-menu summary{border-color:#ffffff70;}.public-layout:has(.site-reference-hero) .site-mobile-menu nav .nav-item{color:var(--site-dark);}.public-layout:has(.site-reference-hero) .site-mobile-menu nav .nav-item:hover{background:#17333b0c;}}
 @media(max-width:767px){.public-layout .site-logo{width:145px;}.public-layout .header-quote{padding:9px 12px;font-size:.6rem;min-height:42px;}.site-reference-hero{min-height:100svh;}.hero-reference-content{width:calc(100% - 40px);padding-top:clamp(190px,28svh,260px);padding-bottom:64px;}.public-layout .site-reference-hero h1{font-size:clamp(43px,10.1vw,78px);letter-spacing:-.055em;line-height:1.08;}.public-layout .hero-reference-eyebrow{font-size:.6rem;letter-spacing:.14em;gap:10px;margin-bottom:24px;}.hero-reference-eyebrow>span{width:28px;}.hero-reference-bottom{margin-top:36px;gap:30px;}.public-layout .hero-reference-tagline{font-size:24px;max-width:23ch;}.hero-reference-actions{gap:10px;flex-wrap:wrap;}.hero-reference-actions a{padding:16px 18px;min-height:55px;font-size:.8rem;gap:16px;}.hero-crane{width:60vw;min-width:240px;right:-5%;bottom:-18%;opacity:.32;}.site-reference-hero .hero-photograph{object-position:62% center;}.hero-shade{background:linear-gradient(0deg,#101214e8,#20242b80 70%,#1c212780);}}
 
 @media(max-width:767px){.public-layout .public-header-inner{width:calc(100% - 40px);}}
 @media(max-width:400px){.public-layout .header-quote{display:none;}.hero-reference-actions a{padding:16px 14px;font-size:.75rem;gap:12px;}}
+
+/* Staggered entrance follows the owner's video; layout and no-JS content stay stable. */
+.public-layout:has(.site-reference-hero) .public-header-inner{animation:hero-arrive .85s cubic-bezier(.16,1,.3,1) .05s backwards;}
+.site-reference-hero .hero-photograph{animation:hero-settle 2.4s cubic-bezier(.16,1,.3,1) backwards;}
+.hero-reference-eyebrow{animation:hero-arrive .9s cubic-bezier(.16,1,.3,1) .18s backwards;}
+.site-reference-hero h1>span{animation:hero-arrive 1.1s cubic-bezier(.16,1,.3,1) .35s backwards;}
+.site-reference-hero h1>span+span{animation-delay:.52s;}
+.hero-reference-tagline{animation:hero-arrive 1s cubic-bezier(.16,1,.3,1) .82s backwards;}
+.hero-reference-actions{animation:hero-arrive 1s cubic-bezier(.16,1,.3,1) 1s backwards;}
+.hero-reference-actions a>span{transition:transform .25s ease;}
+.hero-project-link:hover>span{transform:translateX(4px);}
+.public-layout:has(.site-reference-hero) .public-header:focus-within .public-header-inner,.hero-reference-actions:focus-within{animation:none;}
+@keyframes hero-arrive{from{opacity:0;transform:translate3d(0,28px,0);}to{opacity:1;transform:translate3d(0,0,0);}}
+@keyframes hero-settle{from{transform:scale(1.045);}to{transform:scale(1);}}

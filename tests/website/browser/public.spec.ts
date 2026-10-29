@@ -3,10 +3,36 @@ import AxeBuilder from "@axe-core/playwright";
 import {mkdir} from "node:fs/promises";
 import {dictionaries,locales,publicPages,publicPath} from "../../../src/i18n/dictionaries";
 const issues=new WeakMap<Page,string[]>();
+test("hero entrance completes and the crane cable stays attached throughout its lift",async({page})=>{
+ await page.emulateMedia({reducedMotion:"no-preference"});await page.goto("/sq");
+ const motion=await page.evaluate(async()=>{
+  const finite=document.getAnimations().filter(a=>a.effect?.getComputedTiming().iterations!==Infinity);
+  const entryCount=[...document.querySelectorAll(".public-header-inner,.hero-photograph,.hero-reference-eyebrow,h1>span,.hero-reference-tagline,.hero-reference-actions")].filter(e=>getComputedStyle(e).animationName!=="none").length;
+  await Promise.all(finite.map(a=>a.finished.catch(()=>{})));
+  const titleOpacity=getComputedStyle(document.querySelector("h1>span")!).opacity;
+  const rope=document.querySelector<SVGGraphicsElement>(".crane-rope")!,load=document.querySelector<SVGGraphicsElement>(".crane-hook")!;
+  const frames=[];
+  for(const time of [0,2000,4000,6000]){
+   for(const element of [rope,load])for(const animation of element.getAnimations()){animation.pause();animation.currentTime=time;}
+   const cableEnd=new DOMPoint(416,466).matrixTransform(rope.getCTM()!),loadTop=new DOMPoint(416,466).matrixTransform(load.getCTM()!);
+   frames.push({gap:Math.abs(cableEnd.y-loadTop.y),y:loadTop.y});
+  }
+  return {entryCount,titleOpacity,frames};
+ });
+ expect(motion.entryCount).toBeGreaterThanOrEqual(6);expect(motion.titleOpacity).toBe("1");
+ expect(motion.frames.every(frame=>frame.gap<.5)).toBe(true);
+ expect(Math.max(...motion.frames.map(f=>f.y))-Math.min(...motion.frames.map(f=>f.y))).toBeGreaterThan(20);
+ await page.emulateMedia({reducedMotion:"reduce"});
+ for(const selector of [".hero-photograph","h1>span",".hero-reference-actions",".crane-rope",".crane-hook"]){
+  expect(await page.locator(selector).first().evaluate(e=>getComputedStyle(e).animationName)).toBe("none");
+ }
+});
 test.beforeEach(async({page})=>{const errors:string[]=[];issues.set(page,errors);page.on("pageerror",e=>errors.push(e.message));page.on("console",m=>{if(m.type()==="error"||/hydration|didn't match|did not match/i.test(m.text()))errors.push(m.text());});});
 test.afterEach(async({page})=>{expect(issues.get(page)).toEqual([]);});
 for(const width of [1440,390])for(const locale of locales)for(const route of ["home",...publicPages] as const){test(`${width}px ${locale} ${route}: direct page, metadata, overflow and screenshot`,async({page,browser})=>{
  await page.setViewportSize({width,height:1000});const response=await page.goto(publicPath(locale,route));expect(response?.status()).toBe(200);await expect(page.locator("html")).toHaveAttribute("lang",locale);await expect(page.locator("h1")).toHaveCount(1);await expect(page.locator("h1")).toHaveText(dictionaries[locale].pages[route].title);await expect(page).toHaveTitle(new RegExp("Fitimi Construction"));if(process.env.PUBLIC_SITE_URL?.trim()){await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href",process.env.PUBLIC_SITE_URL.trim()+publicPath(locale,route));await expect(page.locator('link[hreflang="en"]')).toHaveCount(0);}else{await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);}
+ // Audit the settled view, excluding the intentionally continuous crane movement.
+ await page.evaluate(async()=>{await Promise.all(document.getAnimations().filter(a=>a.effect?.getComputedTiming().iterations!==Infinity).map(a=>a.finished.catch(()=>{})));});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);await expect(page.locator(".site-mobile-menu")).toBeVisible({visible:width<1101});if(width===1440){const result=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();expect(result.violations).toEqual([]);}await mkdir("artifacts/wp11/screenshots",{recursive:true});await page.screenshot({path:`artifacts/wp11/screenshots/${locale}-${route}-${width}.png`,fullPage:true});if(locale==="sq"&&route==="home"&&width===1440)console.log("Actual isolated Edge/Chromium:",browser.version());
 });}
 for(const pageName of ["home",...publicPages] as const)test(`old English route redirects to Albanian: ${pageName}`,async({page})=>{const suffix=pageName==="home"?"":"/"+pageName;await page.goto('/en'+suffix);await expect(page).toHaveURL(new RegExp('/sq'+suffix+'$'));await expect(page.locator('html')).toHaveAttribute('lang','sq');await expect(page.getByRole('link',{name:'English',exact:true})).toHaveCount(0);});
