@@ -3,6 +3,21 @@ import AxeBuilder from "@axe-core/playwright";
 import {mkdir} from "node:fs/promises";
 import {dictionaries,locales,publicPages,publicPath} from "../../../src/i18n/dictionaries";
 const issues=new WeakMap<Page,string[]>();
+test("process navigation reveals four steps, values and clearly illustrative testimonials",async({page})=>{
+ await page.emulateMedia({reducedMotion:'no-preference'});await page.goto('/sq');
+ await page.locator('.public-links').getByRole('link',{name:'Procesi',exact:true}).click();
+ await expect(page).toHaveURL(/\/sq#procesi$/);await expect(page.locator('#procesi')).toHaveCount(1);
+ await expect(page.locator('.process-timeline>li')).toHaveCount(4);await expect(page.locator('#process-heading')).toBeInViewport();
+ await expect(page.locator('.process-blueprint')).toHaveAttribute('data-revealed','true');
+ await expect.poll(async()=>Number.parseFloat(await page.locator('.process-house>path').first().evaluate(e=>getComputedStyle(e).strokeDashoffset))).toBe(0);
+ await page.locator('.quality-section').scrollIntoViewIfNeeded();await expect(page.locator('.quality-values article')).toHaveCount(4);
+ await expect(page.locator('.quality-scene')).toHaveAttribute('data-revealed','true');
+ await page.locator('.testimonials-section').scrollIntoViewIfNeeded();await expect(page.locator('.testimonial-card')).toHaveCount(3);
+ for(const caption of await page.locator('.testimonial-card figcaption').all())await expect(caption).toContainText('ilustrues');
+ await expect(page.locator('.testimonials-section .showcase-eyebrow')).toContainText('ILUSTRUESE');
+ await page.emulateMedia({reducedMotion:'reduce'});
+ for(const selector of ['.quality-blocks','.quality-block-large','.process-house>path','.process-dot'])expect(await page.locator(selector).first().evaluate(e=>getComputedStyle(e).animationName)).toBe('none');
+});
 test("services and illustrative projects use home anchors and the gallery supports keyboard and focus return",async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/sq');
  await page.locator('.public-links').getByRole('link',{name:'Shërbimet',exact:true}).click();

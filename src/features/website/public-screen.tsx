@@ -1,3 +1,6 @@
+import {ProcessSection} from "./process-section";
+import {QualitySection} from "./quality-section";
+import {TestimonialsSection} from "./testimonials-section";
 import {ServicesShowcase} from "./services-showcase";
 import {ProjectsShowcase} from "./projects-showcase";
 import {AboutSection} from "./about-section";
@@ -8,7 +11,7 @@ import {ArchitecturalScene,Approach,Preparation,ServiceCards,ProjectGallery,Cont
 export function PublicScreen({locale,page}:{locale:Locale;page:PublicPage}){
  const c=dictionaries[locale],content=c.pages[page],services=publishedServices(),projects=publishedProjects(),contacts=publishedContacts();
  return <>{page==="home"?<HomeHero locale={locale}/>:<section className={`public-container site-hero ${page==="about"?"site-hero-split":"site-hero-inner"}`}><div className="site-hero-copy"><p className="eyebrow">{c.eyebrow} <span aria-hidden="true">/</span> {c.nav[page]}</p><h1>{content.title}</h1><p className="site-hero-description">{content.description}</p></div>{page==="about"&&<ArchitecturalScene locale={locale}/>}</section>}
-  {page==="home"?<><AboutSection/><ServicesShowcase/><ProjectsShowcase/><Preparation locale={locale}/><ContactCta locale={locale}/></>:<>
+  {page==="home"?<><AboutSection/><ServicesShowcase/><ProjectsShowcase/><ProcessSection/><QualitySection/><TestimonialsSection/><ContactCta locale={locale}/></>:<>
    {(page==="about"||page==="contact")&&<section className="site-section site-section-paper"><div className="public-container site-section-heading"><p className="eyebrow">{c.nav[page]}</p><div><h2>{content.bodyTitle}</h2><p>{content.body}</p></div></div></section>}
    {page==="about"&&<><Approach locale={locale} showLink={false}/><Preparation locale={locale}/></>}
    {page==="services"&&<><ServiceCards locale={locale} services={services} introduction={content.body}/><Preparation locale={locale}/></>}
