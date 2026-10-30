@@ -27,6 +27,8 @@ export function sessionCookieSettings(production = process.env.NODE_ENV === "pro
 export function trustedOrigin() {
   const value = process.env.AUTH_ORIGIN ?? "http://127.0.0.1:3000";
   const url = new URL(value);
+  // The owner-managed local profile uses a domain for WebAuthn; IP RP IDs are rejected by browsers.
+  if(process.env.NODE_ENV!=="production" && process.env.FITIMI_LOCAL_DEVELOPMENT==='1' && !process.env.FITIMI_TEST_BUILD && url.origin==='http://127.0.0.1:3000')url.hostname='localhost';
   const loopback = ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
   if (url.username || url.password || url.search || url.hash || url.pathname !== "/" || (url.protocol !== "https:" && !(url.protocol === "http:" && loopback))) {
     throw new Error("AUTH_ORIGIN must be an HTTPS origin or a local loopback HTTP origin");

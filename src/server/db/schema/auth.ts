@@ -2,10 +2,12 @@ import { sql } from "drizzle-orm";
 import { char, check, index, int, mysqlTable } from "drizzle-orm/mysql-core";
 import { eventTime, id, referenceId, restrict, timestamps } from "./common";
 import { users } from "./identity";
+import {authPasskeys} from './passkeys';
 
 export const authSessions = mysqlTable("auth_sessions", {
   id: id(),
   userId: referenceId("user_id").notNull().references(() => users.id, restrict),
+  passkeyId:referenceId('passkey_id').references(()=>authPasskeys.id,restrict),
   tokenHash: char("token_hash", { length: 64 }).notNull().unique("auth_sessions_token_uq"),
   userAuthVersion: int("user_auth_version", { unsigned: true }).notNull(),
   assuranceVersion: int('assurance_version',{unsigned:true}).notNull().default(0),

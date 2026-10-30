@@ -25,6 +25,15 @@
     ]
   },
   {
+    "file": "src/app/api/auth/passkeys/route.ts",
+    "path": "/api/auth/passkeys",
+    "kind": "api",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
     "file": "src/app/api/auth/session/route.ts",
     "path": "/api/auth/session",
     "kind": "api",

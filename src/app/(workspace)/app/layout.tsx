@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { WorkspaceShell } from "@/components/layout/workspace-shell";
 import "@/styles/globals.css";
 import "@/styles/login-welcome.css";
+import "@/styles/passkeys.css";
 import {LoginWelcome} from '@/components/auth/login-welcome';
 import { currentUser } from "@/server/auth/web";
 

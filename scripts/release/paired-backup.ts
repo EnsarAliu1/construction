@@ -268,6 +268,8 @@ export async function restorePairedBackup(c: Connection, operator: OperatorConte
         const [factors]=await c.query<RowDataPacket[]>('SELECT * FROM auth_mfa_factors');for(const factor of factors)openMfaSeed({secretCipher:factor.secret_cipher,keyId:factor.key_id},factor.user_id,factor.id);
         await c.query("UPDATE auth_mfa_challenges SET state='consumed',consumed_at=UTC_TIMESTAMP(3),secret_cipher=NULL,key_id=NULL,recovery_hashes=NULL,updated_at=UTC_TIMESTAMP(3) WHERE state<>'consumed'");
         await c.query('UPDATE auth_sessions SET revoked_at=UTC_TIMESTAMP(3),updated_at=UTC_TIMESTAMP(3) WHERE revoked_at IS NULL');
+        await c.query('UPDATE auth_passkeys SET revoked_at=COALESCE(revoked_at,UTC_TIMESTAMP(3)),updated_at=UTC_TIMESTAMP(3)');
+        await c.query('UPDATE auth_passkey_challenges SET consumed_at=COALESCE(consumed_at,UTC_TIMESTAMP(3)),updated_at=UTC_TIMESTAMP(3)');
         await c.query('UPDATE users SET auth_version=auth_version+1');
         await c.query('UPDATE auth_mfa_factors SET restore_hold=1,updated_at=UTC_TIMESTAMP(3)');
         await c.query('UPDATE auth_mfa_recovery_codes SET revoked_at=COALESCE(revoked_at,UTC_TIMESTAMP(3)),updated_at=UTC_TIMESTAMP(3) WHERE used_at IS NULL');

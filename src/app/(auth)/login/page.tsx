@@ -1,4 +1,5 @@
 import {AuthFrame} from '@/components/auth/auth-frame';
+import {PasskeyLogin} from '@/components/auth/passkey-login';
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/auth/login-form";
 import { currentUser } from "@/server/auth/web";
@@ -16,6 +17,6 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   if (signedIn) redirect(returnTo);
   return <AuthFrame>
     <h1 id="login-title">Mirë se vini<br/>përsëri.</h1><p className="login-description">Hyni në hapësirën tuaj të punës dhe vazhdoni aty ku e latë.</p>
-    <LoginForm returnTo={returnTo} unavailable={unavailable} />
+    <PasskeyLogin returnTo={returnTo}/><div className="auth-method-divider">ose hyni me email</div><LoginForm returnTo={returnTo} unavailable={unavailable} />
   </AuthFrame>;
 }

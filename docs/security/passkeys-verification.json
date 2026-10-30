@@ -1,0 +1,32 @@
+{
+  "browser": "156.0.4314.50",
+  "scenarios": [
+    "Real password → TOTP enrollment → recovery acknowledgement → full session",
+    "Real platform passkey registration with resident key and required device user verification",
+    "Pre-passkey challenge is HttpOnly and cannot access private APIs or key management",
+    "Cross-origin ceremony requests rejected",
+    "One-click real discoverable passkey login without email/password; fresh session and welcome toast",
+    "Logout revokes the passkey session",
+    "Wrong/new challenge cannot authenticate an older assertion",
+    "Valid device signature without user verification rejected",
+    "Invalid cryptographic signature rejected",
+    "Expired server-side challenge rejected",
+    "Per-challenge verification stops after five failures",
+    "Persisted per-credential rate limits survive requests for new challenges",
+    "Concurrent double submit has exactly one winner; consumed challenge replay denied",
+    "Disabled accounts cannot finish a pending assertion or use existing sessions",
+    "Restore security hold blocks passkey login and existing passkey sessions",
+    "An old session alone cannot enroll another device",
+    "A registration challenge cannot move between authenticated sessions",
+    "Settings removal is explicit, responsive and revokes linked sessions immediately",
+    "Operator revocation during a pending assertion invalidates the credential version"
+  ],
+  "ownerDataTouched": false,
+  "physicalPinPrompt": "NOT VERIFIED: virtual CTAP2 authenticator used; physical device/OS selects PIN or biometric",
+  "newDependencies": {
+    "server": "14.0.3",
+    "browser": "14.0.0"
+  },
+  "scope": "Local synthetic verification only; physical PIN and provider sync not verified",
+  "ownerAuthorization": "2026-10-30 device-PIN/passkey quick login"
+}

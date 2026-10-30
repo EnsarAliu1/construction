@@ -49,7 +49,9 @@
     ".next-wp16/types/**/*.ts",
     ".next-wp16/dev/types/**/*.ts",
     ".next-sq/types/**/*.ts",
-    ".next-sq/dev/types/**/*.ts"
+    ".next-sq/dev/types/**/*.ts",
+    ".next-passkeys/types/**/*.ts",
+    ".next-passkeys/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

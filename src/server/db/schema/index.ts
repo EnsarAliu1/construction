@@ -7,3 +7,4 @@ export { auditEvents, entityVersions } from "./history";
 export { operationRequests } from "./operations";
 export { authSessions, authAccountControl, authLoginLimits } from "./auth";
 export {authMfaFactors,authMfaChallenges,authMfaRecoveryCodes} from './mfa';
+export {authPasskeys,authPasskeyChallenges} from './passkeys';

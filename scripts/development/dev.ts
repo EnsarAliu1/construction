@@ -37,6 +37,7 @@ async function main(){
     console.log('Llogaria provuese u krijua. Të dhënat e hyrjes: .private/development/login.txt');
    }
    console.log('Baza lokale është gati. Të dhënat dhe MFA ruhen ndërmjet rinisjeve.');
+   console.log('Hyrja e sigurt dhe passkey: http://localhost:3000/login');
   }finally{await connection.end();}
  }
  const require=createRequire(resolve('package.json')),cli=require.resolve('next/dist/bin/next');

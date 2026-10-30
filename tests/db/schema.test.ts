@@ -16,13 +16,14 @@ const expensesSql = readFileSync("drizzle/0006_wp07_expenses.sql", "utf8");
 const paymentsSql = readFileSync("drizzle/0007_wp08_payment_allocations.sql", "utf8");
 const mfaSql=readFileSync("drizzle/0009_wp16_mandatory_mfa.sql","utf8");
 const receiptsSql = readFileSync("drizzle/0008_wp09_receipt_issuance.sql", "utf8");
+const passkeySql=readFileSync("drizzle/0011_device_passkeys.sql","utf8");
 const required = ["users", "clients", "projects", "contracts", "contract_phases", "payments", "payment_allocations", "expenses", "expense_categories", "persons", "vehicles", "payment_receipts", "receipt_versions", "receipt_counters", "audit_events", "entity_versions", "operation_requests"];
 
 test("all required models are present, keyed and represented in the initial migration", () => {
-  assert.deepEqual(tables.map(table => table.name).sort(), [...required, "auth_sessions", "auth_account_control", "auth_login_limits", "auth_mfa_factors", "auth_mfa_challenges", "auth_mfa_recovery_codes"].sort());
+  assert.deepEqual(tables.map(table => table.name).sort(), [...required, "auth_sessions", "auth_account_control", "auth_login_limits", "auth_mfa_factors", "auth_mfa_challenges", "auth_mfa_recovery_codes", "auth_passkeys", "auth_passkey_challenges"].sort());
   for (const table of tables) {
     assert.ok(table.columns.some(column => column.primary) || table.primaryKeys.length);
-    assert.match(required.includes(table.name) ? initialSql : table.name.startsWith("auth_mfa_")?mfaSql:authSql, new RegExp("CREATE TABLE `" + table.name + "`"));
+    assert.match(required.includes(table.name) ? initialSql : table.name.startsWith("auth_passkey")?passkeySql:table.name.startsWith("auth_mfa_")?mfaSql:authSql, new RegExp("CREATE TABLE `" + table.name + "`"));
   }
   assert.equal((initialSql.match(/ENGINE=InnoDB/g) ?? []).length, required.length);
   assert.equal((authSql.match(/ENGINE=InnoDB/g) ?? []).length, 3);
@@ -40,7 +41,7 @@ test("all foreign keys reference a primary/unique key and restrict update/delete
       assert.equal(columns[i].getSQLType(), foreignColumns[i].getSQLType());
       assert.ok(foreignColumns[i].primary || foreignColumns[i].isUnique);
     }
-    assert.match(initialSql + authSql + clientsSql + projectsSql + referencesSql + expensesSql + paymentsSql + receiptsSql + mfaSql, new RegExp("CONSTRAINT `" + key.getName() + "` FOREIGN KEY"));
+    assert.match(initialSql + authSql + clientsSql + projectsSql + referencesSql + expensesSql + paymentsSql + receiptsSql + mfaSql + passkeySql, new RegExp("CONSTRAINT `" + key.getName() + "` FOREIGN KEY"));
   }
   assert.doesNotMatch(initialSql, /ON (?:DELETE|UPDATE) (?:CASCADE|SET NULL)/i);
 });
@@ -90,7 +91,7 @@ test("transaction dates and UTC event timestamps use distinct calendar/time type
 
 test("migrations are loadable, ordered, named and include non-destructive history guards", () => {
   const migrations = readMigrationFiles({ migrationsFolder: "drizzle" });
-  assert.equal(migrations.length, 11);
+  assert.equal(migrations.length, 12);
   assert.ok(migrations.every((migration, index) => index === 0 || migration.folderMillis > migrations[index - 1].folderMillis));
   assert.deepEqual(migrations.slice(0, 9).map(migration => migration.hash), ["5f972707b506644f976f71bd139f74c72f9e269bfeaba63ff3ca7165572ef16c", "21a7d78e4846ea6b53224593eca961dc92edd7bc7d48a42db8b14ed1c1ce9205", "023ff3b046a78f33ad4c7fa799804be11254f86a46f31847279d952cceb8eb9a", "a2c5cdad7751945aa77a8eef88b94efec28eab9857c63763e0e40dc677d15797", "ad18f5a53f4e45790395d2e6db18972658d53f9fee92a33efac2f60bbccef8dc", "a90f76f7149e6737dcef9be33f6f00db4218fb35fd4fd83c743dbb3863b85bb4", "5a784ca21c0ab0c7f0878381f68a6599c3bfa52a407c70cbecf2c37688da6a7e", "cb0a5a2770ee7b2b107982a7ff17e7787002f9d092374732d7944c12416e94bc", "cd85620b9068367085e3d0590bef2b0166cc41cee09ff0b9d9f27998709e76f7"]);
   assert.ok(migrations.every(migration => migration.sql.length && migration.hash.length === 64));

@@ -3,9 +3,12 @@ import {browserSecurityHeaders,contentSecurityPolicy} from "./src/server/securit
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Preserve the explicit 127.0.0.1 -> localhost redirect for local WebAuthn.
+  // Next otherwise normalizes both hosts to localhost and rewrites Location as /login.
+  skipProxyUrlNormalize: process.env.NODE_ENV!=='production'&&process.env.FITIMI_LOCAL_DEVELOPMENT==='1'&&!process.env.FITIMI_TEST_BUILD,
   // Required for a complete Albanian 404 document with the existing multiple root layouts.
   experimental: { globalNotFound: true },
-  distDir: process.env.FITIMI_TEST_BUILD === "sq" ? ".next-sq" : process.env.FITIMI_TEST_BUILD === "wp16" ? ".next-wp16" : process.env.FITIMI_TEST_BUILD === "wp15" ? ".next-wp15" : process.env.FITIMI_TEST_BUILD === "wp14" ? ".next-wp14" : process.env.FITIMI_TEST_BUILD === "wp13" ? ".next-wp13" : process.env.FITIMI_TEST_BUILD === "wp11" ? ".next-wp11" : process.env.FITIMI_TEST_BUILD === "wp10" ? ".next-wp10" : process.env.FITIMI_TEST_BUILD === "wp09" ? ".next-wp09" : ".next",
+  distDir: process.env.FITIMI_TEST_BUILD === "passkeys" ? ".next-passkeys" : process.env.FITIMI_TEST_BUILD === "sq" ? ".next-sq" : process.env.FITIMI_TEST_BUILD === "wp16" ? ".next-wp16" : process.env.FITIMI_TEST_BUILD === "wp15" ? ".next-wp15" : process.env.FITIMI_TEST_BUILD === "wp14" ? ".next-wp14" : process.env.FITIMI_TEST_BUILD === "wp13" ? ".next-wp13" : process.env.FITIMI_TEST_BUILD === "wp11" ? ".next-wp11" : process.env.FITIMI_TEST_BUILD === "wp10" ? ".next-wp10" : process.env.FITIMI_TEST_BUILD === "wp09" ? ".next-wp09" : ".next",
   serverExternalPackages: ["pdfkit", "exceljs", "jszip"],
   outputFileTracingExcludes: {"/*":["./artifacts/**/*","./.private/**/*","./.env*"]},
   outputFileTracingIncludes: {"/*":["./assets/security/*.txt"],"/api/payments":["./assets/fonts/*.ttf"],"/api/payments/*":["./assets/fonts/*.ttf"],"/api/reports/**":["./assets/fonts/*.ttf"],"/api/exports/**":["./assets/fonts/*.ttf"]},
