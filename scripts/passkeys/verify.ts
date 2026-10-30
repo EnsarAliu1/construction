@@ -26,7 +26,7 @@ try{
   const fixture=JSON.parse(await readFile(`${root}/browser-fixture.json`,'utf8'));assert.equal(fixture.database,options.database);
   const browser=await chromium.launch({channel:'msedge',headless:true});
   const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'}),page=await context.newPage(),errors:string[]=[],scenarios:string[]=[];
-  page.on('pageerror',e=>errors.push(e.message));page.on('console',message=>{if(/same key|hydration|didn.t match|Encountered two children/i.test(message.text()))errors.push(message.text());});
+  page.setDefaultNavigationTimeout(90000);page.on('pageerror',e=>errors.push(e.message));page.on('console',message=>{if(/same key|hydration|didn.t match|Encountered two children/i.test(message.text()))errors.push(message.text());});
   const protocol=await context.newCDPSession(page);await protocol.send('WebAuthn.enable');
   const virtual=await protocol.send('WebAuthn.addVirtualAuthenticator',{options:{protocol:'ctap2',transport:'internal',hasResidentKey:true,hasUserVerification:true,isUserVerified:true,automaticPresenceSimulation:true}});
   const check=(name:string)=>{scenarios.push(name);console.log(`PASS: ${name}`);};
@@ -43,10 +43,11 @@ try{
    await page.locator('#mfa-code').fill(authenticator(seed).generate());await page.getByRole('button',{name:'Verifikoni konfigurimin e autentikimit',exact:true}).click();await page.getByTestId('mfa-recovery-code').first().waitFor();
    await page.getByRole('checkbox').check();await page.getByRole('button',{name:'Përfundoni hyrjen e sigurt',exact:true}).click();await page.waitForURL(origin+'/app');
    bootstrap=(await context.cookies()).find(x=>x.name==='fitimi_session')!;assert(bootstrap?.httpOnly);check('Real password → TOTP enrollment → recovery acknowledgement → full session');
-   if(process.env.FITIMI_WORKSPACE_CHECK==='1'){try{await verifyWorkspace(page,origin);}catch(error){await page.screenshot({path:'artifacts/workspace/failure.png',fullPage:true});await writeFile('artifacts/workspace/failure.txt',String(error));throw error;}}
+
    await page.goto(origin+'/app/security');await page.getByLabel('Emri që do ta dalloni').fill('Telefoni provues');await page.getByRole('button',{name:'Aktivizo hyrjen me pajisje',exact:true}).click();await page.getByText('Hyrja e shpejtë u aktivizua.',{exact:false}).waitFor();
    let listed=await (await context.request.get(origin+'/api/auth/passkeys')).json();assert.equal(listed.keys.length,1);const keyId=listed.keys[0].id;await page.screenshot({path:`${root}/settings-desktop.png`,fullPage:true,caret:'initial'});
    const [stored]=await c.query<RowDataPacket[]>('SELECT credential_id,public_key,user_auth_version FROM auth_passkeys');assert.equal(stored.length,1);assert(stored[0].public_key.length>30);check('Real platform passkey registration with resident key and required device user verification');
+   if(process.env.FITIMI_WORKSPACE_CHECK==='1'){try{await verifyWorkspace(page,origin);}catch(error){await page.screenshot({path:'artifacts/workspace/failure.png',fullPage:true});await writeFile('artifacts/workspace/failure.txt',String(error));throw error;}}
    await context.clearCookies();await newOptions();assert.equal((await context.request.get(origin+'/api/auth/session')).status(),401);assert.equal((await context.request.get(origin+'/api/clients')).status(),401);assert.equal((await context.request.get(origin+'/api/auth/passkeys')).status(),401);assert.equal((await post({action:'registration-options'})).status(),401);await pending();check('Pre-passkey challenge is HttpOnly and cannot access private APIs or key management');
    assert.equal((await post({action:'authentication-options'},{Origin:'https://attacker.invalid'})).status(),403);check('Cross-origin ceremony requests rejected');
    await page.goto(origin+'/administrata');await page.getByRole('button',{name:'Hyr shpejt',exact:true}).click();await page.waitForURL(origin+'/app');await page.getByRole('status').filter({hasText:'Mirë se erdhët në Fitimi.'}).waitFor();

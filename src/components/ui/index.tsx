@@ -18,7 +18,9 @@ export function Card({ children, className }: { children: ReactNode; className?:
 }
 
 export function Badge({ children }: { children: ReactNode }) {
-  return <span className="badge">{children}</span>;
+  const states:Record<string,string>={Aktiv:'active',Joaktiv:'inactive',Pranuar:'received',Regjistruar:'recorded',Anuluar:'cancelled',Lëshuar:'issued',Përfunduar:'completed',Pezulluar:'suspended'};
+  const state=typeof children==='string'?states[children]:undefined;
+  return <span className={cn('badge',state&&`app-status ${state}`)}>{children}</span>;
 }
 
 export function PageHeading({ eyebrow, title, description, children }: {

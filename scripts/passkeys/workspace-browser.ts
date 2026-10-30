@@ -1,3 +1,4 @@
+import {verifyManagement} from './management-browser';
 import {verifyDashboard} from './dashboard-browser';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
@@ -20,7 +21,7 @@ export async function verifyWorkspace(page:Page,origin:string){
  await page.getByLabel('Kërkoni një seksion të menusë').fill('Historiku');await page.locator('.workspace-search-results').getByRole('link',{name:'Historiku',exact:true}).click();await page.waitForURL(origin+'/app/history');
  await page.getByLabel('Seksioni',{exact:true}).selectOption('client');await page.getByLabel('Identifikuesi i regjistrimit (opsional)').fill(client.id);await page.getByRole('button',{name:'Shfaqni veprimet',exact:true}).click();
  await page.locator('.activity-event').first().waitFor();assert.equal(await page.locator('.activity-event').count(),1);await page.locator('.activity-event>summary').click();assert((await page.locator('.activity-event').innerText()).includes('Klienti provues i historikut'));check('Real client creation appears in centralized, filtered immutable activity snapshots');
- await verifyDashboard(page,origin,client);await page.goto(origin+'/app/history?type=client&entityId='+client.id);
+ await verifyDashboard(page,origin,client);await verifyManagement(page,origin,client);await page.goto(origin+'/app/history?type=client&entityId='+client.id);
  for(const theme of ['light','dark'] as const){
   if(theme==='dark')await page.getByRole('button',{name:'Aktivizo pamjen e errët',exact:true}).click();
   await page.reload();assert.equal(await page.locator('html').getAttribute('data-workspace-theme'),theme);

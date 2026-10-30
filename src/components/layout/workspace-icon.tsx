@@ -1,4 +1,11 @@
 const paths: Record<string, string> = {
+ bank:'M3 10h18M3 21h18M5 10v8M10 10v8M15 10v8M20 10v8M2 7l10-5 10 5z',
+ list:'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
+ edit:'m16 3 5 5-12 12-6 1 1-6zM13 6l5 5',
+ pin:'M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0M12 7a3 3 0 1 0 0 6 3 3 0 0 0 0-6',
+ calendar:'M3 5h18v17H3zM7 2v6M17 2v6M3 11h18',
+ wand:'m3 21 12-12 4 4L7 25M13 7l4 4M19 2v4M17 4h4M4 3v4M2 5h4',
+
  plus:'M12 5v14M5 12h14', info:'M12 8h.01M12 11v6M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20',
  check:'M8 12l3 3 5-6M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20',
  briefcase:'M3 7h18v14H3zM8 7V3h8v4M8 7v14M16 7v14',

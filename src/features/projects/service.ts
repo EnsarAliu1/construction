@@ -159,7 +159,7 @@ export async function listProjects(connection: Connection, token: string | undef
   const where = and(isNull(projects.deletedAt), query.status === "all" ? undefined : eq(projects.status, query.status as "active" | "suspended" | "completed"), query.clientId ? eq(projects.clientId, query.clientId) : undefined,
     query.q ? or(...[projects.name, projects.location, clients.name].map(column => sql`${column} LIKE ${escapedSearch(query.q)} ESCAPE '='`)) : undefined);
   const [total] = await db.select({ value: count() }).from(projects).innerJoin(clients, eq(clients.id, projects.clientId)).where(where);
-  const rows = await db.select({ id: projects.id, name: projects.name, clientId: projects.clientId, clientName: clients.name, status: projects.status, startDate: projects.startDate, endDate: projects.endDate, totalValue: contracts.totalValue })
+  const rows = await db.select({ id: projects.id, name: projects.name, location: projects.location, clientId: projects.clientId, clientName: clients.name, status: projects.status, startDate: projects.startDate, endDate: projects.endDate, totalValue: contracts.totalValue })
     .from(projects).innerJoin(clients, eq(clients.id, projects.clientId)).leftJoin(contracts, eq(contracts.projectId, projects.id)).where(where).orderBy(asc(projects.name), asc(projects.id)).limit(PROJECT_PAGE_SIZE).offset((query.page - 1) * PROJECT_PAGE_SIZE);
   return { rows, total: Number(total.value), pageSize: PROJECT_PAGE_SIZE, query };
 }

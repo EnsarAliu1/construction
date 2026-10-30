@@ -1,4 +1,5 @@
 "use client";
+import {ActionDialog} from '@/components/workspace/action-dialog';
 
 import Link from "next/link";
 import { useRef, useState, type FormEvent } from "react";
@@ -24,12 +25,12 @@ export function ArchiveControl({ id, version, name, blocked }: { id: string; ver
     } catch { setMessage("Lidhja dështoi. Provoni përsëri."); }
     finally { if (!archived) { inFlight.current = false; setBusy(false); } }
   }
-  return <details className="client-archive"><summary>Arkivoni klientin</summary>
+  return <ActionDialog title="Arkivoni klientin">
     <p>Arkivimi e heq {name} nga lista e klientëve aktivë. Identiteti, lidhjet me projektet dhe historiku ruhen. Rikthimi nuk është i disponueshëm.</p>
     {blocked ? <p className="client-alert" role="status">Ky klient ka projekt aktiv ose të pezulluar dhe nuk mund të arkivohet.</p> : <form onSubmit={archive} aria-busy={busy}>
       <label className="client-checkbox"><input type="checkbox" checked={confirmed} disabled={busy} onChange={event => setConfirmed(event.target.checked)} required />E kuptoj dhe dëshiroj ta arkivoj këtë klient.</label>
-      <Button type="submit" disabled={!confirmed || busy}>{busy ? "Archiving…" : "Konfirmoni arkivimin"}</Button>
+      <Button type="submit" disabled={!confirmed || busy}>{busy ? "Duke arkivuar…" : "Konfirmoni arkivimin"}</Button>
       {message && <div role="alert" className="client-alert client-alert-error"><p>{message}</p><a href={`/app/clients/${id}`} className="text-link">Ringarkoni klientin</a><Link href={`/administrata?returnTo=${encodeURIComponent(`/app/clients/${id}`)}`} className="text-link">Hyni përsëri</Link></div>}
     </form>}
-  </details>;
+  </ActionDialog>;
 }

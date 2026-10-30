@@ -1,10 +1,13 @@
+import {modalPage} from '@/components/workspace/modal-page';
 import { PageHeading } from "@/components/ui";
 import { ProjectForm } from "@/features/projects/project-form";
 import { ProjectLink as Link } from "@/features/projects/project-link";
 import { chooseClients, getProject } from "@/features/projects/service";
 import { projectPageData } from "@/features/projects/web";
 export const metadata = { title: "Ndryshoni projektin" };
-export default async function EditProjectPage({ params }: { params: Promise<{ id: string }> }) {
+async function EditProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params; const { initial, choices } = await projectPageData(`/app/projects/${id}/edit`, async (c, token) => ({ initial: await getProject(c, token, id), choices: await chooseClients(c, token) }));
   return <><Link className="text-link client-back" href={`/app/projects/${id}`}>← Detajet e projektit</Link><PageHeading eyebrow="Projektet" title="Ndryshoni projektin" description={initial.project.name} /><ProjectForm {...{ initial, choices }} /></>;
 }
+
+export default modalPage(EditProjectPage);
