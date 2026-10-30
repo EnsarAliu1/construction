@@ -23,7 +23,7 @@ async function main() {
     const goto = (path: string) => page.goto(origin + path);
     const click = (name: string) => page.getByRole('button', { name, exact: true }).click();
     const saved = async (family: string) => { await page.waitForURL(new RegExp(`/app/${family}/[a-f0-9-]+(?:\\?.*)?$`)); return new URL(page.url()).pathname.split('/').at(-1)!; };
-    const pick = async (kind: string, name: string) => { await page.locator(`#expense-${kind}`).fill(name); await page.locator(`#expense-${kind}`).press("Enter"); await page.locator(`ul[aria-label="${kind === 'project' ? "Projekti" : kind === 'category' ? "Kategoria" : kind === 'person' ? "Furnitori / Përfituesi i pagesës" : "Automjeti"} rezultatet e kërkimit"] button`).first().click(); };
+    const pick = async (kind: string, name: string) => { await page.locator(`#expense-${kind}`).fill(name); await page.locator(`#expense-${kind}`).press("Enter"); await page.locator(`ul[aria-label="${kind === 'project' ? "Projekti" : kind === 'category' ? "Kategoria" : kind === 'person' ? "Furnitori / Përfituesi i pagesës" : "Automjeti"} rezultatet e kërkimit"] [role="option"]`).first().click(); };
     const download = async (kind: string, trigger: () => Promise<unknown>) => { const pending = page.waitForEvent('download'); await trigger(); const d = await pending, stream = await d.createReadStream(), parts: Buffer[] = []; for await (const chunk of stream!)
         parts.push(Buffer.from(chunk)); const bytes = Buffer.concat(parts); assert(bytes.length > 100); if (kind.includes('pdf') || kind.includes('receipt') || kind.includes('historical'))
         validatePdf(bytes);
@@ -72,9 +72,8 @@ async function main() {
         assert((await page.locator('main').innerText()).includes(prefix + " Biznes"));
         steps.push('Create individual/business, edit, search and persisted audit history');
         await goto('/app/projects/new');
-        await page.locator('#project-client-search').fill(prefix + " Biznes");
-        await click("Gjeni klientin");
-        await page.locator('#project-client').selectOption(business);
+        await page.locator('#project-client').fill(prefix + " Biznes");
+        await page.getByRole('option').filter({hasText:prefix + " Biznes"}).click();
         await page.locator('#project-name').fill(prefix + " Ndërtim");
         await page.locator('#contract-total').fill('100.00');
         await page.locator('#phase-name-0').fill('Synthetic first');
@@ -168,7 +167,7 @@ async function main() {
         await Promise.all([page.waitForResponse(r => r.url().includes('/cancel') && r.status() === 200), click("Konfirmoni anulimin")]);
         await page.waitForURL(/notice=cancelled/);
         steps.push('Inline company category, expense correction/cancellation and audit');
-        async function payment(amount: string, first: string, second = '') { await goto('/app/payments/new'); await pick('project', prefix + " Ndërtim"); await click("Ngarkoni fazat e projektit"); await page.locator('[id^="payment-allocation-"]').first().waitFor(); await page.locator('#payment-amount').fill(amount); await page.locator('#payment-transactionDate').fill('2024-02-29'); await page.locator('[id^="payment-allocation-"]').nth(0).fill(first); await page.locator('[id^="payment-allocation-"]').nth(1).fill(second); }
+        async function payment(amount: string, first: string, second = '') { await goto('/app/payments/new'); await pick('project', prefix + " Ndërtim"); await page.locator('[id^="payment-allocation-"]').first().waitFor(); await page.locator('#payment-amount').fill(amount); await page.locator('#payment-transactionDate').fill('2024-02-29'); await page.locator('[id^="payment-allocation-"]').nth(0).fill(first); await page.locator('[id^="payment-allocation-"]').nth(1).fill(second); }
         await payment('101.00', '101.00');
         await click("Kontrolloni ndarjen");
         await page.getByRole('alert').waitFor();

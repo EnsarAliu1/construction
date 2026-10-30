@@ -9,6 +9,7 @@ import { currentUser } from "@/server/auth/web";
 import { cookies } from "next/headers";
 import "@/styles/workspace.css";
 import "@/styles/management.css";
+import "@/styles/workspace-polish.css";
 
 export const dynamic = "force-dynamic";
 

@@ -1,4 +1,5 @@
 const paths: Record<string, string> = {
+ filter:'M3 5h18M6 12h12M10 19h4M7 3v4M16 10v4M12 17v4',
  bank:'M3 10h18M3 21h18M5 10v8M10 10v8M15 10v8M20 10v8M2 7l10-5 10 5z',
  list:'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
  edit:'m16 3 5 5-12 12-6 1 1-6zM13 6l5 5',
