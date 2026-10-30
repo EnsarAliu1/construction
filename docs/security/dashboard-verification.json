@@ -1,0 +1,39 @@
+{
+  "results": [
+    "Synthetic real API transactions and receipt PDFs span the previous, current and next calendar months",
+    "Five top cards show exact monthly cash flow and separate full contract balances; four real counters render",
+    "Recent transactions stay within the current month; active sites have exact balances without percentages or activity logs",
+    "All-time totals sit last, require explicit reveal and hide on tab change, manual close and reload",
+    "Premium header/dashboard pass overflow and axe checks in light/dark mode at 1440, 980, 390 and 320px"
+  ],
+  "syntheticOnly": true,
+  "monthly": {
+    "income": "125.00",
+    "expenses": "25.00",
+    "difference": "100.00"
+  },
+  "allTime": {
+    "income": "340.00",
+    "expenses": "75.00",
+    "difference": "265.00"
+  },
+  "unitTests": 85,
+  "workspaceBrowserScenarios": 7,
+  "passkeyRegressionScenarios": 19,
+  "dashboardBrowserScenarios": 5,
+  "viewports": [
+    1440,
+    980,
+    390,
+    320
+  ],
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "businessTimeZone": "Europe/Tirane",
+  "calendarMonthNotRollingDays": true,
+  "allTimeTotalsHiddenByDefault": true,
+  "ownerDatabaseModified": false,
+  "productionDeployment": false
+}

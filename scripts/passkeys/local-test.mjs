@@ -19,7 +19,7 @@ try{
  // Docker's port-forward source can be a bridge address. The user is restricted to this fresh schema.
  await admin.query(`CREATE USER '${username}'@'%' IDENTIFIED BY ?`,[password]);wildcard=true;await admin.query(`GRANT ALL PRIVILEGES ON \`${name}\`.* TO '${username}'@'%'`);
  const url=`mysql://${username}:${password}@127.0.0.1:3307/${name}`;
- const env={...process.env,NODE_ENV:'development',DATABASE_URL:url,TEST_DATABASE_URL:url,DATABASE_DISPOSABLE:'1',AUTH_ORIGIN:'http://localhost:3000',FITIMI_TEST_BUILD:'passkeys',FITIMI_LOCAL_DEVELOPMENT:'0',ADORE_OPERATOR_KEY:randomBytes(32).toString('hex'),MFA_ENCRYPTION_KEY_ID:'passkey-test',MFA_ENCRYPTION_KEYS:JSON.stringify({'passkey-test':randomBytes(32).toString('base64')}),RECEIPT_STORAGE_DIR:`${root}/private-store`,PUBLIC_SITE_URL:'',PUBLIC_SITE_INDEXING:'0'};
+ const env={...process.env,NODE_ENV:'development',DATABASE_URL:url,TEST_DATABASE_URL:url,DATABASE_DISPOSABLE:'1',AUTH_ORIGIN:'http://localhost:3000',FITIMI_TEST_BUILD:'passkeys',FITIMI_LOCAL_DEVELOPMENT:'0',ADORE_OPERATOR_KEY:randomBytes(32).toString('hex'),MFA_ENCRYPTION_KEY_ID:'passkey-test',MFA_ENCRYPTION_KEYS:JSON.stringify({'passkey-test':randomBytes(32).toString('base64')}),RECEIPT_STORAGE_DIR:`${root}/private-store/${name}`,PUBLIC_SITE_URL:'',PUBLIC_SITE_INDEXING:'0'};
  writeFileSync(`${root}/scope.json`,JSON.stringify({database:name,port:3307,appPort:3000,syntheticOnly:true}));
  await run(process.execPath,['--import','tsx','scripts/passkeys/verify.ts','prepare'],env);
  const require=createRequire(import.meta.url),log=createWriteStream(`${root}/server.log`);

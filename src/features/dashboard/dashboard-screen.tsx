@@ -1,1 +1,1 @@
-export {Dashboard as DashboardScreen} from "@/features/reporting/screens";
+export {OverviewScreen as DashboardScreen} from "./overview-screen";

@@ -1,4 +1,12 @@
 const paths: Record<string, string> = {
+ plus:'M12 5v14M5 12h14', info:'M12 8h.01M12 11v6M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20',
+ check:'M8 12l3 3 5-6M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20',
+ briefcase:'M3 7h18v14H3zM8 7V3h8v4M8 7v14M16 7v14',
+ contract:'M14 2H4v20h10M14 2v6h6M14 2l6 6v4M8 12h4M8 16h3M15 19l5-5 2 2-5 5-3 1z',
+ balance:'M12 3v18M6 21h12M3 7h18M6 7l-4 8h8zM18 7l-4 8h8z',
+ hourglass:'M6 3h12M6 21h12M7 3v4l10 10v4M17 3v4L7 17v4',
+ eye:'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6',
+ 'eye-off':'M3 3l18 18M10 5h2c6 0 10 7 10 7a22 22 0 0 1-4 5M6 6a23 23 0 0 0-4 6s4 7 10 7c2 0 3-.4 5-1M10 10a3 3 0 0 0 4 4',
  app: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z',
  projects: 'M3 17h18v4H3zM5 17v-6a7 7 0 0 1 14 0v6M10 4v7M14 4v7',
  clients: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M17 4a4 4 0 0 1 0 8M22 21v-2a4 4 0 0 0-3-3.87',
