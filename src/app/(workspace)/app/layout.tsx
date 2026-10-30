@@ -10,6 +10,7 @@ import { cookies } from "next/headers";
 import "@/styles/workspace.css";
 import "@/styles/management.css";
 import "@/styles/workspace-polish.css";
+import "@/styles/administration-design.css";
 
 export const dynamic = "force-dynamic";
 

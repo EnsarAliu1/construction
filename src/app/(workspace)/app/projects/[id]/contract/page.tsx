@@ -1,5 +1,5 @@
 import {modalPage} from '@/components/workspace/modal-page';
-import { PageHeading } from "@/components/ui";
+import {WorkspaceHeading as PageHeading} from '@/components/workspace/page-heading';
 import { ContractEditor } from "@/features/projects/contract-editor";
 import { ProjectLink as Link } from "@/features/projects/project-link";
 import { getProject } from "@/features/projects/service";

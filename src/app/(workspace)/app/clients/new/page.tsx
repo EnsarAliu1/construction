@@ -1,6 +1,6 @@
 import {modalPage} from '@/components/workspace/modal-page';
 import { ClientLink as Link } from "@/features/clients/client-link";
-import { PageHeading } from "@/components/ui";
+import {WorkspaceHeading as PageHeading} from '@/components/workspace/page-heading';
 import { ClientForm } from "@/features/clients/client-form";
 import { requirePageUser } from "@/server/auth/web";
 

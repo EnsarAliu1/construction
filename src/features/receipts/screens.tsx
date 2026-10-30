@@ -1,5 +1,6 @@
 import {DataTable} from '@/components/workspace/data-table';
-import {Badge,Card,EmptyState,PageHeading} from "@/components/ui";
+import {Badge, Card, EmptyState} from "@/components/ui";
+import {WorkspaceHeading as PageHeading} from '@/components/workspace/page-heading';
 import {ReferenceLink as Link} from "@/features/references/reference-link";
 import {paymentPageData} from "@/features/payments/web";
 import {requirePageUser} from "@/server/auth/web";

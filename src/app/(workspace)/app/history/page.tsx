@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import {cookies} from 'next/headers';
 import {redirect} from 'next/navigation';
-import {Card,PageHeading} from '@/components/ui';
+import {Card} from "@/components/ui";
+import {WorkspaceHeading as PageHeading} from '@/components/workspace/page-heading';
 import {WorkspaceIcon} from '@/components/layout/workspace-icon';
 import {requirePageUser} from '@/server/auth/web';
 import {AuthenticationRequired,sessionCookieSettings} from '@/server/auth/security';

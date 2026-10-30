@@ -1,5 +1,6 @@
 import { ClientLink as Link } from "@/features/clients/client-link";
-import { Badge, Card, PageHeading } from "@/components/ui";
+import {Badge, Card} from "@/components/ui";
+import {WorkspaceHeading as PageHeading} from '@/components/workspace/page-heading';
 import { ArchiveControl } from "@/features/clients/archive-control";
 import { clientFields, clientTypeLabel, type ClientField } from "@/features/clients/model";
 import { getClient } from "@/features/clients/service";

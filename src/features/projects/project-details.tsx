@@ -1,6 +1,6 @@
 import {DataTable} from '@/components/workspace/data-table';
 import Link from 'next/link';
-import {PageHeading} from '@/components/ui';
+import {WorkspaceHeading as PageHeading} from '@/components/workspace/page-heading';
 import {WorkspaceIcon as Icon} from '@/components/layout/workspace-icon';
 import {valueLabel} from '@/i18n/format';
 import {displayEuro} from '@/features/dashboard/overview';

@@ -1,4 +1,5 @@
-import { Badge, PageHeading, TableShell } from "@/components/ui";
+import {Badge, TableShell} from "@/components/ui";
+import {WorkspaceHeading as PageHeading} from '@/components/workspace/page-heading';
 import { sections, type SectionKey } from "./sections";
 
 export function SectionScreen({ section }: { section: SectionKey }) {

@@ -1,5 +1,6 @@
 import {ProjectCollection} from "@/features/projects/project-collection";
-import { Card, EmptyState, PageHeading } from "@/components/ui";
+import {Card, EmptyState} from "@/components/ui";
+import {WorkspaceHeading as PageHeading} from '@/components/workspace/page-heading';
 import { ProjectLink as Link } from "@/features/projects/project-link";
 import { ProjectSearchForm } from "@/features/projects/search-form";
 import { chooseClients, listProjects } from "@/features/projects/service";

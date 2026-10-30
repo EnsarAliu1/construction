@@ -1,6 +1,7 @@
 import {DataTable} from '@/components/workspace/data-table';
 import Link from "next/link";
-import {Card,PageHeading,EmptyState} from "@/components/ui";
+import {Card, EmptyState} from "@/components/ui";
+import {WorkspaceHeading as PageHeading} from '@/components/workspace/page-heading';
 import {companyReport} from "./export";
 import {reportingPage} from "./web";
 import {DownloadControls} from "./download-controls";

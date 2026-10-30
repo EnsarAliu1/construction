@@ -1,6 +1,7 @@
 import { MfaForm } from '@/components/auth/mfa-form';
 import { requirePageUser } from '@/server/auth/web';
-import { Card, PageHeading } from '@/components/ui';
+import {Card} from "@/components/ui";
+import {WorkspaceHeading as PageHeading} from '@/components/workspace/page-heading';
 import {PasskeySettings} from '@/components/auth/passkey-settings';
 export const dynamic = 'force-dynamic';
 export const metadata = { title: "Siguria e llogarisë" };

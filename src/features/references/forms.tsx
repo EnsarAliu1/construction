@@ -1,4 +1,5 @@
 "use client";
+import {useFilterNavigation} from '@/components/workspace/use-filter-navigation';
 import {ActionDialog} from '@/components/workspace/action-dialog';
 import {valueLabel} from "@/i18n/format";
 
@@ -43,6 +44,6 @@ export function ReferenceLifecycle({ kind, record }: { kind: ReferenceKind; reco
 }
 
 export function ReferenceSearchForm({ kind, query }: { kind: ReferenceKind; query: { q: string; status: string } }) {
-  const [busy, setBusy] = useState(false);
-  return <form action={`/app/${kind}`} method="get" className="client-filters" onSubmit={() => setBusy(true)} aria-busy={busy}><FormField htmlFor="reference-search" label={`Kërkoni ${referenceDefinitions[kind].title.toLowerCase()}`}><Input id="reference-search" name="q" type="search" maxLength={100} defaultValue={query.q} /></FormField><FormField htmlFor="reference-status" label="Filtri i gjendjes"><select className="input" id="reference-status" name="status" defaultValue={query.status}><option value="active">Aktiv</option><option value="inactive">Joaktiv</option><option value="all">Të gjitha të dhënat</option></select></FormField><div className="client-actions"><Button type="submit" disabled={busy}>{busy ? "Duke kërkuar…" : "Kërkoni"}</Button><Link className="text-link" href={`/app/${kind}`}>Pastroni filtrat</Link><span className="sr-only" role="status">{busy ? "Duke ngarkuar rezultatet e kërkimit." : ""}</span></div></form>;
+  const {form,pending:busy,onSubmit,onInput}=useFilterNavigation(`/app/${kind}`);
+  return <form action={`/app/${kind}`} method="get" className="client-filters" ref={form} onSubmit={onSubmit} onInput={onInput} aria-busy={busy}><FormField htmlFor="reference-search" label={`Kërkoni ${referenceDefinitions[kind].title.toLowerCase()}`}><Input id="reference-search" name="q" type="search" maxLength={100} defaultValue={query.q} placeholder="Shkruani për të kërkuar menjëherë…" /></FormField><FormField htmlFor="reference-status" label="Filtri i gjendjes"><select className="input" id="reference-status" name="status" defaultValue={query.status}><option value="active">Aktiv</option><option value="inactive">Joaktiv</option><option value="all">Të gjitha të dhënat</option></select></FormField><div className="client-actions"><Button type="submit" disabled={busy}>{busy ? "Duke kërkuar…" : "Kërkoni"}</Button><Link className="text-link" href={`/app/${kind}`}>Pastroni filtrat</Link><span className="sr-only" role="status">{busy ? "Duke ngarkuar rezultatet e kërkimit." : ""}</span></div></form>;
 }
