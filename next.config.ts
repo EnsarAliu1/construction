@@ -3,6 +3,8 @@ import {browserSecurityHeaders,contentSecurityPolicy} from "./src/server/securit
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Keep the development indicator clear of the collapsed sidebar controls.
+  devIndicators: { position: 'bottom-right' },
   // Preserve the explicit 127.0.0.1 -> localhost redirect for local WebAuthn.
   // Next otherwise normalizes both hosts to localhost and rewrites Location as /administrata.
   skipProxyUrlNormalize: process.env.NODE_ENV!=='production'&&process.env.FITIMI_LOCAL_DEVELOPMENT==='1'&&!process.env.FITIMI_TEST_BUILD,

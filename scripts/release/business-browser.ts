@@ -231,7 +231,7 @@ async function main() {
         await page.setViewportSize({ width: 1440, height: 1000 });
         await goto(`/app/projects/${project}`);
         await page.screenshot({ path: root+'/screenshots/business-project.png', fullPage: true });
-        await click("Dilni");
+        await page.locator('.workspace-profile>summary').click();await click("Dilni");
         await page.waitForURL(origin + '/administrata');
         assert.equal((await context.request.get(origin + '/api/clients')).status(), 401);
         assert.deepEqual(errors, []);

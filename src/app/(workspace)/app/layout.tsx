@@ -6,6 +6,8 @@ import "@/styles/login-welcome.css";
 import "@/styles/passkeys.css";
 import {LoginWelcome} from '@/components/auth/login-welcome';
 import { currentUser } from "@/server/auth/web";
+import { cookies } from "next/headers";
+import "@/styles/workspace.css";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +19,9 @@ export const metadata: Metadata = {
 
 export default async function WorkspaceLayout({ children }: { children: ReactNode }) {
   const user = await currentUser().catch(() => null);
+  const preferences = await cookies();
+  const theme = preferences.get('fitimi_theme')?.value === 'dark' ? 'dark' : 'light';
+  const collapsed = preferences.get('fitimi_sidebar')?.value === 'collapsed';
   // Each page checks its own authorization before rendering; preserve its return URL.
-  return <html lang="sq"><body>{user ? <WorkspaceShell user={user}><LoginWelcome/>{children}</WorkspaceShell> : children}</body></html>;
+  return <html lang="sq" data-workspace-theme={theme}><body>{user ? <WorkspaceShell user={user} initialTheme={theme} initialCollapsed={collapsed}><LoginWelcome/>{children}</WorkspaceShell> : children}</body></html>;
 }

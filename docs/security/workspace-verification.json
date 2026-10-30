@@ -1,0 +1,31 @@
+{
+  "results": [
+    "Prototype order retains every existing business section and account security",
+    "Sidebar collapse is accessible and persists after reload",
+    "Client detail preserves data and moves its activity panel to Historiku",
+    "Real client creation appears in centralized, filtered immutable activity snapshots",
+    "Light/dark themes persist and pass axe/overflow checks at 1440, 980, 390 and 320px",
+    "Mobile modal traps focus, closes with Escape and navigates without covering content",
+    "Activity page rejects anonymous access without exposing records"
+  ],
+  "syntheticOnly": true,
+  "unitTests": 81,
+  "passkeyRegressionScenarios": 19,
+  "typecheck": "PASS",
+  "lint": "PASS",
+  "productionBuild": "PASS",
+  "viewports": [
+    1440,
+    980,
+    390,
+    320
+  ],
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "anonymousAndMfaPendingAccess": "DENIED",
+  "reactHydrationWarnings": 0,
+  "ownerDatabaseModified": false,
+  "productionDeployment": false
+}

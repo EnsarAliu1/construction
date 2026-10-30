@@ -28,7 +28,7 @@ async function main(){
   }
   if(!baseline){
    const key=`fitimi.payment.pending.${f.userId}`;await page.evaluate(key=>sessionStorage.setItem(key,JSON.stringify({idempotencyKey:crypto.randomUUID(),payment:{amount:'13.37',projectName:'PRIVATE-LEGACY-DRAFT'}})),key);
-   await page.getByRole('button',{name:"Dilni",exact:true}).click();await page.waitForURL(`${origin}/administrata`);await page.waitForFunction(key=>!sessionStorage.getItem(key)?.includes('payment'),key);const retained=await page.evaluate(key=>JSON.parse(sessionStorage.getItem(key)!),key);assert.deepEqual(Object.keys(retained),['idempotencyKey']);results.push('Login/logout migration removes legacy financial drafts and retains opaque recovery keys');
+   await page.locator('.workspace-profile>summary').click();await page.getByRole('button',{name:"Dilni",exact:true}).click();await page.waitForURL(`${origin}/administrata`);await page.waitForFunction(key=>!sessionStorage.getItem(key)?.includes('payment'),key);const retained=await page.evaluate(key=>JSON.parse(sessionStorage.getItem(key)!),key);assert.deepEqual(Object.keys(retained),['idempotencyKey']);results.push('Login/logout migration removes legacy financial drafts and retains opaque recovery keys');
    await writeFile(`${evidence}/recovery-after.json`,JSON.stringify({browser:browser.version(),financialPayloadPresent:false,results},null,2));console.log(`PASS: ${results.length} browser recovery/storage scenarios preserve one logical payment and no persisted financial payload.`);
   }
   await context.close();

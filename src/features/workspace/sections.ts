@@ -14,6 +14,22 @@ export const sections = {
 export type SectionKey = keyof typeof sections;
 export function isSection(value: string): value is SectionKey { return Object.hasOwn(sections, value); }
 export const workspaceNavigation = [
-  { href: "/app", label: "Përmbledhja" },
-  ...Object.entries(sections).map(([key, value]) => ({ href: `/app/${key}`, label: value.title })),
+  { href: "/app", label: "Paneli kryesor" },
+  { href: "/app/projects", label: "Punishtet" },
+  { href: "/app/clients", label: "Klientët" },
+  { href: "/app/payments", label: "Pagesat" },
+  { href: "/app/expenses", label: "Shpenzimet" },
+  { href: "/app/receipts", label: "Dëftesat" },
+  { href: "/app/reports", label: "Raportet" },
+  { href: "/app/categories", label: "Kategoritë & Referencat" },
+  { href: "/app/persons", label: "Personat & Furnitorët" },
+  { href: "/app/vehicles", label: "Automjetet" },
+  { href: "/app/history", label: "Historiku" },
+  { href: "/app/security", label: "Cilësimet & Siguria" },
+  { href: "/app/accounts", label: "Llogaritë" },
+];
+export const workspaceGroups = [
+  { label: "Operacionet", items: workspaceNavigation.slice(0, 3) },
+  { label: "Financat", items: workspaceNavigation.slice(3, 7) },
+  { label: "Sistemi", items: workspaceNavigation.slice(7) },
 ];

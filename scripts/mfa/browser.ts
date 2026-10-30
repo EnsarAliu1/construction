@@ -27,7 +27,7 @@ async function main() {
     const click = (name: string) => page.getByRole('button', { name, exact: true }).click();
     const signed = async (path = '/app') => { await page.waitForURL(origin + path); await page.locator('h1').waitFor(); assert.equal((await context.request.get(origin + '/api/auth/session')).status(), 200); };
     const login = async () => { await c.query('UPDATE auth_login_limits SET window_ends_at=DATE_SUB(UTC_TIMESTAMP(3),INTERVAL 1 SECOND)'); await page.goto(origin + '/administrata'); await page.locator('#email').fill(email); await page.locator('#password').fill(password); const t = performance.now(); await click("Hyni"); await page.waitForURL(/\/administrata\/mfa/); await page.locator('#mfa-code').waitFor({ state: 'attached' }).catch(() => { }); timings.push({ kind: 'password-to-MFA-page', ms: performance.now() - t }); };
-    const logout = async () => { await click("Dilni"); await page.waitForURL(origin + '/administrata'); assert.equal((await context.request.get(origin + '/api/auth/session')).status(), 401); };
+    const logout = async () => { await page.locator('.workspace-profile>summary').click();await click("Dilni"); await page.waitForURL(origin + '/administrata'); assert.equal((await context.request.get(origin + '/api/auth/session')).status(), 401); };
     const storageSafe = async () => { const values = await page.evaluate(() => JSON.stringify({ local: { ...localStorage }, session: { ...sessionStorage } })); for (const value of secrets)
         assert(!values.includes(value)); };
     const enroll = async (destination = '/app', refreshCodes = false) => {
