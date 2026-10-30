@@ -16,4 +16,4 @@ export function proxy(request:NextRequest){
  response.headers.set("Cache-Control","private, no-store, max-age=0");
  return response;
 }
-export const config={matcher:["/app/:path*","/login/:path*"]};
+export const config={matcher:["/app/:path*","/administrata/:path*"]};

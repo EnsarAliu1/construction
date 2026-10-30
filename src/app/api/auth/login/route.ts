@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
   try {
     const result = await withAuthConnection(connection => login(connection, body.email as string, body.password as string, request.cookies.get(sessionCookieSettings().name)?.value));
     if (!result.ok) return loginFailure(result.limited ? 429 : 401);
-    const response = authJson({ ok: true, state:result.state, returnTo: `/login/mfa?returnTo=${encodeURIComponent(safeReturnPath(body.returnTo))}` });
+    const response = authJson({ ok: true, state:result.state, returnTo: `/administrata/mfa?returnTo=${encodeURIComponent(safeReturnPath(body.returnTo))}` });
     clearSessionCookie(response);
     setChallengeCookie(response, result.token);
     return response;

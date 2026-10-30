@@ -4,7 +4,7 @@ import {browserSecurityHeaders,contentSecurityPolicy} from "./src/server/securit
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Preserve the explicit 127.0.0.1 -> localhost redirect for local WebAuthn.
-  // Next otherwise normalizes both hosts to localhost and rewrites Location as /login.
+  // Next otherwise normalizes both hosts to localhost and rewrites Location as /administrata.
   skipProxyUrlNormalize: process.env.NODE_ENV!=='production'&&process.env.FITIMI_LOCAL_DEVELOPMENT==='1'&&!process.env.FITIMI_TEST_BUILD,
   // Required for a complete Albanian 404 document with the existing multiple root layouts.
   experimental: { globalNotFound: true },
@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
     ...["/sq/:path*","/"].map(source=>({source,headers:[{key:"Content-Security-Policy",value:contentSecurityPolicy(process.env.NODE_ENV==="production")}]})),
     {source:"/api/:path*",headers:[{key:"Cache-Control",value:"private, no-store, max-age=0"}]},
     ...["/sq/:path*"].map(source=>({source,headers:[{key:"X-Content-Type-Options",value:"nosniff"},{key:"Referrer-Policy",value:"strict-origin-when-cross-origin"}]})),
-    ...["/app/:path*","/api/:path*","/login/:path*"].map(source=>({source,headers:[{key:"X-Robots-Tag",value:"noindex, nofollow, noarchive"}]}))
+    ...["/app/:path*","/api/:path*","/administrata/:path*"].map(source=>({source,headers:[{key:"X-Robots-Tag",value:"noindex, nofollow, noarchive"}]}))
   ];},
   turbopack: { root: process.cwd() },
 };

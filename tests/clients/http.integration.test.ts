@@ -24,7 +24,7 @@ test("real HTTP Clients pages, validation, search, conflicts, archive and sessio
     await t.test("all Clients pages and endpoints deny anonymous access before data lookup", async () => {
       const unknownId = randomUUID();
       for (const path of ["/app/clients", "/app/clients/new", `/app/clients/${unknownId}`, `/app/clients/${unknownId}/edit`]) {
-        const response = await read(path, ""); assert.equal(response.status, 307); assert.equal(new URL(response.headers.get("location")!, origin).pathname, "/login");
+        const response = await read(path, ""); assert.equal(response.status, 307); assert.equal(new URL(response.headers.get("location")!, origin).pathname, "/administrata");
       }
       for (const response of [await read("/api/clients", ""), await read(`/api/clients/${unknownId}`, ""), await write("/api/clients", "POST", {}, ""), await write(`/api/clients/${unknownId}`, "PUT", {}, ""), await write(`/api/clients/${unknownId}`, "DELETE", {}, "")]) assert.equal(response.status, 401);
     });

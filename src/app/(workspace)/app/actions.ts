@@ -30,5 +30,5 @@ export async function logoutAction() {
     store.set(name, "", { ...attributes, maxAge: 0, expires: new Date(0) });
   }
   const {name:pendingName,...pendingAttributes}=challengeCookieSettings();store.set(pendingName,"",{...pendingAttributes,maxAge:0,expires:new Date(0)});
-  redirect("/login");
+  redirect("/administrata");
 }

@@ -43,7 +43,7 @@ test("HTTP authentication, private routes, cookies, server actions and outage de
     // Fetch-mode Server Actions can stream the redirect's RSC payload with 200.
     // Require its explicit redirect instruction and deny any sensitive payload.
     assert.ok([200, 303].includes(response.status));
-    assert.equal(response.headers.get("x-action-redirect"), "/login;push");
+    assert.equal(response.headers.get("x-action-redirect"), "/administrata;push");
     const payload = await response.text();
     assert.ok(!payload.includes(password) && (!cookie || !payload.includes(cookie.split("=")[1])));
   }
@@ -67,7 +67,7 @@ test("HTTP authentication, private routes, cookies, server actions and outage de
       for (const suffix of privatePaths) {
         const response = await request(`/app${suffix}`);
         assert.equal(response.status, 307);
-        assert.equal(new URL(response.headers.get("location")!, origin).pathname, "/login");
+        assert.equal(new URL(response.headers.get("location")!, origin).pathname, "/administrata");
       }
       assert.equal((await request("/api/auth/session")).status, 401);
       const action = await request("/app", { method: "POST", headers: { Origin: origin.origin, "Next-Action": actionId, "Content-Type": "text/plain;charset=UTF-8" }, body: "[]" });
@@ -76,7 +76,7 @@ test("HTTP authentication, private routes, cookies, server actions and outage de
 
     await t.test("public SQ/EN pages, login and anonymous route regression remain available", async () => {
       for (const locale of ["sq", "en"]) for (const path of ["", "/about", "/services", "/projects", "/contact"]) assert.equal((await request(`/${locale}${path}`)).status, 200);
-      assert.equal((await request("/login")).status, 200);
+      assert.equal((await request("/administrata")).status, 200);
       const result = spawnSync(process.execPath, ["scripts/check-routes.mjs", origin.origin], { encoding: "utf8", timeout: 30_000, env: { ...process.env, AUTH_SMOKE_COOKIE: "" } });
       assert.equal(result.status, 0, "Anonymous route smoke test failed");
     });

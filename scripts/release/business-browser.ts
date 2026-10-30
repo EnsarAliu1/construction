@@ -46,12 +46,12 @@ async function main() {
     page.on('console', m => { if (m.type() === 'error' && !/server responded with a status of (400|401|409)/.test(m.text()))
         errors.push(m.text()); });
     try {
-        await goto('/login');
+        await goto('/administrata');
         await page.locator('#email').fill(f.email);
         await page.locator('#password').fill('wrong-password');
         await click("Hyni");
         await page.getByRole('alert').waitFor();
-        assert(new URL(page.url()).pathname === '/login');
+        assert(new URL(page.url()).pathname === '/administrata');
         await page.locator('#password').fill(f.password);
         await click("Hyni");
         await finishFixtureBrowserLogin(page,f.connection,f.userId);
@@ -232,7 +232,7 @@ async function main() {
         await goto(`/app/projects/${project}`);
         await page.screenshot({ path: root+'/screenshots/business-project.png', fullPage: true });
         await click("Dilni");
-        await page.waitForURL(origin + '/login');
+        await page.waitForURL(origin + '/administrata');
         assert.equal((await context.request.get(origin + '/api/clients')).status(), 401);
         assert.deepEqual(errors, []);
         steps.push('Mobile navigation/focus/overflow, screenshots and logout');

@@ -13,7 +13,7 @@ export async function referencePageData<T>(path: string, value: string, work: (c
   const token = (await cookies()).get(sessionCookieSettings().name)?.value;
   try { return await withAuthConnection(c => work(c, token, value)); }
   catch (error) {
-    if (error instanceof AuthenticationRequired) redirect(`/login?returnTo=${encodeURIComponent(path)}`);
+    if (error instanceof AuthenticationRequired) redirect(`/administrata?returnTo=${encodeURIComponent(path)}`);
     if (error instanceof ReferenceError && error.status === 404) notFound();
     throw new Error("Të dhënat referuese janë përkohësisht të padisponueshme. Provoni përsëri.");
   }

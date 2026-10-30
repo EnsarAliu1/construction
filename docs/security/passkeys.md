@@ -5,7 +5,7 @@ Owner-approved extension on 2026-10-30. This adds WebAuthn passkeys to the exist
 ## User flow
 
 1. Start the existing local database with `docker compose up -d`, then run `npm run dev`.
-2. Open `http://localhost:3000/login`. The local owner profile redirects old `127.0.0.1:3000/login` and private-page links to this domain. Port 3000 and database port 3307 are unchanged.
+2. Open `http://localhost:3000/administrata`. The local owner profile redirects `127.0.0.1:3000/administrata` and private-page links to this domain. The former `/login` and `/login/mfa` pages return 404; all sign-in, MFA, logout and reauthentication links use `/administrata`. Changing the URL is an organizational measure, not an additional authentication factor. Port 3000 and database port 3307 are unchanged.
 3. Initially sign in with the existing password and TOTP/recovery flow. Account provisioning remains operator-only.
 4. Within five minutes, open **Siguria e llogarisë**, name the passkey and choose **Aktivizo hyrjen me pajisje**. Confirm the operating-system prompt.
 5. Subsequently choose **Hyr shpejt**. A discoverable credential identifies the account, without entering email/password again. The operating system requires its PIN or biometric verification.

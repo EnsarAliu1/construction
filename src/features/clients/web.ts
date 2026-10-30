@@ -12,7 +12,7 @@ export async function clientPageData<T>(returnTo: string, work: (connection: Con
   const token = (await cookies()).get(sessionCookieSettings().name)?.value;
   try { return await withAuthConnection(connection => work(connection, token)); }
   catch (error) {
-    if (error instanceof AuthenticationRequired) redirect(`/login?returnTo=${encodeURIComponent(returnTo)}`);
+    if (error instanceof AuthenticationRequired) redirect(`/administrata?returnTo=${encodeURIComponent(returnTo)}`);
     if (error instanceof ClientNotFound) notFound();
     // Keep raw database exceptions, including search parameters, out of RSC logs.
     throw new Error("Të dhënat e klientëve janë përkohësisht të padisponueshme. Provoni përsëri.");

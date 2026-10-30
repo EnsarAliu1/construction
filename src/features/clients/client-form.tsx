@@ -46,7 +46,7 @@ export function ClientForm({ client }: { client?: ClientRecord }) {
   return <Card className="client-form-card">
     <form ref={formRef} onSubmit={submit} aria-busy={busy}>
       <p className="muted client-form-note">Emri dhe lloji i klientit janë të detyrueshëm. Kontakti, adresa dhe NUI janë opsionale.</p>
-      {message && <div role="alert" className="client-alert client-alert-error"><p>{message}</p>{errors.form && <p>{errors.form}</p>}{errors.version && <p>{errors.version}</p>}{conflict && <a className="text-link" href={client ? `/app/clients/${client.id}/edit` : "/app/clients"}>Ringarkoni të dhënat e fundit të klientit</a>}{unauthorized && <Link className="text-link" href={`/login?returnTo=${encodeURIComponent(client ? `/app/clients/${client.id}/edit` : "/app/clients/new")}`}>Hyni përsëri</Link>}</div>}
+      {message && <div role="alert" className="client-alert client-alert-error"><p>{message}</p>{errors.form && <p>{errors.form}</p>}{errors.version && <p>{errors.version}</p>}{conflict && <a className="text-link" href={client ? `/app/clients/${client.id}/edit` : "/app/clients"}>Ringarkoni të dhënat e fundit të klientit</a>}{unauthorized && <Link className="text-link" href={`/administrata?returnTo=${encodeURIComponent(client ? `/app/clients/${client.id}/edit` : "/app/clients/new")}`}>Hyni përsëri</Link>}</div>}
       <fieldset disabled={busy} className="client-fieldset">
         <legend className="sr-only">Të dhënat e klientit</legend>
         <div className="client-form-grid">

@@ -10,8 +10,8 @@ test('passkeys use a valid configured RP domain; the local owner profile canonic
   Object.assign(process.env,{NODE_ENV:'development'});process.env.FITIMI_LOCAL_DEVELOPMENT='1';delete process.env.FITIMI_TEST_BUILD;process.env.AUTH_ORIGIN='http://127.0.0.1:3000';
   assert.equal(trustedOrigin().origin,'http://localhost:3000');assert.deepEqual(passkeyRelyingParty(),{origin:'http://localhost:3000',rpID:'localhost'});
   assert.doesNotThrow(()=>assertSameOrigin(new Headers({origin:'http://localhost:3000',host:'localhost:3000'})));
-  const redirected=proxy(new NextRequest('http://127.0.0.1:3000/login?returnTo=%2Fapp%2Fsecurity',{headers:{host:'127.0.0.1:3000','x-forwarded-host':'attacker.invalid'}}));
-  assert.equal(redirected.status,307);assert.equal(redirected.headers.get('location'),'http://localhost:3000/login?returnTo=%2Fapp%2Fsecurity');
+  const redirected=proxy(new NextRequest('http://127.0.0.1:3000/administrata?returnTo=%2Fapp%2Fsecurity',{headers:{host:'127.0.0.1:3000','x-forwarded-host':'attacker.invalid'}}));
+  assert.equal(redirected.status,307);assert.equal(redirected.headers.get('location'),'http://localhost:3000/administrata?returnTo=%2Fapp%2Fsecurity');
   assert.throws(()=>assertSameOrigin(new Headers({origin:'http://127.0.0.1:3000',host:'localhost:3000'})));
   assert.throws(()=>assertSameOrigin(new Headers({origin:'http://localhost:3000',host:'attacker.invalid','x-forwarded-host':'localhost:3000'})));
   process.env.FITIMI_TEST_BUILD='isolated';assert.equal(trustedOrigin().origin,'http://127.0.0.1:3000');assert.throws(()=>passkeyRelyingParty());

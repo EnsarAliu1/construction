@@ -10,7 +10,7 @@ export async function expensePageData<T>(path: string, work: (c: Connection, tok
   await requirePageUser(path); const token = (await cookies()).get(sessionCookieSettings().name)?.value;
   try { return await withAuthConnection(c => work(c,token)); }
   catch(error) {
-    if (error instanceof AuthenticationRequired) redirect(`/login?returnTo=${encodeURIComponent(path)}`);
+    if (error instanceof AuthenticationRequired) redirect(`/administrata?returnTo=${encodeURIComponent(path)}`);
     if (error instanceof ExpenseError && error.status === 404) notFound();
     throw new Error("Shpenzimet janë përkohësisht të padisponueshme. Provoni përsëri.");
   }

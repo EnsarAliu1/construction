@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 const root='artifacts/passkeys',name=`fitimi_test_passkeys_${randomBytes(4).toString('hex')}`,username=`pk_test_${randomBytes(4).toString('hex')}`,password=randomBytes(32).toString('hex');
 assert(/^fitimi_test_passkeys_[0-9a-f]{8}$/.test(name));assert(/^pk_test_[0-9a-f]{8}$/.test(username));
 mkdirSync(root,{recursive:true});let admin,server,created=false,account=false,wildcard=false;
-async function responding(){try{await fetch('http://127.0.0.1:3000/login',{signal:AbortSignal.timeout(700)});return true;}catch{return false;}}
+async function responding(){try{await fetch('http://127.0.0.1:3000/administrata',{signal:AbortSignal.timeout(700)});return true;}catch{return false;}}
 async function run(command,args,env){const child=spawn(command,args,{env,stdio:'inherit',windowsHide:true});const code=await new Promise((resolve,reject)=>{child.on('error',reject);child.on('exit',resolve);});assert.equal(code,0,'Task verification failed.');}
 try{
  assert(!await responding(),'Port 3000 is already serving an application. Stop your own dev server before running this isolated test; it was left untouched.');

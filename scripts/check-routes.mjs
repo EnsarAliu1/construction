@@ -29,7 +29,7 @@ async function checkProtectedRedirect(path) {
   const response = await fetch(new URL(path, base), { redirect: "manual" });
   assert.equal(response.status, 307, `${path}: anonymous access must redirect`);
   const target = new URL(response.headers.get("location"), base);
-  assert.equal(target.pathname, "/login");
+  assert.equal(target.pathname, "/administrata");
   assert.equal(target.searchParams.get("returnTo"), path);
   console.log(`PASS ${path} (anonymous login redirect)`);
 }
@@ -37,12 +37,12 @@ for (const route of appRoutes) {
   if (sessionCookie) await check(`/app${route}`, "sq", true);
   else await checkProtectedRedirect(`/app${route}`);
 }
-const loginPage = await fetch(new URL("/login", base));
+const loginPage = await fetch(new URL("/administrata", base));
 assert.equal(loginPage.status, 200);
 const loginHtml = await loginPage.text();
 assert.match(loginHtml, /autoComplete="username"/i);
 assert.match(loginHtml, /autoComplete="current-password"/i);
-console.log("PASS /login (accessible login form)");
+console.log("PASS /administrata (accessible login form)");
 for (const path of ["/fr", "/sq/missing", ...(sessionCookie ? ["/app/missing"] : [])]) {
   const response = await fetch(new URL(path, base), { headers: sessionCookie ? { Cookie: sessionCookie } : {} });
   assert.equal(response.status, 404, `${path}: expected HTTP 404`);const missing=await response.text();assert.match(missing,/<html[^>]*lang="sq"/);assert(missing.includes("Faqja nuk u gjet"));

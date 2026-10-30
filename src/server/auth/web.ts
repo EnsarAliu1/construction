@@ -16,8 +16,8 @@ export const currentUser = cache(async () => {
 export async function requirePageUser(returnTo = "/app") {
   let user;
   try { user = await currentUser(); }
-  catch { redirect(`/login?unavailable=1&returnTo=${encodeURIComponent(safeReturnPath(returnTo))}`); }
-  if (!user) redirect(`/login?returnTo=${encodeURIComponent(safeReturnPath(returnTo))}`);
+  catch { redirect(`/administrata?unavailable=1&returnTo=${encodeURIComponent(safeReturnPath(returnTo))}`); }
+  if (!user) redirect(`/administrata?returnTo=${encodeURIComponent(safeReturnPath(returnTo))}`);
   return user;
 }
 

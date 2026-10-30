@@ -29,7 +29,7 @@ export function ArchiveControl({ id, version, name, blocked }: { id: string; ver
     {blocked ? <p className="client-alert" role="status">Ky klient ka projekt aktiv ose të pezulluar dhe nuk mund të arkivohet.</p> : <form onSubmit={archive} aria-busy={busy}>
       <label className="client-checkbox"><input type="checkbox" checked={confirmed} disabled={busy} onChange={event => setConfirmed(event.target.checked)} required />E kuptoj dhe dëshiroj ta arkivoj këtë klient.</label>
       <Button type="submit" disabled={!confirmed || busy}>{busy ? "Archiving…" : "Konfirmoni arkivimin"}</Button>
-      {message && <div role="alert" className="client-alert client-alert-error"><p>{message}</p><a href={`/app/clients/${id}`} className="text-link">Ringarkoni klientin</a><Link href={`/login?returnTo=${encodeURIComponent(`/app/clients/${id}`)}`} className="text-link">Hyni përsëri</Link></div>}
+      {message && <div role="alert" className="client-alert client-alert-error"><p>{message}</p><a href={`/app/clients/${id}`} className="text-link">Ringarkoni klientin</a><Link href={`/administrata?returnTo=${encodeURIComponent(`/app/clients/${id}`)}`} className="text-link">Hyni përsëri</Link></div>}
     </form>}
   </details>;
 }

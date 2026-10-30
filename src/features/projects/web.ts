@@ -11,7 +11,7 @@ export async function projectPageData<T>(path: string, work: (connection: Connec
   await requirePageUser(path); const token = (await cookies()).get(sessionCookieSettings().name)?.value;
   try { return await withAuthConnection(connection => work(connection, token)); }
   catch (error) {
-    if (error instanceof AuthenticationRequired) redirect(`/login?returnTo=${encodeURIComponent(path)}`);
+    if (error instanceof AuthenticationRequired) redirect(`/administrata?returnTo=${encodeURIComponent(path)}`);
     if (error instanceof ProjectError && ["ID", "NOT_FOUND"].includes(error.code)) notFound();
     throw new Error("Projektet janë përkohësisht të padisponueshme. Provoni përsëri.");
   }

@@ -55,7 +55,7 @@ test('real HTTP pre-MFA denial, request controls, full assurance and secret-free
             assert(action);
             const response = await fetch(origin + '/app', { method: 'POST', headers: { Cookie: pending, Origin: origin, 'Next-Action': action[0], 'Content-Type': 'text/plain;charset=UTF-8' }, body: '[]', redirect: 'manual' });
             assert([200, 303].includes(response.status));
-            assert.equal(response.headers.get('x-action-redirect'), '/login;push');
+            assert.equal(response.headers.get('x-action-redirect'), '/administrata;push');
             assert.equal((await request('/api/auth/session', 'GET', asSession)).status, 401);
         });
         await t.test('approved single-use recovery issues a different full session; all further completion attempts fail', async () => {
