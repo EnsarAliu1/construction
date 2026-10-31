@@ -1,3 +1,4 @@
+import {kosovoDate} from "@/lib/presentation";
 import { ClientLink as Link } from "@/features/clients/client-link";
 import {Badge, Card} from "@/components/ui";
 import {WorkspaceHeading as PageHeading} from '@/components/workspace/page-heading';
@@ -8,7 +9,7 @@ import { clientPageData } from "@/features/clients/web";
 
 
 export const metadata = { title: "Detajet e klientit" };
-function time(value: string) { return `${value.replace("T", " ")} UTC`; }
+function time(value: string) { return kosovoDate(value); }
 export default async function ClientDetailsPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ notice?: string }> }) {
   const { id } = await params;
   const { client, relatedProjects, projectCount, hasOpenProjects,  } = await clientPageData(`/app/clients/${id}`, (connection, token) => getClient(connection, token, id));

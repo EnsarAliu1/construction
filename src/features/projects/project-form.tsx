@@ -1,4 +1,5 @@
 "use client";
+import {notifySuccess} from "@/components/workspace/success-toast";
 import { useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -20,7 +21,7 @@ export function ProjectForm({ choices, initial }: { choices: ClientChoice[]; ini
       const project = { ...fields, clientId: selected?.id, clientVersion: selected?.version };
       const response = await fetch(initial ? `/api/projects/${initial.project.id}` : "/api/projects", { method: initial ? "PUT" : "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(initial ? { project, version: initial.project.version } : { project, contract: { totalValue: inputMoney(total), phases: phasePayload(phases) } }) });
       const result = await response.json(); if (!response.ok) { setMessage(result.message); setConflict(result.code === "CONFLICT"); setUnauthorized(response.status === 401); return; }
-      saved = true; router.push(`/app/projects/${result.project.id}?notice=${initial ? "updated" : "created"}`); router.refresh();
+      saved = true; notifySuccess("Punishtja u ruajt."); router.push(`/app/projects/${result.project.id}?notice=${initial ? "updated" : "created"}`); router.refresh();
     } catch (error) { setMessage(error instanceof Error && error.message.startsWith("Shkruani ") ? error.message : "Ruajtja dështoi. Të dhënat tuaja janë mbajtur në formular; provoni përsëri."); }
     finally { if (!saved) { inFlight.current = false; setBusy(false); requestAnimationFrame(() => alertRef.current?.focus()); } }
   }

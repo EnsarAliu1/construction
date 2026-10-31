@@ -1,3 +1,4 @@
+import {SuccessToast} from "@/components/workspace/success-toast";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { WorkspaceShell } from "@/components/layout/workspace-shell";
@@ -26,5 +27,5 @@ export default async function WorkspaceLayout({ children, modal }: { children: R
   const theme = preferences.get('fitimi_theme')?.value === 'dark' ? 'dark' : 'light';
   const collapsed = preferences.get('fitimi_sidebar')?.value === 'collapsed';
   // Each page checks its own authorization before rendering; preserve its return URL.
-  return <html lang="sq" data-workspace-theme={theme}><body>{user ? <WorkspaceShell user={user} initialTheme={theme} initialCollapsed={collapsed}><LoginWelcome/>{children}{modal}</WorkspaceShell> : children}</body></html>;
+  return <html lang="sq" data-workspace-theme={theme}><body>{user ? <WorkspaceShell user={user} initialTheme={theme} initialCollapsed={collapsed}><LoginWelcome/><SuccessToast/>{children}{modal}</WorkspaceShell> : children}</body></html>;
 }

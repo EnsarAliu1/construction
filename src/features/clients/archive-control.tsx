@@ -1,4 +1,5 @@
 "use client";
+import {notifySuccess} from "@/components/workspace/success-toast";
 import {ActionDialog} from '@/components/workspace/action-dialog';
 
 import Link from "next/link";
@@ -21,7 +22,7 @@ export function ArchiveControl({ id, version, name, blocked }: { id: string; ver
       const response = await fetch(`/api/clients/${id}`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ version, confirmation: "archive" }) });
       const result = await response.json();
       if (!response.ok) { setMessage(result.message ?? "Klienti nuk mund të arkivohet."); return; }
-      archived = true; router.push(`/app/clients/${id}?notice=archived`); router.refresh();
+      archived = true; notifySuccess("Klienti u arkivua."); router.push(`/app/clients/${id}?notice=archived`); router.refresh();
     } catch { setMessage("Lidhja dështoi. Provoni përsëri."); }
     finally { if (!archived) { inFlight.current = false; setBusy(false); } }
   }

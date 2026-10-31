@@ -31,3 +31,17 @@ test('empty months show zero without carrying previous-month income into the cur
 test('dashboard currency display preserves cents and amounts beyond Number precision',()=>{
  assert.equal(displayEuro('9007199254740993.01'),'9.007.199.254.740.993,01 €');assert.equal(displayEuro('-12.50'),'-12,50 €');assert.equal(displayEuro('0.00'),'0 €');assert.throws(()=>displayEuro('1e3'));
 });
+
+// UI formatting must preserve calendar dates and exact maximum DECIMAL money.
+import {kosovoDate,groupedDecimal,includedVat} from '../../src/lib/presentation';
+test('Kosovo display uses local summer/winter time without shifting calendar-only dates',()=>{
+ assert.equal(kosovoDate('2026-10-31'),'31/10/2026');
+ assert.equal(kosovoDate('2026-10-31 14:21:00.000'),'31/10/2026 15:21');
+ assert.equal(kosovoDate('2026-07-31T23:21:00Z'),'01/08/2026 01:21');
+});
+test('Grouped editing preserves decimal precision and included VAT never increases gross',()=>{
+ assert.equal(groupedDecimal('99999999999999999.99'),'99 999 999 999 999 999.99');
+ assert.equal(groupedDecimal('10000.'),'10 000.');
+ assert.deepEqual(includedVat('118.00'),{net:'100.00',vat:'18.00',gross:'118.00'});
+ for(const gross of ['0.01','100.00','1234.56','99999999999999999.99']){const r=includedVat(gross);assert.equal(BigInt(r.net.replace('.',''))+BigInt(r.vat.replace('.','')),BigInt(gross.replace('.','')));}
+});

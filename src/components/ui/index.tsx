@@ -1,3 +1,4 @@
+import {MoneyInput} from "@/components/workspace/money-input";
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -6,7 +7,7 @@ export function Button({ className, ...props }: ButtonHTMLAttributes<HTMLButtonE
 }
 
 export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
-  return <input className={cn("input", className)} {...props} />;
+  return props.inputMode === "decimal" ? <MoneyInput className={className} {...props}/> : <input className={cn("input", className)} {...props} />;
 }
 
 export function FormField({ label, htmlFor, children }: { label: string; htmlFor: string; children: ReactNode }) {

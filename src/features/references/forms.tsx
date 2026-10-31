@@ -1,4 +1,5 @@
 "use client";
+import {notifySuccess} from "@/components/workspace/success-toast";
 import {useFilterNavigation} from '@/components/workspace/use-filter-navigation';
 import {ActionDialog} from '@/components/workspace/action-dialog';
 import {valueLabel} from "@/i18n/format";
@@ -20,7 +21,7 @@ export function ReferenceForm({ kind, record }: { kind: ReferenceKind; record?: 
       const response = await fetch(`/api/references/${kind}${record ? `/${record.id}` : ""}`, { method: record ? "PUT" : "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(record ? { version: record.version, record: values } : values) });
       const body = await response.json();
       if (!response.ok) { setMessage(body.message ?? "Të dhënat nuk mund të ruhen."); setErrors(body.fields ?? {}); setConflict(body.code === "CONFLICT"); setUnauthorized(response.status === 401); return; }
-      saved = true; router.push(`/app/${kind}/${body.record.id}?notice=${record ? "updated" : "created"}`); router.refresh();
+      saved = true; notifySuccess("Të dhënat u ruajtën."); router.push(`/app/${kind}/${body.record.id}?notice=${record ? "updated" : "created"}`); router.refresh();
     } catch { setMessage("Lidhja dështoi. Të dhënat tuaja janë ruajtur në formular; provoni përsëri."); }
     finally { if (!saved) { inFlight.current = false; setBusy(false); requestAnimationFrame(() => ((formRef.current?.querySelector('[aria-invalid="true"]') as HTMLElement | null) ?? alertRef.current)?.focus()); } }
   }
@@ -37,7 +38,7 @@ export function ReferenceLifecycle({ kind, record }: { kind: ReferenceKind; reco
     try {
       const response = await fetch(`/api/references/${kind}/${record.id}/lifecycle`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ version: record.version, action, confirmation: action }) });
       const body = await response.json(); if (!response.ok) { setMessage(body.message); return; }
-      saved = true; router.push(`/app/${kind}/${record.id}?notice=${record.isActive ? "deactivated" : "reactivated"}`); router.refresh();
+      saved = true; notifySuccess("Të dhënat u ruajtën."); router.push(`/app/${kind}/${record.id}?notice=${record.isActive ? "deactivated" : "reactivated"}`); router.refresh();
     } catch { setMessage("Lidhja dështoi. Provoni përsëri."); } finally { if (!saved) { inFlight.current = false; setBusy(false); } }
   }
   return <ActionDialog title={label+" t\u00eb dh\u00ebn\u00eb"}><p>{record.isActive ? "Çaktivizimi e përjashton këtë të dhënë nga përzgjedhjet aktive në të ardhmen. Identiteti, informacioni dhe të gjitha lidhjet historike me shpenzimet ruhen." : "Riaktivizimi e bën të njëjtën të dhënë sërish të disponueshme në përzgjedhjet aktive. Identiteti dhe historiku ruhen."}</p><form onSubmit={submit} aria-busy={busy}><label className="client-checkbox"><input type="checkbox" required disabled={busy} checked={confirmed} onChange={event => setConfirmed(event.target.checked)} />Konfirmoj se dëshiroj të {valueLabel(action)} këto të dhëna.</label><Button type="submit" disabled={!confirmed || busy}>{busy ? "Duke ruajtur gjendjen…" : `Konfirmoni ${record.isActive ? "çaktivizimin" : "riaktivizimin"}`}</Button>{message && <div role="alert" className="client-alert client-alert-error"><p>{message}</p><a className="text-link" href={`/app/${kind}/${record.id}`}>Ringarkoni të dhënat</a><Link className="text-link" href={`/administrata?returnTo=${encodeURIComponent(`/app/${kind}/${record.id}`)}`}>Hyni përsëri</Link></div>}<p className="sr-only" role="status">{busy ? "Duke ruajtur ndryshimin e gjendjes." : ""}</p></form></ActionDialog>;

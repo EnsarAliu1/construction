@@ -1,4 +1,5 @@
 "use client";
+import {notifySuccess} from "@/components/workspace/success-toast";
 
 import Link from "next/link";
 import { useRef, useState, type FormEvent } from "react";
@@ -36,7 +37,7 @@ export function ClientForm({ client }: { client?: ClientRecord }) {
         requestAnimationFrame(() => (formRef.current?.querySelector('[aria-invalid="true"]') as HTMLElement | null)?.focus());
         return;
       }
-      saved = true;
+      saved = true; notifySuccess("Klienti u ruajt.");
       router.push(`/app/clients/${result.client.id}?notice=${client ? "updated" : "created"}`);
       router.refresh();
     } catch { setMessage("Lidhja dështoi. Të dhënat tuaja janë ruajtur në formular; provoni përsëri."); }

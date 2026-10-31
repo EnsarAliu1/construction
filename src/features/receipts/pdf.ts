@@ -1,3 +1,4 @@
+import {kosovoDate,groupedDecimal,includedVat} from "@/lib/presentation";
 import PDFDocument from "pdfkit";
 import {resolve} from "node:path";
 import type {HistorySnapshot} from "@/server/db/history-snapshot";
@@ -16,19 +17,30 @@ export async function renderReceiptPdf(snapshot:HistorySnapshot):Promise<Buffer>
     doc.font("Receipt").fontSize(10).fillColor("#14212a").text(content,{width:499,lineGap:2});doc.moveDown(.65);
   }
   try{
-    doc.font("ReceiptBold").fontSize(11).fillColor("#59636c").text("JO-FISKALE / DOKUMENT OPERATIV");
-    doc.moveDown(.5).fontSize(20).fillColor("#14212a").text("Dëftesë pagese");
-    doc.moveDown(.5);line("Kompania",snapshot.companyName);
-    line("Numri i dëftesës",snapshot.receiptNumber);line("Versioni i dokumentit",snapshot.documentVersion);
-    line("Lëshuar më (UTC)",snapshot.issuedAt);line("Klienti",snapshot.clientName);line("Projekti",snapshot.projectName);
-    if(snapshot.location)line("Vendi / Lokacioni",snapshot.location);
-    line("Shuma e pranuar",`${snapshot.amount} EUR`);line("Mënyra e pagesës",snapshot.method==="cash"?"Para në dorë":"Transfer bankar");
-    line("Data reale e transaksionit",snapshot.transactionDate);line("Referenca e pagesës",snapshot.paymentId);
-    line("Rishikimi i pagesës",snapshot.paymentVersion);
-    if(Number(snapshot.documentVersion)>1)line("Korrigjimi","Version i korrigjuar. Dokumentet e mëparshme të pandryshueshme ruhen në historikun e dëftesës me të njëjtin numër.");
-    line("Ndarja në faza financiare (EUR)",snapshot.allocationsText);
+    doc.image(resolve("public/logos/fitimi-clean.png"),48,44,{fit:[145,62]});
+    doc.font("ReceiptBold").fontSize(23).fillColor("#163a43").text("DËFTESË PAGESE",240,48,{width:307,align:"right"});
+    doc.font("Receipt").fontSize(9).fillColor("#59636c").text(`Nr. ${snapshot.receiptNumber}  |  Versioni ${snapshot.documentVersion}`,240,85,{width:307,align:"right"});
+    doc.text(`Lëshuar: ${kosovoDate(snapshot.issuedAt)}`,240,101,{width:307,align:"right"});
+    doc.moveTo(48,132).lineTo(547,132).strokeColor("#c6d8d8").stroke();doc.x=48;doc.y=149;
+    line("Nga",snapshot.companyName);line("Pranuar nga / Klienti",snapshot.clientName);
+    line("Projekti",snapshot.projectName);if(snapshot.location)line("Lokacioni",snapshot.location);
+    line("Data e pagesës / Mënyra",`${kosovoDate(snapshot.transactionDate)} / ${snapshot.method==="cash"?"Para në dorë":"Transfer bankar"}`);
+    doc.moveDown(.4);doc.font("ReceiptBold").fontSize(10).fillColor("#163a43").text("PËRSHKRIMI / NDARJA NË FAZA");doc.moveDown(.5);
+    line("Fazat financiare (EUR)",snapshot.allocationsText);
+    const tax=includedVat(String(snapshot.amount));
+    if(doc.y+160>760)doc.addPage();
+    doc.moveDown(.5);const top=doc.y;
+    doc.rect(295,top,252,100).fill("#eef5f2");
+    const totalLine=(label:string,value:string,y:number,bold=false)=>{doc.font(bold?"ReceiptBold":"Receipt").fontSize(bold?12:10).fillColor("#163a43").text(label,309,y,{width:123});const amount=`${groupedDecimal(value)} EUR`;let size=bold?12:10;while(doc.widthOfString(amount)>105&&size>7)doc.fontSize(--size);doc.text(amount,427,y,{width:105,align:"right"});};
+    totalLine("Baza pa TVSH",tax.net,top+12);totalLine("TVSH 18% (brenda)",tax.vat,top+38);totalLine("Totali i pranuar",tax.gross,top+69,true);
+    doc.x=48;doc.y=top+118;
+    if(Number(snapshot.documentVersion)>1)line("Korrigjimi","Version i korrigjuar; versionet e mëparshme ruhen të pandryshuara.");
     line("Lëshuar nga",snapshot.issuerName);
-    doc.font("Receipt").fontSize(9).fillColor("#59636c").text("Dokument operativ JO-FISKAL. Përmbajtja tatimore e kontabël dhe formati i numërimit presin miratimin e kontabilistit dhe përgjegjësit të projektit. Ky dokument nuk dëshmon certifikim fiskal. Kontrolloni gjendjen aktuale të dëftesës para përdorimit të versionit historik.",{width:499});
+    line("Referenca / rishikimi i pagesës",`${snapshot.paymentId} / ${snapshot.paymentVersion}`);
+    if(doc.y+96>780)doc.addPage();
+    const sign=doc.y+16;doc.moveTo(48,sign).lineTo(238,sign).moveTo(357,sign).lineTo(547,sign).strokeColor("#c6d8d8").stroke();
+    doc.font("Receipt").fontSize(9).fillColor("#59636c").text("Dorëzoi",48,sign+7).text("Pranoi",357,sign+7);doc.x=48;doc.y=sign+34;
+    doc.fontSize(8).text("Dokument operativ JO-FISKAL. TVSH 18% paraqitet e përfshirë në total, pa shtesë mbi pagesën. Përmbajtja tatimore dhe kontabël pret miratimin e kontabilistit. Kontrolloni gjendjen aktuale para përdorimit të versionit historik.",{width:499});
     const range=doc.bufferedPageRange();
     for(let i=range.start;i<range.start+range.count;i++){doc.switchToPage(i);const bottom=doc.page.margins.bottom;doc.page.margins.bottom=0;doc.font("Receipt").fontSize(8).fillColor("#59636c").text(`JO-FISKALE | ${snapshot.receiptNumber} | v${snapshot.documentVersion} | ${i+1}/${range.count}`,48,805,{width:499,lineBreak:false});doc.page.margins.bottom=bottom;}
     doc.end();return await completed;

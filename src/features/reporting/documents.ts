@@ -1,3 +1,4 @@
+import {kosovoDate} from "@/lib/presentation";
 import {valueLabel} from "@/i18n/format";
 import "server-only";
 import PDFDocument from "pdfkit";
@@ -19,14 +20,14 @@ export async function operationalPdf(title:string,sections:{heading:string;lines
   doc.end();return await done;
  }catch(error){doc.destroy(error instanceof Error?error:new Error("Raporti dështoi"));await done.catch(()=>{});throw error;}
 }
-export function reportScope(r:FinanceReport){return [`Krijuar / gjendja e ruajtur UTC: ${r.generatedAt}`,`Datat reale të transaksioneve: ${r.filter.from||"të gjitha datat"} deri më ${r.filter.to||"të gjitha datat"}`,`Mënyra e të hyrave: ${valueLabel(r.filter.method)}; kategoria e shpenzimit: ${r.filter.categoryId||"të gjitha"}`,"Gjendja aktuale e korrigjuar; të dhënat e anuluara nuk përfshihen. Nuk rindërtohet gjendja historike në një datë të caktuar.","Mënyra filtron vetëm të hyrat. Kategoria filtron vetëm shpenzimet. Shpenzimet e përgjithshme të kompanisë përfshihen.","Diferenca të hyra minus shpenzime është tregues operativ, jo fitim kontabël."];}
+export function reportScope(r:FinanceReport){return [`Krijuar / gjendja e ruajtur (Kosovë): ${kosovoDate(r.generatedAt)}`,`Datat reale të transaksioneve: ${r.filter.from?kosovoDate(r.filter.from):"të gjitha datat"} deri më ${r.filter.to?kosovoDate(r.filter.to):"të gjitha datat"}`,`Mënyra e të hyrave: ${valueLabel(r.filter.method)}; kategoria e shpenzimit: ${r.categoryOptions.find(c=>c.id===r.filter.categoryId)?.name||"të gjitha"}`,"Gjendja aktuale e korrigjuar; të dhënat e anuluara nuk përfshihen. Nuk rindërtohet gjendja historike në një datë të caktuar.","Mënyra filtron vetëm të hyrat. Kategoria filtron vetëm shpenzimet. Shpenzimet e përgjithshme të kompanisë përfshihen.","Diferenca të hyra minus shpenzime është tregues operativ, jo fitim kontabël."];}
 export async function companyPdf(r:FinanceReport){return operationalPdf("Raporti financiar i kompanisë",[
  {heading:"Përfshirja dhe interpretimi",lines:reportScope(r)},
  {heading:"Përmbledhja (EUR)",lines:[],table:{headers:["Treguesi","EUR të sakta"],rows:[["Të hyrat aktive të pranuara",r.totals.income],["Shpenzimet aktive të regjistruara",r.totals.expenses],["Diferenca hyrje-dalje",r.totals.difference],["Shpenzimet e kompanisë të përfshira",r.totals.companyExpenses]]}},
- {heading:`Pagesat hyrëse (${r.income.length})`,lines:r.income.length?r.income.map(p=>`${p.transactionDate} | ${p.amount} EUR | ${valueLabel(String(p.method))}
+ {heading:`Pagesat hyrëse (${r.income.length})`,lines:r.income.length?r.income.map(p=>`${kosovoDate(p.transactionDate)} | ${p.amount} EUR | ${valueLabel(String(p.method))}
 Projekti: ${p.projectName} | Klienti: ${p.clientName}
 Pagesa: ${p.id}`):["Nuk ka pagesa të pranuara sipas kushteve."]},
- {heading:`Shpenzimet e regjistruara (${r.outgoing.length})`,lines:r.outgoing.length?r.outgoing.map(e=>`${e.transactionDate} | ${e.amount} EUR | ${e.categoryName}\n${e.projectId?"Projekti: "+e.projectName:"Shpenzim i kompanisë (pa projekt)"}\n${e.description}
+ {heading:`Shpenzimet e regjistruara (${r.outgoing.length})`,lines:r.outgoing.length?r.outgoing.map(e=>`${kosovoDate(e.transactionDate)} | ${e.amount} EUR | ${e.categoryName}\n${e.projectId?"Projekti: "+e.projectName:"Shpenzim i kompanisë (pa projekt)"}\n${e.description}
 Shpenzimi: ${e.id}`):["Nuk ka shpenzime të regjistruara sipas kushteve."]},
  {heading:"Ndarja e kompanisë sipas projekteve (EUR)",lines:[...r.breakdowns.map(p=>`${p.name} | pranuar ${p.income} | shpenzime të lidhura drejtpërdrejt ${p.expenses}`),`Shpenzimet e kompanisë pa projekt: ${r.totals.companyExpenses}`]},
  {heading:"Miratimi kontabël",lines:["Raport operativ, jo-fiskal. Trajtimi kontabël dhe përmbajtja kërkojnë miratimin e kontabilistit dhe përgjegjësit të projektit. Ky raport nuk është dëftesë pagese me numër."]}
@@ -40,10 +41,10 @@ export async function companyXlsx(r:FinanceReport){
   s.eachRow(row=>{row.alignment={vertical:"top",wrapText:true};row.height=row.number===1?32:Math.min(409,Math.max(28,...Object.values(row.values).map(value=>Math.ceil(String(value??"").length/32)*15+8)));row.eachCell(cell=>{if(typeof cell.value==="string"&&cell.value.length>32767)throw limitError();});});s.autoFilter={from:{row:1,column:1},to:{row:1,column:headers.length}};return s;
  };
  sheet("Përmbledhja",["Treguesi","EUR të sakta / vlera"],[["Kompania",companyName()],["Të hyrat e pranuara",r.totals.income],["Shpenzimet e regjistruara",r.totals.expenses],["Diferenca operative",r.totals.difference],["Shpenzimet e kompanisë",r.totals.companyExpenses],["Numri i pagesave",r.income.length],["Numri i shpenzimeve",r.outgoing.length]]);
- sheet("Pagesat",["Identifikuesi i pagesës","Data e transaksionit","Projekti","Klienti","Mënyra","EUR të sakta"],r.income.map(p=>[String(p.id),String(p.transactionDate),String(p.projectName),String(p.clientName),valueLabel(String(p.method)),String(p.amount)]));
- sheet("Shpenzimet",["Identifikuesi i shpenzimit","Data e transaksionit","Projekti / Kompania","Kategoria","Përshkrimi","EUR të sakta"],r.outgoing.map(e=>[String(e.id),String(e.transactionDate),String(e.projectName),String(e.categoryName),String(e.description),String(e.amount)]));
+ sheet("Pagesat",["Identifikuesi i pagesës","Data e transaksionit","Projekti","Klienti","Mënyra","EUR të sakta"],r.income.map(p=>[String(p.id),kosovoDate(p.transactionDate),String(p.projectName),String(p.clientName),valueLabel(String(p.method)),String(p.amount)]));
+ sheet("Shpenzimet",["Identifikuesi i shpenzimit","Data e transaksionit","Projekti / Kompania","Kategoria","Përshkrimi","EUR të sakta"],r.outgoing.map(e=>[String(e.id),kosovoDate(e.transactionDate),String(e.projectName),String(e.categoryName),String(e.description),String(e.amount)]));
  sheet("Ndarja sipas projekteve",["Identifikuesi i projektit","Projekti","EUR të pranuara","Shpenzime të drejtpërdrejta në EUR"],[...r.breakdowns.map(p=>[p.id,p.name,p.income,p.expenses]),["","Kompania (pa projekt)","0.00",r.totals.companyExpenses]]);
  sheet("Kategoritë",["Identifikuesi i kategorisë","Kategoria","EUR të regjistruara"],r.categories.map(c=>[c.id,c.name,c.amount]));sheet("Mënyrat e pagesës",["Mënyra","EUR të pranuara"],r.methods.map(m=>[valueLabel(m.method),m.amount]));
- sheet("Të dhënat shpjeguese",["Vetia","Vlera"],[...reportScope(r).map((line,i)=>[String(i+1),line]),["Saktësia monetare","TEKST dhjetor i saktë, përfshirë totalet. Pa shuma me presje lëvizëse ose formula të ekzekutueshme. Datat janë tekst kalendarik ISO; identifikuesit mbeten tekst."],["Skema e eksportit","fitimi-company-report/1"],["Rregullat","Vetëm raport i kompanisë; nuk ka eksporte financiare për projekte individuale."]]);
+ sheet("Të dhënat shpjeguese",["Vetia","Vlera"],[...reportScope(r).map((line,i)=>[String(i+1),line]),["Saktësia monetare","TEKST dhjetor i saktë, përfshirë totalet. Pa shuma me presje lëvizëse ose formula të ekzekutueshme. Datat janë tekst kalendarik DD/MM/YYYY; identifikuesit mbeten tekst."],["Skema e eksportit","fitimi-company-report/1"],["Rregullat","Vetëm raport i kompanisë; nuk ka eksporte financiare për projekte individuale."]]);
  const bytes=Buffer.from(await book.xlsx.writeBuffer());if(bytes.length>16*1024*1024)throw limitError();return bytes;
 }

@@ -1,4 +1,5 @@
 "use client";
+import {notifySuccess} from "@/components/workspace/success-toast";
 import {useFilterNavigation} from '@/components/workspace/use-filter-navigation';
 import {FilterPanel} from '@/components/workspace/filter-panel';
 import {PaymentMethod} from '@/components/workspace/payment-method';
@@ -41,12 +42,12 @@ export function PaymentForm({detail,initialProject,actorId,initialDate}:{detail?
     if(flight.current)return;flight.current=true;setBusy(true);setMessage("");let saved=false;
     try{const pending=readRecoveryKey(sessionStorage,pendingKey);if(!pending){setMessage("Nuk ka konfirmim në pritje në këtë skedë.");return;}
       const status=await fetch(`/api/payments/operations/${encodeURIComponent(pending.idempotencyKey)}`,{cache:"no-store"}),operation=await status.json();
-      if(status.ok&&operation.status==="completed"){if(!operation.documentAvailable){setMessage("Pagesa u regjistrua, por dokumenti është i padisponueshëm. Mos krijoni pagesë tjetër; kontaktoni operatorin.");return;}clearPending();saved=true;router.push(`/app/payments/${operation.paymentId}`);router.refresh();return;}
+      if(status.ok&&operation.status==="completed"){if(!operation.documentAvailable){setMessage("Pagesa u regjistrua, por dokumenti është i padisponueshëm. Mos krijoni pagesë tjetër; kontaktoni operatorin.");return;}clearPending();saved=true; notifySuccess("Pagesa u ruajt dhe dëftesa u përgatit.");router.push(`/app/payments/${operation.paymentId}`);router.refresh();return;}
       if(status.status!==404){setMessage(operation.message??"Gjendja e veprimit është e padisponueshme; ruajeni çelësin fillestar të konfirmimit.");return;}
       const retry=pendingRequest.current;
       if(!retry||retry.idempotencyKey!==pending.idempotencyKey){setMessage("Nuk u gjet pagesë e përfunduar me këtë çelës. Rishkruani të dhënat fillestare dhe konfirmoni me çelësin e ruajtur të rikuperimit. Nëse gjendja është e padisponueshme, mos dërgoni pagesë të re.");return;}
       const response=await fetch("/api/payments",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(retry)}),body=await response.json();if(!response.ok){if([400,409].includes(response.status)&&!["IDEMPOTENCY_CONFLICT","OPERATION_PENDING"].includes(body.code))clearPending();setMessage(body.message??"Përpjekja dështoi; çelësi fillestar i konfirmimit është ruajtur.");return;}
-      clearPending();saved=true;router.push(`/app/payments/${body.paymentId}`);router.refresh();
+      clearPending();saved=true; notifySuccess("Pagesa u ruajt dhe dëftesa u përgatit.");router.push(`/app/payments/${body.paymentId}`);router.refresh();
     }catch{setMessage("Rikuperimi dështoi. Konfirmimi fillestar mbetet në pritje; provoni rikuperimin para se të krijoni pagesë tjetër.");}finally{if(!saved){flight.current=false;setBusy(false);}}
   }
   async function check(e:FormEvent){
@@ -60,7 +61,7 @@ export function PaymentForm({detail,initialProject,actorId,initialDate}:{detail?
         const retained=readRecoveryKey(sessionStorage,pendingKey),prior=pendingRequest.current;
         if(prior&&JSON.stringify(prior.payment)!==JSON.stringify(payment)){setMessage("Një konfirmim i mëparshëm mund të jetë ende në pritje. Rikuperojeni para se të dërgoni vlera të tjera.");return;}
         if(retained&&!prior){const status=await fetch(`/api/payments/operations/${encodeURIComponent(retained.idempotencyKey)}`,{cache:"no-store"}),operation=await status.json();
-          if(status.ok&&operation.status==="completed"){if(!operation.documentAvailable){setMessage("Pagesa u regjistrua, por dokumenti është i padisponueshëm. Mos krijoni pagesë tjetër; kontaktoni operatorin.");return;}clearPending();saved=true;router.push(`/app/payments/${operation.paymentId}`);router.refresh();return;}
+          if(status.ok&&operation.status==="completed"){if(!operation.documentAvailable){setMessage("Pagesa u regjistrua, por dokumenti është i padisponueshëm. Mos krijoni pagesë tjetër; kontaktoni operatorin.");return;}clearPending();saved=true; notifySuccess("Pagesa u ruajt dhe dëftesa u përgatit.");router.push(`/app/payments/${operation.paymentId}`);router.refresh();return;}
           if(status.status!==404){setMessage("Gjendja e konfirmimit fillestar është e padisponueshme. Rikuperojeni para se të dërgoni pagesë.");return;}}
         const pending={idempotencyKey:retained?.idempotencyKey??crypto.randomUUID(),payment};retainRecoveryKey(sessionStorage,pendingKey,pending.idempotencyKey);pendingRequest.current=pending;payload=pending;
       }
@@ -68,7 +69,7 @@ export function PaymentForm({detail,initialProject,actorId,initialDate}:{detail?
       const response=await fetch(url,{method:finalize&&detail?"PUT":"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),body=await response.json();
       setErrors(body.fields??{});setConflict(body.code==="CONFLICT"||body.code==="CAPACITY");setUnauthorized(response.status===401);
       if(!response.ok){if(finalize&&!detail&&[400,409].includes(response.status)&&!["IDEMPOTENCY_CONFLICT","OPERATION_PENDING"].includes(body.code))clearPending();setMessage(body.message??"Ruajtja dështoi. Kontrolloni veprimin fillestar para ridërgimit.");return;}
-      if(finalize){if(!detail)clearPending();saved=true;router.push(`/app/payments/${detail?.payment.id??body.paymentId}`);router.refresh();return;}
+      if(finalize){if(!detail)clearPending();saved=true; notifySuccess("Pagesa u ruajt dhe dëftesa u përgatit.");router.push(`/app/payments/${detail?.payment.id??body.paymentId}`);router.refresh();return;}
       setMessage(body.message??"Kontrolli i ndarjes së pagesës përfundoi.");
     }catch{setMessage("Kërkesa nuk mund të përfundohet. Për pagesë të re përdorni rikuperimin e konfirmimit të fundit; mos krijoni çelës tjetër konfirmimi.");}finally{if(!saved){flight.current=false;setBusy(false);requestAnimationFrame(()=>((form.current?.querySelector('[aria-invalid="true"]')as HTMLElement|null)??alert.current)?.focus());}}
   }

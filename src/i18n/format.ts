@@ -1,3 +1,4 @@
+import {kosovoDate} from "@/lib/presentation";
 /** Presentation only: persisted identifiers, enums and historical data stay unchanged. */
 const values: Record<string,string> = {
  active:"Aktiv",inactive:"Joaktiv",suspended:"Pezulluar",completed:"Përfunduar",cancelled:"Anuluar",recorded:"Regjistruar",received:"Pranuar",issued:"Lëshuar",draft:"Draft",archived:"Arkivuar",retired:"Tërhequr",prepared:"Përgatitur",
@@ -11,6 +12,7 @@ export function fieldValue(key:string,value:unknown):string{
  if(value===null||value===undefined)return "Nuk është regjistruar";
  if(typeof value==='boolean')return value?"Po":"Jo";
  const text=String(value);
+ if(/(?:At|Date)$/.test(key))return kosovoDate(value);
  return ['status','type','method','resultType'].includes(key)?valueLabel(text):text;
 }
 const entities:Record<string,string>={payment_allocation:"Ndarja e pagesës",contract_phase:"Faza e kontratës",client:"Klienti",project:"Projekti",contract:"Kontrata",phase:"Faza",payment:"Pagesa",allocation:"Ndarja",receipt:"Dëftesa",expense:"Shpenzimi",reference:"Të dhënat referuese"};

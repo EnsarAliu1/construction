@@ -1,7 +1,8 @@
+import {kosovoDate} from "@/lib/presentation";
 import Link from 'next/link';
 import {WorkspaceIcon as Icon} from '@/components/layout/workspace-icon';
 
-export const readableDate=(value:string)=>/^\d{4}-\d{2}-\d{2}$/.test(value)?value.split('-').reverse().join('.'):value;
+export const readableDate=kosovoDate;
 export function RecordAvatar({name,icon}:{name:string;icon?:string}){
  return <span className={`record-avatar${icon?' with-icon':''}`} aria-hidden="true">{icon?<Icon name={icon}/>:name.trim().split(/\s+/).slice(0,2).map(word=>word[0]).join('').toLocaleUpperCase('sq')}</span>;
 }
