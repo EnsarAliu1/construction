@@ -1,3 +1,4 @@
+import {reportPeriod} from "./period";
 import {kosovoDate} from "@/lib/presentation";
 import {valueLabel} from "@/i18n/format";
 import "server-only";
@@ -20,8 +21,8 @@ export async function operationalPdf(title:string,sections:{heading:string;lines
   doc.end();return await done;
  }catch(error){doc.destroy(error instanceof Error?error:new Error("Raporti dështoi"));await done.catch(()=>{});throw error;}
 }
-export function reportScope(r:FinanceReport){return [`Krijuar / gjendja e ruajtur (Kosovë): ${kosovoDate(r.generatedAt)}`,`Datat reale të transaksioneve: ${r.filter.from?kosovoDate(r.filter.from):"të gjitha datat"} deri më ${r.filter.to?kosovoDate(r.filter.to):"të gjitha datat"}`,`Mënyra e të hyrave: ${valueLabel(r.filter.method)}; kategoria e shpenzimit: ${r.categoryOptions.find(c=>c.id===r.filter.categoryId)?.name||"të gjitha"}`,"Gjendja aktuale e korrigjuar; të dhënat e anuluara nuk përfshihen. Nuk rindërtohet gjendja historike në një datë të caktuar.","Mënyra filtron vetëm të hyrat. Kategoria filtron vetëm shpenzimet. Shpenzimet e përgjithshme të kompanisë përfshihen.","Diferenca të hyra minus shpenzime është tregues operativ, jo fitim kontabël."];}
-export async function companyPdf(r:FinanceReport){return operationalPdf("Raporti financiar i kompanisë",[
+export function reportScope(r:FinanceReport){return [`${reportPeriod(r.filter).title}: ${reportPeriod(r.filter).range}`,`Krijuar / gjendja e ruajtur (Kosovë): ${kosovoDate(r.generatedAt)}`,`Datat reale të transaksioneve: ${r.filter.from?kosovoDate(r.filter.from):"të gjitha datat"} deri më ${r.filter.to?kosovoDate(r.filter.to):"të gjitha datat"}`,`Mënyra e të hyrave: ${valueLabel(r.filter.method)}; kategoria e shpenzimit: ${r.categoryOptions.find(c=>c.id===r.filter.categoryId)?.name||"të gjitha"}`,"Gjendja aktuale e korrigjuar; të dhënat e anuluara nuk përfshihen. Nuk rindërtohet gjendja historike në një datë të caktuar.","Mënyra filtron vetëm të hyrat. Kategoria filtron vetëm shpenzimet. Shpenzimet e përgjithshme të kompanisë përfshihen.","Diferenca të hyra minus shpenzime është tregues operativ, jo fitim kontabël."];}
+export async function companyPdf(r:FinanceReport){return operationalPdf(reportPeriod(r.filter).title,[
  {heading:"Përfshirja dhe interpretimi",lines:reportScope(r)},
  {heading:"Përmbledhja (EUR)",lines:[],table:{headers:["Treguesi","EUR të sakta"],rows:[["Të hyrat aktive të pranuara",r.totals.income],["Shpenzimet aktive të regjistruara",r.totals.expenses],["Diferenca hyrje-dalje",r.totals.difference],["Shpenzimet e kompanisë të përfshira",r.totals.companyExpenses]]}},
  {heading:`Pagesat hyrëse (${r.income.length})`,lines:r.income.length?r.income.map(p=>`${kosovoDate(p.transactionDate)} | ${p.amount} EUR | ${valueLabel(String(p.method))}
@@ -40,7 +41,7 @@ export async function companyXlsx(r:FinanceReport){
   if(name==="Të dhënat shpjeguese")s.getColumn(2).width=95;if(name==="Shpenzimet")s.getColumn(5).width=60;
   s.eachRow(row=>{row.alignment={vertical:"top",wrapText:true};row.height=row.number===1?32:Math.min(409,Math.max(28,...Object.values(row.values).map(value=>Math.ceil(String(value??"").length/32)*15+8)));row.eachCell(cell=>{if(typeof cell.value==="string"&&cell.value.length>32767)throw limitError();});});s.autoFilter={from:{row:1,column:1},to:{row:1,column:headers.length}};return s;
  };
- sheet("Përmbledhja",["Treguesi","EUR të sakta / vlera"],[["Kompania",companyName()],["Të hyrat e pranuara",r.totals.income],["Shpenzimet e regjistruara",r.totals.expenses],["Diferenca operative",r.totals.difference],["Shpenzimet e kompanisë",r.totals.companyExpenses],["Numri i pagesave",r.income.length],["Numri i shpenzimeve",r.outgoing.length]]);
+ sheet("Përmbledhja",[reportPeriod(r.filter).title,"EUR të sakta / vlera"],[["Kompania",companyName()],["Të hyrat e pranuara",r.totals.income],["Shpenzimet e regjistruara",r.totals.expenses],["Diferenca operative",r.totals.difference],["Shpenzimet e kompanisë",r.totals.companyExpenses],["Numri i pagesave",r.income.length],["Numri i shpenzimeve",r.outgoing.length],["Periudha e transaksioneve",reportPeriod(r.filter).range]]);
  sheet("Pagesat",["Identifikuesi i pagesës","Data e transaksionit","Projekti","Klienti","Mënyra","EUR të sakta"],r.income.map(p=>[String(p.id),kosovoDate(p.transactionDate),String(p.projectName),String(p.clientName),valueLabel(String(p.method)),String(p.amount)]));
  sheet("Shpenzimet",["Identifikuesi i shpenzimit","Data e transaksionit","Projekti / Kompania","Kategoria","Përshkrimi","EUR të sakta"],r.outgoing.map(e=>[String(e.id),kosovoDate(e.transactionDate),String(e.projectName),String(e.categoryName),String(e.description),String(e.amount)]));
  sheet("Ndarja sipas projekteve",["Identifikuesi i projektit","Projekti","EUR të pranuara","Shpenzime të drejtpërdrejta në EUR"],[...r.breakdowns.map(p=>[p.id,p.name,p.income,p.expenses]),["","Kompania (pa projekt)","0.00",r.totals.companyExpenses]]);

@@ -45,3 +45,12 @@ test('Grouped editing preserves decimal precision and included VAT never increas
  assert.deepEqual(includedVat('118.00'),{net:'100.00',vat:'18.00',gross:'118.00'});
  for(const gross of ['0.01','100.00','1234.56','99999999999999999.99']){const r=includedVat(gross);assert.equal(BigInt(r.net.replace('.',''))+BigInt(r.vat.replace('.','')),BigInt(gross.replace('.','')));}
 });
+
+import {reportPeriod} from '../../src/features/reporting/period';
+test('Report labels distinguish full months, arbitrary ranges and all-time scope',()=>{
+ assert.equal(reportPeriod({from:'2026-10-01',to:'2026-10-31'}).title,'Raporti për Tetor 2026');
+ assert.equal(reportPeriod({from:'2024-02-01',to:'2024-02-29'}).month,'Shkurt 2024');
+ assert.equal(reportPeriod({from:'2026-10-15',to:'2026-10-31'}).month,'');
+ assert.equal(reportPeriod({from:'',to:''}).title,'Raporti për të gjithë periudhën');
+ assert.equal(reportPeriod({from:'2026-10-01',to:''}).range,'Nga 01/10/2026 e tutje');
+});
