@@ -40,5 +40,13 @@ export async function verifyWorkspace(page:Page,origin:string){
  const anonymous=await page.context().browser()!.newContext();try{const denied=await anonymous.request.get(origin+'/app/history',{maxRedirects:0});assert.equal(denied.status(),307);assert(new URL(denied.headers().location,origin).pathname==='/administrata');assert(!(await denied.text()).includes('Klienti provues i historikut'));}finally{await anonymous.close();}
  check('Activity page rejects anonymous access without exposing records');
  await page.setViewportSize({width:1440,height:1000});await page.goto(origin+'/app');await page.getByRole('button',{name:'Aktivizo pamjen e çelët',exact:true}).click();
+ await page.emulateMedia({reducedMotion:'no-preference'});await page.reload();await page.locator('.dashboard-overview').waitFor();
+ assert.equal(await page.locator('.dashboard-overview').evaluate(el=>getComputedStyle(el).animationName),'workspace-arrive');
+ await page.evaluate(async()=>{await Promise.all(document.getAnimations().filter(a=>a.effect?.getComputedTiming().iterations!==Infinity).map(a=>a.finished.catch(()=>{})));});
+ await page.screenshot({path:`${root}/finish-dashboard-desktop.png`,fullPage:true});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ for(const selector of ['.dashboard-overview','.dashboard-metric','.workspace-nav-link'])assert.equal(await page.locator(selector).first().evaluate(el=>getComputedStyle(el).animationName),'none');
+ assert.equal(await page.locator('.workspace-nav-link').first().evaluate(el=>getComputedStyle(el).transitionDuration),'0s');
+ check('Presentation transitions finish with visible content and respect reduced motion without changing financial figures');
  await writeFile(`${root}/verification.json`,JSON.stringify({results,syntheticOnly:true},null,2));
 }

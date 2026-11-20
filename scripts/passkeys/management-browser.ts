@@ -1,3 +1,4 @@
+import {assertNoBlue} from './presentation-audit';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import type {Page} from '@playwright/test';
@@ -6,7 +7,7 @@ import AxeBuilder from '@axe-core/playwright';
 export async function verifyManagement(page:Page,origin:string,client:{id:string}){
  assert(process.env.FITIMI_WORKSPACE_CHECK==='1'&&/^fitimi_test_passkeys_[0-9a-f]{8}$/.test(new URL(process.env.TEST_DATABASE_URL!).pathname.slice(1)));
  const root='artifacts/management';await mkdir(root,{recursive:true});const results:string[]=[],check=(name:string)=>{results.push(name);console.log('PASS: '+name);};
- const audit=async(label:string)=>{const data=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();assert.deepEqual(data.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),[],label);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label+' overflow');};
+ const audit=async(label:string)=>{await assertNoBlue(page,label);const data=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();assert.deepEqual(data.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),[],label);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label+' overflow');};
  const modal=()=>page.locator('.app-form-modal[open]');
  const close=async()=>{await modal().getByRole('button',{name:'Mbyllni formularin',exact:true}).click();if(await page.locator('.app-modal-confirm').count())await page.getByRole('button',{name:'Po, mbylleni',exact:true}).click();await modal().waitFor({state:'hidden'});};
  await page.goto(origin+'/app/projects');await page.locator('.site-card').first().waitFor();const projectHref=await page.locator('.site-card').first().getAttribute('href');assert(projectHref);

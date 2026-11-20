@@ -1,3 +1,4 @@
+import {assertNoBlue} from './presentation-audit';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import type {Page} from '@playwright/test';
@@ -7,7 +8,7 @@ export async function verifyPolish(page:Page,origin:string){
  assert(process.env.FITIMI_WORKSPACE_CHECK==='1'&&/^fitimi_test_passkeys_[0-9a-f]{8}$/.test(new URL(process.env.TEST_DATABASE_URL!).pathname.slice(1)));
  const root='artifacts/polish',results:string[]=[];await mkdir(root,{recursive:true});
  const check=(name:string)=>{results.push(name);console.log('PASS: '+name);};
- const audit=async(label:string)=>{const a=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();assert.deepEqual(a.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),[],label);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label+' overflow');};
+ const audit=async(label:string)=>{await assertNoBlue(page,label);const a=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();assert.deepEqual(a.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),[],label);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label+' overflow');};
  await page.setViewportSize({width:1440,height:1000});
  await page.goto(origin+'/app/payments/new');const box=page.locator('#expense-project');
  await box.fill('Klienti provues i historikut');const option=page.getByRole('option').filter({hasText:'Punishtja provuese e panelit'});await option.waitFor();await audit('live project search');await page.screenshot({path:`${root}/live-search.png`,fullPage:true});await option.click();

@@ -12,6 +12,7 @@ import "@/styles/workspace.css";
 import "@/styles/management.css";
 import "@/styles/workspace-polish.css";
 import "@/styles/administration-design.css";
+import "@/styles/workspace-finish.css";
 
 export const dynamic = "force-dynamic";
 

@@ -1,3 +1,4 @@
+import {assertNoBlue} from './presentation-audit';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {mkdir,writeFile} from 'node:fs/promises';
@@ -34,6 +35,7 @@ export async function verifyDashboard(page:Page,origin:string,client:{id:string;
   for(const width of [1440,980,390,320]){
    await page.setViewportSize({width,height:950});await page.evaluate(()=>window.scrollTo(0,0));assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
    if(width<640){const a=await page.locator('.workspace-mobile-trigger').boundingBox(),b=await page.locator('.workspace-theme-toggle').boundingBox();assert(a&&b&&Math.abs(a.y-b.y)<8,'Premium header mobile controls stay aligned');}
+   await assertNoBlue(page,`${theme}/${width} dashboard`);
    const audit=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();assert.deepEqual(audit.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),[],`${theme}/${width} dashboard accessibility`);
    await page.screenshot({path:`${root}/${theme}-${width}.png`,fullPage:true,caret:'initial'});
   }
