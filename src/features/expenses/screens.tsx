@@ -1,6 +1,6 @@
 import {kosovoDate} from "@/lib/presentation";
 import {RecordAvatar,RecordsBar,readableDate} from '@/components/workspace/record-ui';
-import {displayEuro} from '@/features/dashboard/overview';
+import {displayEuro} from '@/lib/money-format';
 import {DataTable} from '@/components/workspace/data-table';
 import {calendarMonth} from '@/features/dashboard/overview';
 import {getProject} from '@/features/projects/service';

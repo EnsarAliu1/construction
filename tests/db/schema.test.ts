@@ -4,6 +4,14 @@ import test from "node:test";
 import { readMigrationFiles } from "drizzle-orm/migrator";
 import { getTableConfig, type MySqlTable } from "drizzle-orm/mysql-core";
 import * as schema from "../../src/server/db/schema";
+import {normalizeSqlType} from './schema-inspection';
+
+test('real schema inspection preserves passkey enum literal case while normalizing SQL keywords',()=>{
+ assert.equal(normalizeSqlType("ENUM('singleDevice','multiDevice')"),"enum('singleDevice','multiDevice')");
+ assert.notEqual(normalizeSqlType("ENUM('singleDevice')"),normalizeSqlType("ENUM('singledevice')"));
+ assert.equal(normalizeSqlType('BOOLEAN'),'tinyint(1)');
+ assert.equal(normalizeSqlType('VARCHAR(64) COLLATE utf8mb4_0900_bin'),'varchar(64)');
+});
 
 const tables = Object.values(schema).map(getTableConfig);
 const initialSql = readFileSync("drizzle/0000_wp02_integrity_foundation.sql", "utf8");

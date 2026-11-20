@@ -1,0 +1,2563 @@
+{
+  "date": "2026-11-20T11:21:38.842Z",
+  "browserVersion": "157.0.4341.60",
+  "results": [
+    "Restricted runtime supports live authorization/business reads and denies DDL, account-status changes, history mutation and cross-schema reads",
+    "372 real API/page denial requests: anonymous, malformed, pre-MFA, expired, revoked and disabled sessions",
+    "CSRF/foreign origins, MIME lookalikes, oversize bodies, protected fields, SQL injection and spoofed proxy headers rejected",
+    "Restricted runtime creates real client/project/contract/payment/receipt history and preserves idempotent payment retry",
+    "Original private PDF, actual report PDF/XLSX and complete ZIP work with restricted grants; auth secrets excluded and original PDF checksum preserved",
+    "Public pages, direct private-file probes and production browser bundles expose no checked credential/data sentinels",
+    "Real Edge password→MFA/recovery→private UI→logout; stored/reflected XSS escaped, private script injection and public/private event handlers blocked, no checked credentials in browser storage",
+    "Forged operator capability rejected, live deactivation revokes existing access, 13 original triggers remain, audit snapshots contain no checked secrets"
+  ],
+  "matrix": [
+    {
+      "pattern": "/api/clients",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients",
+      "kind": "categories",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients",
+      "kind": "categories",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients",
+      "kind": "categories",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients",
+      "kind": "categories",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients",
+      "kind": "categories",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients",
+      "kind": "categories",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "DELETE",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "DELETE",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "DELETE",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "DELETE",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "DELETE",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/clients/[id]",
+      "kind": "categories",
+      "method": "DELETE",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses",
+      "kind": "categories",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses",
+      "kind": "categories",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses",
+      "kind": "categories",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses",
+      "kind": "categories",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses",
+      "kind": "categories",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses",
+      "kind": "categories",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]/cancel",
+      "kind": "categories",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]/cancel",
+      "kind": "categories",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]/cancel",
+      "kind": "categories",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]/cancel",
+      "kind": "categories",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]/cancel",
+      "kind": "categories",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/[id]/cancel",
+      "kind": "categories",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/projects",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/projects",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/projects",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/projects",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/projects",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/expenses/projects",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments",
+      "kind": "categories",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments",
+      "kind": "categories",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments",
+      "kind": "categories",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments",
+      "kind": "categories",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments",
+      "kind": "categories",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments",
+      "kind": "categories",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]/cancel",
+      "kind": "categories",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]/cancel",
+      "kind": "categories",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]/cancel",
+      "kind": "categories",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]/cancel",
+      "kind": "categories",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]/cancel",
+      "kind": "categories",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]/cancel",
+      "kind": "categories",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]/preview",
+      "kind": "categories",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]/preview",
+      "kind": "categories",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]/preview",
+      "kind": "categories",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]/preview",
+      "kind": "categories",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]/preview",
+      "kind": "categories",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/[id]/preview",
+      "kind": "categories",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/operations/[key]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/operations/[key]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/operations/[key]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/operations/[key]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/operations/[key]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/operations/[key]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/preview",
+      "kind": "categories",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/preview",
+      "kind": "categories",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/preview",
+      "kind": "categories",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/preview",
+      "kind": "categories",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/preview",
+      "kind": "categories",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/preview",
+      "kind": "categories",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/projects/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/projects/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/projects/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/projects/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/projects/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/payments/projects/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects",
+      "kind": "categories",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects",
+      "kind": "categories",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects",
+      "kind": "categories",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects",
+      "kind": "categories",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects",
+      "kind": "categories",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects",
+      "kind": "categories",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]/contract",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]/contract",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]/contract",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]/contract",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]/contract",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/[id]/contract",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/clients",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/clients",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/clients",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/clients",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/clients",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/projects/clients",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts/[id]/versions/[version]/pdf",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts/[id]/versions/[version]/pdf",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts/[id]/versions/[version]/pdf",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts/[id]/versions/[version]/pdf",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts/[id]/versions/[version]/pdf",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/receipts/[id]/versions/[version]/pdf",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "categories",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "categories",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "categories",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "categories",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "categories",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "categories",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "persons",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "persons",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "persons",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "persons",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "persons",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "persons",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "persons",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "persons",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "persons",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "persons",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "persons",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "persons",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "vehicles",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "vehicles",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "vehicles",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "vehicles",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "vehicles",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]",
+      "kind": "vehicles",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "categories",
+      "method": "PUT",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "persons",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "persons",
+      "method": "PUT",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "persons",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "persons",
+      "method": "PUT",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "persons",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "persons",
+      "method": "PUT",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "persons",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "persons",
+      "method": "PUT",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "persons",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "persons",
+      "method": "PUT",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "persons",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "persons",
+      "method": "PUT",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "vehicles",
+      "method": "PUT",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "vehicles",
+      "method": "PUT",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "vehicles",
+      "method": "PUT",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "vehicles",
+      "method": "PUT",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "vehicles",
+      "method": "PUT",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]",
+      "kind": "vehicles",
+      "method": "PUT",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "categories",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "categories",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "categories",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "categories",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "categories",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "categories",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "persons",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "persons",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "persons",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "persons",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "persons",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "persons",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "vehicles",
+      "method": "POST",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "vehicles",
+      "method": "POST",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "vehicles",
+      "method": "POST",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "vehicles",
+      "method": "POST",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "vehicles",
+      "method": "POST",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/[id]/lifecycle",
+      "kind": "vehicles",
+      "method": "POST",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "categories",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "categories",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "categories",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "categories",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "categories",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "categories",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "persons",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "persons",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "persons",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "persons",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "persons",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "persons",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "anonymous",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "malformed",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "pre-MFA-as-session",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "expired",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "revoked",
+      "status": 401
+    },
+    {
+      "pattern": "/api/references/[kind]/active",
+      "kind": "vehicles",
+      "method": "GET",
+      "state": "disabled",
+      "status": 401
+    },
+    {
+      "path": "/app",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/clients",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/clients",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/clients",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/clients",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/clients",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/clients",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/projects",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/projects",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/projects",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/projects",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/projects",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/projects",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/payments",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/payments",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/payments",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/payments",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/payments",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/payments",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/expenses",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/expenses",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/expenses",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/expenses",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/expenses",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/expenses",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/receipts",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/receipts",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/receipts",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/receipts",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/receipts",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/receipts",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/reports",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/reports",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/reports",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/reports",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/reports",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/reports",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/history",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/history",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/history",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/history",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/history",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/history",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/categories",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/categories",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/categories",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/categories",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/categories",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/categories",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/persons",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/persons",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/persons",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/persons",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/persons",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/persons",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/vehicles",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/vehicles",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/vehicles",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/vehicles",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/vehicles",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/vehicles",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/accounts",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/accounts",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/accounts",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/accounts",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/accounts",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/accounts",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/security",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/security",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/security",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/security",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/security",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/security",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/clients/fe7e854c-a918-4d06-ac24-4763ca67b86e",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/clients/fe7e854c-a918-4d06-ac24-4763ca67b86e",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/clients/fe7e854c-a918-4d06-ac24-4763ca67b86e",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/clients/fe7e854c-a918-4d06-ac24-4763ca67b86e",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/clients/fe7e854c-a918-4d06-ac24-4763ca67b86e",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/clients/fe7e854c-a918-4d06-ac24-4763ca67b86e",
+      "state": "disabled",
+      "status": 307
+    },
+    {
+      "path": "/app/projects/cfeae9a4-1316-4a36-b44b-a3dd43c67ebe",
+      "state": "anonymous",
+      "status": 307
+    },
+    {
+      "path": "/app/projects/cfeae9a4-1316-4a36-b44b-a3dd43c67ebe",
+      "state": "malformed",
+      "status": 307
+    },
+    {
+      "path": "/app/projects/cfeae9a4-1316-4a36-b44b-a3dd43c67ebe",
+      "state": "pre-MFA-as-session",
+      "status": 307
+    },
+    {
+      "path": "/app/projects/cfeae9a4-1316-4a36-b44b-a3dd43c67ebe",
+      "state": "expired",
+      "status": 307
+    },
+    {
+      "path": "/app/projects/cfeae9a4-1316-4a36-b44b-a3dd43c67ebe",
+      "state": "revoked",
+      "status": 307
+    },
+    {
+      "path": "/app/projects/cfeae9a4-1316-4a36-b44b-a3dd43c67ebe",
+      "state": "disabled",
+      "status": 307
+    }
+  ],
+  "schemaVerification": {
+    "tables": 25,
+    "foreignKeys": 51,
+    "indexes": 106,
+    "checks": 49,
+    "triggers": 13,
+    "fingerprint": "b0f8ae478373c395c926a71b70cdd6623d116b8326f19802158a9daef24c602a"
+  },
+  "syntheticOnly": true,
+  "restrictedRuntime": true,
+  "ownerDatabaseTouched": false,
+  "scan": {
+    "sourceFiles": 452,
+    "publicFiles": 67,
+    "traces": 74,
+    "checkedSentinels": 35,
+    "findings": [],
+    "scope": "Current Git tracked/untracked nonignored files, public assets, production browser bundles, tracing paths and local security server log. Known sentinel/credential format scan; not exhaustive historical blob or entropy analysis."
+  },
+  "businessRegression": {
+    "dashboard": {
+      "passed": 5,
+      "results": [
+        "Synthetic real API transactions and receipt PDFs span the previous, current and next calendar months",
+        "Five top cards show exact monthly cash flow and separate full contract balances; four real counters render",
+        "Recent transactions stay within the current month; active sites have exact balances without percentages or activity logs",
+        "All-time totals sit last, require explicit reveal and hide on tab change, manual close and reload",
+        "Premium header/dashboard pass overflow and axe checks in light/dark mode at 1440, 980, 390 and 320px"
+      ]
+    },
+    "management": {
+      "passed": 9,
+      "results": [
+        "Project grid/list, real status filters and phase/payment/expense tabs navigate correctly",
+        "Real intercepted payment modal preselects the project, allocates exact money, commits once and serves its protected original PDF",
+        "Real expense modal retains project context and saves category/expense through existing transactional services",
+        "Project modal creates a real client-bound project, date, contract and balanced phase aggregate",
+        "Escape and close protect unsaved edits; cancel keeps persisted records unchanged",
+        "Browser back and forward restore and dismiss the real modal route",
+        "Direct-entry client/reference/vehicle/contract forms share one modal foundation and return to safe parent routes",
+        "Project details and payment modals pass real light/dark axe and overflow checks at desktop, 390px and 320px",
+        "Every remaining private page renders with the common design while preserving its existing content and authorization"
+      ]
+    },
+    "polish": {
+      "passed": 10,
+      "results": [
+        "Searching by client finds a real project and automatically loads its verified contract/phases without extra clicks",
+        "Unmatched searches never replace the selected project; Escape dismisses suggestions while retaining the payment modal and allocations",
+        "Unavailable search keeps the selected identity and offers a working retry without changing financial state",
+        "Keyboard-only client selection preserves the server identity/version and required selection validation survives clearing",
+        "Advanced GET filters remain discoverable when active and preserve every submitted date/method",
+        "The redesigned dashboard has a visible administration hero and a correctly capitalized month, without changing its verified totals",
+        "Typing searches the existing payment records without submitting or reloading the page, restores keyboard focus and supports continued refinement",
+        "Grouped money remains exact through real save and a success toast appears only after server confirmation",
+        "A company fuel expense appears under its category; month boundaries and category filters carry identically into actual PDF and Excel downloads",
+        "All business tables and filters pass real light/dark accessibility and overflow checks on desktop, 390px and 320px with server-rendered mobile labels"
+      ]
+    },
+    "workspace": {
+      "passed": 8,
+      "results": [
+        "Prototype order retains every existing business section and account security",
+        "Sidebar collapse is accessible and persists after reload",
+        "Client detail preserves data and moves its activity panel to Historiku",
+        "Real client creation appears in centralized, filtered immutable activity snapshots",
+        "Light/dark themes persist and pass axe/overflow checks at 1440, 980, 390 and 320px",
+        "Mobile modal traps focus, closes with Escape and navigates without covering content",
+        "Activity page rejects anonymous access without exposing records",
+        "Presentation transitions finish with visible content and respect reduced motion without changing financial figures"
+      ]
+    },
+    "passkeys": {
+      "passed": 19,
+      "results": [
+        "Real password → TOTP enrollment → recovery acknowledgement → full session",
+        "Real platform passkey registration with resident key and required device user verification",
+        "Pre-passkey challenge is HttpOnly and cannot access private APIs or key management",
+        "Cross-origin ceremony requests rejected",
+        "One-click real discoverable passkey login without email/password; fresh session and welcome toast",
+        "Logout revokes the passkey session",
+        "Wrong/new challenge cannot authenticate an older assertion",
+        "Valid device signature without user verification rejected",
+        "Invalid cryptographic signature rejected",
+        "Expired server-side challenge rejected",
+        "Per-challenge verification stops after five failures",
+        "Persisted per-credential rate limits survive requests for new challenges",
+        "Concurrent double submit has exactly one winner; consumed challenge replay denied",
+        "Disabled accounts cannot finish a pending assertion or use existing sessions",
+        "Restore security hold blocks passkey login and existing passkey sessions",
+        "An old session alone cannot enroll another device",
+        "A registration challenge cannot move between authenticated sessions",
+        "Settings removal is explicit, responsive and revokes linked sessions immediately",
+        "Operator revocation during a pending assertion invalidates the credential version"
+      ]
+    }
+  },
+  "checks": {
+    "unitTests": 100,
+    "unitGroups": [
+      40,
+      10,
+      50
+    ],
+    "unitFailures": 0,
+    "unitSkipped": 0,
+    "typescript": "PASS",
+    "lint": "PASS",
+    "productionBuild": "PASS Next.js 16.4.6",
+    "drizzleCheck": "PASS",
+    "npmAuditKnownVulnerabilities": 0,
+    "gitDiffCheck": "PASS",
+    "historicalMigrationsUnchanged": true,
+    "taskDatabaseUsersAndSecretsCleaned": true,
+    "productionAccessed": false
+  },
+  "notVerified": [
+    "Production hosting/TLS/proxy/HSTS/storage/network/grants/secret operations",
+    "Full historical DB/HTTP/backup-restore suites not all rerun",
+    "Physical PIN/biometric hardware: virtual CTAP2 used",
+    "Independent penetration test or full ASVS certification"
+  ],
+  "sourceBaseline": "main / eb13ebd; accepted uncommitted performance changes preserved"
+}

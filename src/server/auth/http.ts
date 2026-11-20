@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { LOGIN_FAILURE, sessionCookieSettings } from "./security";
 import {securitySignal} from "../operations/events";
+import {readJsonObject} from "../security/request-body";
 
 export function authJson(body: object, status = 200) {
   if(status===401||status===403)securitySignal('access.denied',status);
@@ -22,18 +23,5 @@ export function setChallengeCookie(response:NextResponse,token:string){const {na
 export function clearChallengeCookie(response:NextResponse){const {name,...settings}=challengeCookieSettings();response.cookies.set(name,'',{...settings,maxAge:0,expires:new Date(0)});}
 
 export async function limitedJson(request: Request, maxBytes = 8192): Promise<Record<string, unknown>> {
-  const reader = request.body?.getReader();
-  if (!reader || !request.headers.get("content-type")?.startsWith("application/json")) throw new Error("Kërkesë e pavlefshme");
-  const chunks: Uint8Array[] = [];
-  let length = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    length += value.length;
-    if (length > maxBytes) { await reader.cancel(); throw new Error("Kërkesa është tepër e madhe"); }
-    chunks.push(value);
-  }
-  const parsed: unknown = JSON.parse(Buffer.concat(chunks).toString("utf8"));
-  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("Kërkesë e pavlefshme");
-  return parsed as Record<string, unknown>;
+  return readJsonObject(request,maxBytes);
 }

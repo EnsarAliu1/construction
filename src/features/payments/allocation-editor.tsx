@@ -2,7 +2,7 @@
 import {MoneyInput} from "@/components/workspace/money-input";
 import {useState} from 'react';
 import {WorkspaceIcon as Icon} from '@/components/layout/workspace-icon';
-import {displayEuro} from '@/features/dashboard/overview';
+import {displayEuro} from '@/lib/money-format';
 import {cents,decimal,inputMoney} from '@/features/projects/money';
 import {allocatePayment} from './allocation';
 import type {PaymentDetails,PaymentProject} from './service';

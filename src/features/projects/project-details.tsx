@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {WorkspaceHeading as PageHeading} from '@/components/workspace/page-heading';
 import {WorkspaceIcon as Icon} from '@/components/layout/workspace-icon';
 import {valueLabel} from '@/i18n/format';
-import {displayEuro} from '@/features/dashboard/overview';
+import {displayEuro} from '@/lib/money-format';
 import {listPayments} from '@/features/payments/service';
 import {listExpenses} from '@/features/expenses/service';
 import {getProject} from './service';

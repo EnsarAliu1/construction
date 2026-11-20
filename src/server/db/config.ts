@@ -56,9 +56,8 @@ export async function openLocalConnection(options: ConnectionOptions): Promise<C
     connection = await createConnection(options);
     const [rows] = await connection.query<RowDataPacket[]>("SELECT VERSION() AS version");
     assertSupportedMySql(String(rows[0].version));
-    await connection.query("SET SESSION time_zone = '+00:00'");
-    await connection.query("SET SESSION default_storage_engine = 'InnoDB'");
-    await connection.query("SET SESSION sql_mode = 'STRICT_ALL_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'");
+    // One SET statement preserves every session invariant with two fewer round trips.
+    await connection.query("SET SESSION time_zone = '+00:00', SESSION default_storage_engine = 'InnoDB', SESSION sql_mode = 'STRICT_ALL_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'");
     return connection;
   } catch (error) {
     await connection?.end();

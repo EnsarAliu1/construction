@@ -1,0 +1,248 @@
+{
+  "date": "2026-11-20",
+  "baselineCommit": "eb13ebd",
+  "conditions": "Local Windows, production Next build, loopback MySQL 8.4, 1,001 synthetic projects, 5,907 snapshot rows, warm server; full navigations in real headless Edge. Sequential runs, no throttling; not a production SLA.",
+  "baseline": {
+    "projects": 1001,
+    "rows": 5907,
+    "dashboardCompute": {
+      "n": 30,
+      "medianMs": 19.826000000000022,
+      "minMs": 15.756399999999758,
+      "maxMs": 36.72569999999996
+    },
+    "snapshot": {
+      "n": 10,
+      "medianMs": 77.92929999999978,
+      "minMs": 66.5889000000002,
+      "maxMs": 86.13059999999996
+    },
+    "connection": {
+      "n": 10,
+      "medianMs": 9.26929999999993,
+      "minMs": 8.27599999999984,
+      "maxMs": 12.224100000000362
+    },
+    "dates1000": {
+      "n": 8,
+      "medianMs": 118.61749999999984,
+      "minMs": 89.25289999999995,
+      "maxMs": 131.6230999999998
+    },
+    "/api/dashboard": {
+      "n": 7,
+      "medianMs": 181.47040000000015,
+      "minMs": 152.45119999999952,
+      "maxMs": 191.36549999999988
+    },
+    "/api/clients": {
+      "n": 7,
+      "medianMs": 31.08849999999984,
+      "minMs": 24.64760000000024,
+      "maxMs": 36.6911999999993
+    },
+    "/api/projects": {
+      "n": 7,
+      "medianMs": 35.528699999998935,
+      "minMs": 30.128600000000006,
+      "maxMs": 42.16849999999977
+    },
+    "/api/payments": {
+      "n": 7,
+      "medianMs": 39.59029999999984,
+      "minMs": 34.22700000000077,
+      "maxMs": 49.73059999999896
+    },
+    "/api/reports/company": {
+      "n": 7,
+      "medianMs": 194.46990000000005,
+      "minMs": 161.90470000000096,
+      "maxMs": 226.02260000000024
+    },
+    "/app": {
+      "n": 7,
+      "medianMs": 195.85360000000037,
+      "minMs": 165.41749999999956,
+      "maxMs": 254.33970000000045
+    },
+    "/app/projects": {
+      "n": 7,
+      "medianMs": 80.90149999999994,
+      "minMs": 67.33219999999892,
+      "maxMs": 84.51990000000114
+    },
+    "/app/clients": {
+      "n": 7,
+      "medianMs": 76.92410000000018,
+      "minMs": 73.46370000000024,
+      "maxMs": 84.39309999999932
+    },
+    "/app/reports": {
+      "n": 7,
+      "medianMs": 189.6280999999999,
+      "minMs": 168.79769999999917,
+      "maxMs": 266.3050000000003
+    },
+    "/app-jsBytes": 157917,
+    "/app/projects-jsBytes": 166681,
+    "/app/clients-jsBytes": 160104,
+    "/app/reports-jsBytes": 159881,
+    "browser": {
+      "version": "157.0.4341.60",
+      "navigation": {
+        "/app": {
+          "n": 4,
+          "medianMs": 704.9828000000016,
+          "minMs": 676.2230000000018,
+          "maxMs": 830.4732000000004
+        },
+        "/app/projects": {
+          "n": 4,
+          "medianMs": 464.872199999998,
+          "minMs": 447.34370000000126,
+          "maxMs": 509.52720000000045
+        },
+        "/app/clients": {
+          "n": 4,
+          "medianMs": 445.04060000000027,
+          "minMs": 422.09769999999844,
+          "maxMs": 541.279300000002
+        },
+        "/app/reports": {
+          "n": 4,
+          "medianMs": 704.1693999999989,
+          "minMs": 699.8878000000004,
+          "maxMs": 911.6948000000011
+        }
+      }
+    },
+    "clientChunks": {
+      "files": 41,
+      "gzipBytes": 337594
+    },
+    "financialEquivalence": true,
+    "mode": "production / loopback / synthetic / warm server"
+  },
+  "optimized": {
+    "mysqlSessionInvariants": true,
+    "projects": 1001,
+    "rows": 5907,
+    "dashboardCompute": {
+      "n": 30,
+      "medianMs": 19.704400000000078,
+      "minMs": 14.688400000000001,
+      "maxMs": 28.97019999999975
+    },
+    "snapshot": {
+      "n": 10,
+      "medianMs": 97.8394000000003,
+      "minMs": 87.61659999999983,
+      "maxMs": 108.05240000000049
+    },
+    "connection": {
+      "n": 10,
+      "medianMs": 9.069600000000719,
+      "minMs": 6.9198999999998705,
+      "maxMs": 11.489700000000084
+    },
+    "dates1000": {
+      "n": 8,
+      "medianMs": 11.979800000000068,
+      "minMs": 8.971800000000258,
+      "maxMs": 16.390599999999722
+    },
+    "/api/dashboard": {
+      "n": 7,
+      "medianMs": 162.8002000000015,
+      "minMs": 152.30249999999978,
+      "maxMs": 226.45349999999962
+    },
+    "/api/clients": {
+      "n": 7,
+      "medianMs": 31.717399999999543,
+      "minMs": 26.49489999999969,
+      "maxMs": 35.915899999999965
+    },
+    "/api/projects": {
+      "n": 7,
+      "medianMs": 29.803799999999683,
+      "minMs": 25.578700000000026,
+      "maxMs": 35.157100000000355
+    },
+    "/api/payments": {
+      "n": 7,
+      "medianMs": 30.629300000000512,
+      "minMs": 28.13720000000103,
+      "maxMs": 42.99019999999837
+    },
+    "/api/reports/company": {
+      "n": 7,
+      "medianMs": 141.47589999999946,
+      "minMs": 130.40040000000045,
+      "maxMs": 175.21830000000045
+    },
+    "/app": {
+      "n": 7,
+      "medianMs": 169.95039999999972,
+      "minMs": 157.4927000000007,
+      "maxMs": 196.8696
+    },
+    "/app/projects": {
+      "n": 7,
+      "medianMs": 63.42480000000069,
+      "minMs": 51.70340000000033,
+      "maxMs": 68.71559999999954
+    },
+    "/app/clients": {
+      "n": 7,
+      "medianMs": 57.60920000000078,
+      "minMs": 48.79190000000017,
+      "maxMs": 68.05030000000079
+    },
+    "/app/reports": {
+      "n": 7,
+      "medianMs": 186.6898000000001,
+      "minMs": 179.97040000000015,
+      "maxMs": 194.8727999999992
+    },
+    "/app-jsBytes": 157921,
+    "/app/projects-jsBytes": 166689,
+    "/app/clients-jsBytes": 160111,
+    "/app/reports-jsBytes": 159885,
+    "browser": {
+      "version": "157.0.4341.60",
+      "navigation": {
+        "/app": {
+          "n": 4,
+          "medianMs": 715.0622999999978,
+          "minMs": 661.1633000000002,
+          "maxMs": 762.2981
+        },
+        "/app/projects": {
+          "n": 4,
+          "medianMs": 536.5242999999973,
+          "minMs": 472.4945000000007,
+          "maxMs": 540.0812000000005
+        },
+        "/app/clients": {
+          "n": 4,
+          "medianMs": 474.75940000000264,
+          "minMs": 435.9249999999993,
+          "maxMs": 530.1082000000024
+        },
+        "/app/reports": {
+          "n": 4,
+          "medianMs": 671.3484000000026,
+          "minMs": 657.4904999999999,
+          "maxMs": 694.4212000000007
+        }
+      }
+    },
+    "clientChunks": {
+      "files": 41,
+      "gzipBytes": 337685
+    },
+    "financialEquivalence": true,
+    "mode": "production / loopback / synthetic / warm server"
+  }
+}

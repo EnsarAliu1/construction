@@ -1,3 +1,4 @@
+const timestampFormatter=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Belgrade',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
 /** Display only; database dates and exact decimal amounts remain unchanged. */
 export function kosovoDate(value: unknown): string {
  const text=String(value??'');
@@ -7,7 +8,7 @@ export function kosovoDate(value: unknown): string {
  const iso=/(?:Z|[+-]\d{2}:?\d{2})$/i.test(normalized)?normalized:normalized+'Z';
  const date=new Date(iso);
  if(Number.isNaN(date.getTime()))return text;
- const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Belgrade',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date);
+ const parts=timestampFormatter.formatToParts(date);
  const p=(key:string)=>parts.find(part=>part.type===key)?.value??'';
  return `${p('day')}/${p('month')}/${p('year')} ${p('hour')}:${p('minute')}`;
 }

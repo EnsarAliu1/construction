@@ -20,6 +20,11 @@ export const expectedTriggers = [
   ["payment_receipts_identity_guard", "payment_receipts", "UPDATE"],
 ] as const;
 
+/** Normalize SQL keywords without changing case-sensitive enum literals. */
+export function normalizeSqlType(value:string){
+ return value.replace(/ COLLATE .*/i,"").replace(/^boolean$/i,"tinyint(1)").replace(/'(?:''|\\.|[^'\\])*'|[^']+/g,part=>part.startsWith("'")?part:part.toLowerCase());
+}
+
 /** Compare the real server metadata with the application's declared schema. */
 export async function verifyDatabaseSchema(connection: Connection) {
   const configs = Object.values(schema).map(getTableConfig);
@@ -45,7 +50,7 @@ export async function verifyDatabaseSchema(connection: Connection) {
     assert.deepEqual(actualColumns.map(column => column.name).sort(), table.columns.map(column => column.name).sort());
     for (const column of table.columns) {
       const actual = actualColumns.find(candidate => candidate.name === column.name)!;
-      const expectedType = column.getSQLType().replace(/ COLLATE .*/i, "").replace(/^boolean$/, "tinyint(1)").toLowerCase();
+      const expectedType = normalizeSqlType(column.getSQLType());
       assert.equal(actual.columnType, expectedType, `${table.name}.${column.name}: SQL type`);
       assert.equal(actual.nullable, column.notNull ? "NO" : "YES", `${table.name}.${column.name}: nullability`);
       if (expectedType === "decimal(19,2)") {

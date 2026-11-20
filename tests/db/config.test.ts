@@ -21,6 +21,8 @@ test("CLI environment priority matches development, test and production without 
     }
     environment.NODE_ENV="development";process.env.FITIMI_ENV_PRIORITY_TEST="explicit";loadLocalEnvironment();
     assert.equal(process.env.FITIMI_ENV_PRIORITY_TEST,"explicit");
+    process.env.FITIMI_ENV_PRIORITY_TEST="";loadLocalEnvironment();
+    assert.equal(process.env.FITIMI_ENV_PRIORITY_TEST,"","An explicitly withheld operator value must not be imported from a local env file");
   } finally {
     process.chdir(previousDirectory);
     if(previousMode===undefined)delete environment.NODE_ENV;else environment.NODE_ENV=previousMode;

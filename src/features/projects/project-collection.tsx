@@ -4,7 +4,7 @@ import {DataTable} from '@/components/workspace/data-table';
 import Link from 'next/link';
 import {useState} from 'react';
 import {WorkspaceIcon as Icon} from '@/components/layout/workspace-icon';
-import {displayEuro} from '@/features/dashboard/overview';
+import {displayEuro} from '@/lib/money-format';
 import {valueLabel} from '@/i18n/format';
 import type {listProjects} from './service';
 export function ProjectCollection({rows}:{rows:Awaited<ReturnType<typeof listProjects>>['rows']}){

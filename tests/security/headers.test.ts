@@ -9,3 +9,11 @@ test("private production CSP requires a valid nonce and does not permit inline s
 test("static public bootstrap compatibility is explicit; framing, objects, base and forms remain restricted",()=>{
  const policy=contentSecurityPolicy(true);assert(policy.includes("script-src 'self' 'unsafe-inline'"));for(const directive of ["frame-ancestors 'none'","object-src 'none'","base-uri 'none'","form-action 'self'"])assert(policy.includes(directive));assert(browserSecurityHeaders.some(h=>h.key==='X-Frame-Options'&&h.value==='DENY'));
 });
+test('public and private policies block event-handler execution, frames and cross-origin opener access',()=>{
+ for(const nonce of [undefined,'Y29uc3RydWN0aW9u']){
+  const policy=contentSecurityPolicy(true,nonce);
+  assert(policy.includes("script-src-attr 'none'"));assert(policy.includes("frame-src 'none'"));
+ }
+ assert(browserSecurityHeaders.some(h=>h.key==='Cross-Origin-Opener-Policy'&&h.value==='same-origin'));
+ assert(browserSecurityHeaders.some(h=>h.key==='Permissions-Policy'&&h.value.includes('publickey-credentials-get=(self)')));
+});

@@ -4,7 +4,7 @@ import {mkdir,writeFile} from "node:fs/promises";
 import ExcelJS from "exceljs";
 import JSZip from "jszip";
 import {reportFilter,companyExportInput} from "../../src/features/reporting/validation";
-import {finances} from "../../src/features/reporting/finance";
+import {finances,financeReports} from "../../src/features/reporting/finance";
 import {sumMoney,operationalTotals} from "../../src/features/reporting/money";
 import {portable,csvCell} from "../../src/features/reporting/export";
 import {companyPdf,companyXlsx} from "../../src/features/reporting/documents";
@@ -24,6 +24,23 @@ test("snapshot grouping keeps filtered breakdowns separate from all-date project
  assert.deepEqual(r.categories,[{id:id(21),name:"Other category",amount:"5.67"}]);
 });
 function sample():Snapshot{return {generatedAt:"2026-10-27T12:00:00.000Z",counts:{},data:{clients:[{id:id(1),name:"Çlirim Ëndrra"}],projects:[{id:id(2),clientId:id(1),name:"=2+3",status:"active",deletedAt:null}],contracts:[{id:id(3),projectId:id(2),status:"active",totalValue:"99999999999999999.99"}],contract_phases:[{id:id(4),contractId:id(3),name:"Themelet",value:"99999999999999999.99",deletedAt:null}],payments:[{id:id(5),projectId:id(2),amount:"9007199254740993.01",method:"cash",transactionDate:"2024-02-29",status:"received"}],payment_allocations:[{id:id(6),paymentId:id(5),phaseId:id(4),amount:"9007199254740993.01",deletedAt:null}],expense_categories:[{id:id(7),name:"Çati"}],expenses:[{id:id(8),projectId:id(2),categoryId:id(7),amount:"0.01",transactionDate:"2024-02-29",description:"=HYPERLINK(\"https://example.invalid\")",status:"recorded"},{id:id(9),projectId:null,categoryId:id(7),amount:"0.02",transactionDate:"2024-02-29",description:"Company-wide TEST",status:"recorded"}]}};}
+test("related reports retain exact balances across filters without mutating or caching a snapshot",()=>{
+ const s=sample(),before=structuredClone(s),filters=[reportFilter(),reportFilter({from:"2024-03-01"}),reportFilter({method:"bank"}),reportFilter({categoryId:id(7)})];
+ const reports=financeReports(s,filters);
+ assert.deepEqual(reports,filters.map(filter=>finances(s,filter)));assert.deepEqual(s,before);
+ assert.equal(reports[0].totals.income,"9007199254740993.01");assert.equal(reports[1].totals.expenses,"0.00");assert.equal(reports[2].totals.income,"0.00");
+ for(const report of reports)assert.equal(report.projects[0].income,"9007199254740993.01");
+ s.data.expenses[0].status="cancelled";
+ assert.equal(financeReports(s,filters)[0].totals.expenses,"0.02");assert.equal(reports[0].totals.expenses,"0.03");
+ const other=sample();other.data.projects[0].name="Different snapshot";
+ assert.equal(financeReports(other,filters)[0].projects[0].name,"Different snapshot");assert.equal(reports[0].projects[0].name,"=2+3");
+});
+test("related reports reject corrupt phase allocations even when all requested periods exclude the payment",()=>{
+ for(const mutate of [(s:Snapshot)=>s.data.payment_allocations[0].amount="0.01",(s:Snapshot)=>s.data.contract_phases[0].value="0.01",(s:Snapshot)=>s.data.contract_phases.splice(0)]){
+  const s=sample();mutate(s);
+  assert.throws(()=>financeReports(s,[reportFilter({from:"2026-01-01"}),reportFilter({method:"bank"})]),{code:"INCONSISTENT"});
+ }
+});
 test("report filters use strict real calendar dates, scoped methods/categories and no project export",()=>{assert.equal(reportFilter({from:"2024-02-29",to:"2024-03-01",method:"bank"}).method,"bank");for(const input of [{from:"2023-02-29"},{from:"2025-01-02",to:"2025-01-01"},{from:[]},{method:["cash"]},{categoryId:"../"},{projectId:id(2)},{format:"pdf"}])assert.throws(()=>reportFilter(input));for(const value of [{format:"csv"},{format:"pdf",projectId:id(2)},{format:"xlsx",filters:{projectId:id(2)}}])assert.throws(()=>companyExportInput(value));});
 test("EUR sums/difference exceed Number and individual DECIMAL bounds without rounding",()=>{assert.equal(sumMoney(["99999999999999999.99","99999999999999999.99"]).toString(),"19999999999999999998");assert.equal(operationalTotals(BigInt(1),BigInt(3)).difference,"-0.02");const r=finances(sample(),reportFilter());assert.equal(r.totals.income,"9007199254740993.01");assert.equal(r.totals.difference,"9007199254740992.98");assert.equal(r.projects[0].expenses,"0.01");assert.equal(r.totals.companyExpenses,"0.02");});
 test("empty snapshot gives honest zero totals and received/recorded filters exclude cancelled rows",()=>{const s=sample();for(const key of Object.keys(s.data))s.data[key]=[];assert.equal(finances(s,reportFilter()).totals.income,"0.00");const current=sample();current.data.payments.push({...current.data.payments[0],id:id(10),status:"cancelled"});current.data.expenses.push({...current.data.expenses[0],id:id(11),status:"cancelled"});assert.equal(finances(current,reportFilter()).totals.expenses,"0.03");assert.equal(finances(current,reportFilter({from:"2024-03-01"})).income.length,0);assert.equal(finances(current,reportFilter({method:"bank"})).totals.income,"0.00");});
