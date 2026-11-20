@@ -51,7 +51,9 @@
     ".next-sq/types/**/*.ts",
     ".next-sq/dev/types/**/*.ts",
     ".next-passkeys/types/**/*.ts",
-    ".next-passkeys/dev/types/**/*.ts"
+    ".next-passkeys/dev/types/**/*.ts",
+    ".next-demo/types/**/*.ts",
+    ".next-demo/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

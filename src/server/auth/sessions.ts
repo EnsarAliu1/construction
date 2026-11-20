@@ -2,9 +2,14 @@ import { randomUUID } from "node:crypto";
 import type { Connection, RowDataPacket } from "mysql2/promise";
 import { securityEvent, transaction } from "./store";
 import { AuthenticationRequired, tokenDigest, validSessionToken, type AuthenticatedUser } from "./security";
+import {isDemoConnection} from '../demo/connections';
 
 export async function sessionUser(connection: Connection, token: string | undefined): Promise<AuthenticatedUser | null> {
   if (!validSessionToken(token)) return null;
+  if(isDemoConnection(connection)){
+    const [rows]=await connection.execute<RowDataPacket[]>("SELECT u.id,u.display_name AS displayName,u.email FROM auth_sessions s JOIN users u ON u.id=s.user_id WHERE s.token_hash=? AND s.assurance_version=0 AND s.revoked_at IS NULL AND s.expires_at>UTC_TIMESTAMP(3) AND u.status='active' AND u.auth_version=s.user_auth_version LIMIT 1",[tokenDigest(token)]);
+    return rows.length?{id:String(rows[0].id),displayName:String(rows[0].displayName),email:String(rows[0].email)}:null;
+  }
   const [rows] = await connection.execute<RowDataPacket[]>(
     "SELECT u.id, u.display_name AS displayName, u.email FROM auth_sessions s JOIN users u ON u.id = s.user_id JOIN auth_mfa_factors f ON f.user_id = u.id LEFT JOIN auth_passkeys p ON p.id=s.passkey_id AND p.user_id=u.id WHERE s.token_hash = ? AND s.assurance_version = 2 AND f.restore_hold = 0 AND s.mfa_verified_at IS NOT NULL AND s.revoked_at IS NULL AND s.expires_at > UTC_TIMESTAMP(3) AND u.status = 'active' AND u.auth_version = s.user_auth_version AND (s.passkey_id IS NULL OR (p.id IS NOT NULL AND p.revoked_at IS NULL AND p.user_auth_version=u.auth_version)) LIMIT 1", [tokenDigest(token)]);
   return rows.length ? { id: String(rows[0].id), displayName: String(rows[0].displayName), email: String(rows[0].email) } : null;

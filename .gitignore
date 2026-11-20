@@ -1,5 +1,6 @@
 /node_modules/
 /.next/
+/.next-*/
 /out/
 /coverage/
 *.tsbuildinfo
@@ -10,21 +11,10 @@ next-env.d.ts
 .DS_Store
 /artifacts/
 /.private/
-/.next-wp09/
+/playwright-report/
+/test-results/
 
-.next-wp10/
-
-.next-wp11/
-playwright-report/
-test-results/
-
-.next-wp13/
-
-.next-wp14/
-
-.next-wp15/
-
-.next-wp16/
-.next-sq/
-
-.next-passkeys/
+# Generated verification screenshots; keep textual reports and application images.
+/docs/**/screenshots/
+/docs/document-evidence/
+/docs/security/wp16-evidence/

@@ -3,3 +3,8 @@
 @keyframes welcome-in{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:none;}}@keyframes welcome-progress{to{transform:scaleX(0);}}
 @media(max-width:600px){.login-welcome{left:16px;right:16px;top:16px;max-width:none;padding:18px 14px;gap:12px;}.login-welcome strong{font-size:13px;}.login-welcome p{font-size:11px;}}
 @media(prefers-reduced-motion:reduce){.login-welcome,.login-welcome-progress{animation:none;}}
+.demo-login{margin-top:1rem;padding-top:1rem;border-top:1px solid color-mix(in srgb,currentColor 14%,transparent)}
+.demo-login .muted{font-size:.78rem;line-height:1.5;margin:.55rem 0 0}
+.demo-entry{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:44px;padding:.75rem 1rem;border:1px solid color-mix(in srgb,currentColor 20%,transparent);border-radius:12px;text-decoration:none;color:inherit;font-weight:650;transition:background .15s}
+.demo-entry:hover{background:color-mix(in srgb,currentColor 6%,transparent)}
+.demo-entry:focus-visible{outline:2px solid currentColor;outline-offset:3px}

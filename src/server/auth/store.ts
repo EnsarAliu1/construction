@@ -2,10 +2,11 @@ import { randomUUID } from "node:crypto";
 import type { Connection } from "mysql2/promise";
 import { loadLocalEnvironment, localDatabaseOptions, openLocalConnection } from "../db/config";
 import { safeHistorySnapshot, type HistorySnapshot } from "../db/history-snapshot";
+import {demoMode} from '../demo/policy';
 
 export async function withAuthConnection<T>(work: (connection: Connection) => Promise<T>) {
-  loadLocalEnvironment();
-  const connection = await openLocalConnection(localDatabaseOptions(process.env.DATABASE_URL, "development", process.env.DATABASE_DISPOSABLE));
+  if(!demoMode())loadLocalEnvironment();
+  const connection = demoMode() ? await (await import('../demo/runtime')).openDemoConnection() : await openLocalConnection(localDatabaseOptions(process.env.DATABASE_URL, "development", process.env.DATABASE_DISPOSABLE));
   try { return await work(connection); } finally { await connection.end(); }
 }
 

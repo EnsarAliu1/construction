@@ -18,3 +18,21 @@ Profili ruhet në `.env.development.local` dhe `.private/development/`, të për
 MySQL merr vetëm sekretet e veta përmes skedarëve Compose secrets. Çelësi MFA mbetet jashtë container-it dhe bazës. PDF-të dhe lidhja e pronësisë ruhen te `.private/development/receipts`; ruajeni këtë folder bashkë me bazën dhe çelësat kur përgatitni një rikuperim. Një volume lokal nuk zëvendëson backup-in e enkriptuar/offsite.
 
 Container-at e vjetër të testimit mbeten të ndalur dhe nuk përdoren nga ky profil. Nuk i fshijmë bashkë me të dhënat apo dokumentet e tyre gjatë konfigurimit të nisjes së përditshme.
+
+## Pastrimi i skedarëve të gjeneruar
+
+Ndaleni serverin me Ctrl+C para pastrimit. Për të parë listën pa fshirë skedarë:
+
+```bash
+npm run clean -- --dry-run
+```
+
+Për të hequr artefaktet testuese, screenshot-et lokale, cache-t e build-it dhe raportet e gjeneruara:
+
+```bash
+npm run clean
+```
+
+Komanda ruan kodin, testet, migrimet, `node_modules`, skedarët `.env*`, `.private` dhe databazat/Docker. Ajo refuzon pastrimin kur porti 3000 është në përdorim, ka laborator testues të papërfunduar ose gjendet ruajtje dëftesash jo-testuese në `artifacts`. Build-i/cache-t krijohen përsëri në nisjen tjetër; për `npm start` duhet së pari `npm run build`.
+
+Screenshot-et e vjetra të dokumentimit dhe logot JPG të papërdorura u hoqën nga kopja aktive; raportet tekstuale dhe logoja PNG që përdor aplikacioni ruhen. Shembujt e dokumenteve mund të krijohen përsëri me `npm run documents:preview`; mjetet lokale opsionale të renderimit instalohen sërish vetëm kur nevojiten.

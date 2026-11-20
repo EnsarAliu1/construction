@@ -7,7 +7,8 @@ import {reportWorkbook} from "./workbook";
 import {resolve} from "node:path";
 import type {FinanceReport} from "./finance";
 import {limitError} from "./validation";
-export function companyName(){const value=process.env.RECEIPT_COMPANY_NAME?.trim()||"Emri i kompanisë nuk është konfiguruar - VETËM PËR ZHVILLIM";if(value.length>200||/[\u0000-\u001f\u007f]/u.test(value))throw new Error("Konfigurimi i kompanisë është i pavlefshëm.");return value;}
+import {demoMode,DEMO_LABEL} from '@/server/demo/policy';
+export function companyName(){const value=demoMode()?DEMO_LABEL:process.env.RECEIPT_COMPANY_NAME?.trim()||"Emri i kompanisë nuk është konfiguruar - VETËM PËR ZHVILLIM";if(value.length>200||/[\u0000-\u001f\u007f]/u.test(value))throw new Error("Konfigurimi i kompanisë është i pavlefshëm.");return value;}
 export async function operationalPdf(title:string,sections:{heading:string;lines:string[];table?:{headers:string[];rows:string[][]}}[]):Promise<Buffer>{
  const doc=new PDFDocument({size:"A4",margins:{top:48,bottom:56,left:48,right:48},bufferPages:true,info:{Title:title,Author:companyName()}});
  doc.registerFont("Body",resolve("assets/fonts/NotoSans-Regular.ttf"));doc.registerFont("Bold",resolve("assets/fonts/NotoSans-Bold.ttf"));

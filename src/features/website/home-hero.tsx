@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import {DemoEntryLink} from '@/components/public/demo-entry-link';
 import {dictionaries,type Locale} from "@/i18n/dictionaries";
 
 function Crane(){
@@ -21,14 +22,14 @@ export function HomeHero({locale}:{locale:Locale}){
  // https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=2000&q=75
  const [first,...rest]=dictionaries[locale].pages.home.title.split(" ");
  return <section className="site-reference-hero" aria-labelledby="home-hero-title" data-motion-slot="building-assembly">
-  <Image className="hero-photograph" src="/images/hero-architecture.jpg" alt="" fill preload sizes="100vw"/>
+  <Image className="hero-photograph" src="/images/hero-architecture.jpg" alt="" fill loading="eager" fetchPriority="high" sizes="100vw"/>
   <div className="hero-shade" aria-hidden="true"/><Crane/>
   <div className="hero-reference-content">
    <p className="hero-reference-eyebrow"><span aria-hidden="true"/>NGA IDEJA TE NDËRTIMI</p>
    <h1 id="home-hero-title"><span>{first}{" "}</span><span>{rest.join(" ")}</span></h1>
    <div className="hero-reference-bottom">
     <p className="hero-reference-tagline">Hapësira që frymëzojnë. Ndërtime që zgjasin.</p>
-    <div className="hero-reference-actions"><Link className="hero-project-link" href={`/${locale}#projektet`}>Eksploro projektet<span aria-hidden="true">→</span></Link><Link className="hero-quote-link" href={`/${locale}#kontakti`}>Kërko ofertë</Link></div>
+    <div className="hero-reference-actions"><DemoEntryLink className="hero-project-link" title="Eksploro menaxhimin me të dhëna fiktive">Provo Demo<span aria-hidden="true">↗</span></DemoEntryLink><Link className="hero-quote-link" href={`/${locale}#kontakti`}>Kërko ofertë</Link></div>
    </div>
   </div>
   <div className="hero-colophon"><a href={`/${locale}#rreth-nesh`} className="hero-discover"><span className="hero-discover-line" aria-hidden="true"/>Njihuni me qasjen tonë</a><p>Vizioni merr formë. Detaji bën diferencën.</p><span className="hero-colophon-mark" aria-hidden="true">C.</span></div>

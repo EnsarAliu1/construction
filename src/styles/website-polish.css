@@ -191,3 +191,6 @@
 }
 @media(max-width:350px){.site-logo-wordmark{font-size:19px;}.site-logo-wordmark small{font-size:6px;}.public-layout .site-logo{gap:8px;}.hero-reference-actions{flex-direction:column;}.public-layout .site-reference-hero h1{font-size:45px;}}
 @media(prefers-reduced-motion:reduce){.hero-discover-line,.hero-reference-actions a{transition:none;}}
+/* Keep interactive targets stationary when focus cancels their entrance animation. */
+.public-layout:has(.site-reference-hero) .public-header-inner,.hero-reference-actions{animation-name:hero-controls-reveal;}
+@keyframes hero-controls-reveal{from{opacity:0;}to{opacity:1;}}

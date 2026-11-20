@@ -14,6 +14,7 @@ import {finances} from "./finance";
 import {companyExportInput,reportFilter,ReportingError,limitError} from "./validation";
 import {companyPdf,companyXlsx,operationalPdf} from "./documents";
 import {securitySignal} from "@/server/operations/events";
+import {demoMode,DEMO_LABEL} from '@/server/demo/policy';
 export function portable(value:unknown):unknown{
  if(Array.isArray(value))return value.map(portable);if(value&&typeof value==="object")return Object.fromEntries(Object.entries(value).filter(([key])=>!/(password|token|secret|operator|storagereference|authversion|databaseurl|mfa|totp|recoverycode|recoveryhash|verifier|seed|cipher|encryptionkey|keyid|challenge)/i.test(key.replace(/[_-]/g,''))).map(([key,v])=>[key,portable(v)]));return value;
 }
@@ -34,6 +35,7 @@ export async function exportCompany(c:Connection,token:string|undefined,input:un
 export async function archiveSnapshot(c:Connection,token:string|undefined,s:Snapshot,id:string,observe:(name:string)=>Promise<void>=async()=>{}){
  await requireSessionUser(c,token);const zip=new JSZip(),files:Record<string,Buffer>={},datasets:Record<string,{rows:number;json:string;csv:string}>={};let size=0;
  const add=(name:string,bytes:Buffer)=>{size+=bytes.length;if(size>64*1024*1024)throw limitError();files[name]=bytes;};
+ if(demoMode())add('README-DEMO.txt',Buffer.from(`${DEMO_LABEL}\nDokumentet dhe të dhënat janë vetëm për demonstrim; nuk përfaqësojnë transaksione reale.\n`));
  for(const [name,raw]of Object.entries(s.data)){if(!Object.hasOwn(exportTables,name))throw new Error("Grup i panjohur të dhënash për eksport.");const rows=portable(raw) as Record<string,unknown>[],headers=portable(Object.fromEntries(Object.keys(getTableColumns(exportTables[name as keyof typeof exportTables])).map(key=>[key,null]))) as Record<string,unknown>,columns=Object.keys(headers).sort();const json=`data/${name}.json`,csv=`data/${name}.csv`;add(json,Buffer.from(JSON.stringify(rows)));add(csv,Buffer.from('\uFEFF'+[columns.map(csvCell).join(','),...rows.map(row=>columns.map(col=>csvCell(row[col])).join(','))].join('\r\n')));datasets[name]={rows:rows.length,json,csv};await requireSessionUser(c,token);await observe(name);}
  if(s.data.receipt_versions.length>256)throw limitError();let pdfBytes=0;
  for(const row of s.data.receipt_versions){await requireSessionUser(c,token);const pdf=await downloadReceipt(c,token,String(row.receiptId),row.version);if(checksum(pdf.bytes)!==row.fileChecksum)throw new Error("Hash-i i PDF-së nuk përputhet me gjendjen e ruajtur.");pdfBytes+=pdf.bytes.length;if(pdfBytes>48*1024*1024)throw limitError();add(`receipts/${row.receiptId}/v${row.version}.pdf`,pdf.bytes);}

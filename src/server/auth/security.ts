@@ -18,7 +18,7 @@ export function safeReturnPath(value: unknown) {
 
 export function sessionCookieSettings(production = process.env.NODE_ENV === "production") {
   return {
-    name: production ? "__Host-fitimi_session" : "fitimi_session",
+    name: process.env.DEMO_MODE==='1' ? (production?'__Host-fitimi_demo_session':'fitimi_demo_session') : (production ? "__Host-fitimi_session" : "fitimi_session"),
     httpOnly: true as const, secure: production, sameSite: "lax" as const,
     path: "/", maxAge: SESSION_SECONDS,
   };

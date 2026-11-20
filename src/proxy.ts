@@ -5,6 +5,11 @@ import {trustedOrigin} from './server/auth/security';
 
 /** CSP/privacy only. Live authentication remains in every page/service, never in proxy. */
 export function proxy(request:NextRequest){
+ if(process.env.DEMO_MODE==='1'){
+  const path=request.nextUrl.pathname;
+  if(path.startsWith('/api/auth/')&&path!=='/api/auth/logout')return NextResponse.json({ok:false,message:'Ky veprim nuk është i disponueshëm në demo.'},{status:403,headers:{'Cache-Control':'no-store'}});
+  if(/^\/app\/(security|accounts)(\/|$)/.test(path))return NextResponse.redirect(new URL('/app',request.url),303);
+ }
  if(process.env.NODE_ENV!=='production'&&process.env.FITIMI_LOCAL_DEVELOPMENT==='1'&&!process.env.FITIMI_TEST_BUILD&&(request.method==='GET'||request.method==='HEAD')){
   const canonical=trustedOrigin();
   if(canonical.hostname==='localhost'&&request.headers.get('host')===`127.0.0.1:${canonical.port}`){const target=new URL(request.nextUrl.pathname+request.nextUrl.search,canonical);return NextResponse.redirect(target,307);}
@@ -16,4 +21,4 @@ export function proxy(request:NextRequest){
  response.headers.set("Cache-Control","private, no-store, max-age=0");
  return response;
 }
-export const config={matcher:["/app/:path*","/administrata/:path*"]};
+export const config={matcher:["/app/:path*","/administrata/:path*","/api/auth/:path*","/demo"]};

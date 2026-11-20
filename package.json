@@ -63,7 +63,12 @@
     "test:workspace:local": "node scripts/passkeys/workspace-local.mjs",
     "test:security:local": "node scripts/security/review-local.mjs check",
     "documents:preview": "node --conditions=react-server --import tsx scripts/documents/preview.ts",
-    "test:documents:local": "node scripts/documents/local.mjs"
+    "test:documents:local": "node scripts/documents/local.mjs",
+    "clean": "node scripts/clean.mjs",
+    "demo": "node --conditions=react-server --import tsx scripts/demo/local.ts",
+    "test:demo": "node --conditions=react-server --import tsx --test tests/demo/security.test.ts tests/demo/readiness.test.ts",
+    "test:demo:browser": "node --conditions=react-server --import tsx scripts/demo/verify.ts",
+    "test:demo:entry": "node --conditions=react-server --import tsx scripts/demo/entry-browser.ts"
   },
   "engines": {
     "node": ">=22.0.0"

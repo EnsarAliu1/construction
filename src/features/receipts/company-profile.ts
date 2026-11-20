@@ -1,10 +1,12 @@
 import {resolve} from 'node:path';
+import {demoMode,DEMO_LABEL} from '@/server/demo/policy';
 
 export type ReceiptCompany={name:string;address:string;city:string;nui:string;vatNumber:string;phone:string;email:string;bank:string;iban:string;vatStatus:'unspecified'|'registered'|'not-registered';vatRate:0|8|18;vatNote:string;logo:string;configured:boolean};
 export type ReceiptBuyer={address?:string;city?:string;nui?:string;vatNumber?:string};
 
 /** Deployment-owned presentation only. Never accepts request-provided paths or URLs. */
 export function receiptCompany(env:Record<string,string|undefined>=process.env):ReceiptCompany{
+ if(demoMode())env={RECEIPT_COMPANY_NAME:DEMO_LABEL,RECEIPT_COMPANY_ADDRESS:'Adresa fiktive e demonstrimit',RECEIPT_COMPANY_CITY:'Prishtinë',RECEIPT_VAT_STATUS:'not-registered'};
  const text=(key:string,max=255)=>{const value=(env[key]??'').trim();if(value.length>max||/[\u0000-\u001f\u007f-\u009f]/u.test(value))throw new Error('Profili i kompanisë për dokumente është i pavlefshëm.');return value;};
  const name=text('RECEIPT_COMPANY_NAME',200),status=text('RECEIPT_VAT_STATUS',24)||'unspecified';
  if(!['unspecified','registered','not-registered'].includes(status))throw new Error('Status i pavlefshëm i TVSH-së për dokumente.');

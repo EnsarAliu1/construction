@@ -85,7 +85,7 @@ Genuine Windows Edge/Playwright:13 MFA scenarios,13 complete business scenarios,
 
 The existing business browser creates/edits/searches clients, project/contract/phases, references, expenses, split/corrected/cancelled payments, immutable receipt versions, financial totals and downloads. It runs with the mandatory MFA fixture. Website tests preserve ten SQ/EN routes, navigation/language switching, mobile layouts, contact/SEO/noindex and private-data isolation. Existing financial retry storage remains opaque-key-only.
 
-Sanitized screenshots show [mobile security/keyboard focus](security/wp16-evidence/mfa-security-mobile.png) and [logged-out state](security/wp16-evidence/mfa-logged-out.png). They contain no QR, seed, codes, password or token. Physical-device QR scanning, a real user's authenticator, screen-reader assessment, manual accessibility conformance and the interactive trusted operator's human identity procedure remain **NOT VERIFIED**.
+Sanitized mobile security/keyboard-focus and logged-out screenshots were captured during verification; generated image files were removed during repository cleanup. The sanitized result summaries above remain available. Physical-device QR scanning, a real user's authenticator, screen-reader assessment, manual accessibility conformance and the interactive trusted operator's human identity procedure remain **NOT VERIFIED**.
 
 ## I. Existing regression and protected recovery
 

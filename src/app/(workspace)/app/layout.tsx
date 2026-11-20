@@ -8,6 +8,7 @@ import "@/styles/passkeys.css";
 import {LoginWelcome} from '@/components/auth/login-welcome';
 import { currentUser } from "@/server/auth/web";
 import { cookies } from "next/headers";
+import {demoMode} from '@/server/demo/policy';
 import "@/styles/workspace.css";
 import "@/styles/management.css";
 import "@/styles/workspace-polish.css";
@@ -28,5 +29,5 @@ export default async function WorkspaceLayout({ children, modal }: { children: R
   const theme = preferences.get('fitimi_theme')?.value === 'dark' ? 'dark' : 'light';
   const collapsed = preferences.get('fitimi_sidebar')?.value === 'collapsed';
   // Each page checks its own authorization before rendering; preserve its return URL.
-  return <html lang="sq" data-workspace-theme={theme}><body>{user ? <WorkspaceShell user={user} initialTheme={theme} initialCollapsed={collapsed}><LoginWelcome/><SuccessToast/>{children}{modal}</WorkspaceShell> : children}</body></html>;
+  return <html lang="sq" data-workspace-theme={theme}><body>{user ? <WorkspaceShell user={user} demo={demoMode()} initialTheme={theme} initialCollapsed={collapsed}><LoginWelcome/><SuccessToast/>{children}{modal}</WorkspaceShell> : children}</body></html>;
 }

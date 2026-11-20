@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { assertSameOrigin, AuthenticationRequired, sessionCookieSettings } from "@/server/auth/security";
 import { withAuthConnection } from "@/server/auth/store";
 import { requireSessionUser, revokeSession } from "@/server/auth/sessions";
+import {demoMode} from '@/server/demo/policy';
 
 export async function logoutAction() {
   try { assertSameOrigin(await headers()); }
@@ -14,6 +15,11 @@ export async function logoutAction() {
   const store = await cookies();
   const settings = sessionCookieSettings();
   const token = store.get(settings.name)?.value;
+  if(demoMode()){
+    await (await import('@/server/demo/runtime')).revokeDemo(token);
+    const {name,...attributes}=settings;store.set(name,'',{...attributes,maxAge:0,expires:new Date(0)});
+    redirect('/administrata');
+  }
   let anonymous = false;
   try {
     await withAuthConnection(async connection => {

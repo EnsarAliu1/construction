@@ -272,3 +272,5 @@ html[data-workspace-theme=dark] .workspace-refresh .app-status.active,html[data-
 }
 @media(max-width:640px){.workspace-refresh .workspace-topbar{padding:10px 16px;gap:9px;}.workspace-refresh .workspace-menu-search{height:41px;}.workspace-refresh .workspace-theme-toggle{width:36px;height:36px;}.workspace-refresh .workspace-profile>summary{padding:3px;}}
 @media(prefers-reduced-motion:reduce){.workspace-refresh *,.workspace-refresh *::before,.workspace-refresh *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
+.demo-banner{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem 1.2rem;padding:.8rem 1rem;margin-bottom:1rem;border:1px solid #bc9762;border-radius:12px;background:color-mix(in srgb,#bc9762 10%,transparent);color:inherit;font-size:.8rem;line-height:1.5}
+.demo-banner strong{letter-spacing:.025em}

@@ -10,6 +10,7 @@ import {loadLocalEnvironment,localDatabaseOptions,openLocalConnection} from '../
 import {applyMigrations} from '../../src/server/db/migrate';
 import {authenticateOperator} from '../../src/server/auth/operator';
 import {createAccount} from '../../src/server/auth/accounts';
+import {stopOwnedProcess} from './stop-process';
 
 async function main(){
  const args=process.argv.slice(2);
@@ -40,9 +41,17 @@ async function main(){
    console.log('Hyrja e sigurt dhe passkey: http://localhost:3000/administrata');
   }finally{await connection.end();}
  }
+ let demoChild:ReturnType<typeof spawn>|undefined;
+ if(!process.env.FITIMI_TEST_BUILD){
+  if(!process.env.DEMO_ORIGIN?.trim())process.env.DEMO_ORIGIN='http://localhost:3001';
+  demoChild=spawn(process.execPath,['--conditions=react-server','--import','tsx','scripts/demo/local.ts'],{stdio:'inherit',env:process.env,windowsHide:true});
+  demoChild.on('error',()=>console.error('Demoja nuk u nis; aplikacioni kryesor vazhdon normalisht.'));
+ }
  const require=createRequire(resolve('package.json')),cli=require.resolve('next/dist/bin/next');
  const child=spawn(process.execPath,[cli,'dev','--hostname','127.0.0.1','--port','3000'],{stdio:'inherit',env:process.env,windowsHide:true});
  child.on('error',()=>{console.error('Next.js nuk mund të nisej.');process.exitCode=1;});
- child.on('exit',code=>{process.exitCode=code??1;});
+ child.on('exit',code=>{stopOwnedProcess(demoChild);process.exitCode=code??1;});
+ process.on('SIGINT',()=>{stopOwnedProcess(demoChild);stopOwnedProcess(child);});
+ process.on('SIGTERM',()=>{stopOwnedProcess(demoChild);stopOwnedProcess(child);});
 }
 void main().catch(()=>{console.error('Nisja dështoi. Kontrolloni profilin lokal dhe docker compose up -d. Nuk u fshinë të dhëna dhe sekretet nuk shfaqen.');process.exitCode=1;});

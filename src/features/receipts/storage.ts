@@ -4,6 +4,8 @@ import * as fs from "node:fs/promises";
 import {dirname,isAbsolute,relative,resolve,sep} from "node:path";
 import type {Connection,RowDataPacket} from "mysql2/promise";
 import {secureWindowsReceiptDirectory} from "./permissions";
+import {demoMode} from '@/server/demo/policy';
+import {demoReceiptRoot} from '@/server/demo/storage';
 
 const UUID="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}";
 const idPattern=new RegExp(`^${UUID}$`);
@@ -24,7 +26,7 @@ export class PrivateReceiptStore{
   private owner!:Owner;
   readonly written:string[]=[];
   constructor(private database:string,private fault:ReceiptFault=async()=>{}){
-    this.root=resolve(/* turbopackIgnore: true */ process.env.RECEIPT_STORAGE_DIR?.trim()||".private/receipts");
+    this.root=demoMode()?demoReceiptRoot(database.split('/')[1]??''):resolve(/* turbopackIgnore: true */ process.env.RECEIPT_STORAGE_DIR?.trim()||".private/receipts");
     const segments=this.root.split(/[\\/]/).map(value=>value.toLowerCase());
     if(this.root===resolve(/* turbopackIgnore: true */ ".")||segments.some(part=>part==='.next'||part.startsWith('.next-')||["public",".git","node_modules"].includes(part)))throw new Error("Receipt storage must use a dedicated private directory.");
   }
