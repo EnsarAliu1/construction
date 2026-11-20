@@ -31,7 +31,7 @@ export function openMfaSeed(value: {
     throw new Error("Sekreti MFA është i padisponueshëm."); const cipher = createDecipheriv('aes-256-gcm', key(value.keyId), chunks[0]); cipher.setAAD(aad(user, generation, value.keyId)); cipher.setAuthTag(chunks[2]); const plain = Buffer.concat([cipher.update(chunks[1]), cipher.final()]).toString('utf8'); if (!/^[A-Z2-7]{32}$/.test(plain))
     throw new Error("Sekreti MFA është i padisponueshëm."); return plain; }
 export const newMfaSeed = () => new OTPAuth.Secret({ size: 20 }).base32;
-export function authenticator(seed: string, label = "Llogaria e punës") { return new OTPAuth.TOTP({ issuer: 'Fitimi Construction', label, algorithm: 'SHA1', digits: 6, period: 30, secret: OTPAuth.Secret.fromBase32(seed) }); }
+export function authenticator(seed: string, label = "Llogaria e punës") { return new OTPAuth.TOTP({ issuer: 'Construction', label, algorithm: 'SHA1', digits: 6, period: 30, secret: OTPAuth.Secret.fromBase32(seed) }); }
 /** RFC6238 interoperable +/- one 30s step. Replay acceptance is coordinated under the user/factor SQL lock. */
 export function acceptedStep(seed: string, code: unknown, now = Date.now()) { if (typeof code !== 'string' || !/^\d{6}$/.test(code))
     return null; const delta = authenticator(seed).validate({ token: code, timestamp: now, window: 1 }); return delta === null ? null : Math.floor(now / 30000) + delta; }

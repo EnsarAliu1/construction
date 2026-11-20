@@ -2,6 +2,20 @@ import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import {mkdir} from 'node:fs/promises';
 
+test('login fits laptop and phone viewports without scrolling or clipping controls',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
+ for(const [width,height] of [[1366,768],[1440,900],[1280,720],[1024,768],[900,700],[390,844],[375,667]] as const){
+  await page.setViewportSize({width,height});await page.goto('/administrata');
+  await expect(page.getByRole('button',{name:'Hyni',exact:true})).toBeInViewport({ratio:1});
+  await expect(page.getByRole('button',{name:'Hyr shpejt',exact:true})).toBeInViewport({ratio:1});
+  const dimensions=await page.evaluate(()=>({width:document.documentElement.scrollWidth,height:document.documentElement.scrollHeight,viewportWidth:innerWidth,viewportHeight:innerHeight}));
+  expect(dimensions.width,`${width}x${height} horizontal fit`).toBeLessThanOrEqual(dimensions.viewportWidth);
+  expect(dimensions.height,`${width}x${height} vertical fit`).toBeLessThanOrEqual(dimensions.viewportHeight+1);
+  await mkdir('artifacts/login-ui',{recursive:true});
+  await page.screenshot({path:`artifacts/login-ui/polish-${width}x${height}.png`,fullPage:true});
+ }
+});
+
 test('branded login supports mobile, keyboard password visibility and accessible inputs',async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
  await page.emulateMedia({reducedMotion:'reduce'});

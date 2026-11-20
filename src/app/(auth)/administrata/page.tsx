@@ -6,7 +6,7 @@ import { currentUser } from "@/server/auth/web";
 import { safeReturnPath } from "@/server/auth/security";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Fitimi Construction", robots: { index: false, follow: false } };
+export const metadata = { title: "Construction", robots: { index: false, follow: false } };
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ returnTo?: string; unavailable?: string }> }) {
   const params = await searchParams;
@@ -16,7 +16,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   try { signedIn = Boolean(await currentUser()); } catch { unavailable = true; }
   if (signedIn) redirect(returnTo);
   return <AuthFrame>
-    <h1 id="login-title">Mirë se vini<br/>përsëri.</h1><p className="login-description">Hyni në hapësirën tuaj të punës dhe vazhdoni aty ku e latë.</p>
+    <h1 id="login-title">Mirë se vini.</h1><p className="login-description">Hapësira juaj. Gjithçka në vendin e vet.</p>
     <PasskeyLogin returnTo={returnTo}/><div className="auth-method-divider">ose hyni me email</div><LoginForm returnTo={returnTo} unavailable={unavailable} />
   </AuthFrame>;
 }

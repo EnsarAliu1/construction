@@ -23,12 +23,12 @@
 /* Owner's video reference: transparent navigation, architectural photograph and crane. */
 .public-layout{position:relative;}
 .public-layout .site-logo{display:block;flex-shrink:0;width:185px;line-height:0;}
-.site-logo img{width:100%;height:auto;}
+.site-logo img{width:auto;height:64px;max-width:100%;object-fit:contain;}
 .site-logo-filters{position:absolute;pointer-events:none;}
 .public-layout .public-header-inner{width:87%;max-width:1680px;min-height:108px;}
 .public-layout .header-quote{display:inline-flex;justify-content:center;align-items:center;padding:12px 24px;border:1px solid currentColor;min-height:46px;text-transform:uppercase;letter-spacing:.07em;font-size:.75rem;font-weight:600;text-decoration:none;white-space:nowrap;transition:background .2s,color .2s;}
 .public-layout:has(.site-reference-hero)>.public-header{position:absolute;z-index:20;inset:0 0 auto;background:transparent;border:0;color:#f5f2e9;}
-.public-layout:has(.site-reference-hero) .public-header .site-logo img{filter:url(#site-logo-light);}
+.public-layout:has(.site-reference-hero) .public-header .site-logo img{filter:brightness(0) invert(1);}
 .public-layout:has(.site-reference-hero) .public-header .nav-item{color:#f5f2e9;font-size:.95rem;font-weight:400;padding:12px 18px;border-radius:0;}
 .public-layout:has(.site-reference-hero) .public-header .nav-item:hover{background:#ffffff14;}
 .public-layout:has(.site-reference-hero) .public-header .nav-item.active{box-shadow:none;}

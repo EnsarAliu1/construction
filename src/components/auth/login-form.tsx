@@ -33,6 +33,6 @@ export function LoginForm({ returnTo, unavailable }: { returnTo: string; unavail
       {message && <p ref={error} role="alert" tabIndex={-1} className="login-error">{message}</p>}
       <Button type="submit" className="login-submit"><span>{pending ? "Duke verifikuar…" : "Hyni"}</span><span className="auth-submit-arrow" aria-hidden="true">→</span></Button>
     </fieldset>
-    <p className="muted login-help">Llogaritë dhe rikuperimi i fjalëkalimit menaxhohen nga Adore. Kontaktoni operatorin e autorizuar për ndihmë.</p>
+    <p className="muted login-help">Për llogari ose rikuperim, kontaktoni operatorin e autorizuar Adore.</p>
   </form>;
 }

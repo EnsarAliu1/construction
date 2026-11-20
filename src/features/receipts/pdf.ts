@@ -17,7 +17,7 @@ export async function renderReceiptPdf(snapshot:HistorySnapshot):Promise<Buffer>
     doc.font("Receipt").fontSize(10).fillColor("#14212a").text(content,{width:499,lineGap:2});doc.moveDown(.65);
   }
   try{
-    doc.image(resolve("public/logos/fitimi-clean.png"),48,44,{fit:[145,62]});
+    doc.image(resolve("public/logos/construction.png"),48,44,{fit:[145,62]});
     doc.font("ReceiptBold").fontSize(23).fillColor("#163a43").text("DËFTESË PAGESE",240,48,{width:307,align:"right"});
     doc.font("Receipt").fontSize(9).fillColor("#59636c").text(`Nr. ${snapshot.receiptNumber}  |  Versioni ${snapshot.documentVersion}`,240,85,{width:307,align:"right"});
     doc.text(`Lëshuar: ${kosovoDate(snapshot.issuedAt)}`,240,101,{width:307,align:"right"});

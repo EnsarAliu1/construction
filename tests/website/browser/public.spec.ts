@@ -10,7 +10,7 @@ test('logo returns to the top and hero controls stay clear of the crane load',as
   await expect(page).toHaveURL(/\/sq#krye$/);await expect.poll(()=>page.evaluate(()=>scrollY)).toBe(0);
   const buttons=await page.locator('.hero-reference-actions').boundingBox(),load=await page.locator('.crane-hook').boundingBox();
   const clearance=load!.x-(buttons!.x+buttons!.width);expect(clearance).toBeGreaterThanOrEqual(16);expect(clearance).toBeLessThanOrEqual(80);
-  await expect(page).toHaveTitle("Fitimi Construction");await expect(page.locator('link[rel="icon"]')).toHaveAttribute("href",/icon\.svg/);
+  await expect(page).toHaveTitle("Construction");await expect(page.locator('link[rel="icon"]')).toHaveAttribute("href",/icon\.png/);
  }
 });
 test('brand polish stays within narrow screens and mobile navigation remains accessible',async({page})=>{
@@ -30,7 +30,7 @@ test('brand polish stays within narrow screens and mobile navigation remains acc
  const link=page.locator('.public-links a').first();await link.hover();
  expect(await link.evaluate(e=>getComputedStyle(e,'::after').transformOrigin.split(' ')[0])).toBe('0px');
  expect(await page.locator('.showcase-project-open').first().evaluate(e=>getComputedStyle(e).aspectRatio)).toBe('6 / 5');
- expect(await page.locator('.public-layout').evaluate(e=>getComputedStyle(e).getPropertyValue('--site-accent').trim())).toBe('#087e89');
+ expect(await page.locator('.public-layout').evaluate(e=>getComputedStyle(e).getPropertyValue('--site-accent').trim())).toBe('#427967');
 });
 test("contact anchors show the editable form and footer uses clearly labelled sample details",async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/sq');await page.locator('.header-quote').click();
@@ -129,7 +129,7 @@ test("hero entrance completes and the crane cable stays attached throughout its 
 test.beforeEach(async({page})=>{const errors:string[]=[];issues.set(page,errors);page.on("pageerror",e=>errors.push(e.message));page.on("console",m=>{if(m.type()==="error"||/hydration|didn't match|did not match/i.test(m.text()))errors.push(m.text());});});
 test.afterEach(async({page})=>{expect(issues.get(page)).toEqual([]);});
 for(const width of [1440,390])for(const locale of locales)for(const route of ["home",...publicPages] as const){test(`${width}px ${locale} ${route}: direct page, metadata, overflow and screenshot`,async({page,browser})=>{
- const expectedRoute="home";await page.setViewportSize({width,height:1000});const response=await page.goto(publicPath(locale,route));expect(response?.status()).toBe(200);await expect(page.locator("html")).toHaveAttribute("lang",locale);await expect(page.locator("h1")).toHaveCount(1);await expect(page.locator("h1")).toHaveText(dictionaries[locale].pages[expectedRoute].title);await expect(page).toHaveTitle(new RegExp("Fitimi Construction"));if(process.env.PUBLIC_SITE_URL?.trim()){await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href",process.env.PUBLIC_SITE_URL.trim()+publicPath(locale,expectedRoute));await expect(page.locator('link[hreflang="en"]')).toHaveCount(0);}else{await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);}
+ const expectedRoute="home";await page.setViewportSize({width,height:1000});const response=await page.goto(publicPath(locale,route));expect(response?.status()).toBe(200);await expect(page.locator("html")).toHaveAttribute("lang",locale);await expect(page.locator("h1")).toHaveCount(1);await expect(page.locator("h1")).toHaveText(dictionaries[locale].pages[expectedRoute].title);await expect(page).toHaveTitle(new RegExp("Construction"));if(process.env.PUBLIC_SITE_URL?.trim()){await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href",process.env.PUBLIC_SITE_URL.trim()+publicPath(locale,expectedRoute));await expect(page.locator('link[hreflang="en"]')).toHaveCount(0);}else{await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);}
  // Audit the settled view, excluding the intentionally continuous crane movement.
  await page.evaluate(async()=>{await Promise.all(document.getAnimations().filter(a=>a.effect?.getComputedTiming().iterations!==Infinity).map(a=>a.finished.catch(()=>{})));});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);await expect(page.locator(".site-mobile-menu")).toBeVisible({visible:width<1101});if(width===1440){const result=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();expect(result.violations).toEqual([]);}await mkdir("artifacts/wp11/screenshots",{recursive:true});await page.screenshot({path:`artifacts/wp11/screenshots/${locale}-${route}-${width}.png`,fullPage:true});if(locale==="sq"&&route==="home"&&width===1440)console.log("Actual isolated Edge/Chromium:",browser.version());

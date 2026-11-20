@@ -31,5 +31,6 @@ export function HomeHero({locale}:{locale:Locale}){
     <div className="hero-reference-actions"><Link className="hero-project-link" href={`/${locale}#projektet`}>Eksploro projektet<span aria-hidden="true">→</span></Link><Link className="hero-quote-link" href={`/${locale}#kontakti`}>Kërko ofertë</Link></div>
    </div>
   </div>
+  <div className="hero-colophon"><a href={`/${locale}#rreth-nesh`} className="hero-discover"><span className="hero-discover-line" aria-hidden="true"/>Njihuni me qasjen tonë</a><p>Vizioni merr formë. Detaji bën diferencën.</p><span className="hero-colophon-mark" aria-hidden="true">C.</span></div>
  </section>;
 }

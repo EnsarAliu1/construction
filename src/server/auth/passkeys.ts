@@ -34,7 +34,7 @@ export async function beginPasskeyRegistration(c:Connection,session:string|undef
  const user=await requireSessionUser(c,session);await limit(c,'register',user.id);const rp=passkeyRelyingParty();
  return transaction(c,async()=>{const u=await userLock(c,user.id);await requireSessionUser(c,session);await recentSession(c,session,user.id);
   const [keys]=await c.execute<RowDataPacket[]>('SELECT credential_id FROM auth_passkeys WHERE user_id=? AND revoked_at IS NULL AND user_auth_version=?',[user.id,u.auth_version]);if(keys.length>=MAX_KEYS)throw new PasskeyRejected();
-  const options=await generateRegistrationOptions({rpName:'Fitimi Construction',rpID:rp.rpID,userID:new TextEncoder().encode(user.id),userName:u.email,userDisplayName:u.display_name,attestationType:'none',timeout:60000,authenticatorSelection:{residentKey:'required',userVerification:'required',authenticatorAttachment:'platform'},supportedAlgorithmIDs:[-7,-257],excludeCredentials:keys.map(k=>({id:k.credential_id}))});
+  const options=await generateRegistrationOptions({rpName:'Construction',rpID:rp.rpID,userID:new TextEncoder().encode(user.id),userName:u.email,userDisplayName:u.display_name,attestationType:'none',timeout:60000,authenticatorSelection:{residentKey:'required',userVerification:'required',authenticatorAttachment:'platform'},supportedAlgorithmIDs:[-7,-257],excludeCredentials:keys.map(k=>({id:k.credential_id}))});
   return {options,token:await saveChallenge(c,'register',options.challenge,[],u,session)};
  });
 }

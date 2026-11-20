@@ -5,6 +5,7 @@ import { dictionaries, isLocale, locales } from "@/i18n/dictionaries";
 import { PublicShell } from "@/components/public/public-shell";
 import "@/styles/globals.css";
 import "@/styles/website.css";
+import "@/styles/website-polish.css";
 
 export const dynamicParams = false;
 export function generateStaticParams() { return locales.map(locale => ({ locale })); }
@@ -12,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   return {
-    title: { absolute: "Fitimi Construction" },
+    title: { absolute: "Construction" },
     description: dictionaries[locale].pages.home.description,
     robots: { index: false, follow: false },
   };

@@ -30,10 +30,10 @@ export function AboutSection(){
      <div className="about-photo" data-about-reveal><Image src="/images/about-construction.jpg" width={1200} height={800} sizes="(max-width: 767px) 90vw, 52vw" alt="Ekip ndërtimi në një kantier me strukturë betoni dhe armaturë çeliku"/></div>
     </div>
     <div className="about-right"><Building/>
-     <div className="about-copy" data-about-reveal><p className="about-lead">Prej më shumë se pesëmbëdhjetë vitesh, i japim formë hapësirave ku jetohet dhe punohet.</p><p>Te Fitimi Construction, besimi ndërtohet me përkushtim, saktësi dhe kujdes për çdo detaj. Besojmë në materiale të mira, punë të menduar dhe bashkëpunim të hapur — nga ideja e parë deri te përfundimi.</p></div>
+     <div className="about-copy" data-about-reveal><p className="about-lead">Prej më shumë se pesëmbëdhjetë vitesh, i japim formë hapësirave ku jetohet dhe punohet.</p><p>Te Construction, besimi ndërtohet me përkushtim, saktësi dhe kujdes për çdo detaj. Besojmë në materiale të mira, punë të menduar dhe bashkëpunim të hapur — nga ideja e parë deri te përfundimi.</p></div>
     </div>
    </div>
-   <section className="about-container about-statistics" aria-label="Fitimi Construction në shifra"><dl>{statistics.map(stat=><div className="about-stat" data-about-reveal key={stat.label}><dt>{stat.label}</dt><dd><span className="sr-only">{stat.value}{stat.suffix}</span><span aria-hidden="true"><span data-count-to={stat.value}>{stat.value}</span>{stat.suffix}</span></dd></div>)}</dl></section>
+   <section className="about-container about-statistics" aria-label="Construction në shifra"><dl>{statistics.map(stat=><div className="about-stat" data-about-reveal key={stat.label}><dt>{stat.label}</dt><dd><span className="sr-only">{stat.value}{stat.suffix}</span><span aria-hidden="true"><span data-count-to={stat.value}>{stat.value}</span>{stat.suffix}</span></dd></div>)}</dl></section>
   </AboutMotion>
  </section>;
 }
