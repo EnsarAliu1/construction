@@ -3,7 +3,7 @@ import {kosovoDate} from "@/lib/presentation";
 import {valueLabel} from "@/i18n/format";
 import "server-only";
 import PDFDocument from "pdfkit";
-import ExcelJS from "exceljs";
+import {reportWorkbook} from "./workbook";
 import {resolve} from "node:path";
 import type {FinanceReport} from "./finance";
 import {limitError} from "./validation";
@@ -33,19 +33,4 @@ Shpenzimi: ${e.id}`):["Nuk ka shpenzime të regjistruara sipas kushteve."]},
  {heading:"Ndarja e kompanisë sipas projekteve (EUR)",lines:[...r.breakdowns.map(p=>`${p.name} | pranuar ${p.income} | shpenzime të lidhura drejtpërdrejt ${p.expenses}`),`Shpenzimet e kompanisë pa projekt: ${r.totals.companyExpenses}`]},
  {heading:"Miratimi kontabël",lines:["Raport operativ, jo-fiskal. Trajtimi kontabël dhe përmbajtja kërkojnë miratimin e kontabilistit dhe përgjegjësit të projektit. Ky raport nuk është dëftesë pagese me numër."]}
  ]);}
-export async function companyXlsx(r:FinanceReport){
- const book=new ExcelJS.Workbook();book.creator=companyName();book.created=new Date(r.generatedAt);
- const sheet=(name:string,headers:string[],rows:(string|number)[][])=>{
-  const s=book.addWorksheet(name,{views:[{state:"frozen",ySplit:1}],properties:{defaultRowHeight:24}});s.addRow(headers);for(const row of rows)s.addRow(row);
-  s.columns.forEach((column,i)=>{column.width=i===0?26:36;column.numFmt="@";});s.getRow(1).font={bold:true,color:{argb:"FFFFFFFF"}};s.getRow(1).fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF163A46"}};
-  if(name==="Të dhënat shpjeguese")s.getColumn(2).width=95;if(name==="Shpenzimet")s.getColumn(5).width=60;
-  s.eachRow(row=>{row.alignment={vertical:"top",wrapText:true};row.height=row.number===1?32:Math.min(409,Math.max(28,...Object.values(row.values).map(value=>Math.ceil(String(value??"").length/32)*15+8)));row.eachCell(cell=>{if(typeof cell.value==="string"&&cell.value.length>32767)throw limitError();});});s.autoFilter={from:{row:1,column:1},to:{row:1,column:headers.length}};return s;
- };
- sheet("Përmbledhja",[reportPeriod(r.filter).title,"EUR të sakta / vlera"],[["Kompania",companyName()],["Të hyrat e pranuara",r.totals.income],["Shpenzimet e regjistruara",r.totals.expenses],["Diferenca operative",r.totals.difference],["Shpenzimet e kompanisë",r.totals.companyExpenses],["Numri i pagesave",r.income.length],["Numri i shpenzimeve",r.outgoing.length],["Periudha e transaksioneve",reportPeriod(r.filter).range]]);
- sheet("Pagesat",["Identifikuesi i pagesës","Data e transaksionit","Projekti","Klienti","Mënyra","EUR të sakta"],r.income.map(p=>[String(p.id),kosovoDate(p.transactionDate),String(p.projectName),String(p.clientName),valueLabel(String(p.method)),String(p.amount)]));
- sheet("Shpenzimet",["Identifikuesi i shpenzimit","Data e transaksionit","Projekti / Kompania","Kategoria","Përshkrimi","EUR të sakta"],r.outgoing.map(e=>[String(e.id),kosovoDate(e.transactionDate),String(e.projectName),String(e.categoryName),String(e.description),String(e.amount)]));
- sheet("Ndarja sipas projekteve",["Identifikuesi i projektit","Projekti","EUR të pranuara","Shpenzime të drejtpërdrejta në EUR"],[...r.breakdowns.map(p=>[p.id,p.name,p.income,p.expenses]),["","Kompania (pa projekt)","0.00",r.totals.companyExpenses]]);
- sheet("Kategoritë",["Identifikuesi i kategorisë","Kategoria","EUR të regjistruara"],r.categories.map(c=>[c.id,c.name,c.amount]));sheet("Mënyrat e pagesës",["Mënyra","EUR të pranuara"],r.methods.map(m=>[valueLabel(m.method),m.amount]));
- sheet("Të dhënat shpjeguese",["Vetia","Vlera"],[...reportScope(r).map((line,i)=>[String(i+1),line]),["Saktësia monetare","TEKST dhjetor i saktë, përfshirë totalet. Pa shuma me presje lëvizëse ose formula të ekzekutueshme. Datat janë tekst kalendarik DD/MM/YYYY; identifikuesit mbeten tekst."],["Skema e eksportit","fitimi-company-report/1"],["Rregullat","Vetëm raport i kompanisë; nuk ka eksporte financiare për projekte individuale."]]);
- const bytes=Buffer.from(await book.xlsx.writeBuffer());if(bytes.length>16*1024*1024)throw limitError();return bytes;
-}
+export async function companyXlsx(r:FinanceReport){return reportWorkbook(r,reportScope(r));}

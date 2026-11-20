@@ -1,0 +1,159 @@
+{
+  "date": "2026-11-20",
+  "baseline": "b5f5c92",
+  "scope": "Company-configurable Excel and payment-receipt presentation only; no tax-invoice conversion, new cash rule or ledger change.",
+  "workbook": {
+    "workbookSheets": [
+      "Pasqyra ekzekutive",
+      "Përmbledhja",
+      "Pagesat",
+      "Shpenzimet",
+      "Ndarja sipas projekteve",
+      "Kategoritë",
+      "Mënyrat e pagesës",
+      "Të dhënat shpjeguese"
+    ],
+    "summaryIncome": "43650.00",
+    "summaryExpenses": "14837.50",
+    "previews": [
+      {
+        "sheet": "Pasqyra ekzekutive",
+        "preview": "excel-0.png",
+        "rows": 43,
+        "columns": 12
+      },
+      {
+        "sheet": "Përmbledhja",
+        "preview": "excel-1.png",
+        "rows": 9,
+        "columns": 2
+      },
+      {
+        "sheet": "Pagesat",
+        "preview": "excel-2.png",
+        "rows": 4,
+        "columns": 6
+      },
+      {
+        "sheet": "Shpenzimet",
+        "preview": "excel-3.png",
+        "rows": 4,
+        "columns": 6
+      },
+      {
+        "sheet": "Ndarja sipas projekteve",
+        "preview": "excel-4.png",
+        "rows": 5,
+        "columns": 4
+      },
+      {
+        "sheet": "Kategoritë",
+        "preview": "excel-5.png",
+        "rows": 4,
+        "columns": 3
+      },
+      {
+        "sheet": "Mënyrat e pagesës",
+        "preview": "excel-6.png",
+        "rows": 3,
+        "columns": 2
+      },
+      {
+        "sheet": "Të dhënat shpjeguese",
+        "preview": "excel-7.png",
+        "rows": 12,
+        "columns": 2
+      }
+    ],
+    "scope": "Synthetic outputs from actual app generators. Workbook images are read-only HTML reconstructions of saved cell values/styles, not a claim of native Excel/LibreOffice rendering."
+  },
+  "pdf": [
+    {
+      "file": "deftesa-demo.pdf",
+      "pages": 1,
+      "a4": true,
+      "text_within_margins": true
+    },
+    {
+      "file": "deftesa-pa-tvsh.pdf",
+      "pages": 1,
+      "a4": true,
+      "text_within_margins": true
+    },
+    {
+      "file": "deftesa-shume-faqe.pdf",
+      "pages": 7,
+      "a4": true,
+      "text_within_margins": true
+    },
+    {
+      "file": "deftesa-vlera-te-medha.pdf",
+      "pages": 1,
+      "a4": true,
+      "text_within_margins": true
+    }
+  ],
+  "lifecycle": {
+    "syntheticOnly": true,
+    "originalPdfRetained": true,
+    "correctedPdfDistinct": true,
+    "receiptNumberRetained": true,
+    "idempotentOriginalVersion": true,
+    "cancellationRetainsEveryPdf": true,
+    "phasePaidAfterCancellation": "0.00",
+    "originalChecksum": "b0334abe91bafdb3f62cfbbf49ff574561630daf9c3c690c8a78d401fce03c16",
+    "correctedChecksum": "74944ca953b1dca193210353d350b972d07fc3382e3ce8366d38d5313d8f502f"
+  },
+  "mysql": {
+    "syntheticOnly": true,
+    "ownerContainerStarted": false,
+    "ownerDatabaseTouched": false,
+    "taskContainer": "construction-documents-d0f5f3b6",
+    "port": 3307,
+    "verified": true
+  },
+  "security": {
+    "results": [
+      "Restricted runtime supports live authorization/business reads and denies DDL, account-status changes, history mutation and cross-schema reads",
+      "372 real API/page denial requests: anonymous, malformed, pre-MFA, expired, revoked and disabled sessions",
+      "CSRF/foreign origins, MIME lookalikes, oversize bodies, protected fields, SQL injection and spoofed proxy headers rejected",
+      "Restricted runtime creates real client/project/contract/payment/receipt history and preserves idempotent payment retry",
+      "Receipt redesign preserves immutable original/corrected PDFs, number, replay and cancellation balances",
+      "Original private PDF, actual report PDF/XLSX and complete ZIP work with restricted grants; auth secrets excluded and original PDF checksum preserved",
+      "Public pages, direct private-file probes and production browser bundles expose no checked credential/data sentinels",
+      "Real Edge password→MFA/recovery→private UI→logout; stored/reflected XSS escaped, private script injection and public/private event handlers blocked, no checked credentials in browser storage",
+      "Forged operator capability rejected, live deactivation revokes existing access, 13 original triggers remain, audit snapshots contain no checked secrets"
+    ],
+    "denialRequests": 372,
+    "schema": {
+      "tables": 25,
+      "foreignKeys": 51,
+      "indexes": 106,
+      "checks": 49,
+      "triggers": 13,
+      "fingerprint": "b0f8ae478373c395c926a71b70cdd6623d116b8326f19802158a9daef24c602a"
+    },
+    "scan": {
+      "sourceFiles": 461,
+      "publicFiles": 67,
+      "traces": 74,
+      "checkedSentinels": 35,
+      "findings": [],
+      "scope": "Current Git tracked/untracked nonignored files, public assets, production browser bundles, tracing paths and local security server log. Known sentinel/credential format scan; not exhaustive historical blob or entropy analysis."
+    }
+  },
+  "checks": {
+    "unitDomain": 103,
+    "failures": 0,
+    "skipped": 0,
+    "typescript": "PASS",
+    "lint": "PASS",
+    "build": "PASS",
+    "visualReview": "All 8 workbook sheet previews; normal, long and large-value PDF pages",
+    "nativeExcelRendering": "NOT VERIFIED: no native Excel or LibreOffice; read-only HTML reconstructions used"
+  },
+  "ownerEnvironmentChanged": false,
+  "ownerDatabaseChanged": false,
+  "oldPdfVersionsRegenerated": false,
+  "pushPerformed": false
+}

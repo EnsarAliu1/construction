@@ -15,6 +15,7 @@ for(const path of ['.env','.env.local','.env.production','.env.production.local'
  }
 }
 add((await readFile('.private/development/mysql-root-password','utf8')).trim());
+if(process.env.SECURITY_TEST_ROOT_PASSWORD_FILE)add((await readFile(process.env.SECURITY_TEST_ROOT_PASSWORD_FILE,'utf8')).trim());
 for(const file of ['state.json','fixture.json']){
  const data=JSON.parse(await readFile(join(root,file),'utf8').catch(e=>{if(e.code==='ENOENT')return '{}';throw e;}));
  const walk=(value,key='')=>{if(Array.isArray(value))for(const item of value)walk(item,key);else if(value&&typeof value==='object')for(const [k,v]of Object.entries(value))walk(v,k);else if(/password|token|seed|codes|url|operator|encryption/i.test(key)){

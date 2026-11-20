@@ -7,7 +7,7 @@ import {spawn,execFileSync} from 'node:child_process';
 import {createConnection} from 'mysql2/promise';
 const root=resolve('artifacts/security-review'),stateFile=resolve(root,'state.json'),mode=process.argv[2];
 assert(['setup','verify','cleanup','check'].includes(mode));mkdirSync(root,{recursive:true});
-const connect=()=>createConnection({host:'127.0.0.1',port:3307,user:'root',password:readFileSync('.private/development/mysql-root-password','utf8').trim()});
+const connect=()=>createConnection({host:'127.0.0.1',port:3307,user:'root',password:readFileSync(process.env.SECURITY_TEST_ROOT_PASSWORD_FILE??'.private/development/mysql-root-password','utf8').trim()});
 async function run(args,env){const p=spawn(process.execPath,args,{env:{...process.env,...env},stdio:'inherit',windowsHide:true});assert.equal(await new Promise((done,reject)=>{p.on('exit',done);p.on('error',reject);}),0,'Security verification failed');}
 function scope(s){assert.equal(s.kind,'security-review/1');assert.match(s.database,/^fitimi_test_security_[a-f0-9]{8}$/);assert.match(s.user,/^security_[a-f0-9]{8}$/);assert.match(s.runtimeUser,/^runtime_[a-f0-9]{8}$/);return s;}
 async function available(){try{await fetch('http://127.0.0.1:3000/administrata',{signal:AbortSignal.timeout(700)});return false;}catch{return true;}}

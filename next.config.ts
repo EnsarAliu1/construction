@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
   distDir: process.env.FITIMI_TEST_BUILD === "passkeys" ? ".next-passkeys" : process.env.FITIMI_TEST_BUILD === "sq" ? ".next-sq" : process.env.FITIMI_TEST_BUILD === "wp16" ? ".next-wp16" : process.env.FITIMI_TEST_BUILD === "wp15" ? ".next-wp15" : process.env.FITIMI_TEST_BUILD === "wp14" ? ".next-wp14" : process.env.FITIMI_TEST_BUILD === "wp13" ? ".next-wp13" : process.env.FITIMI_TEST_BUILD === "wp11" ? ".next-wp11" : process.env.FITIMI_TEST_BUILD === "wp10" ? ".next-wp10" : process.env.FITIMI_TEST_BUILD === "wp09" ? ".next-wp09" : ".next",
   serverExternalPackages: ["pdfkit", "exceljs", "jszip"],
   outputFileTracingExcludes: {"/*":["./artifacts/**/*","./.private/**/*","./.env*"]},
-  outputFileTracingIncludes: {"/*":["./assets/security/*.txt"],"/api/payments":["./assets/fonts/*.ttf"],"/api/payments/*":["./assets/fonts/*.ttf"],"/api/reports/**":["./assets/fonts/*.ttf"],"/api/exports/**":["./assets/fonts/*.ttf"]},
+  outputFileTracingIncludes: {"/*":["./assets/security/*.txt"],"/api/payments":["./assets/fonts/*.ttf","./public/logos/*"],"/api/payments/*":["./assets/fonts/*.ttf","./public/logos/*"],"/api/reports/**":["./assets/fonts/*.ttf","./public/logos/*"],"/api/exports/**":["./assets/fonts/*.ttf","./public/logos/*"]},
   async redirects(){return [{source:"/sq/contact",destination:"/sq#kontakti",permanent:true},{source:"/sq/services",destination:"/sq#sherbimet",permanent:true},{source:"/sq/projects",destination:"/sq#projektet",permanent:true},{source:"/sq/about",destination:"/sq#rreth-nesh",permanent:true},{source:"/en/:path*",destination:"/sq/:path*",permanent:true}];},
   async headers(){return [
     {source:"/:path*",headers:browserSecurityHeaders},

@@ -13,6 +13,7 @@ import {cancelPayment,confirmPayment,correctPayment,type PaymentTx,type ReceiptB
 import {PrivateReceiptStore,type ReceiptFault} from "./storage";
 import {securitySignal} from "@/server/operations/events";
 import {renderReceiptPdf} from "./pdf";
+import {receiptCompany} from './company-profile';
 
 export const documentUnavailable=()=>new ReferenceError("DOCUMENT_UNAVAILABLE","Dokumenti i dëftesës është i padisponueshëm ose nuk kaloi kontrollin e integritetit. Mos dërgoni pagesë të re; kontrolloni veprimin fillestar dhe kontaktoni operatorin.",503);
 export function formatReceiptNumber(sequence:bigint,prefix=process.env.RECEIPT_NUMBER_PREFIX??"DEV"){
@@ -52,15 +53,16 @@ function boundary(store:PrivateReceiptStore,fault:ReceiptFault):ReceiptBoundary{
     number=formatReceiptNumber(counter.nextNumber);id=randomUUID();
     await tx.update(receiptCounters).set({nextNumber:counter.nextNumber+BigInt(1),updatedAt:sql`UTC_TIMESTAMP(3)`}).where(eq(receiptCounters.scope,"company"));
   }
-  const [joined]=await tx.select({clientId:clients.id,clientName:clients.name,projectName:projects.name,location:projects.location}).from(projects).innerJoin(clients,eq(projects.clientId,clients.id)).where(eq(projects.id,context.after.projectId)).limit(1);
+  const [joined]=await tx.select({clientId:clients.id,clientName:clients.name,projectName:projects.name,location:projects.location,buyerAddress:clients.addressLine1,buyerAddress2:clients.addressLine2,buyerCity:clients.city,buyerNui:clients.nui}).from(projects).innerJoin(clients,eq(projects.clientId,clients.id)).where(eq(projects.id,context.after.projectId)).limit(1);
   const [actor]=await tx.select({name:users.displayName}).from(users).where(eq(users.id,context.actorId)).limit(1);
   const active=context.allocations.filter(row=>row.deletedAt===null),phaseIds=active.map(row=>row.phaseId);
   const names=phaseIds.length?await tx.select({id:contractPhases.id,name:contractPhases.name}).from(contractPhases).where(or(...phaseIds.map(id=>eq(contractPhases.id,id)))).orderBy(asc(contractPhases.id)).limit(100):[];
-  const company=process.env.RECEIPT_COMPANY_NAME?.trim()||"Emri i kompanisë nuk është konfiguruar - VETËM PËR ZHVILLIM";
+  const profile=receiptCompany(),company=profile.name;
   if(!company||company.length>200||/[\u0000-\u001f\u007f-\u009f]/u.test(company))throw new Error("Konfiguroni emër të vlefshëm të kompanisë për dëftesat.");
   const issuedAt=new Date().toISOString().replace("T"," ").slice(0,23);
-  const snapshot=safeHistorySnapshot({receiptId:id!,receiptNumber:number!,documentVersion,companyName:company,paymentId:context.after.id,paymentVersion:context.after.version,version:context.after.version,projectId:context.after.projectId,...joined,amount:context.after.amount,method:context.after.method,transactionDate:context.after.transactionDate,issuedAt,issuerName:actor.name,status:"issued",allocationsText:active.map(row=>`${names.find(phase=>phase.id===row.phaseId)?.name??"Faza"}: ${row.amount} EUR`).join("\n")});
-  await fault("beforeRender");const bytes=await renderReceiptPdf(snapshot);await fault("afterRender");
+  const items=active.map(row=>({description:names.find(phase=>phase.id===row.phaseId)?.name??'Faza',amount:row.amount}));
+  const snapshot=safeHistorySnapshot({receiptId:id!,receiptNumber:number!,documentVersion,companyName:company,paymentId:context.after.id,paymentVersion:context.after.version,version:context.after.version,projectId:context.after.projectId,clientId:joined.clientId,clientName:joined.clientName,projectName:joined.projectName,location:joined.location,amount:context.after.amount,method:context.after.method,transactionDate:context.after.transactionDate,issuedAt,issuerName:actor.name,status:"issued",allocationsText:items.map(row=>`${row.description}: ${row.amount} EUR`).join("\n")});
+  await fault("beforeRender");const bytes=await renderReceiptPdf(snapshot,{company:profile,buyer:{address:[joined.buyerAddress,joined.buyerAddress2].filter(Boolean).join(', '),city:joined.buyerCity??undefined,nui:joined.buyerNui??undefined},items});await fault("afterRender");
   const stored=await store.put(bytes);await fault("beforeMetadata");
   if(before)await tx.update(paymentReceipts).set({version:before.version+1,updatedBy:context.actorId,updatedAt:sql`UTC_TIMESTAMP(3)`}).where(eq(paymentReceipts.id,id!));
   else await tx.insert(paymentReceipts).values({id:id!,paymentId:context.after.id,receiptNumber:number!,status:"issued",createdBy:context.actorId,updatedBy:context.actorId});

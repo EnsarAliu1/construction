@@ -23,6 +23,7 @@ import {confirmPaymentWithReceipt} from '../../src/features/receipts/service';
 import {checksum} from '../../src/features/receipts/storage';
 import {exportBusiness} from '../../src/features/reporting/export';
 import {verifyDatabaseSchema} from '../../tests/db/schema-inspection';
+import {verifyReceiptPresentation} from '../documents/lifecycle';
 
 const root='artifacts/security-review',origin='http://localhost:3000';
 let stage='initialization';
@@ -107,6 +108,8 @@ async function main(){
   const first=await confirmPaymentWithReceipt(c,f.account.token,confirmation),retry=await confirmPaymentWithReceipt(c,f.account.token,confirmation);assert.equal(first.paymentId,retry.paymentId);assert.equal(first.receiptId,retry.receiptId);
   const balance=await getProject(c,f.account.token,newProject.id);assert.equal(balance.phases[0].value,'100.00');
   check('Restricted runtime creates real client/project/contract/payment/receipt history and preserves idempotent payment retry');
+  stage='receipt presentation lifecycle';await verifyReceiptPresentation(c,f.account.token);
+  check('Receipt redesign preserves immutable original/corrected PDFs, number, replay and cancellation balances');
   stage='private downloads';
   const pdf=await get(`/api/receipts/${f.issued.receiptId}/versions/1/pdf`,f.account.token);assert.equal(pdf.status,200);assert.match(pdf.headers.get('content-type')??'',/application\/pdf/);assert.equal(pdf.headers.get('content-security-policy'),'sandbox');assert.match(pdf.headers.get('cache-control')??'',/no-store/);
   const originalPdf=Buffer.from(await pdf.arrayBuffer());assert.equal(originalPdf.subarray(0,5).toString(),'%PDF-');
