@@ -53,7 +53,11 @@
     ".next-passkeys/types/**/*.ts",
     ".next-passkeys/dev/types/**/*.ts",
     ".next-demo/types/**/*.ts",
-    ".next-demo/dev/types/**/*.ts"
+    ".next-demo/dev/types/**/*.ts",
+    ".next-cloud/types/**/*.ts",
+    ".next-cloud/dev/types/**/*.ts",
+    ".next-demo-cloud/types/**/*.ts",
+    ".next-demo-cloud/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

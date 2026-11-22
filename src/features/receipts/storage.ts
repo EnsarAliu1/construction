@@ -21,7 +21,15 @@ async function syncDirectory(path:string){
 type Owner={application:"fitimi-private-receipts-v1";owner:string;database:string};
 type Journal={application:"fitimi-receipt-blob-v1";owner:string;id:string;checksum:string;createdAt:string};
 
-export class PrivateReceiptStore{
+export interface ReceiptStore{
+ readonly written:string[];
+ lockName():string;
+ initialize():Promise<void>;
+ put(bytes:Buffer,id?:string):Promise<{storageReference:string;fileChecksum:string}>;
+ read(key:string,expected:string):Promise<Buffer>;
+ recover(c:Connection,only?:string[],after?:string,limit?:number):Promise<{removed:number;retained:number;cursor:string|null}>;
+}
+export class PrivateReceiptStore implements ReceiptStore{
   readonly root:string;
   private owner!:Owner;
   readonly written:string[]=[];

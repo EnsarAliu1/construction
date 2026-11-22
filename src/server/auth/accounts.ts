@@ -1,3 +1,5 @@
+import {isTidbConnection} from "../db/tidb";
+import {advanceAuthVersion} from "./user-version";
 import { randomUUID } from "node:crypto";
 import type { Connection, RowDataPacket } from "mysql2/promise";
 import { hashPassword } from "./password";
@@ -41,7 +43,8 @@ export async function setAccountActive(connection: Connection, operator: Operato
     const userId = String(rows[0].id);
     if ((rows[0].status === "active") === active) return userId;
     if (active) await requireFreeSlot(connection);
-    await connection.execute("UPDATE users SET status = ?, deactivated_at = ?, auth_version = auth_version + 1, updated_at = UTC_TIMESTAMP(3) WHERE id = ?", [active ? "active" : "inactive", active ? null : new Date().toISOString().slice(0, 23).replace("T", " "), userId]);
+    await connection.execute(`UPDATE users SET status = ?, deactivated_at = ?${isTidbConnection(connection)?"":", auth_version = auth_version + 1"}, updated_at = UTC_TIMESTAMP(3) WHERE id = ?`, [active ? "active" : "inactive", active ? null : new Date().toISOString().slice(0, 23).replace("T", " "), userId]);
+    if(isTidbConnection(connection))await advanceAuthVersion(connection,userId);
     await revokeUserSessions(connection, userId);
     await securityEvent(connection, active ? "account_activated" : "account_deactivated", userId, null, { status: active ? "active" : "inactive" });
     return userId;
@@ -55,7 +58,8 @@ export async function resetAccountPassword(connection: Connection, operator: Ope
     const [rows] = await connection.execute<RowDataPacket[]>("SELECT id FROM users WHERE email = ? FOR UPDATE", [normalizeEmail(rawEmail)]);
     if (!rows.length) throw new Error("Llogaria nuk u gjet");
     const userId = String(rows[0].id);
-    await connection.execute("UPDATE users SET password_hash = ?, auth_version = auth_version + 1, updated_at = UTC_TIMESTAMP(3) WHERE id = ?", [passwordHash, userId]);
+    await connection.execute(`UPDATE users SET password_hash = ?${isTidbConnection(connection)?"":", auth_version = auth_version + 1"}, updated_at = UTC_TIMESTAMP(3) WHERE id = ?`, [passwordHash, userId]);
+    if(isTidbConnection(connection))await advanceAuthVersion(connection,userId);
     await revokeUserSessions(connection, userId);
     await securityEvent(connection, "password_reset", userId, null);
   });
@@ -67,7 +71,7 @@ export async function revokeAccountSessions(connection: Connection, operator: Op
     const [rows] = await connection.execute<RowDataPacket[]>("SELECT id FROM users WHERE email = ? FOR UPDATE", [normalizeEmail(rawEmail)]);
     if (!rows.length) throw new Error("Llogaria nuk u gjet");
     const userId = String(rows[0].id);
-    await connection.execute("UPDATE users SET auth_version = auth_version + 1, updated_at = UTC_TIMESTAMP(3) WHERE id = ?", [userId]);
+    await advanceAuthVersion(connection,userId);
     await revokeUserSessions(connection, userId);
     await securityEvent(connection, "sessions_revoked", userId, null);
   });

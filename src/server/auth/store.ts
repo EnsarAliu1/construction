@@ -1,16 +1,17 @@
 import { randomUUID } from "node:crypto";
 import type { Connection } from "mysql2/promise";
-import { loadLocalEnvironment, localDatabaseOptions, openLocalConnection } from "../db/config";
+import {openApplicationConnection} from '../db/application';
 import { safeHistorySnapshot, type HistorySnapshot } from "../db/history-snapshot";
-import {demoMode} from '../demo/policy';
+import {isTidbConnection} from '../db/tidb';
 
 export async function withAuthConnection<T>(work: (connection: Connection) => Promise<T>) {
-  if(!demoMode())loadLocalEnvironment();
-  const connection = demoMode() ? await (await import('../demo/runtime')).openDemoConnection() : await openLocalConnection(localDatabaseOptions(process.env.DATABASE_URL, "development", process.env.DATABASE_DISPOSABLE));
-  try { return await work(connection); } finally { await connection.end(); }
+  const {connection,close}=await openApplicationConnection();
+  try { return await work(connection); } finally { await close(); }
 }
 
 export async function transaction<T>(connection: Connection, work: () => Promise<T>) {
+  // TiDB snapshot reads must observe the generation committed before the physical user lock.
+  if(isTidbConnection(connection))await connection.query('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
   await connection.beginTransaction();
   try { const result = await work(); await connection.commit(); return result; }
   catch (error) {

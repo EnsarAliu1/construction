@@ -1,0 +1,10 @@
+{
+  "encryptedOwnerBackup": true,
+  "authenticatedDecryption": true,
+  "completeSqlRestore": true,
+  "allTablesAndRowsIdentical": true,
+  "originalPdfChecksumsVerified": true,
+  "mfaKeysVerified": true,
+  "sourceDatabaseUnchanged": true,
+  "restoreFixtureRemoved": true
+}

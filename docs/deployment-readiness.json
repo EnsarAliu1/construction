@@ -1,0 +1,33 @@
+{
+  "schemaFingerprint": "5d10484934ce52763603a59f4cec6a5b8d283acc1eed583c0c0236cff2cb0caf",
+  "verified": {
+    "schema": true,
+    "mfa": true,
+    "privateReceiptServices": true,
+    "durableBlobRecovery": true,
+    "cloudHttpBrowser": true,
+    "localStreamingHttp": true,
+    "serverlessIsolatedDemo": true,
+    "encryptedBackupAndRestore": true,
+    "originalOwnerMigration": true,
+    "deployedHttps": true,
+    "deployedLargePdfZipStreaming": true,
+    "ownerProductionLoginConfirmed": true
+  },
+  "activeApplicationProvider": "tidb-and-private-vercel-blob",
+  "realDataMigrated": true,
+  "deploymentReady": true,
+  "remaining": [],
+  "evidence": {
+    "cloudHttpBrowser": "docs/cloud-http-verification.json",
+    "backup": "docs/hosting-backup-verification.json",
+    "migration": "docs/owner-migration-verification.json",
+    "demo": "docs/demo-cloud-verification.json",
+    "deployedStreaming": "docs/online-demo-verification.json"
+  },
+  "localDevelopmentProvider": "retained-local-mysql-and-filesystem",
+  "production": {
+    "main": "https://construction-ensar.vercel.app",
+    "demo": "https://construction-demo-ensar.vercel.app/demo"
+  }
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "tag": "0000_wp02_integrity_foundation",
+    "sha256": "5f972707b506644f976f71bd139f74c72f9e269bfeaba63ff3ca7165572ef16c",
+    "statements": 59
+  },
+  {
+    "tag": "0001_wp02_history_guards",
+    "sha256": "21a7d78e4846ea6b53224593eca961dc92edd7bc7d48a42db8b14ed1c1ce9205",
+    "statements": 13
+  },
+  {
+    "tag": "0002_wp03_authentication",
+    "sha256": "023ff3b046a78f33ad4c7fa799804be11254f86a46f31847279d952cceb8eb9a",
+    "statements": 10
+  },
+  {
+    "tag": "0003_wp04_clients",
+    "sha256": "a2c5cdad7751945aa77a8eef88b94efec28eab9857c63763e0e40dc677d15797",
+    "statements": 22
+  },
+  {
+    "tag": "0004_wp05_project_aggregates",
+    "sha256": "ad18f5a53f4e45790395d2e6db18972658d53f9fee92a33efac2f60bbccef8dc",
+    "statements": 33
+  },
+  {
+    "tag": "0005_wp06_reference_lifecycle",
+    "sha256": "a90f76f7149e6737dcef9be33f6f00db4218fb35fd4fd83c743dbb3863b85bb4",
+    "statements": 52
+  },
+  {
+    "tag": "0006_wp07_expenses",
+    "sha256": "5a784ca21c0ab0c7f0878381f68a6599c3bfa52a407c70cbecf2c37688da6a7e",
+    "statements": 13
+  },
+  {
+    "tag": "0007_wp08_payment_allocations",
+    "sha256": "cb0a5a2770ee7b2b107982a7ff17e7787002f9d092374732d7944c12416e94bc",
+    "statements": 13
+  },
+  {
+    "tag": "0008_wp09_receipt_issuance",
+    "sha256": "cd85620b9068367085e3d0590bef2b0166cc41cee09ff0b9d9f27998709e76f7",
+    "statements": 23
+  },
+  {
+    "tag": "0009_wp16_mandatory_mfa",
+    "sha256": "593d71e62d0796709838005a133ef05b06ae2baabe723eb7f9ea994d39f9ed87",
+    "statements": 15
+  },
+  {
+    "tag": "0010_wp16_restore_mfa_hold",
+    "sha256": "00e108bafac5a7fe6632ac581d76af619c23c26dcb3fd9d26380cde1a95ba2fe",
+    "statements": 2
+  },
+  {
+    "tag": "0011_device_passkeys",
+    "sha256": "85f5d62159282d7dd7ab4af90fab9336e4a345695d1a39767c60c575e6c7e87a",
+    "statements": 8
+  }
+]

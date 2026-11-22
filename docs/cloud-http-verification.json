@@ -1,0 +1,90 @@
+{
+  "steps": [
+    "Create individual/business, edit, search and persisted audit history",
+    "Create linked project/contract/phases; reject unequal sum",
+    "Contract edits and client archive constraints/retention",
+    "Create categories/suppliers/vehicles and exercise reference lifecycle",
+    "Inactive/stale reference rejected; linked project/supplier/vehicle expense saved after fresh selection",
+    "Inline company category, expense correction/cancellation and audit",
+    "Reject overcapacity and issue split-allocation payment with actual PDF download",
+    "Paid phase removal disabled and reduction below allocation rejected",
+    "Payment correction appends immutable v2; v1 unchanged; cancellation visible",
+    "Released capacity reused; exact dashboard/project reconciliation after correction/cancellation",
+    "Actual browser PDF/XLSX/ZIP downloads",
+    "Every private business and security page renders on Cloud",
+    "Mobile navigation/focus/overflow, screenshots and logout"
+  ],
+  "downloads": [
+    {
+      "kind": "receipt-v1",
+      "bytes": 203008,
+      "sha256": "b555d7116e942e9d5d955bf5086bba364417d824c85657c631f2394551ac9e88"
+    },
+    {
+      "kind": "receipt-v2",
+      "bytes": 203261,
+      "sha256": "1eabc27564b906212ba25d1da354a9c638cd53f4b8f276b2fab84d056bab1443"
+    },
+    {
+      "kind": "historical-v1",
+      "bytes": 203008,
+      "sha256": "b555d7116e942e9d5d955bf5086bba364417d824c85657c631f2394551ac9e88"
+    },
+    {
+      "kind": "company-pdf",
+      "bytes": 21932,
+      "sha256": "9f05acf75ba2c3d216b05655fecab0b05a90cc8474719f0bf43c72acf5e92248"
+    },
+    {
+      "kind": "company-xlsx",
+      "bytes": 217649,
+      "sha256": "4c426f58f4d97906a49990e8c126c7f529c87b48c15c5b0b6661764b3c30eb13"
+    },
+    {
+      "kind": "complete-zip",
+      "bytes": 794075,
+      "sha256": "d9fe242d4c86dfc8b7213afe28fbc69efd216ed8cb1d5f5d6579d1e04be72b30"
+    }
+  ],
+  "initialTotals": {
+    "income": "0.00",
+    "expenses": "0.00",
+    "difference": "0.00",
+    "companyExpenses": "0.00",
+    "contractValue": "0.00",
+    "outstanding": "0.00"
+  },
+  "totals": {
+    "income": "70.00",
+    "expenses": "4.00",
+    "difference": "66.00",
+    "companyExpenses": "4.00",
+    "contractValue": "100.00",
+    "outstanding": "30.00"
+  },
+  "streamedPrivateDownloads": true,
+  "checks": [
+    "Real HTTP login refuses a mismatched schema or widened runtime permissions",
+    "Anonymous private pages and business/PDF APIs deny access",
+    "Real password, TOTP enrollment and one-time recovery acknowledgement create a secure session",
+    "Real TOTP login and recovery work; a reused recovery code is rejected",
+    "Real browser WebAuthn registration persists a verified resident credential in TiDB",
+    "Authenticated mutations reject foreign origins",
+    "One-click real browser passkey login uses the Cloud authentication generation",
+    "Every generated PDF is in this Cloud owner and rejects anonymous Blob downloads",
+    "Operator generation advancement immediately revokes a live HTTP passkey session"
+  ],
+  "schemaFingerprint": "5d10484934ce52763603a59f4cec6a5b8d283acc1eed583c0c0236cff2cb0caf",
+  "browser": "158.0.4370.33",
+  "virtualAuthenticator": true,
+  "physicalPinOrBiometricVerified": false,
+  "productionBuild": true,
+  "realCloudDatabase": true,
+  "realPrivateBlob": true,
+  "realHttpAndBrowser": true,
+  "vercelDeployment": false,
+  "mainEnvironmentUnchanged": true,
+  "syntheticOnly": true,
+  "realDataMigrated": false,
+  "temporaryResourcesRemoved": true
+}

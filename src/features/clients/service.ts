@@ -1,3 +1,5 @@
+import {isTidbConnection} from "@/server/db/tidb";
+import {lockBusinessUser} from "@/server/db/user-lock";
 import { randomUUID } from "node:crypto";
 import { and, asc, count, desc, eq, inArray, isNull, or, sql } from "drizzle-orm";
 import { drizzle, type MySql2Database } from "drizzle-orm/mysql2";
@@ -16,10 +18,10 @@ async function authorizedMutation<T>(connection: Connection, token: string | und
   // inside the transaction so deactivation cannot race an authorized mutation.
   const identity = await requireSessionUser(connection, token);
   return drizzle(connection).transaction(async tx => {
-    await tx.select({ id: users.id }).from(users).where(eq(users.id, identity.id)).for("share");
+    await lockBusinessUser(tx,connection,identity.id);
     const current = await requireSessionUser(connection, token);
     return work(tx, current.id);
-  });
+  },isTidbConnection(connection)?{isolationLevel:"read committed"}:undefined);
 }
 
 async function auditChange(tx: Tx, actorId: string, action: string, before: ClientRecord | null, after: ClientRecord) {

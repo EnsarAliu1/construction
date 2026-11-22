@@ -10,13 +10,15 @@ const workspace=realpathSync(fileURLToPath(new URL('../',import.meta.url)));
 assert.equal(realpathSync(process.cwd()),workspace,'Run cleanup from this project root.');
 assert(process.argv.slice(2).every(value=>value==='--dry-run'),'Only --dry-run is supported.');
 const dryRun=process.argv.includes('--dry-run');
-const allowed=['artifacts','.next','.next-demo','.next-passkeys','.next-sq','.next-wp09','.next-wp10','.next-wp11','.next-wp13','.next-wp14','.next-wp15','.next-wp16','test-results','playwright-report','coverage','out','tsconfig.tsbuildinfo'];
+const allowed=['artifacts','.next','.next-demo','.next-cloud','.next-demo-cloud','.next-passkeys','.next-sq','.next-wp09','.next-wp10','.next-wp11','.next-wp13','.next-wp14','.next-wp15','.next-wp16','test-results','playwright-report','coverage','out','tsconfig.tsbuildinfo'];
 const totals={files:0,bytes:0};
 const generatedLinks=[];
 function inspect(path,inArtifacts){
  const stat=lstatSync(path);
  if(stat.isSymbolicLink()){
-  assert(!inArtifacts&&realpathSync(path).startsWith(resolve(workspace,'node_modules')+sep),'Unrecognized linked cleanup path: preserved.');
+  // Generated build links may point to the old workspace after a rename.
+  // Inspect no target; unlink only the link inside an allowed build directory.
+  assert(!inArtifacts&&allowed.some(name=>name.startsWith('.next')&&path.startsWith(resolve(workspace,name)+sep)),'Unrecognized linked cleanup path: preserved.');
   generatedLinks.push(path);totals.files++;return;
  }
  if(stat.isDirectory()){for(const name of readdirSync(path))inspect(join(path,name),inArtifacts);}
@@ -41,10 +43,15 @@ async function main(){
  }
  console.log(`${dryRun?'Would remove':'Removing'} ${totals.files} generated files (${(totals.bytes/1e9).toFixed(2)} GB): ${targets.map(t=>t.name).join(', ')}`);
  if(dryRun)return;
- for(const port of [3000,3001]){await assertPortFree('127.0.0.1',port);await assertPortFree('::1',port);}
+ for(const port of [3000,3001,3100,3110]){await assertPortFree('127.0.0.1',port);await assertPortFree('::1',port);}
  // Remove Next's generated junctions themselves before recursing; never follow into dependencies.
  for(const link of generatedLinks)await rm(link,{recursive:false,force:true});
- for(const target of targets)await rm(target.path,{recursive:lstatSync(target.path).isDirectory(),force:true,maxRetries:3,retryDelay:150});
+ for(const target of targets){
+  if(target.name==='artifacts'){
+   // Keep the empty parent directory; all descendants were inspected above.
+   for(const name of readdirSync(target.path))await rm(join(target.path,name),{recursive:true,force:true,maxRetries:3,retryDelay:150});
+  }else await rm(target.path,{recursive:lstatSync(target.path).isDirectory(),force:true,maxRetries:3,retryDelay:150});
+ }
  console.log('Cleanup complete. Source, tests, migrations, .env, .private, node_modules and databases preserved.');
 }
 void main().catch(error=>{console.error(error instanceof Error?error.message:'Cleanup failed; protected paths preserved.');process.exitCode=1;});

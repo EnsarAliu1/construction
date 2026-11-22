@@ -1,3 +1,4 @@
+import {cloudDemoMode} from './cloud-policy';
 import {randomBytes,randomUUID} from 'node:crypto';
 import {cookies} from 'next/headers';
 import {type RowDataPacket,type ResultSetHeader} from 'mysql2/promise';
@@ -23,8 +24,10 @@ async function admin(){
   return c;
  }catch(error){await c.end();throw error;}
 }
-export async function demoReady(){const c=await admin();try{await c.query('SELECT token_hash FROM demo_sessions LIMIT 0');}finally{await c.end();}}
+export async function demoReady(){
+ if(cloudDemoMode())return (await import('./cloud-runtime')).cloudDemoReady();const c=await admin();try{await c.query('SELECT token_hash FROM demo_sessions LIMIT 0');}finally{await c.end();}}
 export async function initializeDemo(){
+ if(cloudDemoMode())return (await import('./cloud-runtime')).initializeCloudDemo();
  const c=await admin();try{
   await c.query('CREATE TABLE IF NOT EXISTS demo_sessions (token_hash CHAR(64) PRIMARY KEY, database_name VARCHAR(64) NOT NULL UNIQUE, expires_at DATETIME(3) NOT NULL, requests INT UNSIGNED NOT NULL DEFAULT 0, ready BOOLEAN NOT NULL DEFAULT FALSE)');
   const [columns]=await c.query<RowDataPacket[]>("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='demo_sessions' AND COLUMN_NAME='ready'");
@@ -37,6 +40,7 @@ async function visitorConnection(database:string){
  markDemoConnection(c);return c;
 }
 export async function openDemoConnection(){
+ if(cloudDemoMode())return (await import('./cloud-runtime')).openCloudDemoConnection();
  const token=(await cookies()).get(sessionCookieSettings().name)?.value;
  if(!validSessionToken(token))throw new AuthenticationRequired();
  const c=await admin();let database:string;
@@ -49,6 +53,7 @@ export async function openDemoConnection(){
  return visitorConnection(database);
 }
 export async function cleanupDemo(){
+ if(cloudDemoMode())return (await import('./cloud-runtime')).cleanupCloudDemo();
  const c=await admin();try{
   const [lock]=await c.query<RowDataPacket[]>("SELECT GET_LOCK('fitimi_demo_provision',0) AS ok");if(Number(lock[0].ok)!==1)return;
   try{
@@ -70,6 +75,7 @@ export async function cleanupDemo(){
  }finally{await c.end();}
 }
 export async function startDemo(existing?:string,prepare=false){
+ if(cloudDemoMode())return prepare?{token:''}: (await import('./cloud-runtime')).startCloudDemo(existing);
  await cleanupDemo();
  const c=await admin();let locked=false,entryLocked=false;
  try{
@@ -116,6 +122,7 @@ export async function startDemo(existing?:string,prepare=false){
  }finally{if(entryLocked)await c.query("DO RELEASE_LOCK('fitimi_demo_entry')");if(locked)await c.query("DO RELEASE_LOCK('fitimi_demo_provision')");await c.end();}
 }
 export async function revokeDemo(token:string|undefined){
+ if(cloudDemoMode())return (await import('./cloud-runtime')).revokeCloudDemo(token);
  if(!validSessionToken(token))return;
  const c=await admin();try{
   const [rows]=await c.execute<RowDataPacket[]>('SELECT database_name FROM demo_sessions WHERE token_hash=?',[tokenDigest(token)]);
@@ -124,6 +131,7 @@ export async function revokeDemo(token:string|undefined){
  }finally{await c.end();}
 }
 export async function warmDemo(){
+ if(cloudDemoMode())return (await import('./cloud-runtime')).warmCloudDemo();
  for(let i=0;i<2;i++){try{await startDemo(undefined,true);}catch{return;}}
 }
 export {DEMO_SECONDS};

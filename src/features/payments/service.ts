@@ -1,8 +1,12 @@
+import {withReadSnapshot} from "@/server/db/read-snapshot";
+import {lockBusinessUser} from "@/server/db/user-lock";
 import { createHash, randomUUID } from "node:crypto";
 import { and, asc, count, desc, eq, gte, inArray, isNull, lte, ne, or, sql } from "drizzle-orm";
 import { drizzle, type MySql2Database } from "drizzle-orm/mysql2";
 import type { Connection } from "mysql2/promise";
 import { auditEvents, clients, contracts, contractPhases, entityVersions, operationRequests, paymentAllocations, paymentReceipts, payments, projects, receiptVersions, users } from "@/server/db/schema";
+import {isTidbConnection} from "@/server/db/tidb";
+import {lockReceipt} from "@/features/receipts/records";
 import { requireSessionUser } from "@/server/auth/sessions";
 import { safeHistorySnapshot } from "@/server/db/history-snapshot";
 import { cents, decimal } from "@/features/projects/money";
@@ -24,7 +28,7 @@ const OPERATION="payment_confirmation";
 async function mutation<P,R>(c:Connection,token:string|undefined,parse:()=>P,work:(tx:PaymentTx,input:P,actor:string,operation:string)=>Promise<R>){
   const user=await requireSessionUser(c,token),input=parse();
   return drizzle(c).transaction(async tx=>{
-    await tx.select({id:users.id}).from(users).where(eq(users.id,user.id)).for("share");
+    await lockBusinessUser(tx,c,user.id);
     const actor=await requireSessionUser(c,token);
     return work(tx,input,actor.id,randomUUID());
   },{isolationLevel:"read committed"});
@@ -64,8 +68,8 @@ async function allocations(tx:PaymentTx,id:string,lock=false){const query=tx.sel
 function validateOld(locked:Awaited<ReturnType<typeof aggregate>>,rows:Allocation[]){
   if(rows.some(row=>!locked.phases.some(phase=>phase.id===row.phaseId)))throw new PaymentError("RELATIONSHIP","Ndarjet e ruajtura nuk i përkasin kontratës së këtij projekti. Zgjidhni lidhjen historike para ndryshimit.",409);
 }
-async function receipt(tx:PaymentTx,boundary:ReceiptBoundary,context:ReceiptContext){
-  const [existing]=await tx.select().from(paymentReceipts).where(eq(paymentReceipts.paymentId,context.after.id)).for("update");
+async function receipt(c:Connection,tx:PaymentTx,boundary:ReceiptBoundary,context:ReceiptContext){
+  const existing=await lockReceipt(tx,context.after.id,isTidbConnection(c));
   if(boundary.mode==="isolated-test"){
     // A test capability can never change an already numbered receipt, even a draft.
     if(existing)throw receiptPending();await boundary.apply(tx,context);return;
@@ -96,7 +100,7 @@ export async function confirmPayment(c:Connection,token:string|undefined,value:u
     const id=randomUUID();await tx.insert(payments).values({id,projectId:input.projectId,amount:input.amount,transactionDate:input.transactionDate,method:input.method,createdBy:actor,updatedBy:actor});
     for(const selected of input.allocations){const allocationId=randomUUID();await tx.insert(paymentAllocations).values({id:allocationId,paymentId:id,phaseId:selected.phaseId,amount:selected.amount,createdBy:actor,updatedBy:actor});const [after]=await tx.select().from(paymentAllocations).where(eq(paymentAllocations.id,allocationId));await record(tx,actor,operation,"payment_allocation","allocation_created",null,after);}
     const after=await find(tx,id),current=await allocations(tx,id);await record(tx,actor,operation,"payment","payment_received",null,after);
-    await receipt(tx,adapter,{action:"confirm",actorId:actor,operationId:operation,before:null,after,allocations:current});
+    await receipt(c,tx,adapter,{action:"confirm",actorId:actor,operationId:operation,before:null,after,allocations:current});
     await tx.update(operationRequests).set({status:"completed",resultMetadata:{createdBy:actor,resultId:id,resultType:"payment",version:1},updatedAt:sql`UTC_TIMESTAMP(3)`}).where(eq(operationRequests.id,op.id));
     return {paymentId:id,version:1,replayed:false};
   });
@@ -116,7 +120,7 @@ export async function correctPayment(c:Connection,token:string|undefined,id:stri
     }
     for(const selected of input.allocations.filter(item=>!old.some(row=>row.phaseId===item.phaseId))){const allocationId=randomUUID();await tx.insert(paymentAllocations).values({id:allocationId,paymentId:id,phaseId:selected.phaseId,amount:selected.amount,createdBy:actor,updatedBy:actor});const [after]=await tx.select().from(paymentAllocations).where(eq(paymentAllocations.id,allocationId));await record(tx,actor,operation,"payment_allocation","allocation_created",null,after);}
     await tx.update(payments).set({amount:input.amount,transactionDate:input.transactionDate,method:input.method,version:before.version+1,updatedBy:actor,updatedAt:sql`UTC_TIMESTAMP(3)`}).where(eq(payments.id,id));
-    const after=await find(tx,id);await record(tx,actor,operation,"payment","payment_corrected",before,after);await receipt(tx,adapter,{action:"correct",actorId:actor,operationId:operation,before,after,allocations:await allocations(tx,id)});return after;
+    const after=await find(tx,id);await record(tx,actor,operation,"payment","payment_corrected",before,after);await receipt(c,tx,adapter,{action:"correct",actorId:actor,operationId:operation,before,after,allocations:await allocations(tx,id)});return after;
   });
 }
 export async function cancelPayment(c:Connection,token:string|undefined,id:string,value:unknown,boundary?:ReceiptBoundary){
@@ -125,7 +129,7 @@ export async function cancelPayment(c:Connection,token:string|undefined,id:strin
     validateOld(locked,current);
     if(before.projectId!==hint.projectId||before.version!==hint.version||before.version!==input.version)throw conflict();if(before.status!=="received")throw new PaymentError("CANCELLED","Kjo pagesë është anuluar më parë.",409);
     await tx.update(payments).set({status:"cancelled",cancelledAt:sql`UTC_TIMESTAMP(3)`,cancelledBy:actor,cancellationReason:input.reason,updatedBy:actor,version:before.version+1,updatedAt:sql`UTC_TIMESTAMP(3)`}).where(eq(payments.id,id));
-    const after=await find(tx,id);await record(tx,actor,operation,"payment","payment_cancelled",before,after);await receipt(tx,adapter,{action:"cancel",actorId:actor,operationId:operation,before,after,allocations:current});return after;
+    const after=await find(tx,id);await record(tx,actor,operation,"payment","payment_cancelled",before,after);await receipt(c,tx,adapter,{action:"cancel",actorId:actor,operationId:operation,before,after,allocations:current});return after;
   });
 }
 export async function paymentOperationStatus(c:Connection,token:string|undefined,key:string){
@@ -147,7 +151,7 @@ export async function previewPaymentCorrection(c:Connection,token:string|undefin
 }
 export async function paymentProject(c:Connection,token:string|undefined,id:string){
   await requireSessionUser(c,token);referenceId(id);
-  return drizzle(c).transaction(async tx=>{
+  return withReadSnapshot(c,async tx=>{
     const [project]=await tx.select({project:projects,clientName:clients.name,clientDeleted:clients.deletedAt}).from(projects).innerJoin(clients,eq(projects.clientId,clients.id)).where(eq(projects.id,id)).limit(1);
     if(!project)throw new PaymentError("NOT_FOUND","Projekti nuk u gjet.",404);
     const [contract]=await tx.select().from(contracts).where(eq(contracts.projectId,id)).limit(1);
@@ -156,11 +160,11 @@ export async function paymentProject(c:Connection,token:string|undefined,id:stri
     if(phases.length>100)throw new PaymentError("PHASE_LIMIT","Kontrata tejkalon kufirin e fazave të mbështetura nga formulari.",409);
     const totals=await tx.select({phaseId:paymentAllocations.phaseId,paid:sql<string>`SUM(${paymentAllocations.amount})`}).from(paymentAllocations).innerJoin(payments,eq(payments.id,paymentAllocations.paymentId)).where(and(eq(payments.projectId,id),eq(payments.status,"received"),isNull(paymentAllocations.deletedAt))).groupBy(paymentAllocations.phaseId).limit(1000);
     return {project:project.project,clientName:project.clientName,contract,eligible:!project.clientDeleted&&!project.project.deletedAt&&project.project.status==="active"&&contract.status==="active",phases:phases.map(phase=>{const paid=totals.find(row=>row.phaseId===phase.id)?.paid??"0.00";return {...phase,paid,remaining:decimal(cents(phase.value)-cents(paid))};})};
-  },{isolationLevel:"repeatable read",accessMode:"read only"});
+  });
 }
 export async function getPayment(c:Connection,token:string|undefined,id:string){
   await requireSessionUser(c,token);referenceId(id);
-  return drizzle(c).transaction(async tx=>{
+  return withReadSnapshot(c,async tx=>{
     const [data]=await tx.select({payment:payments,projectName:projects.name,clientName:clients.name,receipt:paymentReceipts}).from(payments).innerJoin(projects,eq(payments.projectId,projects.id)).innerJoin(clients,eq(projects.clientId,clients.id)).leftJoin(paymentReceipts,eq(paymentReceipts.paymentId,payments.id)).where(eq(payments.id,id)).limit(1);
     if(!data)throw new PaymentError("NOT_FOUND","Pagesa nuk u gjet.",404);
     const rows=await tx.select({allocation:paymentAllocations,phaseName:contractPhases.name}).from(paymentAllocations).innerJoin(contractPhases,eq(paymentAllocations.phaseId,contractPhases.id)).where(eq(paymentAllocations.paymentId,id)).orderBy(asc(paymentAllocations.phaseId)).limit(1001);
@@ -168,16 +172,16 @@ export async function getPayment(c:Connection,token:string|undefined,id:string){
     const allocationIds=tx.select({id:paymentAllocations.id}).from(paymentAllocations).where(eq(paymentAllocations.paymentId,id));
     const history=await tx.select({id:auditEvents.id,action:auditEvents.action,entityType:auditEvents.entityType,actorName:users.displayName,recordedAt:auditEvents.recordedAt,before:auditEvents.beforeSnapshot,after:auditEvents.afterSnapshot}).from(auditEvents).leftJoin(users,eq(users.id,auditEvents.actorId)).where(or(and(eq(auditEvents.entityType,"payment"),eq(auditEvents.entityId,id)),and(eq(auditEvents.entityType,"payment_allocation"),inArray(auditEvents.entityId,allocationIds)))).orderBy(desc(auditEvents.recordedAt),desc(auditEvents.id)).limit(30);
     return {...data,allocations:rows,history};
-  },{isolationLevel:"repeatable read",accessMode:"read only"});
+  });
 }
 export async function listPayments(c:Connection,token:string|undefined,value:Record<string,unknown>={}){
   await requireSessionUser(c,token);const query=parsePaymentQuery(value);
   const where=and(query.status==="all"?undefined:eq(payments.status,query.status),query.method==="all"?undefined:eq(payments.method,query.method),query.projectId?eq(payments.projectId,query.projectId):undefined,query.from?gte(payments.transactionDate,query.from):undefined,query.to?lte(payments.transactionDate,query.to):undefined,query.q?or(...[payments.id,projects.name,clients.name,paymentReceipts.receiptNumber].map(column=>sql`${column} LIKE ${escapedSearch(query.q)} ESCAPE '='`)):undefined);
-  return drizzle(c).transaction(async tx=>{
+  return withReadSnapshot(c,async tx=>{
     const [{total}]=await tx.select({total:count()}).from(payments).innerJoin(projects,eq(payments.projectId,projects.id)).innerJoin(clients,eq(projects.clientId,clients.id)).leftJoin(paymentReceipts,eq(paymentReceipts.paymentId,payments.id)).where(where);
     const rows=await tx.select({payment:payments,projectName:projects.name,clientName:clients.name,receiptStatus:paymentReceipts.status}).from(payments).innerJoin(projects,eq(payments.projectId,projects.id)).innerJoin(clients,eq(projects.clientId,clients.id)).leftJoin(paymentReceipts,eq(paymentReceipts.paymentId,payments.id)).where(where).orderBy(desc(payments.transactionDate),desc(payments.id)).limit(20).offset((query.page-1)*20);
     return {rows,total:Number(total),pageSize:20,query};
-  },{isolationLevel:"repeatable read",accessMode:"read only"});
+  });
 }
 export type PaymentDetails=Awaited<ReturnType<typeof getPayment>>;
 export type PaymentProject=Awaited<ReturnType<typeof paymentProject>>;

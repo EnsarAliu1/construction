@@ -49,3 +49,7 @@ Runtime demo refuzon `DATABASE_URL`, `ADORE_OPERATOR_KEY`, ose `MFA_ENCRYPTION_K
 ### Rezultatet lokale, 20 nëntor 2026
 
 Kaluan 103 testet ekzistuese, testi i politikës demo, 15 kontrollet MySQL/HTTP/Edge në `verify.ts` dhe kontrolli i kalimit nga login-i kryesor në `entry-browser.ts`. Kaluan lint, TypeScript dhe build production. U inspektuan pamjet mobile të login-it dhe panelit. Hapja nga dy hapësira të parapërgatitura mori rreth 125–190 ms për endpoint-in e nisjes në provën lokale; krijimi i një databaze të re mori rreth 30–36 sekonda. Këto janë matje lokale, jo garanci për hosting. Nuk u aplikuan migrime në databazën reale dhe nuk u bë deploy/commit/push.
+
+## Hosted serverless adapter
+
+The hosted demo is now live at https://construction-demo-ensar.vercel.app/demo. It uses a dedicated TiDB Starter instance, pre-created visitor schemas and request-driven disposal/warming. Its fictitious PDFs are stored as private SQL chunks in the payment transaction; actual receipts remain in private Vercel Blob. The local Docker demo above retains its original behavior. See [hosting operations](hosting.md) and `demo-cloud-verification.json` / `online-demo-verification.json` for the completed live checks.

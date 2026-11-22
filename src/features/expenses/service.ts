@@ -1,3 +1,5 @@
+import {withReadSnapshot} from "@/server/db/read-snapshot";
+import {lockBusinessUser} from "@/server/db/user-lock";
 import { randomUUID } from "node:crypto";
 import { and, asc, count, desc, eq, gte, inArray, isNull, lte, or, sql } from "drizzle-orm";
 import { drizzle, type MySql2Database } from "drizzle-orm/mysql2";
@@ -28,7 +30,7 @@ async function audit(tx: Tx, actorId: string, operationId: string, action: strin
 async function mutation<P,R>(c: Connection, token: string | undefined, parse: () => P, work: (tx: Tx, input: P, actor: string, operation: string) => Promise<R>) {
   const user = await requireSessionUser(c, token), input = parse();
   return drizzle(c).transaction(async tx => {
-    await tx.select({ id: users.id }).from(users).where(eq(users.id, user.id)).for("share");
+    await lockBusinessUser(tx,c,user.id);
     const actor = await requireSessionUser(c, token);
     return work(tx, input, actor.id, randomUUID());
   }, { isolationLevel: "read committed" });
@@ -109,22 +111,22 @@ export async function cancelExpense(c: Connection, token: string | undefined, id
 const joined = (db: Pick<Db,"select">) => db.select({ record: expenses, category: { id: expenseCategories.id, label: expenseCategories.name, version: expenseCategories.version, isActive: expenseCategories.isActive }, project: { id: projects.id, label: projects.name, version: projects.version, status: projects.status, deletedAt: projects.deletedAt }, client: { id: clients.id, label: clients.name }, person: { id: persons.id, label: persons.name, version: persons.version, isActive: persons.isActive }, vehicle: { id: vehicles.id, label: vehicles.identifier, version: vehicles.version, isActive: vehicles.isActive } }).from(expenses).innerJoin(expenseCategories, eq(expenses.categoryId, expenseCategories.id)).leftJoin(projects, eq(expenses.projectId, projects.id)).leftJoin(clients, eq(projects.clientId, clients.id)).leftJoin(persons, eq(expenses.personId, persons.id)).leftJoin(vehicles, eq(expenses.vehicleId, vehicles.id));
 export async function getExpense(c: Connection, token: string | undefined, id: string) {
   await requireSessionUser(c, token); referenceId(id);
-  return drizzle(c).transaction(async tx => {
+  return withReadSnapshot(c,async tx => {
     const [data] = await joined(tx).where(eq(expenses.id, id)).limit(1);
     if (!data) throw new ExpenseError("NOT_FOUND", "Shpenzimi nuk u gjet.", 404);
     const history = await tx.select({ id: auditEvents.id, action: auditEvents.action, actorName: users.displayName, recordedAt: auditEvents.recordedAt, before: auditEvents.beforeSnapshot, after: auditEvents.afterSnapshot }).from(auditEvents).leftJoin(users, eq(users.id, auditEvents.actorId)).where(and(eq(auditEvents.entityType,"expense"),eq(auditEvents.entityId,id))).orderBy(desc(auditEvents.recordedAt),desc(auditEvents.id)).limit(20);
     return { ...data, history };
-  }, { isolationLevel: "repeatable read", accessMode: "read only" });
+  });
 }
 export async function listExpenses(c: Connection, token: string | undefined, value: Record<string,unknown> = {}) {
   await requireSessionUser(c, token); const query = parseExpenseQuery(value);
   const where = and(query.status === "all" ? undefined : eq(expenses.status, query.status), query.from ? gte(expenses.transactionDate,query.from) : undefined, query.to ? lte(expenses.transactionDate,query.to) : undefined, query.categoryId ? eq(expenses.categoryId,query.categoryId) : undefined, query.projectId === "company" ? isNull(expenses.projectId) : query.projectId ? eq(expenses.projectId,query.projectId) : undefined, query.personId ? eq(expenses.personId,query.personId) : undefined, query.vehicleId ? eq(expenses.vehicleId,query.vehicleId) : undefined, query.q ? or(...[expenses.description,expenseCategories.name,projects.name,clients.name,persons.name,vehicles.identifier].map(column => sql`${column} LIKE ${escapedSearch(query.q)} ESCAPE '='`)) : undefined);
-  return drizzle(c).transaction(async tx => {
+  return withReadSnapshot(c,async tx => {
     const [{ total }] = await tx.select({total: count()}).from(expenses).innerJoin(expenseCategories,eq(expenses.categoryId,expenseCategories.id)).leftJoin(projects,eq(expenses.projectId,projects.id)).leftJoin(clients,eq(projects.clientId,clients.id)).leftJoin(persons,eq(expenses.personId,persons.id)).leftJoin(vehicles,eq(expenses.vehicleId,vehicles.id)).where(where);
     const rows = await joined(tx).where(where).orderBy(desc(expenses.transactionDate),desc(expenses.id)).limit(20).offset((query.page-1)*20);
     // No misleading totals on a page; future reports must explicitly filter recorded status.
     return { rows, total: Number(total), pageSize: 20, query };
-  }, { isolationLevel: "repeatable read", accessMode: "read only" });
+  });
 }
 export async function chooseExpenseProjects(c: Connection, token: string | undefined, value: unknown = "", historical = false) {
   await requireSessionUser(c, token); const q = text(value,"q",100,false);

@@ -1,0 +1,12 @@
+{
+  "privateAccess": true,
+  "authenticatedPdfRead": true,
+  "checksumVerified": true,
+  "overwriteRejected": true,
+  "anonymousReadDenied": true,
+  "temporaryBlobRemoved": true,
+  "applicationStorageUnchanged": true,
+  "syntheticOnly": true,
+  "sdkVersion": "2.9.0",
+  "region": "fra1"
+}

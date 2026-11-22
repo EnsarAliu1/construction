@@ -1,0 +1,27 @@
+{
+  "schemaFingerprint": "5d10484934ce52763603a59f4cec6a5b8d283acc1eed583c0c0236cff2cb0caf",
+  "sourceMigrations": 12,
+  "ddlStatements": 227,
+  "physicalApplicationTables": 27,
+  "views": 2,
+  "verifiedColumns": 239,
+  "verifiedForeignKeys": 45,
+  "deniedRuntimeOperations": 25,
+  "reportingIsolation": true,
+  "enforcedChecks": true,
+  "refusesNonemptySchema": true,
+  "mfaLoginVerified": true,
+  "totpReplayDenied": true,
+  "recoverySingleUse": true,
+  "concurrentGenerations": true,
+  "operatorRecoveryVerified": true,
+  "passwordResetAndDeactivationVerified": true,
+  "passkeyOptionsVerified": true,
+  "activationAllowed": false,
+  "blockers": [
+    "private_blob_storage_and_recovery_pending",
+    "authenticated_cloud_http_browser_and_restore_verification_pending"
+  ],
+  "syntheticOnly": true,
+  "temporaryObjectsRemoved": true
+}

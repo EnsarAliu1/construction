@@ -1,0 +1,13 @@
+{
+  "backupAndRestoreVerified": true,
+  "allApplicationRowsPreserved": true,
+  "historicalReceiptViewPreserved": true,
+  "originalPdfsAndChecksumsPreserved": true,
+  "documents": 8,
+  "authenticationAndMfaRecordsPreserved": true,
+  "runtimeGrantsRestricted": true,
+  "operatorCredentialsNotInDeployment": true,
+  "sourceDataUnchanged": true,
+  "sourceEnvironmentUnchanged": true,
+  "cloudConfigurationPrepared": true
+}

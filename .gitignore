@@ -18,3 +18,16 @@ next-env.d.ts
 /docs/**/screenshots/
 /docs/document-evidence/
 /docs/security/wp16-evidence/
+
+# Local deployment state, credentials and backup material.
+/.vercel/
+/backup/
+/backups/
+*.key
+*.pem
+*.p12
+*.pfx
+*.sql.gz
+*.dump
+*.har
+*.heapsnapshot

@@ -1,0 +1,14 @@
+{
+  "httpsLive": true,
+  "url": "https://construction-demo-ensar.vercel.app",
+  "realBrowser": true,
+  "checks": [
+    "Public HTTPS website -> demo -> seeded application works in a real browser",
+    "Actual Vercel function generates and downloads private PDFs",
+    "Private PDF above 4.5 MiB streams completely through deployed Vercel",
+    "Complete ZIP above 4.5 MiB streams with verified historical PDF checksums",
+    "Anonymous PDF/business access denied; deployed logout revokes the session"
+  ],
+  "deployedLargePdfAndZipStreaming": true,
+  "realDataUntouched": true
+}

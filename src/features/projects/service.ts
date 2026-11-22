@@ -1,3 +1,5 @@
+import {withReadSnapshot} from "@/server/db/read-snapshot";
+import {lockBusinessUser} from "@/server/db/user-lock";
 import { randomUUID } from "node:crypto";
 import { and, asc, count, desc, eq, inArray, isNull, or, sql } from "drizzle-orm";
 import { drizzle, type MySql2Database } from "drizzle-orm/mysql2";
@@ -18,7 +20,7 @@ async function mutation<P, R>(connection: Connection, token: string | undefined,
   const identity = await requireSessionUser(connection, token);
   const input = parse();
   return drizzle(connection).transaction(async tx => {
-    await tx.select({ id: users.id }).from(users).where(eq(users.id, identity.id)).for("share");
+    await lockBusinessUser(tx,connection,identity.id);
     const actor = await requireSessionUser(connection, token);
     return work(tx, input, actor.id, randomUUID());
   }, { isolationLevel: "read committed" });
@@ -165,7 +167,7 @@ export async function listProjects(connection: Connection, token: string | undef
 }
 export async function getProject(connection: Connection, token: string | undefined, id: string) {
   await requireSessionUser(connection, token); uuid(id);
-  return drizzle(connection).transaction(async tx => {
+  return withReadSnapshot(connection,async tx => {
     const [joined] = await tx.select({ project: projects, client: { id: clients.id, name: clients.name, version: clients.version, deletedAt: clients.deletedAt } }).from(projects).innerJoin(clients, eq(clients.id, projects.clientId)).where(and(eq(projects.id, id), isNull(projects.deletedAt))).limit(1);
     if (!joined) throw new ProjectError("NOT_FOUND", "Projekti nuk u gjet.", 404);
     const [contract] = await tx.select().from(contracts).where(eq(contracts.projectId, id)).limit(1);
@@ -183,6 +185,6 @@ export async function getProject(connection: Connection, token: string | undefin
     const activeValue=contract?.status==="active"?cents(contract.totalValue):BigInt(0),verified=!(invalidPayments as unknown as unknown[]).length&&phasePaid===income&&phases.every(p=>cents(p.paid)<=cents(p.value))&&(!contract||contract.status!=="active"||phaseValue===activeValue)&&(!income||contract?.status==="active");
     const financial={...operationalTotals(income,cost),contractValue:decimal(activeValue),outstanding:decimal(activeValue-phasePaid),verified};
     return { ...joined, contract: contract ?? null, phases, phaseTotal: decimal(phaseValue), history, financial };
-  }, { isolationLevel: "repeatable read", accessMode: "read only" });
+  });
 }
 export type ProjectDetail = Awaited<ReturnType<typeof getProject>>;

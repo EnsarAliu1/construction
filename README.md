@@ -2,6 +2,8 @@
 
 Construction management software with an Albanian corporate website and an isolated, interactive demo.
 
+**Live:** [Website and application](https://construction-ensar.vercel.app) | [Personal demo](https://construction-demo-ensar.vercel.app/demo)
+
 ## Features
 
 - Clients, projects, contracts and financial phases.
@@ -12,7 +14,7 @@ Construction management software with an Albanian corporate website and an isola
 
 ## Stack
 
-Next.js 16 / React 19 / TypeScript / MySQL 8.4 LTS / Drizzle ORM.
+Next.js 16 / React 19 / TypeScript / Drizzle ORM. Hosted on Vercel Hobby with TiDB Cloud Starter and private Vercel Blob. Local development uses MySQL 8.4 LTS.
 
 ## Local development
 
@@ -36,6 +38,7 @@ Real workspace accounts are provisioned through the authorized operator CLI. The
 npm test
 npm run test:demo
 npm run lint
+npm run security:prepush
 npm run typecheck
 npm run build
 ```
@@ -44,8 +47,10 @@ With the demo running, `npm run test:demo:browser` verifies visitor isolation, d
 
 ## Security and deployment
 
+`npm run security:prepush` checks Git candidates and reachable history against known local credentials and selected token/private-key formats. It reports paths only. `npm run clean` removes generated builds and test exports, leaving `artifacts/` empty.
+
 Keep `.env*`, `.private/`, database credentials, MFA keys and private documents out of Git and public storage. Online demo and real data require separate origins, processes and storage. Configure `DEMO_ORIGIN` in the real application; never enable `DEMO_MODE` there.
 
-Production hosting, HTTPS, private storage, verified backup/restore and remaining security release gates must be validated before publishing. The current database launcher is for local development, not a production deployment recipe.
+HTTPS deployments, visitor isolation, private PDF/ZIP streaming above 4.5 MiB, original-data migration and encrypted backup/restore have been verified. Real data and demo visitors use separate TiDB instances and origins. See [hosting operations](docs/hosting.md) for deployment, recovery and backup instructions. The local launcher remains a development tool.
 
 [Local setup](docs/zhvillimi-lokal.md) | [Demo](docs/demo.md) | [Security and MFA](docs/WP-16-report.md)

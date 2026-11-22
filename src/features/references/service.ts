@@ -1,3 +1,4 @@
+import {lockBusinessUser} from "@/server/db/user-lock";
 import { randomUUID } from "node:crypto";
 import { and, asc, count, desc, eq, or, sql } from "drizzle-orm";
 import { drizzle, type MySql2Database } from "drizzle-orm/mysql2";
@@ -39,7 +40,7 @@ async function mutation<P, R>(connection: Connection, token: string | undefined,
   const identity = await requireSessionUser(connection, token); const input = parse();
   try {
     return await drizzle(connection).transaction(async tx => {
-      await tx.select({ id: users.id }).from(users).where(eq(users.id, identity.id)).for("share");
+      await lockBusinessUser(tx,connection,identity.id);
       const actor = await requireSessionUser(connection, token);
       return work(tx, input, actor.id);
     }, { isolationLevel: "read committed" });

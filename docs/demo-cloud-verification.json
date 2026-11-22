@@ -1,0 +1,24 @@
+{
+  "cloudDemoVerified": true,
+  "checks": [
+    "Anonymous data and foreign-origin demo starts denied",
+    "Two visitors get separate seeded TiDB databases through real HTTP login",
+    "Visitor changes are private to that visitor",
+    "Private fictitious PDF download, streaming and cross-visitor denial",
+    "Real MFA authentication guard rejects the demo assurance-zero session",
+    "Demo PDF bytes roll back atomically and runtime cannot overwrite stored PDFs",
+    "Real payment issue, correction, cancellation and immutable original PDF history",
+    "Actual Excel report identifies fictional demo company",
+    "Complete demo ZIP includes verified PDF history without credentials",
+    "Real account endpoints and forged demo credentials denied",
+    "Real desktop/mobile app renders without runtime errors",
+    "Logout and absolute expiration revoke live HTTP access"
+  ],
+  "realCloudDatabase": true,
+  "productionHttpServer": true,
+  "separateVisitorDatabases": true,
+  "transactionalDemoPdfStorage": true,
+  "realPdfStorageUnchanged": true,
+  "testVisitorsRemoved": true,
+  "realDataUnchanged": true
+}

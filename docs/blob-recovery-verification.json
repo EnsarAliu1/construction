@@ -1,0 +1,8 @@
+{
+  "failedDatabaseReadPreservesPdf": true,
+  "durableOrphanIntent": true,
+  "lateCompletionRecovered": true,
+  "referencedPdfRetained": true,
+  "temporaryResourcesRemoved": true,
+  "syntheticOnly": true
+}

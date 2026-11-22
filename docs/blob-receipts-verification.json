@@ -1,0 +1,17 @@
+{
+  "privateBlobReceiptServices": true,
+  "realMfa": true,
+  "stableNumber": true,
+  "originalPdfHistory": true,
+  "correctionAndCancellation": true,
+  "rollbackRecovery": true,
+  "unknownCommitRetry": true,
+  "concurrentIdempotency": true,
+  "checksumAndScopeGuards": true,
+  "leaseRequiredForRecovery": true,
+  "revokedDownloadsDenied": true,
+  "operatorRecovery": true,
+  "syntheticOnly": true,
+  "applicationProviderStillLocal": true,
+  "temporaryResourcesRemoved": true
+}

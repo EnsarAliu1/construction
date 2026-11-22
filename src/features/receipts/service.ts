@@ -1,6 +1,9 @@
+import {cloudDemoMode} from '@/server/demo/cloud-policy';
+import {CloudDemoReceiptStore} from '@/server/demo/cloud-storage';
 import {randomUUID} from "node:crypto";
 import {and,asc,count,desc,eq,or,sql} from "drizzle-orm";
 import {drizzle} from "drizzle-orm/mysql2";
+import {withReadSnapshot} from "@/server/db/read-snapshot";
 import type {Connection,RowDataPacket} from "mysql2/promise";
 import {auditEvents,clients,contractPhases,entityVersions,paymentReceipts,payments,projects,receiptCounters,receiptVersions,users} from "@/server/db/schema";
 import {safeHistorySnapshot,type HistorySnapshot} from "@/server/db/history-snapshot";
@@ -10,18 +13,33 @@ import {referenceId,referenceObject,ReferenceError} from "@/features/references/
 import {escapedSearch} from "@/features/clients/validation";
 import {text} from "@/features/expenses/validation";
 import {cancelPayment,confirmPayment,correctPayment,type PaymentTx,type ReceiptBoundary,type ReceiptContext} from "@/features/payments/service";
-import {PrivateReceiptStore,type ReceiptFault} from "./storage";
+import {PrivateReceiptStore,type ReceiptFault,type ReceiptStore} from "./storage";
 import {securitySignal} from "@/server/operations/events";
 import {renderReceiptPdf} from "./pdf";
 import {receiptCompany} from './company-profile';
+import {isTidbConnection,tidbConnectionIdentity} from '@/server/db/tidb';
+import {BlobReceiptStore,receiptBlobConfiguration} from './blob-storage';
+import {demoMode} from '@/server/demo/policy';
+import {lockReceipt,issueReceiptRecord,reviseReceiptRecord} from './records';
 
 export const documentUnavailable=()=>new ReferenceError("DOCUMENT_UNAVAILABLE","Dokumenti i dëftesës është i padisponueshëm ose nuk kaloi kontrollin e integritetit. Mos dërgoni pagesë të re; kontrolloni veprimin fillestar dhe kontaktoni operatorin.",503);
 export function formatReceiptNumber(sequence:bigint,prefix=process.env.RECEIPT_NUMBER_PREFIX??"DEV"){
   if(!/^[A-Z0-9]{1,16}$/.test(prefix)||sequence<BigInt(1)||sequence>=BigInt("18446744073709551615"))throw new Error("Konfigurimi i numërimit të dëftesave për zhvillim është i pavlefshëm.");
   return `${prefix}-${sequence.toString().padStart(8,"0")}`;
 }
-async function storeFor(c:Connection,fault:ReceiptFault=async()=>{}){const [rows]=await c.query<RowDataPacket[]>("SELECT CONCAT(@@server_uuid,'/',DATABASE()) AS identity");return new PrivateReceiptStore(String(rows[0].identity),fault);}
-async function withStore<R>(c:Connection,fault:ReceiptFault,work:(store:PrivateReceiptStore)=>Promise<R>){
+async function storeFor(c:Connection,fault:ReceiptFault=async()=>{}):Promise<ReceiptStore>{
+ if(cloudDemoMode())return new CloudDemoReceiptStore(c,fault);
+ const identity=tidbConnectionIdentity(c),provider=process.env.RECEIPT_STORAGE_PROVIDER??'filesystem';
+ if(provider==='vercel-blob'&&!demoMode()){
+  if(!identity)throw new Error('Private Blob receipt storage requires a verified TiDB connection.');
+  return new BlobReceiptStore(identity,receiptBlobConfiguration(process.env),fault);
+ }
+ if(provider!=='filesystem'&&!(provider==='vercel-blob'&&demoMode()))throw new Error('Unknown receipt storage provider.');
+ if(process.env.VERCEL==='1')throw new Error('Durable private receipt storage must be configured before deployment.');
+ if(identity)return new PrivateReceiptStore(identity,fault);
+ const [rows]=await c.query<RowDataPacket[]>("SELECT CONCAT(@@server_uuid,'/',DATABASE()) AS identity");return new PrivateReceiptStore(String(rows[0].identity),fault);
+}
+async function withStore<R>(c:Connection,fault:ReceiptFault,work:(store:ReceiptStore)=>Promise<R>){
   const store=await storeFor(c,fault),lock=store.lockName();
   const [acquired]=await c.execute<RowDataPacket[]>("SELECT GET_LOCK(?,10) AS acquired",[lock]);if(Number(acquired[0].acquired)!==1)throw new Error("Ruajtja e dëftesave është e zënë. Provoni përsëri me të njëjtin çelës veprimi.");
   try{await store.initialize();return await work(store);}finally{await c.execute("SELECT RELEASE_LOCK(?)",[lock]).catch(()=>{});}
@@ -31,8 +49,8 @@ async function receiptAudit(tx:PaymentTx,context:ReceiptContext,before:typeof pa
   await tx.insert(auditEvents).values({id:randomUUID(),actorId:context.actorId,operationId:context.operationId,entityType:"receipt",entityId:after.id,action:context.action==="confirm"?"receipt_issued":context.action==="correct"?"receipt_corrected":"receipt_cancelled",beforeSnapshot:before?safeHistorySnapshot({...before}):null,afterSnapshot});
   await tx.insert(entityVersions).values({id:randomUUID(),entityType:"receipt",entityId:after.id,version:after.version,snapshot:afterSnapshot});
 }
-function boundary(store:PrivateReceiptStore,fault:ReceiptFault):ReceiptBoundary{return {mode:"wp09",async apply(tx,context){
-  const [before]=await tx.select().from(paymentReceipts).where(eq(paymentReceipts.paymentId,context.after.id)).for("update");
+function boundary(store:ReceiptStore,fault:ReceiptFault,appendOnly:boolean):ReceiptBoundary{return {mode:"wp09",async apply(tx,context){
+  const before=await lockReceipt(tx,context.after.id,appendOnly);
   if(context.action!=="confirm"&&!before)throw new ReferenceError("RECEIPT_LEGACY","Kjo pagesë historike nuk ka identifikues dëftese. Lëshimi prapaveprues automatik nuk është i disponueshëm.",409);
   if(context.action==="confirm"&&before)throw new ReferenceError("RECEIPT_EXISTS","Për këtë pagesë ekziston tashmë një dëftesë.",409);
   let id=before?.id,number=before?.receiptNumber,documentVersion=1;
@@ -44,7 +62,7 @@ function boundary(store:PrivateReceiptStore,fault:ReceiptFault):ReceiptBoundary{
     documentVersion=latest.version+1;
   }
   if(context.action==="cancel"){
-    await tx.update(paymentReceipts).set({status:"void",version:before!.version+1,updatedBy:context.actorId,cancelledBy:context.actorId,cancelledAt:context.after.cancelledAt,cancellationReason:context.after.cancellationReason,updatedAt:sql`UTC_TIMESTAMP(3)`}).where(eq(paymentReceipts.id,id!));
+    await reviseReceiptRecord(tx,before!,{status:"void",version:before!.version+1,updatedBy:context.actorId,cancelledBy:context.actorId,cancelledAt:context.after.cancelledAt,cancellationReason:context.after.cancellationReason},appendOnly);
     const [after]=await tx.select().from(paymentReceipts).where(eq(paymentReceipts.id,id!));await receiptAudit(tx,context,before,after);await fault("beforeCommit");return;
   }
   if(!before){
@@ -64,8 +82,8 @@ function boundary(store:PrivateReceiptStore,fault:ReceiptFault):ReceiptBoundary{
   const snapshot=safeHistorySnapshot({receiptId:id!,receiptNumber:number!,documentVersion,companyName:company,paymentId:context.after.id,paymentVersion:context.after.version,version:context.after.version,projectId:context.after.projectId,clientId:joined.clientId,clientName:joined.clientName,projectName:joined.projectName,location:joined.location,amount:context.after.amount,method:context.after.method,transactionDate:context.after.transactionDate,issuedAt,issuerName:actor.name,status:"issued",allocationsText:items.map(row=>`${row.description}: ${row.amount} EUR`).join("\n")});
   await fault("beforeRender");const bytes=await renderReceiptPdf(snapshot,{company:profile,buyer:{address:[joined.buyerAddress,joined.buyerAddress2].filter(Boolean).join(', '),city:joined.buyerCity??undefined,nui:joined.buyerNui??undefined},items});await fault("afterRender");
   const stored=await store.put(bytes);await fault("beforeMetadata");
-  if(before)await tx.update(paymentReceipts).set({version:before.version+1,updatedBy:context.actorId,updatedAt:sql`UTC_TIMESTAMP(3)`}).where(eq(paymentReceipts.id,id!));
-  else await tx.insert(paymentReceipts).values({id:id!,paymentId:context.after.id,receiptNumber:number!,status:"issued",createdBy:context.actorId,updatedBy:context.actorId});
+  if(before)await reviseReceiptRecord(tx,before,{version:before.version+1,updatedBy:context.actorId},appendOnly);
+  else await issueReceiptRecord(tx,{id:id!,paymentId:context.after.id,receiptNumber:number!,createdBy:context.actorId,updatedBy:context.actorId},appendOnly);
   await tx.insert(receiptVersions).values({id:randomUUID(),receiptId:id!,version:documentVersion,contentSnapshot:snapshot,...stored,issuedAt,issuedBy:context.actorId});
   const [after]=await tx.select().from(paymentReceipts).where(eq(paymentReceipts.id,id!));
   await receiptAudit(tx,context,before??null,after,{...snapshot,...stored});await fault("afterMetadata");await fault("beforeCommit");
@@ -75,7 +93,7 @@ function boundary(store:PrivateReceiptStore,fault:ReceiptFault):ReceiptBoundary{
 export async function withReceiptWorkflow<R>(c:Connection,token:string|undefined,work:(adapter:ReceiptBoundary)=>Promise<R>,fault:ReceiptFault=async()=>{}){
   await requireSessionUser(c,token);
   return withStore(c,fault,async store=>{
-    try{const result=await work(boundary(store,fault));await fault("afterCommit");return result;}
+    try{const result=await work(boundary(store,fault,isTidbConnection(c)));await fault("afterCommit");return result;}
     catch(error){if(store.written.length)await store.recover(c,store.written).catch(()=>{});throw error;}
   });
 }
@@ -92,13 +110,13 @@ export const cancelPaymentWithReceipt=(c:Connection,t:string|undefined,id:string
 function versionNumber(value:unknown){const n=typeof value==="string"&&/^\d{1,10}$/.test(value)?Number(value):value;if(typeof n!=="number"||!Number.isInteger(n)||n<1||n>4294967295)throw new ReferenceError("NOT_FOUND","Versioni i dëftesës nuk u gjet.",404);return n;}
 export async function getReceipt(c:Connection,token:string|undefined,id:string,page=1){
   await requireSessionUser(c,token);referenceId(id);if(!Number.isInteger(page)||page<1||page>10000)throw new ReferenceError("PAGE","Faqe e pavlefshme e versioneve.");
-  const data=await drizzle(c).transaction(async tx=>{
+  const data=await withReadSnapshot(c,async tx=>{
     const [receipt]=await tx.select().from(paymentReceipts).where(eq(paymentReceipts.id,id)).limit(1);if(!receipt)throw new ReferenceError("NOT_FOUND","Dëftesa nuk u gjet.",404);
     const [current]=await tx.select().from(receiptVersions).where(eq(receiptVersions.receiptId,id)).orderBy(desc(receiptVersions.version)).limit(1);
     const versions=await tx.select({id:receiptVersions.id,version:receiptVersions.version,issuedAt:receiptVersions.issuedAt,issuedBy:receiptVersions.issuedBy,fileChecksum:receiptVersions.fileChecksum,contentSnapshot:receiptVersions.contentSnapshot}).from(receiptVersions).where(eq(receiptVersions.receiptId,id)).orderBy(desc(receiptVersions.version)).limit(20).offset((page-1)*20);
     const [{total}]=await tx.select({total:count()}).from(receiptVersions).where(eq(receiptVersions.receiptId,id));
     return {receipt,current:current??null,versions,total:Number(total),page};
-  },{isolationLevel:"repeatable read",accessMode:"read only"});
+  });
   let documentAvailable=false;
   if(data.current){try{const store=await storeFor(c);await store.initialize();await store.read(data.current.storageReference,data.current.fileChecksum);documentAvailable=true;}catch{documentAvailable=false;}}
   const current=data.current?{version:data.current.version,issuedAt:data.current.issuedAt,contentSnapshot:data.current.contentSnapshot,fileChecksum:data.current.fileChecksum}:null;
@@ -130,9 +148,9 @@ export function parseReceiptQuery(value:Record<string,unknown>){
 export async function listReceipts(c:Connection,token:string|undefined,value:Record<string,unknown>={}){
   await requireSessionUser(c,token);const query=parseReceiptQuery(value);
   const where=and(query.status==="all"?undefined:eq(paymentReceipts.status,query.status),query.q?or(...[paymentReceipts.receiptNumber,projects.name,clients.name].map(column=>sql`${column} LIKE ${escapedSearch(query.q)} ESCAPE '='`)):undefined);
-  return drizzle(c).transaction(async tx=>{
+  return withReadSnapshot(c,async tx=>{
     const [{total}]=await tx.select({total:count()}).from(paymentReceipts).innerJoin(payments,eq(paymentReceipts.paymentId,payments.id)).innerJoin(projects,eq(payments.projectId,projects.id)).innerJoin(clients,eq(projects.clientId,clients.id)).where(where);
     const rows=await tx.select({receipt:paymentReceipts,projectName:projects.name,clientName:clients.name,amount:payments.amount}).from(paymentReceipts).innerJoin(payments,eq(paymentReceipts.paymentId,payments.id)).innerJoin(projects,eq(payments.projectId,projects.id)).innerJoin(clients,eq(projects.clientId,clients.id)).where(where).orderBy(desc(paymentReceipts.createdAt),desc(paymentReceipts.id)).limit(20).offset((query.page-1)*20);
     return {rows,total:Number(total),query,pageSize:20};
-  },{isolationLevel:"repeatable read",accessMode:"read only"});
+  });
 }

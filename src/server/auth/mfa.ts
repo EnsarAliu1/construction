@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import {authUsers,authReadLock,authUserQuery,lockAuthUser,advanceAuthVersion} from './user-version';
 import type { Connection, RowDataPacket } from 'mysql2/promise';
 import { securityEvent, transaction } from './store';
 import { newSessionToken, tokenDigest, validSessionToken, SESSION_SECONDS, normalizeEmail } from './security';
@@ -62,7 +63,8 @@ async function locked(c: Connection, token: string | undefined, work: (challenge
         }
     }
     return transaction(c, async () => {
-        const [users] = await c.execute<RowDataPacket[]>('SELECT id,email,password_hash,auth_version,status FROM users WHERE id=? FOR UPDATE', [found.user_id]);
+        await lockAuthUser(c,String(found.user_id));
+        const [users] = await authUserQuery(c,`SELECT id,email,password_hash,auth_version,status FROM ${authUsers(c)} WHERE id=? ${authReadLock(c)}`, [found.user_id]);
         const [rows] = await c.execute<RowDataPacket[]>('SELECT *,expires_at>UTC_TIMESTAMP(3) AS fresh FROM auth_mfa_challenges WHERE id=? FOR UPDATE', [found.id]);
         const u = users[0], ch = rows[0];
         if (!u || !ch || u.status !== 'active' || u.auth_version !== ch.user_auth_version || Number(ch.fresh) !== 1 || ch.state === 'consumed' || (ch.attempts >= 5 && (attempt || ch.state !== 'ack')))
@@ -156,7 +158,7 @@ export async function acknowledgeCodes(c: Connection, token: string | undefined,
         const generation = ch.purpose === 'codes' ? f.id : ch.id;
         for (const verifier of hashes)
             await c.execute('INSERT INTO auth_mfa_recovery_codes(id,user_id,generation_id,verifier) VALUES(?,?,?,?)', [randomUUID(), u.id, generation, verifier]);
-        await c.execute('UPDATE users SET auth_version=auth_version+1,updated_at=UTC_TIMESTAMP(3) WHERE id=?', [u.id]);
+        await advanceAuthVersion(c,String(u.id));
         u.auth_version++;
         await c.execute('UPDATE auth_sessions SET revoked_at=COALESCE(revoked_at,UTC_TIMESTAMP(3)),updated_at=UTC_TIMESTAMP(3) WHERE user_id=?', [u.id]);
         await invalidateMfaChallenges(c, u.id);
@@ -199,11 +201,12 @@ export async function beginFactorChange(c: Connection, session: string | undefin
             await securityEvent(c, 'mfa_throttled', actor.id, actor.id, { status: 'rate_limited' });
         return denied(true);
     }
-    const [before] = await c.execute<RowDataPacket[]>('SELECT password_hash,auth_version FROM users WHERE id=?', [actor.id]);
+    const [before] = await authUserQuery(c,`SELECT password_hash,auth_version FROM ${authUsers(c)} WHERE id=?`, [actor.id]);
     const observed = before[0];
     const matches = typeof password === 'string' && Buffer.byteLength(password, 'utf8') <= 1024 && await verifyPassword(password, observed?.password_hash);
     return transaction(c, async () => {
-        const [users] = await c.execute<RowDataPacket[]>('SELECT * FROM users WHERE id=? FOR UPDATE', [actor.id]);
+        await lockAuthUser(c,actor.id);
+        const [users] = await authUserQuery(c,`SELECT * FROM ${authUsers(c)} WHERE id=? ${authReadLock(c)}`, [actor.id]);
         const u = users[0];
         await requireSessionUser(c, session);
         const f = await factor(c, actor.id);
@@ -256,7 +259,7 @@ export async function resetMfa(c: Connection, operator: OperatorContext, email: 
         }
         await c.execute('DELETE FROM auth_mfa_factors WHERE user_id=?', [user]);
         await c.execute('UPDATE auth_mfa_recovery_codes SET revoked_at=COALESCE(revoked_at,UTC_TIMESTAMP(3)),updated_at=UTC_TIMESTAMP(3) WHERE user_id=?', [user]);
-        await c.execute('UPDATE users SET auth_version=auth_version+1,updated_at=UTC_TIMESTAMP(3) WHERE id=?', [user]);
+        await advanceAuthVersion(c,user);
         await c.execute('UPDATE auth_sessions SET revoked_at=COALESCE(revoked_at,UTC_TIMESTAMP(3)),updated_at=UTC_TIMESTAMP(3) WHERE user_id=?', [user]);
         await invalidateMfaChallenges(c, user);
         await securityEvent(c, 'mfa_operator_reset_completed', user, null, { status: 'enrollment_required' });
